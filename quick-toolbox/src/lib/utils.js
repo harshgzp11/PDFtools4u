@@ -30,3 +30,15 @@ export function downloadTextAsFile(text, filename) {
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
 }
+
+/**
+ * Returns Tailwind grid classes based on the number of items.
+ * Ensures that if there are very few pages, they are large, 
+ * and if there are many pages, they form a standard grid.
+ */
+export function getDynamicGridClass(count) {
+  if (count <= 2) return "grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl mx-auto";
+  if (count <= 4) return "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6";
+  if (count <= 8) return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-6";
+  return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-8 gap-4";
+}

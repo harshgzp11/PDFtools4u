@@ -1,7 +1,14 @@
 import React, { useState, useRef } from 'react';
 import { UploadCloud } from 'lucide-react';
 
-export default function DragDropZone({ onFileSelect, accept, label = "Drag & drop your files here, or browse", multiple = false }) {
+export default function DragDropZone({ 
+  onFileSelect, 
+  accept, 
+  label = "Drag & drop your files here, or browse", 
+  multiple = false,
+  className = "",
+  icon: Icon = UploadCloud
+}) {
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
 
@@ -43,9 +50,9 @@ export default function DragDropZone({ onFileSelect, accept, label = "Drag & dro
 
   return (
     <div 
-      className={`border-2 border-dashed rounded-xl p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
-        isDragging ? 'border-blue-500 bg-blue-50 text-blue-600' : 'border-gray-300 hover:border-gray-400 text-gray-500 hover:bg-gray-50'
-      }`}
+      className={`border-2 border-dashed rounded-2xl flex flex-col items-center justify-center cursor-pointer transition-all duration-300 ${
+        isDragging ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-inner' : 'border-blue-300 hover:border-blue-400 hover:bg-blue-50/50 hover:shadow-lg bg-blue-50/30'
+      } ${className || 'p-10'}`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
@@ -59,9 +66,13 @@ export default function DragDropZone({ onFileSelect, accept, label = "Drag & dro
         accept={accept}
         multiple={multiple}
       />
-      <UploadCloud className="w-12 h-12 mb-4 opacity-75" />
-      <p className="text-lg font-medium">{label}</p>
-      <p className="text-sm opacity-70 mt-2">Maximum privacy. Processed entirely in your browser.</p>
+      
+      <div className="bg-blue-600 text-white p-4 rounded-full mb-6 shadow-md hover:scale-110 transition-transform duration-300 pointer-events-none">
+        <Icon className="w-10 h-10" />
+      </div>
+      
+      <p className="text-2xl font-bold text-gray-800 mb-2 pointer-events-none">{label}</p>
+      <p className="text-sm font-medium text-gray-500 pointer-events-none">Maximum privacy. Processed entirely in your browser.</p>
     </div>
   );
 }
