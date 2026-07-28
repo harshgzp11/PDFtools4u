@@ -1,0 +1,18 @@
+/* basic styles for cmdk */
+[cmdk-group-heading] {
+  padding: 0 8px;
+  margin-bottom: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+[cmdk-item] {
+  content-visibility: auto;
+  cursor: pointer;
+}
+
+[cmdk-item][data-selected="true"] {
+  background: rgba(99, 102, 241, 0.1);
+  color: #a5b4fc;
+}

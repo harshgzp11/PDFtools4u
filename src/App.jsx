@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { Toaster } from 'sonner';
+import CommandMenu from './components/CommandMenu';
 import Layout from './components/Layout';
 import Dashboard from './components/Dashboard';
 import TextReformatter from './tools/TextReformatter';
@@ -42,6 +44,10 @@ import PdfToWord from './tools/PdfToWord';
 import PdfToExcel from './tools/PdfToExcel';
 import PdfToPpt from './tools/PdfToPpt';
 
+import SharePdf from './tools/SharePdf';
+import NumberPages from './tools/NumberPages';
+import TxtToPdf from './tools/TxtToPdf';
+
 import { ArrowLeft } from 'lucide-react';
 
 const PLACEHOLDER_TOOLS = {
@@ -49,15 +55,12 @@ const PLACEHOLDER_TOOLS = {
   'edit-pdf': 'Edit PDF',
   'pdf-annotator': 'PDF Annotator',
   'pdf-reader': 'PDF Reader',
-  'number-pages': 'Number Pages',
   'crop-pdf': 'Crop PDF',
   'redact-pdf': 'Redact PDF',
   'pdf-form-filler': 'PDF Form Filler',
-  'share-pdf': 'Share PDF',
   'word-to-pdf': 'Word to PDF',
   'excel-to-pdf': 'Excel to PDF',
   'ppt-to-pdf': 'PPT to PDF',
-  'txt-to-pdf': 'TXT to PDF',
   'rtf-to-pdf': 'RTF to PDF',
   'unlock-pdf': 'Unlock PDF'
 };
@@ -122,6 +125,9 @@ function App() {
       case 'flatten-pdf': return <FlattenPdf />;
       case 'sign-pdf': return <SignPdf />;
       case 'compress-pdf': return <CompressPdf />;
+      case 'share-pdf': return <SharePdf />;
+      case 'number-pages': return <NumberPages />;
+      case 'txt-to-pdf': return <TxtToPdf />;
       
       // New Image Tools
       case 'compress-image': return <CompressImage />;
@@ -144,24 +150,28 @@ function App() {
   };
 
   return (
-    <Layout 
-      onHomeClick={() => navigateTo(null)} 
-      onSearch={(q) => { setSearchQuery(q); navigateTo(null); }}
-    >
-      {activeTool ? (
-        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <button 
-            onClick={() => navigateTo(null)} 
-            className="mb-6 flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" /> Back to Dashboard
-          </button>
-          {renderTool()}
-        </div>
-      ) : (
-        <Dashboard onSelectTool={navigateTo} searchQuery={searchQuery} />
-      )}
-    </Layout>
+    <>
+      <Toaster theme="light" position="bottom-right" />
+      <CommandMenu onSelectTool={navigateTo} />
+      <Layout 
+        onHomeClick={() => navigateTo(null)} 
+        onSearch={(q) => { setSearchQuery(q); navigateTo(null); }}
+      >
+        {activeTool ? (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <button 
+              onClick={() => navigateTo(null)} 
+              className="mb-6 flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm"
+            >
+              <ArrowLeft className="w-4 h-4" /> Back to Dashboard
+            </button>
+            {renderTool()}
+          </div>
+        ) : (
+          <Dashboard onSelectTool={navigateTo} searchQuery={searchQuery} />
+        )}
+      </Layout>
+    </>
   );
 }
 

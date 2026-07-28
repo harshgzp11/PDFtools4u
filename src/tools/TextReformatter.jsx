@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { copyToClipboard, downloadTextAsFile } from '../lib/utils';
 import { Copy, Download, Trash2, ArrowDownAZ, ArrowUpZA, Hash, Search } from 'lucide-react';
+import { toast } from 'sonner';
 import AdSlot from '../components/ui/AdSlot';
 
 export default function TextReformatter() {
@@ -73,11 +74,22 @@ export default function TextReformatter() {
     setInput(res);
     setFindText('');
     setReplaceText('');
+    toast.success('Find & Replace applied!');
+  };
+
+  const handleCopy = async () => {
+    await copyToClipboard(output);
+    toast.success('Copied to clipboard');
+  };
+
+  const handleDownload = () => {
+    downloadTextAsFile(output, 'reformatted_text.txt');
+    toast.success('Downloaded as reformatted_text.txt');
   };
 
   // Helper for toggle button styling
   const toggleBtnClass = (isActive) => 
-    `px-3 py-1.5 border rounded shadow-sm text-sm font-medium transition-colors ${isActive ? 'bg-blue-50 border-blue-500 text-blue-700' : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'}`;
+    `px-3 py-1.5 border rounded-lg shadow-sm text-sm font-medium transition-colors ${isActive ? 'bg-blue-50 border-blue-500 text-blue-700' : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'}`;
 
   return (
     <div className="space-y-6 animate-in fade-in">
@@ -92,11 +104,11 @@ export default function TextReformatter() {
           <textarea 
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="w-full h-80 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm resize-none"
+            className="w-full h-80 p-4 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 font-mono text-sm resize-none transition-all shadow-sm"
             placeholder="Paste your text here..."
           />
           {input && (
-            <button onClick={() => setInput('')} className="text-sm text-red-500 hover:text-red-700 flex items-center gap-1">
+            <button onClick={() => setInput('')} className="text-sm text-red-500 hover:text-red-700 flex items-center gap-1 transition-colors">
               <Trash2 className="w-4 h-4"/> Clear Input
             </button>
           )}
@@ -107,21 +119,21 @@ export default function TextReformatter() {
           <textarea 
             value={output}
             readOnly
-            className="w-full h-80 p-4 border border-gray-300 rounded-lg bg-gray-50 font-mono text-sm resize-none"
+            className="w-full h-80 p-4 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 font-mono text-sm resize-none shadow-sm"
             placeholder="Result will appear here..."
           />
           <div className="flex gap-2 justify-end">
             <button 
-              onClick={() => copyToClipboard(output)} 
+              onClick={handleCopy} 
               disabled={!output}
-              className="px-3 py-1.5 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 flex items-center gap-2"
+              className="px-3 py-1.5 bg-white border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 flex items-center gap-2 transition-colors"
             >
               <Copy className="w-4 h-4"/> Copy
             </button>
             <button 
-              onClick={() => downloadTextAsFile(output, 'reformatted_text.txt')} 
+              onClick={handleDownload} 
               disabled={!output}
-              className="px-3 py-1.5 bg-blue-600 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2"
+              className="px-3 py-1.5 bg-blue-600 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2 transition-colors"
             >
               <Download className="w-4 h-4"/> Download .txt
             </button>
@@ -168,20 +180,20 @@ export default function TextReformatter() {
                   placeholder="Find..." 
                   value={findText} 
                   onChange={(e) => setFindText(e.target.value)}
-                  className="flex-1 min-w-0 px-3 py-2 border border-gray-300 rounded shadow-sm text-sm focus:ring-2 focus:ring-blue-500"
+                  className="flex-1 min-w-0 px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 shadow-sm text-sm focus:ring-2 focus:ring-blue-500 transition-all"
                 />
                 <input 
                   type="text" 
                   placeholder="Replace..." 
                   value={replaceText} 
                   onChange={(e) => setReplaceText(e.target.value)}
-                  className="flex-1 min-w-0 px-3 py-2 border border-gray-300 rounded shadow-sm text-sm focus:ring-2 focus:ring-blue-500"
+                  className="flex-1 min-w-0 px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 shadow-sm text-sm focus:ring-2 focus:ring-blue-500 transition-all"
                 />
               </div>
               <button 
                 onClick={applyFindReplace}
                 disabled={!findText}
-                className="px-4 py-2 bg-blue-600 text-white rounded shadow-sm text-sm font-medium hover:bg-blue-700 whitespace-nowrap disabled:opacity-50"
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-sm text-sm font-medium hover:bg-blue-700 whitespace-nowrap disabled:opacity-50 transition-colors"
               >
                 Apply
               </button>

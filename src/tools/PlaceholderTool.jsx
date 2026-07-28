@@ -19,6 +19,9 @@ export default function PlaceholderTool({ toolName }) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] animate-in fade-in zoom-in-95 duration-500">
         <div className="text-center mb-10 space-y-4">
+          <div className="inline-block px-3 py-1 bg-blue-100 text-blue-800 text-xs font-bold uppercase tracking-wide rounded-full border border-blue-200 shadow-sm mb-2">
+            Coming Soon
+          </div>
           <h2 className="text-5xl font-extrabold text-gray-900 tracking-tight">{toolName || "Tool"}</h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             This tool is currently under construction. You can test the new interface below!
@@ -32,7 +35,7 @@ export default function PlaceholderTool({ toolName }) {
             onFileSelect={() => setClicked(true)}
             label={`Select files for ${toolName || "Tool"}`}
             icon={Code}
-            className="p-20 py-32 bg-gray-50/50 hover:bg-gray-100 border-gray-300 hover:border-gray-400"
+            className="p-20 py-32 bg-gray-50 hover:bg-gray-100 border-gray-300 hover:border-gray-400 shadow-sm"
           />
         </div>
       </div>
@@ -46,7 +49,7 @@ export default function PlaceholderTool({ toolName }) {
       <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-4">Feature Coming Soon!</h2>
       
       {sharedFile ? (
-        <div className="mb-10 text-center p-6 bg-blue-50 border border-blue-100 rounded-xl">
+        <div className="mb-10 text-center p-6 bg-blue-50 border border-blue-100 rounded-xl shadow-sm">
           <p className="text-lg text-gray-700 font-medium mb-2">We received your file:</p>
           <div className="flex items-center justify-center gap-2 text-blue-600 font-bold">
             <FileText className="w-5 h-5" />
@@ -55,13 +58,13 @@ export default function PlaceholderTool({ toolName }) {
           <p className="text-sm text-gray-500 mt-4">We are actively building the processing logic for this tool.</p>
         </div>
       ) : (
-        <p className="text-lg text-gray-600 mb-10">We are actively building the processing logic for this tool.</p>
+        <p className="text-lg text-gray-500 mb-10">We are actively building the processing logic for this tool.</p>
       )}
       
       <div className="flex flex-col sm:flex-row gap-4 items-center">
         <button 
           onClick={() => { setClicked(false); setSharedFile(null); }}
-          className="px-8 py-5 bg-white border-2 border-gray-200 text-gray-700 rounded-xl font-bold text-lg hover:bg-gray-50 hover:border-gray-300 transition-all flex items-center gap-2"
+          className="px-8 py-4 bg-white border-2 border-gray-200 text-gray-700 rounded-xl font-bold text-lg hover:bg-gray-50 hover:border-gray-300 transition-all flex items-center gap-2 shadow-sm"
         >
           Go Back
         </button>
