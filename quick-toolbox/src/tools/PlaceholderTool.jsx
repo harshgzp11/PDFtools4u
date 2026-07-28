@@ -1,9 +1,18 @@
-import React, { useState } from 'react';
-import { Code, Hammer } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Code, Hammer, FileText } from 'lucide-react';
 import DragDropZone from '../components/ui/DragDropZone';
 
 export default function PlaceholderTool({ toolName }) {
   const [clicked, setClicked] = useState(false);
+  const [sharedFile, setSharedFile] = useState(null);
+
+  useEffect(() => {
+    if (window.__sharedFile) {
+      setSharedFile(window.__sharedFile);
+      setClicked(true);
+      window.__sharedFile = null; // Clear it so it doesn't leak
+    }
+  }, []);
 
   // State 1: Upload Focus
   if (!clicked) {
@@ -35,11 +44,23 @@ export default function PlaceholderTool({ toolName }) {
     <div className="flex flex-col items-center justify-center min-h-[60vh] animate-in fade-in zoom-in-95 duration-500">
       <Hammer className="w-24 h-24 text-gray-400 mb-8 animate-bounce" style={{animationDuration: '2s'}} />
       <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-4">Feature Coming Soon!</h2>
-      <p className="text-lg text-gray-600 mb-10">We are actively building the processing logic for this tool.</p>
+      
+      {sharedFile ? (
+        <div className="mb-10 text-center p-6 bg-blue-50 border border-blue-100 rounded-xl">
+          <p className="text-lg text-gray-700 font-medium mb-2">We received your file:</p>
+          <div className="flex items-center justify-center gap-2 text-blue-600 font-bold">
+            <FileText className="w-5 h-5" />
+            {sharedFile.name}
+          </div>
+          <p className="text-sm text-gray-500 mt-4">We are actively building the processing logic for this tool.</p>
+        </div>
+      ) : (
+        <p className="text-lg text-gray-600 mb-10">We are actively building the processing logic for this tool.</p>
+      )}
       
       <div className="flex flex-col sm:flex-row gap-4 items-center">
         <button 
-          onClick={() => setClicked(false)}
+          onClick={() => { setClicked(false); setSharedFile(null); }}
           className="px-8 py-5 bg-white border-2 border-gray-200 text-gray-700 rounded-xl font-bold text-lg hover:bg-gray-50 hover:border-gray-300 transition-all flex items-center gap-2"
         >
           Go Back

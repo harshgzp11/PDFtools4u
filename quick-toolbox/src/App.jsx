@@ -27,10 +27,24 @@ import FlattenPdf from './tools/FlattenPdf';
 import SignPdf from './tools/SignPdf';
 import CompressPdf from './tools/CompressPdf';
 
+// New Image & DOCX Tools
+import CompressImage from './tools/CompressImage';
+import ResizeImage from './tools/ResizeImage';
+import ConvertImage from './tools/ConvertImage';
+import DocxToText from './tools/DocxToText';
+import DocxToHtml from './tools/DocxToHtml';
+import TextToDocx from './tools/TextToDocx';
+import PdfConverterHub from './tools/PdfConverterHub';
+
+// New Functional Converters
+import PdfToImage from './tools/PdfToImage';
+import PdfToWord from './tools/PdfToWord';
+import PdfToExcel from './tools/PdfToExcel';
+import PdfToPpt from './tools/PdfToPpt';
+
 import { ArrowLeft } from 'lucide-react';
 
 const PLACEHOLDER_TOOLS = {
-  'pdf-converter': 'PDF Converter',
   'pdf-ocr': 'PDF OCR',
   'edit-pdf': 'Edit PDF',
   'pdf-annotator': 'PDF Annotator',
@@ -40,10 +54,6 @@ const PLACEHOLDER_TOOLS = {
   'redact-pdf': 'Redact PDF',
   'pdf-form-filler': 'PDF Form Filler',
   'share-pdf': 'Share PDF',
-  'pdf-to-word': 'PDF to Word',
-  'pdf-to-excel': 'PDF to Excel',
-  'pdf-to-ppt': 'PDF to PPT',
-  'pdf-to-jpg': 'PDF to JPG',
   'word-to-pdf': 'Word to PDF',
   'excel-to-pdf': 'Excel to PDF',
   'ppt-to-pdf': 'PPT to PDF',
@@ -86,6 +96,8 @@ function App() {
     }
 
     switch(activeTool) {
+      case 'pdf-converter': return <PdfConverterHub />;
+      
       case 'text-reformatter': return <TextReformatter />;
       case 'data-converter': return <DataConverter />;
       case 'dev-tools': return <DevTools />;
@@ -110,6 +122,22 @@ function App() {
       case 'flatten-pdf': return <FlattenPdf />;
       case 'sign-pdf': return <SignPdf />;
       case 'compress-pdf': return <CompressPdf />;
+      
+      // New Image Tools
+      case 'compress-image': return <CompressImage />;
+      case 'resize-image': return <ResizeImage />;
+      case 'convert-image': return <ConvertImage />;
+      
+      // New DOCX Tools
+      case 'docx-to-text': return <DocxToText />;
+      case 'docx-to-html': return <DocxToHtml />;
+      case 'text-to-docx': return <TextToDocx />;
+
+      // New Functional Converters
+      case 'pdf-to-jpg': return <PdfToImage />;
+      case 'pdf-to-word': return <PdfToWord />;
+      case 'pdf-to-excel': return <PdfToExcel />;
+      case 'pdf-to-ppt': return <PdfToPpt />;
       
       default: return null;
     }
