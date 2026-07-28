@@ -1,10 +1,5 @@
 @import "tailwindcss";
 
-@theme {
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 @layer base {
   body {
     background-color: #f8fafc; /* Very subtle slate-50 light background */

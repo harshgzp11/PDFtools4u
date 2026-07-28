@@ -54,7 +54,6 @@ const PLACEHOLDER_TOOLS = {
   'edit-pdf': 'Edit PDF',
   'pdf-annotator': 'PDF Annotator',
   'pdf-reader': 'PDF Reader',
-  'crop-pdf': 'Crop PDF',
   'redact-pdf': 'Redact PDF',
   'pdf-form-filler': 'PDF Form Filler',
   'word-to-pdf': 'Word to PDF',
