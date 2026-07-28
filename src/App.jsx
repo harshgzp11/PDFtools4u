@@ -43,8 +43,6 @@ import PdfToImage from './tools/PdfToImage';
 import PdfToWord from './tools/PdfToWord';
 import PdfToExcel from './tools/PdfToExcel';
 import PdfToPpt from './tools/PdfToPpt';
-
-import SharePdf from './tools/SharePdf';
 import NumberPages from './tools/NumberPages';
 import TxtToPdf from './tools/TxtToPdf';
 
@@ -125,7 +123,6 @@ function App() {
       case 'flatten-pdf': return <FlattenPdf />;
       case 'sign-pdf': return <SignPdf />;
       case 'compress-pdf': return <CompressPdf />;
-      case 'share-pdf': return <SharePdf />;
       case 'number-pages': return <NumberPages />;
       case 'txt-to-pdf': return <TxtToPdf />;
       

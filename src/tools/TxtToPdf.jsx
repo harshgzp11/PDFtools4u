@@ -3,11 +3,12 @@ import { FileText, Download, RefreshCw, Settings } from 'lucide-react';
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import DragDropZone from '../components/ui/DragDropZone';
 import AdSlot from '../components/ui/AdSlot';
+import ExportActions from '../components/ui/ExportActions';
 
 export default function TxtToPdf() {
   const [file, setFile] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [outputUrl, setOutputUrl] = useState(null);
+  const [pdfBytes, setPdfBytes] = useState(null);
 
   // Settings
   const [fontSize, setFontSize] = useState(12);
@@ -82,10 +83,8 @@ export default function TxtToPdf() {
         currentLineCount++;
       });
 
-      const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      setOutputUrl(url);
+      const bytes = await pdfDoc.save();
+      setPdfBytes(bytes);
     } catch (error) {
       console.error('Error generating PDF:', error);
       alert('Failed to generate PDF. Make sure it is a valid text file.');
@@ -96,7 +95,7 @@ export default function TxtToPdf() {
 
   const handleReset = () => {
     setFile(null);
-    setOutputUrl(null);
+    setPdfBytes(null);
   };
 
   return (
@@ -118,7 +117,7 @@ export default function TxtToPdf() {
         />
       )}
 
-      {file && !outputUrl && (
+      {file && !pdfBytes && (
         <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
           <div className="flex items-center gap-4 mb-8 pb-6 border-b border-gray-100">
             <div className="p-4 bg-blue-50 text-blue-600 rounded-xl">
@@ -167,35 +166,12 @@ export default function TxtToPdf() {
         </div>
       )}
 
-      {outputUrl && (
-        <div className="bg-white border border-green-200 rounded-2xl p-10 text-center shadow-sm">
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Download className="w-10 h-10 text-green-600" />
-          </div>
-          <h3 className="text-3xl font-extrabold text-gray-900 mb-4">PDF Ready!</h3>
-          <p className="text-lg text-gray-600 mb-8 max-w-lg mx-auto">
-            Your text has been successfully converted into a PDF document.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <a
-              href={outputUrl}
-              download={file?.name.replace('.txt', '.pdf') || 'document.pdf'}
-              className="px-8 py-4 bg-green-600 text-white rounded-xl font-bold text-lg hover:bg-green-700 transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-1"
-            >
-              <Download className="w-6 h-6" />
-              Download PDF
-            </a>
-            
-            <button
-              onClick={handleReset}
-              className="px-8 py-4 bg-white border-2 border-gray-200 text-gray-700 rounded-xl font-bold text-lg hover:bg-gray-50 transition-all flex items-center justify-center gap-2 shadow-sm"
-            >
-              <RefreshCw className="w-5 h-5" />
-              Convert Another
-            </button>
-          </div>
-        </div>
+      {pdfBytes && (
+        <ExportActions 
+          pdfBytes={pdfBytes}
+          fileName={file?.name ? file.name.replace('.txt', '.pdf') : 'document.pdf'}
+          onReset={handleReset}
+        />
       )}
 
       <div className="mt-12">

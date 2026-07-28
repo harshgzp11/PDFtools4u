@@ -39,7 +39,6 @@ const DOMAINS = [
           { id: 'flatten-pdf', name: 'Flatten PDF', description: 'Make forms and annotations uneditable.', icon: Layers3, color: 'text-blue-500', bg: 'bg-blue-50' },
           { id: 'sign-pdf', name: 'Sign PDF', description: 'Add a signature to your PDF.', icon: FileSignature, color: 'text-pink-500', bg: 'bg-pink-50' },
           { id: 'pdf-watermark', name: 'Watermark PDF', description: 'Add text or image watermark.', icon: Stamp, color: 'text-rose-500', bg: 'bg-rose-50' },
-          { id: 'share-pdf', name: 'Share PDF', description: 'Share PDFs securely via link.', icon: Share2, color: 'text-cyan-500', bg: 'bg-cyan-50' },
         ]
       },
       {
