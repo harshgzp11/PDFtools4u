@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Shield, Zap, Home, Command, FileText } from 'lucide-react';
+import { Search, Shield, Zap, Command, FileText } from 'lucide-react';
 import AdSlot from './ui/AdSlot';
 
 export default function Layout({ children, onHomeClick, onSearch }) {
@@ -57,9 +57,6 @@ export default function Layout({ children, onHomeClick, onSearch }) {
             </div>
 
             <div className="flex items-center gap-4">
-               <button onClick={onHomeClick} className="text-gray-500 hover:text-gray-900 flex items-center gap-2 text-sm font-medium transition-colors px-3 py-2 rounded-lg hover:bg-gray-100">
-                 <Home className="w-4 h-4"/> Home
-               </button>
             </div>
           </div>
         </div>

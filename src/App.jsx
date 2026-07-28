@@ -157,12 +157,7 @@ function App() {
       >
         {activeTool ? (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <button 
-              onClick={() => navigateTo(null)} 
-              className="mb-6 flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm"
-            >
-              <ArrowLeft className="w-4 h-4" /> Back to Dashboard
-            </button>
+
             {renderTool()}
           </div>
         ) : (
