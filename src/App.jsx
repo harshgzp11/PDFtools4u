@@ -45,6 +45,7 @@ import PdfToExcel from './tools/PdfToExcel';
 import PdfToPpt from './tools/PdfToPpt';
 import NumberPages from './tools/NumberPages';
 import TxtToPdf from './tools/TxtToPdf';
+import CropPdf from './tools/CropPdf';
 
 import { ArrowLeft } from 'lucide-react';
 
@@ -124,6 +125,7 @@ function App() {
       case 'sign-pdf': return <SignPdf />;
       case 'compress-pdf': return <CompressPdf />;
       case 'number-pages': return <NumberPages />;
+      case 'crop-pdf': return <CropPdf />;
       case 'txt-to-pdf': return <TxtToPdf />;
       
       // New Image Tools
