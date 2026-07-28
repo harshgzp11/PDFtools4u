@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { FileCode2, Download, Loader2, FileText, CheckCircle, RefreshCw } from 'lucide-react';
-import DragDropZone from '../components/ui/DragDropZone';
+import { FileCode2, Download } from 'lucide-react';
+import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import * as pdfjsLib from 'pdfjs-dist';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
@@ -10,8 +10,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 export default function PdfToWord() {
   const [file, setFile] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [outputUrl, setOutputUrl] = useState(null);
+  const [successData, setSuccessData] = useState(null);
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -26,18 +25,27 @@ export default function PdfToWord() {
   const handleFile = async (newFile) => {
     if (newFile && newFile.type === 'application/pdf') {
       setFile(newFile);
-      convertPdfToWord(newFile);
+      setSuccessData(null);
+      setProgress(0);
     } else {
       alert("Please upload a valid PDF file.");
     }
   };
 
-  const convertPdfToWord = async (pdfFile) => {
+  const resetTool = () => {
+    setFile(null);
+    setSuccessData(null);
+    setIsProcessing(false);
+    setProgress(0);
+  };
+
+  const convertPdfToWord = async () => {
+    if (!file) return;
     setIsProcessing(true);
     setProgress(0);
     
     try {
-      const arrayBuffer = await pdfFile.arrayBuffer();
+      const arrayBuffer = await file.arrayBuffer();
       const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
       const numPages = pdf.numPages;
       
@@ -81,92 +89,74 @@ export default function PdfToWord() {
       const url = URL.createObjectURL(blob);
       
       setProgress(100);
-      setOutputUrl(url);
-      setSuccess(true);
+      setSuccessData({
+        url,
+        filename: `${file.name.replace('.pdf', '')}.docx`,
+        title: 'Word Document Ready!',
+        subtitle: 'Your PDF has been converted to text successfully.',
+      });
     } catch (err) {
       console.error(err);
       alert("Failed to convert PDF to Word. Note: Complex layouts might not be perfectly preserved client-side.");
-      setFile(null);
     } finally {
       setIsProcessing(false);
     }
   };
 
-  const resetTool = () => {
-    setFile(null);
-    setSuccess(false);
-    setOutputUrl(null);
-    setIsProcessing(false);
-    setProgress(0);
-  };
-
-  if (!file) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] animate-in fade-in zoom-in-95 duration-500">
-        <div className="text-center mb-10 space-y-4">
-          <h2 className="text-5xl font-extrabold text-gray-900 tracking-tight">PDF to Word</h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Extract all text from your PDF into an editable Microsoft Word document.
-          </p>
-        </div>
-        
-        <div className="w-full max-w-4xl mx-auto">
-          <DragDropZone 
-            accept=".pdf,application/pdf"
-            multiple={false}
-            onFileSelect={handleFile}
-            label="Select PDF Document"
-            icon={FileCode2}
-            className="p-20 py-32 bg-blue-50/50 hover:bg-blue-100 border-blue-300 hover:border-blue-400"
+  const processButton = (
+    <div className="space-y-3">
+      <button 
+        onClick={convertPdfToWord} 
+        disabled={isProcessing || !file}
+        className="w-full px-6 py-4 bg-blue-600 border border-transparent rounded-xl shadow-lg text-lg font-bold text-white hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center gap-3 transition-all hover:shadow-xl hover:-translate-y-1 relative overflow-hidden"
+      >
+        {isProcessing && (
+          <div 
+            className="absolute left-0 top-0 bottom-0 bg-blue-500/30 transition-all duration-300"
+            style={{ width: `${progress}%` }}
           />
-        </div>
-      </div>
-    );
-  }
+        )}
+        {isProcessing ? (
+          <span className="relative z-10">Converting... {progress}%</span>
+        ) : (
+          <><FileCode2 className="w-6 h-6 relative z-10"/> Convert to Word</>
+        )}
+      </button>
+    </div>
+  );
 
-  if (isProcessing) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] animate-in fade-in duration-500">
-        <Loader2 className="w-20 h-20 text-blue-500 animate-spin mb-8" />
-        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-4">Converting Document...</h2>
-        <p className="text-gray-500 mb-6">Extracting text and formatting Word file...</p>
-        <div className="w-64 h-3 bg-gray-200 rounded-full overflow-hidden">
-          <div className="h-full bg-blue-500 transition-all duration-300" style={{ width: `${progress}%` }}></div>
-        </div>
-      </div>
-    );
-  }
-
-  if (success) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] animate-in fade-in zoom-in-95 duration-500">
-        <CheckCircle className="w-24 h-24 text-blue-500 mb-8" />
-        <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-4">Word Document Ready!</h2>
+  return (
+    <ToolPreviewLayout
+      title="PDF to Word"
+      description="Extract all text from your PDF into an editable Microsoft Word document."
+      icon={FileCode2}
+      file={file}
+      onFileSelect={handleFile}
+      onReset={resetTool}
+      isProcessing={isProcessing}
+      successData={successData}
+      processButton={processButton}
+    >
+      <div className="space-y-4">
+        <h3 className="text-xl font-extrabold text-gray-900 mb-2">Conversion Details</h3>
         
-        <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mb-8 max-w-lg">
-          <p className="text-yellow-800 text-sm font-medium text-center">
+        <div className="bg-blue-50 p-5 rounded-xl border border-blue-100 flex flex-col gap-3">
+           <div className="flex justify-between text-sm text-blue-800 font-bold">
+             <span>Format:</span>
+             <span className="bg-blue-200 px-2 py-0.5 rounded-md">DOCX</span>
+           </div>
+           <div className="flex justify-between text-sm text-blue-800 font-bold">
+             <span>Processing:</span>
+             <span className="bg-blue-200 px-2 py-0.5 rounded-md">Local Browser</span>
+           </div>
+        </div>
+
+        <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mt-4">
+          <p className="text-yellow-800 text-sm font-medium">
             <strong>Note:</strong> Since this conversion runs entirely in your browser without a server, complex visual layouts (like tables or multi-column designs) may be simplified to pure text.
           </p>
         </div>
-        
-        <div className="flex flex-col sm:flex-row gap-4 items-center">
-          <a 
-            href={outputUrl} 
-            download={`${file.name.replace('.pdf', '')}.docx`}
-            className="px-10 py-5 bg-blue-600 text-white rounded-xl font-bold text-xl hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all flex items-center gap-3"
-          >
-            <Download className="w-8 h-8" /> Download .DOCX
-          </a>
-          <button 
-            onClick={resetTool}
-            className="px-8 py-5 bg-white border-2 border-gray-200 text-gray-700 rounded-xl font-bold text-lg hover:bg-gray-50 hover:border-gray-300 transition-all flex items-center gap-2"
-          >
-            <RefreshCw className="w-6 h-6" /> Convert Another
-          </button>
-        </div>
       </div>
-    );
-  }
-
-  return null;
+    </ToolPreviewLayout>
+  );
 }
