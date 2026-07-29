@@ -69,6 +69,10 @@ export default function PdfOcr() {
       const numPages = pdf.numPages;
       
       let fullText = "";
+      
+      // Initialize a new PDF document to merge the searchable pages into
+      const { PDFDocument } = await import('pdf-lib');
+      const mergedPdf = await PDFDocument.create();
 
       for (let i = 1; i <= numPages; i++) {
         pageInfoRef.current = { current: i, total: numPages };
@@ -87,11 +91,17 @@ export default function PdfOcr() {
         };
 
         await page.render(renderContext).promise;
-        const imgDataUrl = canvas.toDataURL('image/png');
+        const imgDataUrl = canvas.toDataURL('image/jpeg', 0.95);
         
         // setStatusText updated dynamically by logger
-        const ret = await worker.recognize(imgDataUrl);
+        const ret = await worker.recognize(imgDataUrl, { pdfTitle: file.name }, { pdf: true });
         fullText += `--- Page ${i} ---\n${ret.data.text}\n\n`;
+        
+        if (ret.data.pdf) {
+           const pagePdfDoc = await PDFDocument.load(ret.data.pdf);
+           const copiedPages = await mergedPdf.copyPages(pagePdfDoc, pagePdfDoc.getPageIndices());
+           copiedPages.forEach((p) => mergedPdf.addPage(p));
+        }
       }
       
       setStatusText('Finalizing Document...');
@@ -104,7 +114,9 @@ export default function PdfOcr() {
         return;
       }
 
-      const blob = new Blob([fullText], { type: 'text/plain;charset=utf-8' });
+      // Generate the final searchable PDF
+      const pdfBytes = await mergedPdf.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
       
       const handleCopy = () => {
@@ -121,16 +133,16 @@ export default function PdfOcr() {
             onClick={handleCopy}
             className="flex items-center justify-center gap-2 py-3 bg-white border border-gray-300 rounded-xl font-semibold hover:bg-gray-50 transition-colors shadow-sm text-gray-800"
           >
-            <Copy className="w-5 h-5" /> Copy to Clipboard
+            <Copy className="w-5 h-5" /> Copy Extracted Text
           </button>
         </div>
       );
 
       setSuccessData({
         url,
-        filename: `${file.name.replace('.pdf', '')}_ocr.txt`,
-        title: 'OCR Complete!',
-        subtitle: 'We successfully extracted text from your scanned document.',
+        filename: `${file.name.replace('.pdf', '')}_searchable.pdf`,
+        title: 'Searchable PDF Ready!',
+        subtitle: 'We successfully made your scanned document searchable. You can download the new PDF or copy the raw text below.',
         statsComponent
       });
     } catch (err) {
@@ -176,6 +188,21 @@ export default function PdfOcr() {
     </div>
   );
 
+  const renderCustomPreview = ({ thumbnails }) => (
+    <div className="w-full h-full flex flex-col items-center gap-8 py-8 px-4 bg-gray-50">
+      {thumbnails.map((thumb, idx) => (
+        <div key={idx} className="relative w-full max-w-2xl flex flex-col items-center">
+          <span className="text-sm font-bold text-gray-400 mb-2 uppercase tracking-wider">Page {idx + 1}</span>
+          <img 
+            src={thumb.dataUrl} 
+            alt={`Page ${idx + 1}`} 
+            className="w-full h-auto shadow-lg rounded-xl border border-gray-200"
+          />
+        </div>
+      ))}
+    </div>
+  );
+
   return (
     <ToolPreviewLayout
       title="PDF OCR Extractor"
@@ -187,6 +214,9 @@ export default function PdfOcr() {
       isProcessing={isProcessing}
       successData={successData}
       processButton={processButton}
+      gridMode={true}
+      gridQuality={1.0}
+      customPreviewNode={file && !successData ? renderCustomPreview : null}
     >
       <div className="space-y-4">
         <h3 className="text-xl font-extrabold text-gray-900 mb-2">OCR Details</h3>

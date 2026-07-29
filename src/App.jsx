@@ -49,6 +49,8 @@ import CropPdf from './tools/CropPdf';
 
 import PdfOcr from './tools/PdfOcr';
 
+import ExcelToPdf from './tools/ExcelToPdf';
+
 import { ArrowLeft } from 'lucide-react';
 
 const PLACEHOLDER_TOOLS = {
@@ -58,7 +60,6 @@ const PLACEHOLDER_TOOLS = {
   'redact-pdf': 'Redact PDF',
   'pdf-form-filler': 'PDF Form Filler',
   'word-to-pdf': 'Word to PDF',
-  'excel-to-pdf': 'Excel to PDF',
   'ppt-to-pdf': 'PPT to PDF',
   'rtf-to-pdf': 'RTF to PDF',
   'unlock-pdf': 'Unlock PDF'
@@ -144,6 +145,7 @@ function App() {
       case 'pdf-to-excel': return <PdfToExcel />;
       case 'pdf-to-ppt': return <PdfToPpt />;
       case 'pdf-ocr': return <PdfOcr />;
+      case 'excel-to-pdf': return <ExcelToPdf />;
       
       default: return null;
     }

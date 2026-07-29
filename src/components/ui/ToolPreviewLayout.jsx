@@ -79,7 +79,7 @@ export default function ToolPreviewLayout({
 
   const renderPreviewContent = () => {
     if (customPreviewNode) {
-      return customPreviewNode;
+      return typeof customPreviewNode === 'function' ? customPreviewNode({ thumbnails, previewImage }) : customPreviewNode;
     }
 
     if (gridMode && renderGridItem) {
