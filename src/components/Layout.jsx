@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Shield, Zap, Menu, X, FileText, Image as ImageIcon } from 'lucide-react';
+import { Search, Shield, Zap, Menu, X, FileText, Image as ImageIcon, ChevronDown } from 'lucide-react';
+import { DOMAINS } from '../lib/toolConfig';
 
-export default function Layout({ children, onNavigateToDomain, onSearch }) {
+export default function Layout({ children, onNavigateToDomain, onSearch, onSelectTool }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState(null);
+  const [expandedMobileDomain, setExpandedMobileDomain] = useState(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -12,6 +15,20 @@ export default function Layout({ children, onNavigateToDomain, onSearch }) {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (!e.target.closest('.mega-dropdown-container')) {
+        setActiveDropdown(null);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
+
+  const handleDropdownClick = (domainTitle) => {
+    setActiveDropdown(activeDropdown === domainTitle ? null : domainTitle);
+  };
 
   const openSearch = () => {
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }));
@@ -34,13 +51,82 @@ export default function Layout({ children, onNavigateToDomain, onSearch }) {
             </div>
             
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center gap-8">
-              <button onClick={() => onNavigateToDomain('PDF Tools')} className="text-gray-600 hover:text-blue-600 font-medium transition-colors flex items-center gap-2">
-                 <FileText className="w-4 h-4" /> PDF Tools
-              </button>
-              <button onClick={() => onNavigateToDomain('Image Tools')} className="text-gray-600 hover:text-emerald-600 font-medium transition-colors flex items-center gap-2">
-                 <ImageIcon className="w-4 h-4" /> Image Tools
-              </button>
+            <div className="hidden lg:flex items-center gap-2 relative mega-dropdown-container">
+              {DOMAINS.slice(0, 2).map((domain) => (
+                <div 
+                  key={domain.title} 
+                  className="relative group"
+                  onMouseEnter={() => setActiveDropdown(domain.title)}
+                  onMouseLeave={() => setActiveDropdown(null)}
+                >
+                  <button 
+                    onClick={() => {
+                      onNavigateToDomain(domain.title);
+                      setActiveDropdown(null);
+                    }}
+                    className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 ${
+                      activeDropdown === domain.title ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                    }`}
+                  >
+                     {domain.title === 'PDF Tools' ? <FileText className="w-4 h-4" /> : <ImageIcon className="w-4 h-4" />}
+                     {domain.title}
+                     <ChevronDown className={`w-4 h-4 transition-transform ${activeDropdown === domain.title ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  {/* Mega Dropdown */}
+                  {activeDropdown === domain.title && (
+                    <div className={`absolute top-full mt-4 w-max max-w-[95vw] bg-white border border-gray-200 shadow-2xl rounded-xl p-8 z-50 animate-in fade-in slide-in-from-top-2 ${
+                      domain.title === 'PDF Tools' ? 'left-1/2 -translate-x-[20%]' : 'left-1/2 -translate-x-1/2'
+                    }`}>
+                      <div className={`absolute -top-2 w-4 h-4 bg-white border-t border-l border-gray-200 transform rotate-45 ${
+                        domain.title === 'PDF Tools' ? 'left-[20%] -ml-2' : 'left-1/2 -ml-2'
+                      }`}></div>
+                      
+                      <div className="flex gap-8 lg:gap-12">
+                        {domain.categories.map((category, idx) => (
+                          <div key={idx} className="flex flex-col space-y-5">
+                            <h3 className="font-bold text-gray-500 text-xs tracking-widest uppercase">{category.name}</h3>
+                            <ul className="space-y-4">
+                              {category.tools.map(tool => {
+                                const Icon = tool.icon;
+                                return (
+                                  <li key={tool.id}>
+                                    <button 
+                                      onClick={() => {
+                                        onSelectTool(tool.id);
+                                        setActiveDropdown(null);
+                                      }}
+                                      className="text-left flex items-center gap-3 group transition-colors"
+                                    >
+                                      <Icon className={`w-5 h-5 ${tool.color} transition-transform group-hover:scale-110`} />
+                                      <span className="font-semibold text-gray-700 text-sm group-hover:text-black transition-colors whitespace-nowrap">
+                                        {tool.name}
+                                      </span>
+                                    </button>
+                                  </li>
+                                );
+                              })}
+                            </ul>
+                          </div>
+                        ))}
+                      </div>
+                      
+                      <div className="mt-8 pt-4 border-t border-gray-100 flex justify-between items-center">
+                        <span className="text-sm text-gray-500">Explore all tools in this category</span>
+                        <button 
+                          onClick={() => {
+                            onNavigateToDomain(domain.title);
+                            setActiveDropdown(null);
+                          }}
+                          className={`text-sm font-bold flex items-center gap-1 ${domain.color} hover:opacity-80`}
+                        >
+                          View all {domain.title} &rarr;
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
 
             {/* Desktop Actions */}
@@ -86,12 +172,43 @@ export default function Layout({ children, onNavigateToDomain, onSearch }) {
               <kbd className="bg-white text-gray-500 px-2 py-0.5 rounded-md text-xs border border-gray-200 font-bold shadow-sm">⌘K</kbd>
             </button>
             <div className="h-px bg-gray-100 w-full" />
-            <button onClick={() => { onNavigateToDomain('PDF Tools'); setIsMobileMenuOpen(false); }} className="flex items-center gap-3 text-lg font-medium text-gray-700 hover:text-blue-600 py-2">
-               <FileText className="w-5 h-5" /> PDF Tools
-            </button>
-            <button onClick={() => { onNavigateToDomain('Image Tools'); setIsMobileMenuOpen(false); }} className="flex items-center gap-3 text-lg font-medium text-gray-700 hover:text-emerald-600 py-2">
-               <ImageIcon className="w-5 h-5" /> Image Tools
-            </button>
+            
+            {/* Mobile Accordions */}
+            {DOMAINS.slice(0, 2).map((domain) => (
+              <div key={domain.title} className="flex flex-col gap-2">
+                <button 
+                  onClick={() => setExpandedMobileDomain(expandedMobileDomain === domain.title ? null : domain.title)} 
+                  className="flex items-center justify-between text-lg font-medium text-gray-700 hover:text-blue-600 py-2 w-full text-left"
+                >
+                  <div className="flex items-center gap-3">
+                    {domain.title === 'PDF Tools' ? <FileText className="w-5 h-5" /> : <ImageIcon className="w-5 h-5" />}
+                    {domain.title}
+                  </div>
+                  <ChevronDown className={`w-5 h-5 transition-transform ${expandedMobileDomain === domain.title ? 'rotate-180' : ''}`} />
+                </button>
+                
+                {expandedMobileDomain === domain.title && (
+                  <div className="flex flex-col gap-1 pl-8 py-2 border-l-2 border-gray-100 ml-2 animate-in slide-in-from-top-2">
+                    <button 
+                      onClick={() => { onNavigateToDomain(domain.title); setIsMobileMenuOpen(false); }}
+                      className="text-left text-blue-600 font-bold py-2 mb-2"
+                    >
+                      View All {domain.title} &rarr;
+                    </button>
+                    {domain.categories.flatMap(c => c.tools).slice(0, 6).map(tool => (
+                      <button 
+                        key={tool.id}
+                        onClick={() => { onSelectTool(tool.id); setIsMobileMenuOpen(false); }}
+                        className="text-left py-2 text-gray-600 hover:text-gray-900"
+                      >
+                        {tool.name}
+                      </button>
+                    ))}
+                    <div className="text-sm text-gray-400 italic pt-2">And more...</div>
+                  </div>
+                )}
+              </div>
+            ))}
 
           </div>
         </div>

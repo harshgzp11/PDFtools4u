@@ -164,6 +164,7 @@ function App() {
           setDashboardTab(domain); 
           navigateTo(null); 
         }} 
+        onSelectTool={navigateTo}
         onSearch={(q) => { setSearchQuery(q); navigateTo(null); }}
       >
         {activeTool ? (
