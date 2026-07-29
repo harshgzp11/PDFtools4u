@@ -241,27 +241,7 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery }) {
           </div>
         </div>
 
-        {/* Big Search Bar */}
-        <div className="w-full max-w-4xl mx-auto transform -translate-y-4">
-          <div className="relative group">
-            <div className="absolute inset-0 bg-blue-100 rounded-2xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-500"></div>
-            <div className="relative bg-white/90 backdrop-blur-xl border border-gray-200 rounded-2xl p-2 flex items-center shadow-xl">
-              <Search className="w-8 h-8 text-gray-400 ml-4 mr-2" />
-              <input
-                id="dashboard-search"
-                type="text"
-                className="flex-1 bg-transparent border-none py-4 px-2 text-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-0"
-                placeholder="Search tools... (e.g. Base64, Compress PDF)"
-                value={localSearch}
-                onChange={(e) => setLocalSearch(e.target.value)}
-              />
-              <div className="hidden sm:flex items-center gap-1 pr-4">
-                <kbd className="bg-gray-100 text-gray-500 px-2.5 py-1 rounded-md text-sm border border-gray-200 font-medium">⌘</kbd>
-                <kbd className="bg-gray-100 text-gray-500 px-2.5 py-1 rounded-md text-sm border border-gray-200 font-medium">K</kbd>
-              </div>
-            </div>
-          </div>
-        </div>
+
 
         {/* Universal PDF Converter CTA (Now below) */}
         <div className="w-full flex justify-center items-center">
