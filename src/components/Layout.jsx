@@ -63,10 +63,10 @@ export default function Layout({ children, onHomeClick, onSearch }) {
       </nav>
 
       {/* Main Layout Area */}
-      <div className="flex-1 flex w-full px-4 sm:px-6 lg:px-8 py-8 gap-8 justify-center items-start">
+      <div className="flex-1 flex max-w-[1600px] mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 gap-6 lg:gap-8 justify-center items-start">
         
         {/* Left Sidebar Ad - Sticky */}
-        <aside className="hidden xl:block w-[300px] flex-shrink-0 pt-2 sticky top-24 space-y-6">
+        <aside className="hidden 2xl:block w-[240px] flex-shrink-0 pt-2 sticky top-24 space-y-6">
           <AdSlot orientation="vertical" className="h-[600px] bg-white border-gray-200 shadow-sm" />
           <AdSlot orientation="vertical" className="bg-white border-gray-200 shadow-sm" />
         </aside>
@@ -92,7 +92,7 @@ export default function Layout({ children, onHomeClick, onSearch }) {
         </main>
         
         {/* Right Sidebar Ad - Sticky */}
-        <aside className="hidden lg:block w-[300px] flex-shrink-0 pt-2 sticky top-24 space-y-6">
+        <aside className="hidden xl:block w-[240px] flex-shrink-0 pt-2 sticky top-24 space-y-6">
           <AdSlot orientation="vertical" className="h-[600px] bg-white border-gray-200 shadow-sm" />
           <AdSlot orientation="vertical" className="bg-white border-gray-200 shadow-sm" />
         </aside>
