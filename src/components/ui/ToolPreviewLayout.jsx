@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { RefreshCw, FileText, CheckCircle, Download, ArrowLeft, Share2 } from 'lucide-react';
+import { toast } from 'sonner';
 import DragDropZone from './DragDropZone';
 import AdSlot from './AdSlot';
 import { getPdfThumbnails } from '../../lib/pdfRenderer';
@@ -67,6 +68,45 @@ export default function ToolPreviewLayout({
     };
   }, [file, gridMode, gridQuality]);
 
+  const handleShare = async () => {
+    if (successData && successData.url && navigator.canShare) {
+      try {
+        const response = await fetch(successData.url);
+        const blob = await response.blob();
+        const fileToShare = new File([blob], successData.filename || 'document', { type: blob.type });
+        
+        if (navigator.canShare({ files: [fileToShare] })) {
+          await navigator.share({
+            title: successData.title || title,
+            files: [fileToShare]
+          });
+          return;
+        }
+      } catch (err) {
+        console.error("Error sharing file:", err);
+      }
+    }
+
+    const url = window.location.href;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: title,
+          text: description,
+          url: url,
+        });
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          navigator.clipboard.writeText(url);
+          toast.success("Link copied to clipboard!");
+        }
+      }
+    } else {
+      navigator.clipboard.writeText(url);
+      toast.success("Link copied to clipboard!");
+    }
+  };
+
   const handleDownload = () => {
     if (!successData || !successData.url) return;
     const link = document.createElement('a');
@@ -86,7 +126,7 @@ export default function ToolPreviewLayout({
       return (
         <div className="w-full h-full flex flex-col">
           <div className={getDynamicGridClass(thumbnails.length) + " w-full pb-8"}>
-            {thumbnails.map((thumb, idx) => renderGridItem(thumb, idx))}
+            {thumbnails.map((thumb, idx, arr) => renderGridItem(thumb, idx, arr))}
           </div>
         </div>
       );
@@ -131,7 +171,7 @@ export default function ToolPreviewLayout({
         </div>
       )}
 
-      {file && (previewImage || gridMode) && !successData && !isLoadingPreview && (
+      {file && (previewImage || gridMode || customPreviewNode) && !successData && !isLoadingPreview && (
         <div className="flex flex-col lg:flex-row gap-8 items-start">
           {/* Interactive Preview Canvas */}
           <div className="w-full lg:w-2/3 bg-gray-100 rounded-3xl p-6 shadow-inner flex flex-col items-center justify-center overflow-x-hidden overflow-y-auto border border-gray-200 min-h-[400px]">
@@ -189,7 +229,7 @@ export default function ToolPreviewLayout({
             className="mx-auto flex items-center gap-3 px-10 py-5 bg-blue-600 text-white rounded-2xl font-bold text-xl hover:bg-blue-700 transition-all shadow-xl hover:shadow-blue-200 hover:-translate-y-1 mb-12"
           >
             <Download className="w-6 h-6" />
-            Download File
+            {successData.downloadText || 'Download File'}
           </button>
 
           {successData.quickActions && (
@@ -206,8 +246,8 @@ export default function ToolPreviewLayout({
               <ArrowLeft className="w-4 h-4" /> Start over with a new file
             </button>
             <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
-            <button className="flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium py-2 px-4 rounded-lg hover:bg-blue-50 transition-colors">
-              <Share2 className="w-4 h-4" /> Share Tool
+            <button onClick={handleShare} className="flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium py-2 px-4 rounded-lg hover:bg-blue-50 transition-colors">
+              <Share2 className="w-4 h-4" /> {successData ? 'Share File' : 'Share Tool'}
             </button>
           </div>
         </div>

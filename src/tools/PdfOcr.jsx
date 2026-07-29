@@ -17,6 +17,8 @@ export default function PdfOcr() {
   const [progress, setProgress] = useState(0);
   const pageInfoRef = useRef({ current: 1, total: 1 });
 
+  const [language, setLanguage] = useState('eng');
+
   useEffect(() => {
     if (window.__sharedFile) {
       if (window.__sharedFile.type === 'application/pdf') {
@@ -46,7 +48,7 @@ export default function PdfOcr() {
     let worker = null;
     
     try {
-      worker = await createWorker('eng', 1, {
+      worker = await createWorker(language, 1, {
         logger: m => {
           if (m.status === 'recognizing text') {
             const p = pageInfoRef.current;
@@ -56,7 +58,7 @@ export default function PdfOcr() {
           } else if (m.status === 'loading tesseract core') {
             setStatusText('Loading OCR Core Engine...');
           } else if (m.status.includes('loading language')) {
-            setStatusText('Downloading English Model (this may take a moment)...');
+            setStatusText(`Downloading ${language.toUpperCase()} Model (this may take a moment)...`);
           } else {
             setStatusText(m.status);
           }
@@ -119,31 +121,12 @@ export default function PdfOcr() {
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
       
-      const handleCopy = () => {
-        navigator.clipboard.writeText(fullText);
-        toast.success('Text copied to clipboard!');
-      };
-
-      const statsComponent = (
-        <div className="w-full max-w-2xl mx-auto flex flex-col gap-3">
-          <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-left h-64 overflow-y-auto font-mono text-sm text-gray-700 whitespace-pre-wrap shadow-inner">
-            {fullText}
-          </div>
-          <button 
-            onClick={handleCopy}
-            className="flex items-center justify-center gap-2 py-3 bg-white border border-gray-300 rounded-xl font-semibold hover:bg-gray-50 transition-colors shadow-sm text-gray-800"
-          >
-            <Copy className="w-5 h-5" /> Copy Extracted Text
-          </button>
-        </div>
-      );
-
       setSuccessData({
         url,
         filename: `${file.name.replace('.pdf', '')}_searchable.pdf`,
         title: 'Searchable PDF Ready!',
-        subtitle: 'We successfully made your scanned document searchable. You can download the new PDF or copy the raw text below.',
-        statsComponent
+        subtitle: 'We successfully made your scanned document searchable. You can now download the new PDF.',
+        downloadText: 'Download PDF'
       });
     } catch (err) {
       console.error(err);
@@ -182,7 +165,7 @@ export default function PdfOcr() {
         {isProcessing ? (
           <span className="relative z-10">{statusText} {progress > 0 ? `${progress}%` : ''}</span>
         ) : (
-          <><ScanText className="w-6 h-6 relative z-10"/> Extract Text (OCR)</>
+          <><ScanText className="w-6 h-6 relative z-10"/> Apply OCR</>
         )}
       </button>
     </div>
@@ -218,18 +201,28 @@ export default function PdfOcr() {
       gridQuality={1.0}
       customPreviewNode={file && !successData ? renderCustomPreview : null}
     >
-      <div className="space-y-4">
-        <h3 className="text-xl font-extrabold text-gray-900 mb-2">OCR Details</h3>
+      <div className="space-y-6">
+        <h3 className="text-xl font-extrabold text-gray-900 mb-2 border-b border-gray-100 pb-2">OCR PDF Options</h3>
         
-        <div className="bg-indigo-50 p-5 rounded-xl border border-indigo-100 flex flex-col gap-3">
-           <div className="flex justify-between text-sm text-indigo-800 font-bold">
-             <span>Format:</span>
-             <span className="bg-indigo-200 px-2 py-0.5 rounded-md">TXT</span>
-           </div>
-           <div className="flex justify-between text-sm text-indigo-800 font-bold">
-             <span>Processing:</span>
-             <span className="bg-indigo-200 px-2 py-0.5 rounded-md">Local Browser (WASM)</span>
-           </div>
+        {/* Language Selector */}
+        <div className="space-y-2">
+          <label className="block text-sm font-bold text-gray-700">Document Language</label>
+          <select
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded-xl bg-white shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-shadow text-gray-700 font-medium cursor-pointer"
+          >
+            <option value="eng">English</option>
+            <option value="spa">Spanish</option>
+            <option value="fra">French</option>
+            <option value="deu">German</option>
+            <option value="ita">Italian</option>
+            <option value="por">Portuguese</option>
+            <option value="nld">Dutch</option>
+          </select>
+          <p className="text-xs text-gray-500">
+            Selecting the correct language significantly improves text recognition accuracy.
+          </p>
         </div>
 
         <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mt-4 flex flex-col gap-2">

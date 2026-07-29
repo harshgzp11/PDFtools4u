@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PDFDocument } from 'pdf-lib';
+import { PDFDocument } from '@cantoo/pdf-lib';
 import { Download, Lock, FileText, CheckCircle, ArrowLeft, RefreshCw, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { getPdfThumbnails } from '../lib/pdfRenderer';
 import { getDynamicGridClass } from '../lib/utils';
@@ -63,7 +63,7 @@ export default function ProtectPdf() {
         }
       });
       
-      const pdfBytes = await pdfDoc.save();
+      const pdfBytes = await pdfDoc.save({ useObjectStreams: false });
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
       

@@ -12,6 +12,8 @@ import ImageConverter from './tools/ImageConverter';
 import PdfMerger from './tools/PdfMerger';
 import PdfSplitter from './tools/PdfSplitter';
 import PdfWatermark from './tools/PdfWatermark';
+import NumberPages from './tools/NumberPages';
+import PdfFormFiller from './tools/PdfFormFiller';
 import RotatePdf from './tools/RotatePdf';
 import JpgToPdf from './tools/JpgToPdf';
 import BackgroundRemover from './tools/BackgroundRemover';
@@ -28,6 +30,7 @@ import ProtectPdf from './tools/ProtectPdf';
 import FlattenPdf from './tools/FlattenPdf';
 import SignPdf from './tools/SignPdf';
 import CompressPdf from './tools/CompressPdf';
+import UnlockPdf from './tools/UnlockPdf';
 
 // New Image & DOCX Tools
 import CompressImage from './tools/CompressImage';
@@ -43,7 +46,7 @@ import PdfToImage from './tools/PdfToImage';
 import PdfToWord from './tools/PdfToWord';
 import PdfToExcel from './tools/PdfToExcel';
 import PdfToPpt from './tools/PdfToPpt';
-import NumberPages from './tools/NumberPages';
+
 import TxtToPdf from './tools/TxtToPdf';
 import CropPdf from './tools/CropPdf';
 
@@ -58,11 +61,9 @@ const PLACEHOLDER_TOOLS = {
   'pdf-annotator': 'PDF Annotator',
   'pdf-reader': 'PDF Reader',
   'redact-pdf': 'Redact PDF',
-  'pdf-form-filler': 'PDF Form Filler',
   'word-to-pdf': 'Word to PDF',
   'ppt-to-pdf': 'PPT to PDF',
-  'rtf-to-pdf': 'RTF to PDF',
-  'unlock-pdf': 'Unlock PDF'
+  'rtf-to-pdf': 'RTF to PDF'
 };
 
 function App() {
@@ -122,10 +123,12 @@ function App() {
       case 'extract-pdf-pages': return <ExtractPdfPages />;
       case 'organize-pdf': return <OrganizePdf />;
       case 'protect-pdf': return <ProtectPdf />;
+      case 'unlock-pdf': return <UnlockPdf />;
       case 'flatten-pdf': return <FlattenPdf />;
       case 'sign-pdf': return <SignPdf />;
       case 'compress-pdf': return <CompressPdf />;
       case 'number-pages': return <NumberPages />;
+      case 'pdf-form-filler': return <PdfFormFiller />;
       case 'crop-pdf': return <CropPdf />;
       case 'txt-to-pdf': return <TxtToPdf />;
       

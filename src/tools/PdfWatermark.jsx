@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PDFDocument, rgb, degrees } from 'pdf-lib';
+import { PDFDocument, rgb, degrees } from '@cantoo/pdf-lib';
 import { Stamp, Type } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 
@@ -35,6 +35,7 @@ export default function PdfWatermark() {
     try {
       const arrayBuffer = await file.arrayBuffer();
       const pdfDoc = await PDFDocument.load(arrayBuffer);
+      const font = await pdfDoc.embedFont('Helvetica-Bold');
       const pages = pdfDoc.getPages();
       
       const textColor = colorMode === 'red' ? rgb(0.8, 0.2, 0.2) : rgb(0.2, 0.2, 0.2);
@@ -42,17 +43,25 @@ export default function PdfWatermark() {
       pages.forEach(page => {
         const { width, height } = page.getSize();
         
-        // Very basic centering math
-        const textWidth = watermarkText.length * fontSize * 0.5;
-        const textHeight = fontSize;
+        // Accurate centering math for pdf-lib text (origin is bottom-left)
+        const textWidth = font.widthOfTextAtSize(watermarkText, fontSize);
+        const textHeight = font.heightAtSize(fontSize);
         
-        const x = width / 2 - (textWidth / 2) * Math.cos((rotation * Math.PI) / 180);
-        const y = height / 2 - (textHeight / 2);
+        // Convert rotation to radians
+        const rad = (rotation * Math.PI) / 180;
+        
+        // Calculate offset of the center of the text bounding box after rotation
+        const cx = (textWidth / 2) * Math.cos(rad) - (textHeight / 2) * Math.sin(rad);
+        const cy = (textWidth / 2) * Math.sin(rad) + (textHeight / 2) * Math.cos(rad);
+        
+        const x = width / 2 - cx;
+        const y = height / 2 - cy;
 
         page.drawText(watermarkText, {
           x,
           y,
           size: fontSize,
+          font: font,
           color: textColor,
           opacity: opacity,
           rotate: degrees(rotation),
@@ -77,44 +86,44 @@ export default function PdfWatermark() {
     }
   };
 
-  const renderGridItem = (thumb, idx, thumbnails) => {
-    // Scale font size based on how many pages are showing in the grid roughly
-    // The more pages (smaller thumbs), the smaller the font should appear.
-    const visualScale = thumbnails.length <= 4 ? 0.35 : thumbnails.length <= 9 ? 0.25 : 0.15;
-
+  const customPreview = ({ thumbnails }) => {
     return (
-      <div 
-        key={thumb.id} 
-        className="relative aspect-[1/1.4] bg-white rounded-xl shadow-md border-4 border-transparent overflow-hidden flex items-center justify-center p-2"
-      >
-        <img 
-          src={thumb.dataUrl} 
-          alt={`Page ${idx + 1}`} 
-          className="w-full h-full object-contain pointer-events-none"
-        />
-        
-        {/* Visual representation of the watermark */}
-        <div 
-          className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden"
-          style={{ 
-            opacity: opacity,
-            transform: `rotate(${rotation}deg)`
-          }}
-        >
-          <span 
-            className="font-bold whitespace-nowrap drop-shadow-sm"
-            style={{
-              fontSize: `${fontSize * visualScale}px`,
-              color: colorMode === 'red' ? '#dc2626' : '#1f2937'
-            }}
+      <div className="w-full flex flex-col gap-8 items-center py-4">
+        {thumbnails.map((thumb, idx) => (
+          <div 
+            key={thumb.id} 
+            className="relative w-full max-w-2xl bg-white rounded-xl shadow-md border overflow-hidden"
           >
-            {watermarkText || 'TEXT'}
-          </span>
-        </div>
+            <img 
+              src={thumb.dataUrl} 
+              alt={`Page ${idx + 1}`} 
+              className="w-full h-auto object-contain pointer-events-none"
+            />
+            
+            {/* Visual representation of the watermark */}
+            <div 
+              className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden"
+              style={{ 
+                opacity: opacity,
+                transform: `rotate(-${rotation}deg)`
+              }}
+            >
+              <span 
+                className="font-bold whitespace-nowrap drop-shadow-sm"
+                style={{
+                  fontSize: `${fontSize}px`,
+                  color: colorMode === 'red' ? '#dc2626' : '#1f2937'
+                }}
+              >
+                {watermarkText || 'TEXT'}
+              </span>
+            </div>
 
-        <div className="absolute top-2 right-2 p-1.5 rounded-full border text-xs font-bold w-8 h-8 flex items-center justify-center bg-white/90 border-gray-300 text-gray-700 shadow-sm z-10">
-          {idx + 1}
-        </div>
+            <div className="absolute top-4 right-4 w-10 h-10 rounded-full border border-gray-300 bg-white/90 shadow-sm flex items-center justify-center text-gray-700 font-bold z-10">
+              {idx + 1}
+            </div>
+          </div>
+        ))}
       </div>
     );
   };
@@ -143,7 +152,8 @@ export default function PdfWatermark() {
       successData={successData}
       processButton={processButton}
       gridMode={true}
-      renderGridItem={renderGridItem}
+      gridQuality={2}
+      customPreviewNode={customPreview}
     >
       <div className="space-y-4">
         <h3 className="text-xl font-extrabold text-gray-900 mb-2">Watermark settings</h3>
