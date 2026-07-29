@@ -60,6 +60,12 @@ export default function PdfToWord() {
       }
       
       setProgress(60);
+
+      if (!fullText.trim()) {
+        alert("No text could be extracted. The PDF might be a scanned image or composed of vectors.");
+        setIsProcessing(false);
+        return;
+      }
       
       // Generate DOCX
       const paragraphs = fullText.split('\n').map(line => {

@@ -42,6 +42,7 @@ export default function PdfToExcel() {
       const numPages = pdf.numPages;
       
       let csvText = "";
+      let hasText = false;
       
       for (let i = 1; i <= numPages; i++) {
         const page = await pdf.getPage(i);
@@ -51,6 +52,8 @@ export default function PdfToExcel() {
         // Then sort by X-coordinate to form columns
         const items = textContent.items;
         if (items.length === 0) continue;
+
+        hasText = true;
 
         // Group by Y (with some tolerance)
         const rows = [];
@@ -87,7 +90,14 @@ export default function PdfToExcel() {
         setProgress(Math.round((i / numPages) * 100));
       }
       
-      const blob = new Blob([csvText], { type: 'text/csv;charset=utf-8;' });
+      if (!hasText || !csvText.trim()) {
+        alert("No tabular text could be extracted. The PDF might be a scanned image or composed of vectors.");
+        setIsProcessing(false);
+        return;
+      }
+
+      // Add UTF-8 BOM for Excel compatibility
+      const blob = new Blob(['\uFEFF' + csvText], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       
       setSuccessData({

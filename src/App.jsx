@@ -47,10 +47,11 @@ import NumberPages from './tools/NumberPages';
 import TxtToPdf from './tools/TxtToPdf';
 import CropPdf from './tools/CropPdf';
 
+import PdfOcr from './tools/PdfOcr';
+
 import { ArrowLeft } from 'lucide-react';
 
 const PLACEHOLDER_TOOLS = {
-  'pdf-ocr': 'PDF OCR',
   'edit-pdf': 'Edit PDF',
   'pdf-annotator': 'PDF Annotator',
   'pdf-reader': 'PDF Reader',
@@ -142,6 +143,7 @@ function App() {
       case 'pdf-to-word': return <PdfToWord />;
       case 'pdf-to-excel': return <PdfToExcel />;
       case 'pdf-to-ppt': return <PdfToPpt />;
+      case 'pdf-ocr': return <PdfOcr />;
       
       default: return null;
     }
