@@ -24,6 +24,7 @@ const DOMAINS = [
           { id: 'organize-pdf', name: 'Organize PDF', description: 'Sort, add and delete PDF pages.', icon: Files, color: 'text-purple-500', bg: 'bg-purple-50' },
           { id: 'edit-pdf', name: 'Edit PDF', description: 'Edit text, images and links in PDFs.', icon: PenTool, color: 'text-teal-500', bg: 'bg-teal-50' },
           { id: 'pdf-annotator', name: 'PDF Annotator', description: 'Highlight and annotate PDFs.', icon: FileSignature, color: 'text-emerald-500', bg: 'bg-emerald-50' },
+          { id: 'pdf-form-filler', name: 'Form Filler', description: 'Fill and complete interactive PDF forms.', icon: PenTool, color: 'text-blue-500', bg: 'bg-blue-50' },
           { id: 'pdf-reader', name: 'PDF Reader', description: 'View, navigate, and search PDFs.', icon: BookOpen, color: 'text-sky-500', bg: 'bg-sky-50' },
           { id: 'number-pages', name: 'Number Pages', description: 'Add page numbers to PDFs.', icon: Hash, color: 'text-cyan-500', bg: 'bg-cyan-50' },
           { id: 'crop-pdf', name: 'Crop PDF', description: 'Trim PDF margins or empty space.', icon: Crop, color: 'text-green-500', bg: 'bg-green-50' },
