@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeftRight, CheckCircle, Download, RefreshCw, Image as ImageIcon, Loader2 } from 'lucide-react';
 import DragDropZone from '../components/ui/DragDropZone';
 
@@ -13,6 +13,15 @@ export default function ConvertImage() {
   const [success, setSuccess] = useState(false);
   const [outputUrl, setOutputUrl] = useState(null);
   const [outputExtension, setOutputExtension] = useState('');
+
+  useEffect(() => {
+    if (window.__sharedFile) {
+      if (window.__sharedFile.type.startsWith('image/')) {
+        handleFile(window.__sharedFile);
+      }
+      window.__sharedFile = null;
+    }
+  }, []);
 
   const FORMATS = [
     { value: 'image/png', label: 'PNG', ext: 'png' },

@@ -71,6 +71,7 @@ function App() {
     return window.location.hash.replace('#', '') || null;
   });
   const [searchQuery, setSearchQuery] = useState('');
+  const [dashboardTab, setDashboardTab] = useState(null);
 
   // Sync state when browser back/forward buttons are pressed
   useEffect(() => {
@@ -159,7 +160,10 @@ function App() {
       <Toaster theme="light" position="bottom-right" />
       <CommandMenu onSelectTool={navigateTo} />
       <Layout 
-        onHomeClick={() => navigateTo(null)} 
+        onNavigateToDomain={(domain) => { 
+          setDashboardTab(domain); 
+          navigateTo(null); 
+        }} 
         onSearch={(q) => { setSearchQuery(q); navigateTo(null); }}
       >
         {activeTool ? (
@@ -168,7 +172,7 @@ function App() {
             {renderTool()}
           </div>
         ) : (
-          <Dashboard onSelectTool={navigateTo} searchQuery={searchQuery} />
+          <Dashboard onSelectTool={navigateTo} searchQuery={searchQuery} defaultTab={dashboardTab} />
         )}
       </Layout>
     </>

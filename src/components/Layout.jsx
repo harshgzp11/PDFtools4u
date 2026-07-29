@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Shield, Zap, Menu, X, FileText, Image as ImageIcon, Github } from 'lucide-react';
+import { Search, Shield, Zap, Menu, X, FileText, Image as ImageIcon } from 'lucide-react';
 
-export default function Layout({ children, onHomeClick, onSearch }) {
+export default function Layout({ children, onNavigateToDomain, onSearch }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -23,10 +23,10 @@ export default function Layout({ children, onHomeClick, onSearch }) {
       <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
         scrolled ? 'bg-white/80 backdrop-blur-2xl border-b border-gray-200/80 shadow-sm' : 'bg-transparent'
       }`}>
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
-            <div className="flex items-center cursor-pointer group" onClick={() => { onHomeClick(); setIsMobileMenuOpen(false); }}>
+            <div className="flex items-center cursor-pointer group" onClick={() => { onNavigateToDomain(null); setIsMobileMenuOpen(false); }}>
               <div className="p-2 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl mr-3 group-hover:scale-105 transition-transform shadow-lg shadow-blue-500/30">
                 <Zap className="h-6 w-6 text-white" />
               </div>
@@ -35,10 +35,10 @@ export default function Layout({ children, onHomeClick, onSearch }) {
             
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-8">
-              <button onClick={onHomeClick} className="text-gray-600 hover:text-blue-600 font-medium transition-colors flex items-center gap-2">
+              <button onClick={() => onNavigateToDomain('PDF Tools')} className="text-gray-600 hover:text-blue-600 font-medium transition-colors flex items-center gap-2">
                  <FileText className="w-4 h-4" /> PDF Tools
               </button>
-              <button onClick={onHomeClick} className="text-gray-600 hover:text-emerald-600 font-medium transition-colors flex items-center gap-2">
+              <button onClick={() => onNavigateToDomain('Image Tools')} className="text-gray-600 hover:text-emerald-600 font-medium transition-colors flex items-center gap-2">
                  <ImageIcon className="w-4 h-4" /> Image Tools
               </button>
             </div>
@@ -59,9 +59,7 @@ export default function Layout({ children, onHomeClick, onSearch }) {
                 </div>
               </button>
               
-              <a href="#" className="p-2.5 text-gray-400 hover:text-gray-900 bg-white border border-gray-200 rounded-full hover:bg-gray-50 transition-colors shadow-sm">
-                <Github className="w-5 h-5" />
-              </a>
+              
             </div>
 
             {/* Mobile Menu Button */}
@@ -88,23 +86,27 @@ export default function Layout({ children, onHomeClick, onSearch }) {
               <kbd className="bg-white text-gray-500 px-2 py-0.5 rounded-md text-xs border border-gray-200 font-bold shadow-sm">⌘K</kbd>
             </button>
             <div className="h-px bg-gray-100 w-full" />
-            <button onClick={() => { onHomeClick(); setIsMobileMenuOpen(false); }} className="flex items-center gap-3 text-lg font-medium text-gray-700 hover:text-blue-600 py-2">
+            <button onClick={() => { onNavigateToDomain('PDF Tools'); setIsMobileMenuOpen(false); }} className="flex items-center gap-3 text-lg font-medium text-gray-700 hover:text-blue-600 py-2">
                <FileText className="w-5 h-5" /> PDF Tools
             </button>
-            <button onClick={() => { onHomeClick(); setIsMobileMenuOpen(false); }} className="flex items-center gap-3 text-lg font-medium text-gray-700 hover:text-emerald-600 py-2">
+            <button onClick={() => { onNavigateToDomain('Image Tools'); setIsMobileMenuOpen(false); }} className="flex items-center gap-3 text-lg font-medium text-gray-700 hover:text-emerald-600 py-2">
                <ImageIcon className="w-5 h-5" /> Image Tools
             </button>
-            <div className="mt-auto pb-10">
-               <a href="#" className="flex items-center justify-center gap-2 p-4 bg-gray-900 text-white rounded-2xl font-medium w-full">
-                 <Github className="w-5 h-5" /> Star on GitHub
-               </a>
-            </div>
+
           </div>
         </div>
       )}
 
-      {/* Main Layout Area - Content Only (No sidebars) */}
-      <div className="flex-1 flex max-w-[1600px] mx-auto w-full px-4 sm:px-6 lg:px-8 pt-32 pb-12 gap-8 justify-center items-start">
+      {/* Main Layout Area */}
+      <div className="flex-1 flex w-full px-2 sm:px-4 pt-32 pb-12 gap-4 xl:gap-6 justify-center items-start">
+        
+        {/* Left Sidebar Ad - Sticky & Thin */}
+        <aside className="hidden 2xl:block w-[160px] flex-shrink-0 pt-2 sticky top-32 space-y-6">
+          <div className="h-[600px] bg-white border border-gray-200 shadow-sm rounded-2xl flex items-center justify-center">
+             <span className="text-gray-400 text-xs font-medium uppercase tracking-widest -rotate-90">Advertisement</span>
+          </div>
+        </aside>
+
         <main className="flex-1 w-full min-w-0 flex flex-col gap-8">
           <div className="bg-white rounded-3xl border border-gray-200 p-6 sm:p-10 min-h-[600px] shadow-sm">
             {children}
@@ -123,11 +125,19 @@ export default function Layout({ children, onHomeClick, onSearch }) {
             </div>
           </div>
         </main>
+
+        {/* Right Sidebar Ad - Sticky & Thin */}
+        <aside className="hidden xl:block w-[160px] flex-shrink-0 pt-2 sticky top-32 space-y-6">
+          <div className="h-[600px] bg-white border border-gray-200 shadow-sm rounded-2xl flex items-center justify-center">
+             <span className="text-gray-400 text-xs font-medium uppercase tracking-widest -rotate-90">Advertisement</span>
+          </div>
+        </aside>
+
       </div>
 
       {/* Footer */}
       <footer className="bg-white border-t border-gray-100 mt-auto">
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="flex items-center gap-2 text-gray-600 text-sm font-medium">
               <Shield className="w-4 h-4 text-emerald-500" />

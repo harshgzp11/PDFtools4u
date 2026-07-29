@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import jsPDF from 'jspdf';
 import { Download, PlusCircle, Trash2, Image as ImageIcon, CheckCircle, ArrowLeft, ImagePlus, FileUp } from 'lucide-react';
 import DragDropZone from '../components/ui/DragDropZone';
@@ -8,6 +8,15 @@ export default function JpgToPdf() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [outputUrl, setOutputUrl] = useState(null);
+
+  useEffect(() => {
+    if (window.__sharedFile) {
+      if (window.__sharedFile.type.startsWith('image/')) {
+        handleImages(window.__sharedFile);
+      }
+      window.__sharedFile = null;
+    }
+  }, []);
 
   const handleImages = (newFiles) => {
     const imgFiles = Array.isArray(newFiles) ? newFiles : [newFiles];

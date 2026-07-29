@@ -146,7 +146,7 @@ export default function ToolPreviewLayout({
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in">
+    <div className="w-full xl:max-w-[1600px] mx-auto space-y-8 animate-in fade-in">
       <div className="text-center space-y-4">
         <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">{title}</h2>
         <p className="text-xl text-gray-500 max-w-2xl mx-auto">{description}</p>

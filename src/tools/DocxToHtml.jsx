@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import mammoth from 'mammoth';
 import { Code, CheckCircle, Download, RefreshCw, Loader2, Copy, FileCode2 } from 'lucide-react';
 import DragDropZone from '../components/ui/DragDropZone';
@@ -9,6 +9,15 @@ export default function DocxToHtml() {
   const [success, setSuccess] = useState(false);
   const [extractedHtml, setExtractedHtml] = useState('');
   const [previewMode, setPreviewMode] = useState(false);
+
+  useEffect(() => {
+    if (window.__sharedFile) {
+      if (window.__sharedFile.name.endsWith('.docx') || window.__sharedFile.type.includes('wordprocessingml')) {
+        handleFile(window.__sharedFile);
+      }
+      window.__sharedFile = null;
+    }
+  }, []);
 
   const handleFile = async (newFile) => {
     if (newFile && (newFile.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || newFile.name.endsWith('.docx'))) {

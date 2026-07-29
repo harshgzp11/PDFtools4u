@@ -113,12 +113,19 @@ const DOMAINS = [
   }
 ];
 
-const POPULAR_TOOL_IDS = ['compress-pdf', 'compress-image', 'pdf-merge', 'docx-to-text', 'bg-remover', 'sign-pdf'];
+const POPULAR_TOOL_IDS = ['compress-pdf', 'pdf-to-word', 'pdf-merge', 'jpg-to-pdf', 'pdf-to-jpg', 'sign-pdf', 'edit-pdf', 'organize-pdf'];
 
-export default function Dashboard({ onSelectTool, searchQuery: globalQuery }) {
-  const [activeTab, setActiveTab] = useState(DOMAINS[0].title);
+export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defaultTab }) {
+  const [activeTab, setActiveTab] = useState(defaultTab || DOMAINS[0].title);
   const [localSearch, setLocalSearch] = useState('');
   
+  useEffect(() => {
+    if (defaultTab) {
+      setActiveTab(defaultTab);
+      setTimeout(scrollToAllTools, 100); // small delay to ensure rendering
+    }
+  }, [defaultTab]);
+
   const query = (globalQuery || localSearch).toLowerCase();
   
   const allTools = DOMAINS.flatMap(d => d.categories.flatMap(c => c.tools));
@@ -127,7 +134,8 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery }) {
   const scrollToAllTools = () => {
     const el = document.getElementById('all-tools');
     if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
+      const y = el.getBoundingClientRect().top + window.scrollY - 100; // Offset for sticky navbar
+      window.scrollTo({ top: y, behavior: 'smooth' });
     }
   };
 
