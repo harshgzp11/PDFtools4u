@@ -75,18 +75,17 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
 
                   {/* Mega Dropdown */}
                   {activeDropdown === domain.title && (
-                    <div className={`absolute top-full mt-4 w-max max-w-[95vw] bg-white border border-gray-200 shadow-2xl rounded-xl p-8 z-50 animate-in fade-in slide-in-from-top-2 ${
-                      domain.title === 'PDF Tools' ? 'left-1/2 -translate-x-[20%]' : 'left-1/2 -translate-x-1/2'
-                    }`}>
-                      <div className={`absolute -top-2 w-4 h-4 bg-white border-t border-l border-gray-200 transform rotate-45 ${
-                        domain.title === 'PDF Tools' ? 'left-[20%] -ml-2' : 'left-1/2 -ml-2'
-                      }`}></div>
+                    <div className="absolute top-full mt-4 w-max max-w-[95vw] bg-white border border-gray-200 shadow-2xl rounded-xl p-8 z-50 animate-in fade-in slide-in-from-top-2 left-1/2 -translate-x-1/2">
+                      {/* Invisible bridge to prevent hover gap issues */}
+                      <div className="absolute -top-6 left-0 right-0 h-8 bg-transparent z-10" />
+
+                      <div className="absolute -top-2 w-4 h-4 bg-white border-t border-l border-gray-200 transform rotate-45 z-20 left-1/2 -ml-2"></div>
                       
                       <div className="flex gap-8 lg:gap-12">
                         {domain.categories.map((category, idx) => (
-                          <div key={idx} className="flex flex-col space-y-5">
-                            <h3 className="font-bold text-gray-500 text-xs tracking-widest uppercase">{category.name}</h3>
-                            <ul className="space-y-4">
+                          <div key={idx} className="flex flex-col space-y-6">
+                            <h3 className="font-bold text-gray-500 text-[15px] tracking-wider uppercase">{category.name}</h3>
+                            <ul className="space-y-6">
                               {category.tools.map(tool => {
                                 const Icon = tool.icon;
                                 return (
@@ -96,10 +95,10 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
                                         onSelectTool(tool.id);
                                         setActiveDropdown(null);
                                       }}
-                                      className="text-left flex items-center gap-3 group transition-colors"
+                                      className="text-left flex items-center gap-4 group transition-colors"
                                     >
-                                      <Icon className={`w-5 h-5 ${tool.color} transition-transform group-hover:scale-110`} />
-                                      <span className="font-semibold text-gray-700 text-sm group-hover:text-black transition-colors whitespace-nowrap">
+                                      <Icon className={`w-7 h-7 ${tool.color} transition-transform group-hover:scale-110`} />
+                                      <span className="font-semibold text-gray-700 text-base group-hover:text-black transition-colors whitespace-nowrap">
                                         {tool.name}
                                       </span>
                                     </button>
@@ -112,7 +111,7 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
                       </div>
                       
                       <div className="mt-8 pt-4 border-t border-gray-100 flex justify-between items-center">
-                        <span className="text-sm text-gray-500">Explore all tools in this category</span>
+                        <span className="text-sm text-gray-500"></span>
                         <button 
                           onClick={() => {
                             onNavigateToDomain(domain.title);
@@ -127,29 +126,30 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
                   )}
                 </div>
               ))}
+              {/* Move Search Button Here */}
+              <div className="ml-4 pl-4 border-l border-gray-200/80">
+                <button 
+                  onClick={openSearch}
+                  className="flex items-center justify-between w-72 px-5 py-2.5 border-2 border-gray-200 rounded-xl bg-gray-100 hover:bg-white hover:border-blue-400 hover:shadow-lg hover:shadow-blue-500/10 transition-all text-gray-700 group"
+                >
+                  <div className="flex items-center gap-3">
+                    <Search className="w-5 h-5 text-gray-500 group-hover:text-blue-500 transition-colors" />
+                    <span className="font-medium text-[15px]">Search tools...</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <kbd className="bg-white text-gray-700 px-2.5 py-1 rounded-lg text-xs border-b-2 border-gray-300 font-bold shadow-sm">⌘</kbd>
+                    <kbd className="bg-white text-gray-700 px-2.5 py-1 rounded-lg text-xs border-b-2 border-gray-300 font-bold shadow-sm">K</kbd>
+                  </div>
+                </button>
+              </div>
             </div>
 
-            {/* Desktop Actions */}
-            <div className="hidden md:flex items-center gap-4">
-              <button 
-                onClick={openSearch}
-                className="flex items-center justify-between w-64 px-4 py-2.5 border border-gray-200/80 rounded-full bg-white/60 backdrop-blur-sm hover:bg-white hover:border-blue-300 hover:shadow-md transition-all text-sm text-gray-500"
-              >
-                <div className="flex items-center gap-2">
-                  <Search className="w-4 h-4 text-gray-400" />
-                  <span>Search tools...</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <kbd className="bg-white text-gray-500 px-2 py-0.5 rounded-md text-xs border border-gray-200 font-bold shadow-sm">⌘</kbd>
-                  <kbd className="bg-white text-gray-500 px-2 py-0.5 rounded-md text-xs border border-gray-200 font-bold shadow-sm">K</kbd>
-                </div>
-              </button>
-              
-              
+            {/* Desktop Actions Placeholder to maintain centering */}
+            <div className="hidden lg:flex items-center gap-4 w-[180px]">
             </div>
 
             {/* Mobile Menu Button */}
-            <div className="flex md:hidden items-center gap-4">
+            <div className="flex lg:hidden items-center gap-4">
               <button onClick={openSearch} className="p-2 text-gray-600 hover:text-blue-600">
                 <Search className="w-6 h-6" />
               </button>

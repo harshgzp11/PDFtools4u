@@ -31,6 +31,7 @@ import FlattenPdf from './tools/FlattenPdf';
 import SignPdf from './tools/SignPdf';
 import CompressPdf from './tools/CompressPdf';
 import UnlockPdf from './tools/UnlockPdf';
+import RedactPdf from './tools/RedactPdf';
 
 // New Image & DOCX Tools
 import CompressImage from './tools/CompressImage';
@@ -60,7 +61,6 @@ const PLACEHOLDER_TOOLS = {
   'edit-pdf': 'Edit PDF',
   'pdf-annotator': 'PDF Annotator',
   'pdf-reader': 'PDF Reader',
-  'redact-pdf': 'Redact PDF',
   'word-to-pdf': 'Word to PDF',
   'ppt-to-pdf': 'PPT to PDF',
   'rtf-to-pdf': 'RTF to PDF'
@@ -131,6 +131,7 @@ function App() {
       case 'number-pages': return <NumberPages />;
       case 'pdf-form-filler': return <PdfFormFiller />;
       case 'crop-pdf': return <CropPdf />;
+      case 'redact-pdf': return <RedactPdf />;
       case 'txt-to-pdf': return <TxtToPdf />;
       
       // New Image Tools
