@@ -9,6 +9,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <title>quicktoolbox</title>
     <meta name="google-site-verification" content="E1bZLNmMZdaOzfd59xEzPCmHoaLDnShXvdNJGVRlDbU" />
+    <script>
+      window.addEventListener('error', function(event) {
+        document.body.innerHTML = '<div style="color: red; padding: 20px; font-size: 20px;">' + event.error.stack + '</div>';
+      });
+      window.addEventListener('unhandledrejection', function(event) {
+        document.body.innerHTML = '<div style="color: red; padding: 20px; font-size: 20px;">' + (event.reason && event.reason.stack ? event.reason.stack : event.reason) + '</div>';
+      });
+    </script>
   </head>
   <body>
     <div id="root"></div>

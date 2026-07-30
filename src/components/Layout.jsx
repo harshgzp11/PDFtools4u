@@ -35,7 +35,7 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
   };
 
   return (
-    <div className="min-h-screen bg-[#fcfcfc] text-gray-900 flex flex-col font-sans selection:bg-blue-100">
+    <div className="min-h-screen bg-white text-gray-900 flex flex-col font-sans selection:bg-blue-100">
       {/* Navbar */}
       <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
         scrolled ? 'bg-white/80 backdrop-blur-2xl border-b border-gray-200/80 shadow-sm' : 'bg-transparent'
@@ -51,11 +51,11 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
             </div>
             
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center gap-2 relative mega-dropdown-container">
-              {DOMAINS.slice(0, 2).map((domain) => (
+            <div className="hidden lg:flex items-center gap-2 relative mega-dropdown-container h-full">
+              {DOMAINS.slice(0, 2).map((domain, index) => (
                 <div 
                   key={domain.title} 
-                  className="relative group"
+                  className="relative group flex items-center h-full"
                   onMouseEnter={() => setActiveDropdown(domain.title)}
                   onMouseLeave={() => setActiveDropdown(null)}
                 >
@@ -75,54 +75,58 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
 
                   {/* Mega Dropdown */}
                   {activeDropdown === domain.title && (
-                    <div className="absolute top-full mt-4 w-max max-w-[95vw] bg-white border border-gray-200 shadow-2xl rounded-xl p-8 z-50 animate-in fade-in slide-in-from-top-2 left-1/2 -translate-x-1/2">
+                    <>
                       {/* Invisible bridge to prevent hover gap issues */}
-                      <div className="absolute -top-6 left-0 right-0 h-8 bg-transparent z-10" />
+                      <div className="absolute top-full left-0 right-0 h-6 bg-transparent z-10" />
 
-                      <div className="absolute -top-2 w-4 h-4 bg-white border-t border-l border-gray-200 transform rotate-45 z-20 left-1/2 -ml-2"></div>
-                      
-                      <div className="flex gap-8 lg:gap-12">
-                        {domain.categories.map((category, idx) => (
-                          <div key={idx} className="flex flex-col space-y-6">
-                            <h3 className="font-bold text-gray-500 text-[15px] tracking-wider uppercase">{category.name}</h3>
-                            <ul className="space-y-6">
-                              {category.tools.map(tool => {
-                                const Icon = tool.icon;
-                                return (
-                                  <li key={tool.id}>
-                                    <button 
-                                      onClick={() => {
-                                        onSelectTool(tool.id);
-                                        setActiveDropdown(null);
-                                      }}
-                                      className="text-left flex items-center gap-4 group transition-colors"
-                                    >
-                                      <Icon className={`w-7 h-7 ${tool.color} transition-transform group-hover:scale-110`} />
-                                      <span className="font-semibold text-gray-700 text-base group-hover:text-black transition-colors whitespace-nowrap">
-                                        {tool.name}
-                                      </span>
-                                    </button>
-                                  </li>
-                                );
-                              })}
-                            </ul>
-                          </div>
-                        ))}
+                      {/* Arrow indicator centered on the button */}
+                      <div className="absolute top-full mt-[2px] w-4 h-4 bg-white border-t border-l border-gray-200 transform rotate-45 z-[55] left-1/2 -translate-x-1/2 pointer-events-none"></div>
+
+                      <div className="fixed top-[90px] left-1/2 -translate-x-1/2 w-max max-w-[95vw] bg-white border border-gray-200 shadow-2xl rounded-xl p-8 z-50 animate-in fade-in slide-in-from-top-2">
+                        
+                        <div className="flex gap-8 lg:gap-12">
+                          {domain.categories.map((category, idx) => (
+                            <div key={idx} className="flex flex-col space-y-6">
+                              <h3 className="font-bold text-gray-500 text-[15px] tracking-wider uppercase">{category.name}</h3>
+                              <ul className="space-y-6">
+                                {category.tools.map(tool => {
+                                  const Icon = tool.icon;
+                                  return (
+                                    <li key={tool.id}>
+                                      <button 
+                                        onClick={() => {
+                                          onSelectTool(tool.id);
+                                          setActiveDropdown(null);
+                                        }}
+                                        className="text-left flex items-center gap-4 group transition-colors"
+                                      >
+                                        <Icon className={`w-7 h-7 ${tool.color} transition-transform group-hover:scale-110`} />
+                                        <span className="font-semibold text-gray-700 text-base group-hover:text-black transition-colors whitespace-nowrap">
+                                          {tool.name}
+                                        </span>
+                                      </button>
+                                    </li>
+                                  );
+                                })}
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
+                        
+                        <div className="mt-8 pt-4 border-t border-gray-100 flex justify-between items-center">
+                          <span className="text-sm text-gray-500"></span>
+                          <button 
+                            onClick={() => {
+                              onNavigateToDomain(domain.title);
+                              setActiveDropdown(null);
+                            }}
+                            className={`text-sm font-bold flex items-center gap-1 ${domain.color} hover:opacity-80`}
+                          >
+                            View all {domain.title} &rarr;
+                          </button>
+                        </div>
                       </div>
-                      
-                      <div className="mt-8 pt-4 border-t border-gray-100 flex justify-between items-center">
-                        <span className="text-sm text-gray-500"></span>
-                        <button 
-                          onClick={() => {
-                            onNavigateToDomain(domain.title);
-                            setActiveDropdown(null);
-                          }}
-                          className={`text-sm font-bold flex items-center gap-1 ${domain.color} hover:opacity-80`}
-                        >
-                          View all {domain.title} &rarr;
-                        </button>
-                      </div>
-                    </div>
+                    </>
                   )}
                 </div>
               ))}
@@ -225,21 +229,19 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
         </aside>
 
         <main className="flex-1 w-full min-w-0 flex flex-col gap-8">
-          <div className="bg-white rounded-3xl border border-gray-200 p-6 sm:p-10 min-h-[600px] shadow-sm">
+          <div className="p-6 sm:p-10 min-h-[600px]">
             {children}
           </div>
           
-          {/* Trust Box */}
-          <div className="bg-gradient-to-br from-blue-50/80 to-indigo-50/50 rounded-3xl p-6 sm:p-10 border border-blue-100/60 flex flex-col sm:flex-row items-center gap-8 mt-auto shadow-sm">
-            <div className="p-4 bg-white rounded-2xl text-blue-600 flex-shrink-0 border border-blue-100 shadow-sm">
-              <Shield className="w-10 h-10" />
-            </div>
-            <div className="text-center sm:text-left">
+          {/* Trust Section */}
+          <div className="mt-auto pt-10 pb-6 border-t border-gray-100/80 flex flex-col items-center text-center">
+            <div className="flex items-center gap-3 mb-4">
+              <Shield className="w-6 h-6 text-emerald-500" />
               <h3 className="font-bold text-gray-900 text-xl tracking-tight">100% Private & Secure Processing</h3>
-              <p className="text-gray-600 mt-2 leading-relaxed max-w-2xl">
-                Your files never leave your device. All processing is done locally in your browser for maximum security. We don't upload your data to any servers.
-              </p>
             </div>
+            <p className="text-gray-500 text-base max-w-2xl leading-relaxed">
+              Your files never leave your device. All processing is done locally in your browser for maximum security. We don't upload your data to any servers.
+            </p>
           </div>
         </main>
 

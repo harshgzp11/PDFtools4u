@@ -32,6 +32,7 @@ import SignPdf from './tools/SignPdf';
 import CompressPdf from './tools/CompressPdf';
 import UnlockPdf from './tools/UnlockPdf';
 import RedactPdf from './tools/RedactPdf';
+import PdfEditor from './tools/PdfEditor/index';
 
 // New Image & DOCX Tools
 import CompressImage from './tools/CompressImage';
@@ -96,6 +97,10 @@ function App() {
   };
 
   const renderTool = () => {
+    if (activeTool === 'edit-pdf') {
+      return <PdfEditor />;
+    }
+
     if (PLACEHOLDER_TOOLS[activeTool]) {
       return <PlaceholderTool toolName={PLACEHOLDER_TOOLS[activeTool]} />;
     }
