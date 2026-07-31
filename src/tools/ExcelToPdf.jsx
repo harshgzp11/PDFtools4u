@@ -9,6 +9,7 @@ import 'jspdf-autotable';
 export default function ExcelToPdf() {
   const [file, setFile] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isParsing, setIsParsing] = useState(false);
   const [successData, setSuccessData] = useState(null);
 
   const [workbook, setWorkbook] = useState(null);
@@ -33,10 +34,18 @@ export default function ExcelToPdf() {
     
     const hasValidExt = validExtensions.some(ext => newFile.name.toLowerCase().endsWith(ext));
     
+    if (newFile.size > 25 * 1024 * 1024) {
+      toast.error("File is too large. Maximum supported size is 25MB for browser conversion.");
+      return;
+    }
+    
     if (validTypes.includes(newFile.type) || hasValidExt) {
       setFile(newFile);
       setSuccessData(null);
-      parseExcelFile(newFile);
+      setIsParsing(true);
+      setTimeout(() => {
+        parseExcelFile(newFile);
+      }, 100);
     } else {
       toast.error("Please upload a valid Excel or CSV file (.xlsx, .xls, .csv).");
     }
@@ -60,6 +69,8 @@ export default function ExcelToPdf() {
       console.error(err);
       toast.error("Failed to parse this file. It may be corrupted or unsupported.");
       resetTool();
+    } finally {
+      setIsParsing(false);
     }
   };
 
@@ -156,6 +167,7 @@ export default function ExcelToPdf() {
     setActiveSheet('');
     setSheetData([]);
     setIsProcessing(false);
+    setIsParsing(false);
   };
 
   const customPreviewNode = (
@@ -168,7 +180,12 @@ export default function ExcelToPdf() {
        </div>
        
        <div className="flex-1 overflow-auto p-4 bg-slate-50 relative">
-         {sheetData.length > 0 ? (
+         {isParsing ? (
+           <div className="h-full flex flex-col items-center justify-center text-gray-500 font-medium">
+             <div className="w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+             Parsing spreadsheet, please wait...
+           </div>
+         ) : sheetData.length > 0 ? (
            <table className="w-full border-collapse bg-white shadow-sm text-sm text-left">
              <thead>
                <tr>

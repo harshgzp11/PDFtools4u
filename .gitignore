@@ -22,3 +22,22 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Test and temporary files
+test.pdf
+test.pptx
+test2.pptx
+test3.pptx
+test4.zip
+test4_out/
+test6.zip
+test6_out/
+test_pdf_lib.pdf
+unlocked.pdf
+locked.pdf
+empty_slides_test.pdf

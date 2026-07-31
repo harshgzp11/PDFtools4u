@@ -3,6 +3,7 @@ import { Presentation, Download, AlertTriangle } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
+import pptxgen from 'pptxgenjs';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
@@ -41,31 +42,53 @@ export default function PdfToPpt() {
       const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
       const numPages = pdf.numPages;
       
-      let textContent = "";
+      const pres = new pptxgen();
+
+      const SLIDE_W = 10;
+      const SLIDE_H = 5.625;
       
       for (let i = 1; i <= numPages; i++) {
         const page = await pdf.getPage(i);
-        const text = await page.getTextContent();
+        const viewport = page.getViewport({ scale: 1.5 }); // Lower scale to prevent out-of-memory corruption
         
-        textContent += `--- Slide ${i} ---\n\n`;
-        textContent += text.items.map(item => item.str).join(' ');
-        textContent += `\n\n\n`;
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        
+        // Fill white background for JPEG
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+        // Use JPEG to drastically reduce file size and avoid base64 memory limits
+        const imgData = canvas.toDataURL('image/jpeg', 0.8);
+        
+        // Fit within the standard 10 x 5.625 inch PPTX layout
+        const scale = Math.min(SLIDE_W / viewport.width, SLIDE_H / viewport.height);
+        const finalW = viewport.width * scale;
+        const finalH = viewport.height * scale;
+        const xOffset = (SLIDE_W - finalW) / 2;
+        const yOffset = (SLIDE_H - finalH) / 2;
+        
+        const slide = pres.addSlide();
+        slide.addImage({ data: imgData, x: xOffset, y: yOffset, w: finalW, h: finalH });
         
         setProgress(Math.round((i / numPages) * 100));
       }
       
-      const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8;' });
+      const blob = await pres.write({ outputType: 'blob' });
       const url = URL.createObjectURL(blob);
       
       setSuccessData({
         url,
-        filename: `${file.name.replace('.pdf', '')}_slides.txt`,
-        title: 'Content Ready!',
-        subtitle: 'Slide text has been successfully extracted from your presentation.',
+        filename: `${file.name.replace('.pdf', '')}_converted.pptx`,
+        title: 'Conversion Successful!',
+        subtitle: 'Your PDF has been converted to a native PowerPoint presentation.',
       });
     } catch (err) {
       console.error(err);
-      alert("Failed to extract data from PDF.");
+      alert("Failed to convert PDF to PPT.");
     } finally {
       setIsProcessing(false);
     }
@@ -92,7 +115,7 @@ export default function PdfToPpt() {
           />
         )}
         {isProcessing ? (
-          <span className="relative z-10">Analyzing... {progress}%</span>
+          <span className="relative z-10">Generating Slides... {progress}%</span>
         ) : (
           <><Presentation className="w-6 h-6 relative z-10"/> Convert to PowerPoint</>
         )}
@@ -100,10 +123,19 @@ export default function PdfToPpt() {
     </div>
   );
 
+  const renderGridItem = (thumb, idx) => (
+    <div key={thumb.id} className="relative aspect-[1/1.4] rounded-xl shadow-md border border-gray-200 overflow-hidden flex flex-col bg-white">
+      <img src={thumb.dataUrl} alt={`Page ${idx + 1}`} className="w-full h-full object-cover" />
+      <div className="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-md font-bold">
+        {idx + 1}
+      </div>
+    </div>
+  );
+
   return (
     <ToolPreviewLayout
       title="PDF to PowerPoint"
-      description="Extract slide text from your PDF presentation."
+      description="Convert your PDF into an accurate .pptx presentation."
       icon={Presentation}
       file={file}
       onFileSelect={handleFile}
@@ -111,6 +143,8 @@ export default function PdfToPpt() {
       isProcessing={isProcessing}
       successData={successData}
       processButton={processButton}
+      gridMode={true}
+      renderGridItem={renderGridItem}
     >
       <div className="space-y-4">
         <h3 className="text-xl font-extrabold text-gray-900 mb-2">Conversion Details</h3>
@@ -118,7 +152,11 @@ export default function PdfToPpt() {
         <div className="bg-orange-50 p-5 rounded-xl border border-orange-100 flex flex-col gap-3">
            <div className="flex justify-between text-sm text-orange-800 font-bold">
              <span>Format:</span>
-             <span className="bg-orange-200 px-2 py-0.5 rounded-md">TXT (Transcript)</span>
+             <span className="bg-orange-200 px-2 py-0.5 rounded-md">Native .PPTX</span>
+           </div>
+           <div className="flex justify-between text-sm text-orange-800 font-bold">
+             <span>Quality:</span>
+             <span className="bg-orange-200 px-2 py-0.5 rounded-md">High-Res Layout</span>
            </div>
            <div className="flex justify-between text-sm text-orange-800 font-bold">
              <span>Processing:</span>
@@ -126,14 +164,9 @@ export default function PdfToPpt() {
            </div>
         </div>
 
-        <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mt-4 flex flex-col gap-2">
-          <div className="flex items-center gap-2 text-yellow-800">
-            <AlertTriangle className="w-5 h-5 shrink-0" />
-            <h4 className="font-bold text-sm">Important Notice</h4>
-          </div>
-          <p className="text-yellow-800 text-xs font-medium leading-relaxed">
-            Generating native `.pptx` files entirely in the browser is currently not possible without severe visual bugs. 
-            Instead, we generate a clean text transcript of all slides that you can easily copy and paste into a new presentation.
+        <div className="bg-blue-50 border border-blue-200 p-4 rounded-xl mt-4 flex flex-col gap-2">
+          <p className="text-blue-800 text-xs font-medium leading-relaxed">
+            Note: The layout is perfectly preserved by rendering PDF pages directly as presentation slides. The text inside the presentation cannot be directly edited as a result.
           </p>
         </div>
       </div>

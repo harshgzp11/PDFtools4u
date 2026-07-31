@@ -1,163 +1,158 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { Toaster } from 'sonner';
 import CommandMenu from './components/CommandMenu';
 import Layout from './components/Layout';
 import Dashboard from './components/Dashboard';
-import TextReformatter from './tools/TextReformatter';
-import DataConverter from './tools/DataConverter';
-import DevTools from './tools/DevTools';
-import PdfTextExtractor from './tools/PdfTextExtractor';
-import TextToPdfCompiler from './tools/TextToPdfCompiler';
-import ImageConverter from './tools/ImageConverter';
-import PdfMerger from './tools/PdfMerger';
-import PdfSplitter from './tools/PdfSplitter';
-import PdfWatermark from './tools/PdfWatermark';
-import NumberPages from './tools/NumberPages';
-import PdfFormFiller from './tools/PdfFormFiller';
-import RotatePdf from './tools/RotatePdf';
-import JpgToPdf from './tools/JpgToPdf';
-import BackgroundRemover from './tools/BackgroundRemover';
-import HtmlToImage from './tools/HtmlToImage';
-import ImageCropRotate from './tools/ImageCropRotate';
-import PhotoEditor from './tools/PhotoEditor';
+import ToolSkeleton from './components/ui/ToolSkeleton';
 import PlaceholderTool from './tools/PlaceholderTool';
 
-// New Phase 1 Tools
-import DeletePdfPages from './tools/DeletePdfPages';
-import ExtractPdfPages from './tools/ExtractPdfPages';
-import OrganizePdf from './tools/OrganizePdf';
-import ProtectPdf from './tools/ProtectPdf';
-import FlattenPdf from './tools/FlattenPdf';
-import SignPdf from './tools/SignPdf';
-import CompressPdf from './tools/CompressPdf';
-import UnlockPdf from './tools/UnlockPdf';
-import RedactPdf from './tools/RedactPdf';
-import PdfEditor from './tools/PdfEditor/index';
+const PdfEditor = React.lazy(() => import('./tools/PdfEditor/index'));
+const PdfConverterHub = React.lazy(() => import('./tools/PdfConverterHub'));
+const TextReformatter = React.lazy(() => import('./tools/TextReformatter'));
+const DataConverter = React.lazy(() => import('./tools/DataConverter'));
+const DevTools = React.lazy(() => import('./tools/DevTools'));
+const PdfTextExtractor = React.lazy(() => import('./tools/PdfTextExtractor'));
+const TextToPdfCompiler = React.lazy(() => import('./tools/TextToPdfCompiler'));
+const ImageConverter = React.lazy(() => import('./tools/ImageConverter'));
+const PdfMerger = React.lazy(() => import('./tools/PdfMerger'));
+const PdfSplitter = React.lazy(() => import('./tools/PdfSplitter'));
+const PdfWatermark = React.lazy(() => import('./tools/PdfWatermark'));
+const RotatePdf = React.lazy(() => import('./tools/RotatePdf'));
+const JpgToPdf = React.lazy(() => import('./tools/JpgToPdf'));
+const BackgroundRemover = React.lazy(() => import('./tools/BackgroundRemover'));
+const HtmlToImage = React.lazy(() => import('./tools/HtmlToImage'));
+const ImageCropRotate = React.lazy(() => import('./tools/ImageCropRotate'));
+const PhotoEditor = React.lazy(() => import('./tools/PhotoEditor'));
 
-// New Image & DOCX Tools
-import CompressImage from './tools/CompressImage';
-import ResizeImage from './tools/ResizeImage';
-import ConvertImage from './tools/ConvertImage';
-import DocxToText from './tools/DocxToText';
-import DocxToHtml from './tools/DocxToHtml';
-import TextToDocx from './tools/TextToDocx';
-import PdfConverterHub from './tools/PdfConverterHub';
+const DeletePdfPages = React.lazy(() => import('./tools/DeletePdfPages'));
+const ExtractPdfPages = React.lazy(() => import('./tools/ExtractPdfPages'));
+const OrganizePdf = React.lazy(() => import('./tools/OrganizePdf'));
+const ProtectPdf = React.lazy(() => import('./tools/ProtectPdf'));
+const UnlockPdf = React.lazy(() => import('./tools/UnlockPdf'));
+const FlattenPdf = React.lazy(() => import('./tools/FlattenPdf'));
+const SignPdf = React.lazy(() => import('./tools/SignPdf'));
+const CompressPdf = React.lazy(() => import('./tools/CompressPdf'));
+const NumberPages = React.lazy(() => import('./tools/NumberPages'));
+const PdfFormFiller = React.lazy(() => import('./tools/PdfFormFiller'));
+const CropPdf = React.lazy(() => import('./tools/CropPdf'));
+const RedactPdf = React.lazy(() => import('./tools/RedactPdf'));
+const TxtToPdf = React.lazy(() => import('./tools/TxtToPdf'));
 
-// New Functional Converters
-import PdfToImage from './tools/PdfToImage';
-import PdfToWord from './tools/PdfToWord';
-import PdfToExcel from './tools/PdfToExcel';
-import PdfToPpt from './tools/PdfToPpt';
+const CompressImage = React.lazy(() => import('./tools/CompressImage'));
+const ResizeImage = React.lazy(() => import('./tools/ResizeImage'));
+const ConvertImage = React.lazy(() => import('./tools/ConvertImage'));
 
-import TxtToPdf from './tools/TxtToPdf';
-import CropPdf from './tools/CropPdf';
+const DocxToText = React.lazy(() => import('./tools/DocxToText'));
+const DocxToHtml = React.lazy(() => import('./tools/DocxToHtml'));
+const TextToDocx = React.lazy(() => import('./tools/TextToDocx'));
 
-import PdfOcr from './tools/PdfOcr';
+const PdfToImage = React.lazy(() => import('./tools/PdfToImage'));
+const PdfToWord = React.lazy(() => import('./tools/PdfToWord'));
+const PdfToExcel = React.lazy(() => import('./tools/PdfToExcel'));
+const PdfToPpt = React.lazy(() => import('./tools/PdfToPpt'));
+const PptToPdf = React.lazy(() => import('./tools/PptToPdf'));
+const PdfOcr = React.lazy(() => import('./tools/PdfOcr'));
+const ExcelToPdf = React.lazy(() => import('./tools/ExcelToPdf'));
+const WordToPdf = React.lazy(() => import('./tools/WordToPdf'));
+const PdfReader = React.lazy(() => import('./tools/PdfReader'));
+const PdfAnnotator = React.lazy(() => import('./tools/PdfAnnotator'));
+const RtfToPdf = React.lazy(() => import('./tools/RtfToPdf'));
 
-import ExcelToPdf from './tools/ExcelToPdf';
+const TOOL_COMPONENTS = {
+  'edit-pdf': PdfEditor,
+  'pdf-converter': PdfConverterHub,
+  'text-reformatter': TextReformatter,
+  'data-converter': DataConverter,
+  'dev-tools': DevTools,
+  'pdf-extractor': PdfTextExtractor,
+  'pdf-compiler': TextToPdfCompiler,
+  'image-converter': ImageConverter,
+  'pdf-merge': PdfMerger,
+  'pdf-split': PdfSplitter,
+  'pdf-watermark': PdfWatermark,
+  'rotate-pdf': RotatePdf,
+  'jpg-to-pdf': JpgToPdf,
+  'bg-remover': BackgroundRemover,
+  'html-to-image': HtmlToImage,
+  'image-crop': ImageCropRotate,
+  'photo-editor': PhotoEditor,
+  
+  'delete-pdf-pages': DeletePdfPages,
+  'extract-pdf-pages': ExtractPdfPages,
+  'organize-pdf': OrganizePdf,
+  'protect-pdf': ProtectPdf,
+  'unlock-pdf': UnlockPdf,
+  'flatten-pdf': FlattenPdf,
+  'sign-pdf': SignPdf,
+  'compress-pdf': CompressPdf,
+  'number-pages': NumberPages,
+  'pdf-form-filler': PdfFormFiller,
+  'crop-pdf': CropPdf,
+  'redact-pdf': RedactPdf,
+  'txt-to-pdf': TxtToPdf,
 
-import { ArrowLeft } from 'lucide-react';
+  'compress-image': CompressImage,
+  'resize-image': ResizeImage,
+  'convert-image': ConvertImage,
+  
+  'docx-to-text': DocxToText,
+  'docx-to-html': DocxToHtml,
+  'text-to-docx': TextToDocx,
 
-const PLACEHOLDER_TOOLS = {
-  'edit-pdf': 'Edit PDF',
-  'pdf-annotator': 'PDF Annotator',
-  'pdf-reader': 'PDF Reader',
-  'word-to-pdf': 'Word to PDF',
-  'ppt-to-pdf': 'PPT to PDF',
-  'rtf-to-pdf': 'RTF to PDF'
+  'pdf-to-jpg': PdfToImage,
+  'pdf-to-word': PdfToWord,
+  'pdf-to-excel': PdfToExcel,
+  'pdf-to-ppt': PdfToPpt,
+  'ppt-to-pdf': PptToPdf,
+  'pdf-ocr': PdfOcr,
+  'excel-to-pdf': ExcelToPdf,
+  'word-to-pdf': WordToPdf,
+  'pdf-reader': PdfReader,
+  'pdf-annotator': PdfAnnotator,
+  'rtf-to-pdf': RtfToPdf,
 };
+
+const PLACEHOLDER_TOOLS = {};
 
 function App() {
   const [activeTool, setActiveTool] = useState(() => {
-    return window.location.hash.replace('#', '') || null;
+    const path = window.location.pathname.replace('/', '');
+    return path || null;
   });
+  
+  const [visitedTools, setVisitedTools] = useState(() => {
+    const path = window.location.pathname.replace('/', '');
+    return path ? [path] : [];
+  });
+  
   const [searchQuery, setSearchQuery] = useState('');
   const [dashboardTab, setDashboardTab] = useState(null);
 
   // Sync state when browser back/forward buttons are pressed
   useEffect(() => {
-    const handleHashChange = () => {
-      setActiveTool(window.location.hash.replace('#', '') || null);
+    const handlePopState = () => {
+      const path = window.location.pathname.replace('/', '');
+      setActiveTool(path || null);
+      if (path) {
+        setVisitedTools(prev => prev.includes(path) ? prev : [...prev, path]);
+      }
       window.scrollTo(0, 0); // Scroll to top on navigation
     };
     
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
   const navigateTo = (toolId) => {
     if (toolId) {
-      window.location.hash = toolId;
+      window.history.pushState({}, "", "/" + toolId + window.location.search);
+      setActiveTool(toolId);
+      setVisitedTools(prev => prev.includes(toolId) ? prev : [...prev, toolId]);
+      window.scrollTo(0, 0);
     } else {
-      // Clear hash cleanly without leaving a stray # if possible
-      window.history.pushState("", document.title, window.location.pathname + window.location.search);
+      window.history.pushState({}, "", "/" + window.location.search);
       setActiveTool(null);
       window.scrollTo(0, 0);
-    }
-  };
-
-  const renderTool = () => {
-    if (activeTool === 'edit-pdf') {
-      return <PdfEditor />;
-    }
-
-    if (PLACEHOLDER_TOOLS[activeTool]) {
-      return <PlaceholderTool toolName={PLACEHOLDER_TOOLS[activeTool]} />;
-    }
-
-    switch(activeTool) {
-      case 'pdf-converter': return <PdfConverterHub />;
-      
-      case 'text-reformatter': return <TextReformatter />;
-      case 'data-converter': return <DataConverter />;
-      case 'dev-tools': return <DevTools />;
-      case 'pdf-extractor': return <PdfTextExtractor />;
-      case 'pdf-compiler': return <TextToPdfCompiler />;
-      case 'image-converter': return <ImageConverter />;
-      case 'pdf-merge': return <PdfMerger />;
-      case 'pdf-split': return <PdfSplitter />;
-      case 'pdf-watermark': return <PdfWatermark />;
-      case 'rotate-pdf': return <RotatePdf />;
-      case 'jpg-to-pdf': return <JpgToPdf />;
-      case 'bg-remover': return <BackgroundRemover />;
-      case 'html-to-image': return <HtmlToImage />;
-      case 'image-crop': return <ImageCropRotate />;
-      case 'photo-editor': return <PhotoEditor />;
-      
-      // Phase 1 Tools
-      case 'delete-pdf-pages': return <DeletePdfPages />;
-      case 'extract-pdf-pages': return <ExtractPdfPages />;
-      case 'organize-pdf': return <OrganizePdf />;
-      case 'protect-pdf': return <ProtectPdf />;
-      case 'unlock-pdf': return <UnlockPdf />;
-      case 'flatten-pdf': return <FlattenPdf />;
-      case 'sign-pdf': return <SignPdf />;
-      case 'compress-pdf': return <CompressPdf />;
-      case 'number-pages': return <NumberPages />;
-      case 'pdf-form-filler': return <PdfFormFiller />;
-      case 'crop-pdf': return <CropPdf />;
-      case 'redact-pdf': return <RedactPdf />;
-      case 'txt-to-pdf': return <TxtToPdf />;
-      
-      // New Image Tools
-      case 'compress-image': return <CompressImage />;
-      case 'resize-image': return <ResizeImage />;
-      case 'convert-image': return <ConvertImage />;
-      
-      // New DOCX Tools
-      case 'docx-to-text': return <DocxToText />;
-      case 'docx-to-html': return <DocxToHtml />;
-      case 'text-to-docx': return <TextToDocx />;
-
-      // New Functional Converters
-      case 'pdf-to-jpg': return <PdfToImage />;
-      case 'pdf-to-word': return <PdfToWord />;
-      case 'pdf-to-excel': return <PdfToExcel />;
-      case 'pdf-to-ppt': return <PdfToPpt />;
-      case 'pdf-ocr': return <PdfOcr />;
-      case 'excel-to-pdf': return <ExcelToPdf />;
-      
-      default: return null;
     }
   };
 
@@ -174,9 +169,31 @@ function App() {
         onSearch={(q) => { setSearchQuery(q); navigateTo(null); }}
       >
         {activeTool ? (
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-
-            {renderTool()}
+          <div className="relative w-full h-full min-h-[80vh]">
+            <Suspense fallback={<ToolSkeleton />}>
+              {visitedTools.map(toolId => {
+                const isPlaceholder = PLACEHOLDER_TOOLS[toolId];
+                const ToolComponent = TOOL_COMPONENTS[toolId];
+                
+                if (!isPlaceholder && !ToolComponent) return null;
+                
+                const isActive = activeTool === toolId;
+                
+                return (
+                  <div 
+                    key={toolId}
+                    style={{ display: isActive ? 'block' : 'none' }}
+                    className={isActive ? "animate-in fade-in zoom-in-[0.98] duration-300" : ""}
+                  >
+                    {isPlaceholder ? (
+                      <PlaceholderTool toolName={PLACEHOLDER_TOOLS[toolId]} />
+                    ) : (
+                      <ToolComponent />
+                    )}
+                  </div>
+                );
+              })}
+            </Suspense>
           </div>
         ) : (
           <Dashboard onSelectTool={navigateTo} searchQuery={searchQuery} defaultTab={dashboardTab} />
