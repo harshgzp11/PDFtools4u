@@ -45,12 +45,14 @@ export default function ToolPreviewLayout({
             if (thumbs.length > 0) setPreviewImage(thumbs[0].dataUrl); // Still set previewImage just in case
           } else {
             const thumbs = await getPdfThumbnails(file, 1.5);
+            setThumbnails(thumbs);
             if (thumbs.length > 0) {
               setPreviewImage(thumbs[0].dataUrl);
             }
           }
         } else if (file.type.startsWith('image/')) {
           setPreviewImage(URL.createObjectURL(file));
+          setThumbnails([]);
         }
       } catch (error) {
         console.error("Error loading preview:", error);
@@ -136,21 +138,44 @@ export default function ToolPreviewLayout({
 
     if (gridMode && renderGridItem) {
       return (
-        <div className="w-full h-full flex flex-col overflow-y-auto custom-scrollbar">
-          <div className={getDynamicGridClass(thumbnails.length) + " w-full pb-4"}>
+        <div className="w-full flex flex-col p-4 pb-8">
+          <div className={getDynamicGridClass(thumbnails.length) + " w-full"}>
             {thumbnails.map((thumb, idx, arr) => renderGridItem(thumb, idx, arr))}
           </div>
         </div>
       );
     }
 
+    if (thumbnails && thumbnails.length > 0) {
+      return (
+        <div className="w-full flex flex-col gap-6 items-center p-4 pb-8">
+          {thumbnails.map((thumb, idx) => (
+            <div key={idx} className="relative shadow-sm bg-white p-2 rounded-xl border border-gray-200 shrink-0 w-full">
+              {previewOverlay && thumbnails.length === 1 ? previewOverlay(thumb.dataUrl) : (
+                <img 
+                  src={thumb.dataUrl} 
+                  alt={`Page ${idx + 1}`} 
+                  className="w-full object-contain block"
+                />
+              )}
+              {thumbnails.length > 1 && (
+                <div className="absolute bottom-4 right-4 bg-gray-900/70 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-lg font-bold shadow-sm">
+                  {idx + 1}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      );
+    }
+
     return (
-      <div className="relative shadow-sm bg-white w-full h-full flex justify-center items-center overflow-hidden rounded-xl">
+      <div className="relative shadow-sm bg-white w-full flex justify-center items-start p-4">
         {previewOverlay ? previewOverlay(previewImage) : (
           <img 
             src={previewImage} 
             alt="Preview" 
-            className="w-full h-full object-contain p-2"
+            className="w-full object-contain block"
           />
         )}
       </div>
@@ -186,14 +211,14 @@ export default function ToolPreviewLayout({
       )}
 
       {file && (previewImage || gridMode || customPreviewNode) && !successData && !isLoadingPreview && (
-        <div className="flex flex-col lg:flex-row gap-4 items-start flex-1 min-h-0 overflow-hidden">
-          {/* Interactive Preview Canvas */}
-          <div className="w-full lg:w-2/3 bg-gray-100/50 rounded-2xl p-4 shadow-inner flex flex-col items-center justify-center overflow-hidden border border-gray-200 h-full">
+        <div className="flex flex-col lg:flex-row gap-4 flex-1 min-h-0 overflow-hidden w-full h-full">
+          {/* Interactive Preview Canvas - scrollable container */}
+          <div className="w-full lg:w-2/3 bg-gray-100/50 rounded-2xl shadow-inner border border-gray-200 h-full min-h-0 overflow-y-auto custom-scrollbar">
             {renderPreviewContent()}
           </div>
 
           {/* Configuration Panel */}
-          <div className="w-full lg:w-1/3 bg-white border border-gray-200 rounded-2xl p-5 shadow-sm flex flex-col h-full overflow-hidden">
+          <div className="w-full lg:w-1/3 bg-white border border-gray-200 rounded-2xl p-5 shadow-sm flex flex-col h-full min-h-0 overflow-hidden">
             <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100 flex-shrink-0">
               <div className="p-2 bg-blue-50 text-blue-600 rounded-lg flex-shrink-0">
                 <Icon className="w-5 h-5" />

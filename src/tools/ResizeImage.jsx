@@ -78,14 +78,17 @@ export default function ResizeImage() {
         title: "Image Resized!",
         subtitle: `New dimensions: ${canvas.width} x ${canvas.height}px`,
         quickActions: [
-          {
-            icon: ImageIcon,
-            label: 'Open in Editor',
-            onClick: () => {
+          <button 
+            key="editor"
+            onClick={() => {
                window.__sharedFile = new File([blob], `resized_${file.name}`, { type: blob.type });
                toast.success("Ready! You can now navigate to another tool.");
-            }
-          }
+            }}
+            className="flex flex-col items-center justify-center p-3 rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all group w-full"
+          >
+            <ImageIcon className="w-6 h-6 text-gray-400 group-hover:text-blue-500 mb-2" />
+            <span className="text-xs font-medium text-gray-600 group-hover:text-blue-700">Open in Editor</span>
+          </button>
         ]
       });
       URL.revokeObjectURL(url);

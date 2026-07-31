@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
+
 import { Search, Shield, Zap, Menu, X, FileText, Image as ImageIcon, ChevronDown } from 'lucide-react';
 import { DOMAINS } from '../lib/toolConfig';
 
-export default function Layout({ children, onNavigateToDomain, onSearch, onSelectTool }) {
+export default function Layout({ children, onNavigateToDomain, onSearch, onSelectTool, isToolView = false }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
@@ -35,9 +36,9 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
   };
 
   return (
-    <div className="h-screen min-h-[700px] overflow-hidden bg-white text-gray-900 flex flex-col font-sans selection:bg-blue-100">
+    <div className={`bg-white text-gray-900 flex flex-col font-sans selection:bg-blue-100 custom-scrollbar ${isToolView ? 'h-screen min-h-[700px] overflow-hidden' : 'min-h-screen overflow-y-auto'}`}>
       {/* Navbar */}
-      <nav className={`flex-shrink-0 z-50 transition-all duration-300 bg-white/80 backdrop-blur-2xl border-b border-gray-200/80 ${
+      <nav className={`flex-shrink-0 sticky top-0 z-[100] transition-all duration-300 bg-white/80 backdrop-blur-2xl border-b border-gray-200/80 ${
         scrolled ? 'shadow-sm' : ''
       }`}>
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
@@ -77,16 +78,17 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
                   {activeDropdown === domain.title && (
                     <>
                       <div className="absolute top-full left-0 right-0 h-4 bg-transparent z-10" />
-                      <div className="absolute top-full mt-[1px] w-3 h-3 bg-white border-t border-l border-gray-200 transform rotate-45 z-[55] left-1/2 -translate-x-1/2 pointer-events-none"></div>
-
-                      <div className="fixed top-[64px] left-1/2 -translate-x-1/2 w-max max-w-[95vw] bg-white border border-gray-200 shadow-2xl rounded-xl p-6 z-50 animate-in fade-in slide-in-from-top-2">
-                        
+                      <div 
+                        className="absolute top-[calc(100%+16px)] left-1/2 -translate-x-1/2 w-max max-w-[95vw] bg-white border border-gray-200 shadow-2xl rounded-xl p-6 z-[9999] animate-in fade-in slide-in-from-top-2"
+                        onMouseEnter={() => setActiveDropdown(domain.title)}
+                        onMouseLeave={() => setActiveDropdown(null)}
+                      >
                         <div className="flex gap-6 lg:gap-10">
                           {domain.categories.map((category, idx) => (
                             <div key={idx} className="flex flex-col space-y-4">
                               <h3 className="font-bold text-gray-400 text-xs tracking-wider uppercase">{category.name}</h3>
                               <ul className="space-y-1">
-                                {category.tools.map(tool => {
+                                {domain.categories[idx].tools.map(tool => {
                                   const Icon = tool.icon;
                                   return (
                                     <li key={tool.id}>
@@ -209,7 +211,7 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
       )}
 
       {/* Main Layout Area */}
-      <div className="flex-1 flex w-full max-w-[1920px] mx-auto px-2 sm:px-4 py-4 gap-4 xl:gap-6 justify-center items-start min-h-0 overflow-hidden">
+      <div className={`flex-1 flex w-full max-w-[1920px] mx-auto px-2 sm:px-4 py-4 gap-4 xl:gap-6 justify-center ${isToolView ? 'items-stretch min-h-0 overflow-hidden' : 'items-start'}`}>
         
         {/* Left Sidebar Ad */}
         <aside className="hidden 2xl:flex flex-col w-[160px] flex-shrink-0 h-full max-h-full rounded-2xl relative overflow-hidden">
@@ -218,8 +220,8 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
           </div>
         </aside>
 
-        <main className="flex-1 w-full min-w-0 h-full flex flex-col min-h-0 overflow-hidden">
-          <div className="flex-1 w-full min-h-0 overflow-hidden rounded-2xl">
+        <main className={`flex-1 w-full min-w-0 flex flex-col ${isToolView ? 'h-full min-h-0 overflow-hidden' : ''}`}>
+          <div className={`flex-1 w-full rounded-2xl ${isToolView ? 'flex flex-col min-h-0 overflow-hidden h-full' : ''}`}>
             {children}
           </div>
         </main>

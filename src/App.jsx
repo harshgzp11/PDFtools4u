@@ -167,9 +167,10 @@ function App() {
         }} 
         onSelectTool={navigateTo}
         onSearch={(q) => { setSearchQuery(q); navigateTo(null); }}
+        isToolView={!!activeTool}
       >
         {activeTool ? (
-          <div className="relative w-full h-full min-h-[80vh]">
+          <div className="relative w-full h-full flex flex-col min-h-0">
             <Suspense fallback={<ToolSkeleton />}>
               {visitedTools.map(toolId => {
                 const isPlaceholder = PLACEHOLDER_TOOLS[toolId];
@@ -182,8 +183,8 @@ function App() {
                 return (
                   <div 
                     key={toolId}
-                    style={{ display: isActive ? 'block' : 'none' }}
-                    className={isActive ? "animate-in fade-in zoom-in-[0.98] duration-300" : ""}
+                    style={{ display: isActive ? 'flex' : 'none' }}
+                    className={isActive ? "flex-1 flex flex-col w-full h-full min-h-0 overflow-hidden animate-in fade-in zoom-in-[0.98] duration-300" : ""}
                   >
                     {isPlaceholder ? (
                       <PlaceholderTool toolName={PLACEHOLDER_TOOLS[toolId]} />

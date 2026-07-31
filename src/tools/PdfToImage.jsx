@@ -75,7 +75,7 @@ export default function PdfToImage() {
         url,
         filename: `${folderName}.zip`,
         title: 'Images Ready!',
-        subtitle: `Successfully converted ${numPages} pages into ${format.toUpperCase()} format.`,
+        subtitle: `Successfully converted ${numPages} pages into ${format === 'jpeg' ? 'JPG' : 'PNG'} format.`,
       });
     } catch (err) {
       console.error(err);
@@ -108,7 +108,7 @@ export default function PdfToImage() {
         {isProcessing ? (
           <span className="relative z-10 text-yellow-900">Converting... {progress}%</span>
         ) : (
-          <><ImageIcon className="w-6 h-6 relative z-10"/> Convert to {format.toUpperCase()}</>
+          <><ImageIcon className="w-6 h-6 relative z-10"/> Convert to {format === 'jpeg' ? 'JPG' : 'PNG'}</>
         )}
       </button>
     </div>

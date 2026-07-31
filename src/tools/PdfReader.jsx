@@ -3,12 +3,10 @@ import { FileText, ZoomIn, ZoomOut, Maximize, ChevronLeft, ChevronRight, X, Layo
 import { toast } from 'sonner';
 import DragDropZone from '../components/ui/DragDropZone';
 import * as pdfjsLib from 'pdfjs-dist';
+import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
 
 // Configure the worker for Vite
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.mjs',
-  import.meta.url
-).toString();
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
 const Thumbnail = ({ pdfDocument, pageNum, isActive, onClick }) => {
   const canvasRef = useRef(null);

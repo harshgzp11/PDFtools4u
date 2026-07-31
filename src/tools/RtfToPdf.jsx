@@ -146,7 +146,7 @@ export default function RtfToPdf() {
       successData={successData}
       onReset={handleReset}
       customPreviewNode={
-        <div className="w-full max-h-[400px] overflow-y-auto bg-white border border-gray-200 rounded-xl p-6 shadow-inner custom-scrollbar relative">
+        <div className="w-full h-full overflow-y-auto bg-white border border-gray-200 rounded-xl p-6 shadow-inner custom-scrollbar relative">
            {htmlContent.length > 0 ? (
              <div 
                id="rtf-render-container" 

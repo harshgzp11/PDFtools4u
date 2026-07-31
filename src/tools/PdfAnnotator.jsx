@@ -3,13 +3,11 @@ import { PenTool, Download, ChevronLeft, ChevronRight, X, ShieldCheck, Eraser, P
 import { toast } from 'sonner';
 import DragDropZone from '../components/ui/DragDropZone';
 import * as pdfjsLib from 'pdfjs-dist';
+import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import SignatureCanvas from 'react-signature-canvas';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.mjs',
-  import.meta.url
-).toString();
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
 const COLORS = ['#000000', '#EF4444', '#3B82F6', '#10B981', '#F59E0B'];
 
