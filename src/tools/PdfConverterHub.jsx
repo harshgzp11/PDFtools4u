@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowLeftRight, FileText, Image as ImageIcon, FileCode2, ChevronDown, ChevronUp, ChevronRight, ScanText, FileSpreadsheet, Presentation } from 'lucide-react';
+import { ArrowLeftRight, FileText, Image as ImageIcon, FileCode2, ChevronDown, ChevronUp, ChevronRight, ScanText, FileSpreadsheet, Presentation, Code } from 'lucide-react';
 import DragDropZone from '../components/ui/DragDropZone';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
@@ -68,7 +68,8 @@ export default function PdfConverterHub() {
   const handleConversionSelect = (targetToolId) => {
     // Pass the file via global object for a seamless handoff to the next tool if supported
     window.__sharedFile = file;
-    window.location.hash = targetToolId;
+    window.history.pushState({}, "", "/" + targetToolId);
+    window.dispatchEvent(new Event('popstate'));
   };
 
   // State 1: Upload

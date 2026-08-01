@@ -28,8 +28,9 @@ export default function BackgroundRemover() {
     setProgress(0);
     
     try {
-      // Configuration for model loading progress
+      // Configuration for model loading progress and publicPath for WASM/ONNX models
       const config = {
+        publicPath: "https://static.imgly.com/@imgly/background-removal-data/1.7.0/dist/",
         progress: (key, current, total) => {
           if (total) setProgress(Math.round((current / total) * 100));
         }

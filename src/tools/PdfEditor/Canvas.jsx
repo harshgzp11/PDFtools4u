@@ -28,53 +28,56 @@ export default function Canvas({
   const [isPanning, setIsPanning] = useState(false);
   const [panStart, setPanStart] = useState({ x: 0, y: 0 });
 
-  // Handles adding shapes and text on click
+  const [currentShape, setCurrentShape] = useState(null);
+
+  // Handles adding text on click (shapes are now drag-to-draw)
   const handleContainerClick = (e) => {
-    if (['select', 'pencil', 'highlighter', 'eraser', 'hand'].includes(activeTool)) return;
+    if (['select', 'pencil', 'highlighter', 'eraser', 'hand', 'rect', 'circle', 'redact'].includes(activeTool)) return;
     
     const rect = e.currentTarget.getBoundingClientRect();
     const x = (e.clientX - rect.left) / zoom;
     const y = (e.clientY - rect.top) / zoom;
     
-    const newOverlay = { 
-      id: generateId(), 
-      type: activeTool, 
-      x, 
-      y, 
-      color: activeTool === 'redact' ? '#000000' : toolConfig.color,
-      strokeWidth: toolConfig.strokeWidth 
-    };
-
     if (activeTool === 'text') {
-      newOverlay.text = 'New Text';
-      newOverlay.fontSize = toolConfig.size || 24;
-      newOverlay.w = 150;
-      newOverlay.h = 40;
-    } else if (activeTool === 'rect' || activeTool === 'redact') {
-      newOverlay.w = 150;
-      newOverlay.h = 100;
-      if (activeTool === 'redact') newOverlay.h = 30;
-    } else if (activeTool === 'circle') {
-      newOverlay.r = 50;
-      newOverlay.w = 100;
-      newOverlay.h = 100;
-    } else if (activeTool === 'image') {
-      newOverlay.w = 200;
-      newOverlay.h = 200;
-      newOverlay.src = 'https://images.unsplash.com/photo-1528297506728-9533d2ac3fa4?w=200&h=200&fit=crop';
-    } else if (activeTool === 'signature') {
-      newOverlay.w = 200;
-      newOverlay.h = 60;
-      newOverlay.text = 'APPROVED';
-    }
+      const newOverlay = { 
+        id: generateId(), 
+        type: 'text', 
+        x, 
+        y, 
+        color: toolConfig.color,
+        text: 'New Text',
+        fontSize: toolConfig.size || 24,
+        w: 150,
+        h: 40
+      };
 
-    const newOverlays = { ...overlays };
-    if (!newOverlays[activePageId]) newOverlays[activePageId] = [];
-    newOverlays[activePageId] = [...newOverlays[activePageId], newOverlay];
-    
-    setOverlays(newOverlays);
-    pushHistory();
-    setActiveTool('select'); 
+      const newOverlays = { ...overlays };
+      if (!newOverlays[activePageId]) newOverlays[activePageId] = [];
+      newOverlays[activePageId] = [...newOverlays[activePageId], newOverlay];
+      
+      setOverlays(newOverlays);
+      pushHistory();
+      setActiveTool('select'); 
+    } else if (activeTool === 'signature') {
+      const newOverlay = { 
+        id: generateId(), 
+        type: 'signature', 
+        x, 
+        y, 
+        color: '#ef4444',
+        text: 'APPROVED',
+        w: 200,
+        h: 60
+      };
+
+      const newOverlays = { ...overlays };
+      if (!newOverlays[activePageId]) newOverlays[activePageId] = [];
+      newOverlays[activePageId] = [...newOverlays[activePageId], newOverlay];
+      
+      setOverlays(newOverlays);
+      pushHistory();
+      setActiveTool('select'); 
+    }
   };
 
   const getEventPos = (e) => {
@@ -92,12 +95,17 @@ export default function Canvas({
       return;
     }
     
-    if (!['pencil', 'highlighter'].includes(activeTool)) return;
-    e.preventDefault();
-    
-    const { x, y } = getEventPos(e);
-    setIsDrawing(true);
-    setCurrentPath([{ x, y }]);
+    if (['pencil', 'highlighter'].includes(activeTool)) {
+      e.preventDefault();
+      const { x, y } = getEventPos(e);
+      setIsDrawing(true);
+      setCurrentPath([{ x, y }]);
+    } else if (['rect', 'circle', 'redact'].includes(activeTool)) {
+      e.preventDefault();
+      const { x, y } = getEventPos(e);
+      setIsDrawing(true);
+      setCurrentShape({ startX: x, startY: y, currentX: x, currentY: y });
+    }
   };
 
   const onMouseMove = (e) => {
@@ -109,16 +117,46 @@ export default function Canvas({
       return;
     }
 
-    if (!isDrawing || !['pencil', 'highlighter'].includes(activeTool)) return;
-    e.preventDefault();
+    if (!isDrawing) return;
     
-    const { x, y } = getEventPos(e);
-    setCurrentPath(prev => [...prev, { x, y }]);
-    
-    // Live render
-    const ctx = drawCanvasRef.current.getContext('2d');
-    ctx.lineTo(x, y);
-    ctx.stroke();
+    if (['pencil', 'highlighter'].includes(activeTool)) {
+      e.preventDefault();
+      const { x, y } = getEventPos(e);
+      setCurrentPath(prev => [...prev, { x, y }]);
+      
+      // Live render path
+      const ctx = drawCanvasRef.current.getContext('2d');
+      ctx.lineTo(x, y);
+      ctx.stroke();
+    } else if (['rect', 'circle', 'redact'].includes(activeTool) && currentShape) {
+      e.preventDefault();
+      const { x, y } = getEventPos(e);
+      setCurrentShape(prev => ({ ...prev, currentX: x, currentY: y }));
+      
+      // Live render shape on temporary canvas
+      const ctx = drawCanvasRef.current.getContext('2d');
+      ctx.clearRect(0, 0, drawCanvasRef.current.width, drawCanvasRef.current.height);
+      
+      const xOrigin = Math.min(currentShape.startX, x);
+      const yOrigin = Math.min(currentShape.startY, y);
+      const w = Math.abs(x - currentShape.startX);
+      const h = Math.abs(y - currentShape.startY);
+      
+      ctx.strokeStyle = activeTool === 'redact' ? '#000000' : toolConfig.color;
+      ctx.lineWidth = toolConfig.strokeWidth;
+      
+      if (activeTool === 'rect' || activeTool === 'redact') {
+        ctx.strokeRect(xOrigin, yOrigin, w, h);
+        if (activeTool === 'redact') {
+          ctx.fillStyle = 'rgba(0,0,0,1)';
+          ctx.fillRect(xOrigin, yOrigin, w, h);
+        }
+      } else if (activeTool === 'circle') {
+        ctx.beginPath();
+        ctx.ellipse(xOrigin + w/2, yOrigin + h/2, w/2, h/2, 0, 0, 2 * Math.PI);
+        ctx.stroke();
+      }
+    }
   };
 
   const onMouseUp = () => {
@@ -127,10 +165,10 @@ export default function Canvas({
       return;
     }
 
-    if (!isDrawing || !['pencil', 'highlighter'].includes(activeTool)) return;
+    if (!isDrawing) return;
     setIsDrawing(false);
     
-    if (currentPath.length > 1) {
+    if (['pencil', 'highlighter'].includes(activeTool) && currentPath?.length > 1) {
       const svgPath = currentPath.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
       
       const newOverlay = {
@@ -150,6 +188,32 @@ export default function Canvas({
       
       setOverlays(newOverlays);
       pushHistory();
+    } else if (['rect', 'circle', 'redact'].includes(activeTool) && currentShape) {
+      const w = Math.abs(currentShape.currentX - currentShape.startX);
+      const h = Math.abs(currentShape.currentY - currentShape.startY);
+      
+      // Don't create if too small (accidental click)
+      if (w > 5 && h > 5) {
+        const newOverlay = {
+          id: generateId(),
+          type: activeTool,
+          color: activeTool === 'redact' ? '#000000' : toolConfig.color,
+          strokeWidth: toolConfig.strokeWidth,
+          x: Math.min(currentShape.startX, currentShape.currentX),
+          y: Math.min(currentShape.startY, currentShape.currentY),
+          w,
+          h
+        };
+        
+        const newOverlays = { ...overlays };
+        if (!newOverlays[activePageId]) newOverlays[activePageId] = [];
+        newOverlays[activePageId] = [...newOverlays[activePageId], newOverlay];
+        
+        setOverlays(newOverlays);
+        pushHistory();
+      }
+      setCurrentShape(null);
+      setActiveTool('select');
     }
     
     setCurrentPath([]);
