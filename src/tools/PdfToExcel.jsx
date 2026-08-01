@@ -135,7 +135,7 @@ export default function PdfToExcel() {
           />
         )}
         {isProcessing ? (
-          <span className="relative z-10">Analyzing... {progress}%</span>
+          <span className="relative z-10 inline-flex items-center justify-center min-w-[200px] h-7 text-sm font-bold whitespace-nowrap">Analyzing... {progress}%</span>
         ) : (
           <><FileSpreadsheet className="w-6 h-6 relative z-10"/> Convert to Excel (CSV)</>
         )}

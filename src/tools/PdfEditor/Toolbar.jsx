@@ -139,29 +139,9 @@ export default function Toolbar({
           )}
         </div>
 
-        {/* Center: View/Mode Toggles */}
-        <div className="flex bg-gray-100 p-1 rounded-lg gap-1 border border-gray-200/60 hidden md:flex">
-           <button 
-             onClick={() => setViewMode('edit')}
-             className={`p-1.5 rounded-md transition-all ${viewMode === 'edit' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-500 hover:text-gray-700'}`} 
-             title="Edit View"
-           >
-             <Paintbrush className="w-4 h-4" />
-           </button>
-           <button 
-             onClick={() => setViewMode('grid')}
-             className={`p-1.5 rounded-md transition-all ${viewMode === 'grid' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-500 hover:text-gray-700'}`} 
-             title="Grid View"
-           >
-             <LayoutGrid className="w-4 h-4" />
-           </button>
-           <button 
-             onClick={() => setViewMode('thumbnail')}
-             className={`p-1.5 rounded-md transition-all ${viewMode === 'thumbnail' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-500 hover:text-gray-700'}`} 
-             title="Document Overview"
-           >
-             <Grid2X2 className="w-4 h-4" />
-           </button>
+        {/* Center: View/Mode Toggles (Removed per user request) */}
+        <div className="flex bg-gray-100 p-1 rounded-lg gap-1 border border-gray-200/60 hidden md:flex opacity-0 pointer-events-none">
+           {/* Space maintained for flex layout balance */}
         </div>
 
         {/* Right: Export Actions */}
@@ -183,7 +163,7 @@ export default function Toolbar({
       </div>
 
       {/* Secondary Tool Ribbon */}
-      <div className="h-12 px-4 flex items-center justify-center gap-6 relative bg-white">
+      <div className={`h-12 px-4 flex items-center justify-center gap-6 relative bg-white transition-opacity duration-300 ${viewMode !== 'edit' ? 'opacity-30 pointer-events-none' : ''}`}>
         
         <div className="flex items-center gap-1">
           <button onClick={() => toggleTool('select')} className={`p-2 rounded-md transition-all ${activeTool === 'select' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-100'}`} title="Pointer">

@@ -22,7 +22,7 @@ const JpgToPdf = React.lazy(() => import('./tools/JpgToPdf'));
 const BackgroundRemover = React.lazy(() => import('./tools/BackgroundRemover'));
 const HtmlToImage = React.lazy(() => import('./tools/HtmlToImage'));
 const ImageCropRotate = React.lazy(() => import('./tools/ImageCropRotate'));
-const PhotoEditor = React.lazy(() => import('./tools/PhotoEditor'));
+const PhotoEditor = React.lazy(() => import('./tools/PhotoEditor/index'));
 
 const DeletePdfPages = React.lazy(() => import('./tools/DeletePdfPages'));
 const ExtractPdfPages = React.lazy(() => import('./tools/ExtractPdfPages'));

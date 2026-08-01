@@ -106,7 +106,7 @@ export default function PdfToImage() {
           />
         )}
         {isProcessing ? (
-          <span className="relative z-10 text-yellow-900">Converting... {progress}%</span>
+          <span className="relative z-10 text-yellow-900 inline-flex items-center justify-center min-w-[200px] h-7 text-sm font-bold whitespace-nowrap">Converting... {progress}%</span>
         ) : (
           <><ImageIcon className="w-6 h-6 relative z-10"/> Convert to {format === 'jpeg' ? 'JPG' : 'PNG'}</>
         )}

@@ -202,7 +202,7 @@ export default function PptToPdf() {
           />
         )}
         {isProcessing ? (
-          <span className="relative z-10">Extracting Slides... {progress}%</span>
+          <span className="relative z-10 inline-flex items-center justify-center min-w-[220px] h-7 text-sm font-bold whitespace-nowrap">Extracting Slides... {progress}%</span>
         ) : (
           <><Presentation className="w-6 h-6 relative z-10"/> Convert to PDF</>
         )}

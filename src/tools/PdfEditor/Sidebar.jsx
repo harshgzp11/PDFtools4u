@@ -3,7 +3,12 @@ import { Trash2, Copy, RotateCw, Plus, FileArchive, ArrowLeftRight, Files, Edit3
 import { generateId } from './utils';
 import { toast } from 'sonner';
 
-export default function Sidebar({ pages, setPages, activePageIndex, setActivePageIndex, pushHistory }) {
+export default function Sidebar({ pages, setPages, activePageIndex, setActivePageIndex, pushHistory, onTogglePanel, setViewMode, viewMode }) {
+  const navigate = (path) => {
+    window.history.pushState({}, "", path);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  };
+
   const handleDragStart = (e, index) => {
     e.dataTransfer.setData('text/plain', index);
     e.currentTarget.style.opacity = '0.5';
@@ -68,61 +73,76 @@ export default function Sidebar({ pages, setPages, activePageIndex, setActivePag
 
   return (
     <div className="flex h-full shrink-0 relative z-10">
-      {/* Global Navigation Strip (Mock) */}
+      {/* Global Navigation Strip */}
       <div className="w-16 bg-[#0f172a] h-full flex flex-col items-center py-4 gap-6 z-20 shadow-xl hidden md:flex">
-         <button className="text-gray-400 hover:text-white transition-colors" title="Compress"><FileArchive className="w-5 h-5" /></button>
-         <button className="text-gray-400 hover:text-white transition-colors" title="Convert"><ArrowLeftRight className="w-5 h-5" /></button>
-         <button className="text-gray-400 hover:text-white transition-colors" title="Organize"><Files className="w-5 h-5" /></button>
-         <button className="text-blue-400 hover:text-blue-300 transition-colors" title="Edit"><Edit3 className="w-5 h-5" /></button>
-         <button className="text-gray-400 hover:text-white transition-colors" title="Sign"><PenTool className="w-5 h-5" /></button>
+         <button onClick={() => onTogglePanel('compress')} className="text-gray-400 hover:text-white transition-colors" title="Compress"><FileArchive className="w-5 h-5" /></button>
+         <button onClick={() => onTogglePanel('convert')} className="text-gray-400 hover:text-white transition-colors" title="Convert"><ArrowLeftRight className="w-5 h-5" /></button>
+         <button onClick={() => { setViewMode('grid'); onTogglePanel(null); }} className={`hover:text-white transition-colors ${viewMode === 'grid' ? 'text-white' : 'text-gray-400'}`} title="Organize"><Files className="w-5 h-5" /></button>
+         <button onClick={() => { setViewMode('edit'); onTogglePanel(null); }} className={`hover:text-blue-300 transition-colors ${viewMode === 'edit' ? 'text-blue-400' : 'text-gray-400'}`} title="Edit"><Edit3 className="w-5 h-5" /></button>
+         <button onClick={() => onTogglePanel('sign')} className="text-gray-400 hover:text-white transition-colors" title="Sign"><PenTool className="w-5 h-5" /></button>
          <div className="flex-1"></div>
-         <button className="text-purple-400 hover:text-purple-300 transition-colors" title="AI Tools"><Sparkles className="w-5 h-5" /></button>
+         <button onClick={() => onTogglePanel('ai')} className="text-purple-400 hover:text-purple-300 transition-colors" title="AI Tools"><Sparkles className="w-5 h-5" /></button>
       </div>
 
-      <div className="w-56 bg-white border-r border-gray-200 flex flex-col h-full shadow-[2px_0_10px_rgba(0,0,0,0.02)]">
-        <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50 h-12">
-          <span className="font-semibold text-gray-700 text-sm">Pages</span>
-          <span className="text-xs font-medium bg-gray-200 px-2 py-0.5 rounded-full text-gray-600">{pages.length}</span>
-        </div>
-        
-        <div className="flex-1 overflow-y-auto p-4 custom-scrollbar bg-[#f9fafb]">
-          {pages.map((page, idx) => (
-            <React.Fragment key={page.id}>
-              <div 
-                draggable
-                onDragStart={(e) => handleDragStart(e, idx)}
-                onDragEnd={handleDragEnd}
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={(e) => handleDrop(e, idx)}
-                onClick={() => setActivePageIndex(idx)}
-                className={`relative cursor-pointer rounded-lg transition-all group ${activePageIndex === idx ? 'ring-2 ring-blue-500 shadow-md shadow-blue-500/20' : 'ring-1 ring-gray-200 hover:ring-gray-300'}`}
-              >
-                {/* Page Number */}
-                <div className="absolute top-1.5 left-1.5 bg-white/90 text-gray-700 shadow-sm border border-gray-100 text-[10px] font-bold px-1.5 rounded z-10">
-                  {idx + 1}
-                </div>
-                
-                {/* Thumbnail Image */}
-                <div className="overflow-hidden rounded-lg bg-white w-full flex items-center justify-center min-h-[120px] p-2">
-                    <img 
-                        src={page.thumbUrl} 
-                        alt={`Page ${idx + 1}`} 
-                        className="w-full h-full block object-contain transition-transform duration-300 pointer-events-none select-none"
-                        style={{ transform: `rotate(${page.rotation}deg)` }}
-                    />
-                </div>
-
-                {/* Hover Actions Menu (White Overlay) */}
-                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-white border border-gray-200 rounded-lg p-1 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg z-20">
-                    <button onClick={(e) => handleRotate(e, idx)} className="p-1 hover:bg-gray-100 rounded text-gray-600 transition-colors" title="Rotate">
-                        <RotateCw className="w-3.5 h-3.5" />
+      {/* Pages Sidebar - Only visible in edit mode */}
+      {viewMode === 'edit' && (
+        <div className="w-56 bg-white border-r border-gray-200 flex flex-col h-full shadow-[2px_0_10px_rgba(0,0,0,0.02)]">
+          <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50 h-12">
+            <span className="font-semibold text-gray-700 text-sm">Pages</span>
+            <span className="text-xs font-medium bg-gray-200 px-2 py-0.5 rounded-full text-gray-600">{pages.length}</span>
+          </div>
+          
+          <div className="flex-1 overflow-y-auto p-4 custom-scrollbar bg-[#f9fafb]">
+            {pages.map((page, idx) => (
+              <React.Fragment key={page.id}>
+                <div 
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, idx)}
+                  onDragEnd={handleDragEnd}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => handleDrop(e, idx)}
+                  onClick={() => setActivePageIndex(idx)}
+                  className={`relative mb-4 group cursor-pointer transition-all ${
+                    idx === activePageIndex 
+                      ? 'ring-2 ring-blue-500 rounded-lg shadow-md bg-white' 
+                      : 'hover:ring-2 hover:ring-gray-300 rounded-lg bg-gray-50'
+                  }`}
+                >
+                  <div className="absolute top-2 left-2 bg-white/90 text-gray-700 text-xs font-bold px-2 py-0.5 rounded shadow-sm z-10 pointer-events-none">
+                    {idx + 1}
+                  </div>
+                  
+                  <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                    <button 
+                      onClick={(e) => handleRotate(e, idx)}
+                      className="p-1 bg-white hover:bg-blue-50 text-gray-600 hover:text-blue-600 rounded shadow-sm border border-gray-200 transition-colors"
+                      title="Rotate Page"
+                    >
+                      <RotateCw className="w-3.5 h-3.5" />
                     </button>
-                    <button onClick={(e) => handleDuplicate(e, idx)} className="p-1 hover:bg-gray-100 rounded text-gray-600 transition-colors" title="Duplicate">
-                        <Copy className="w-3.5 h-3.5" />
+                    <button 
+                      onClick={(e) => handleDuplicate(e, idx)}
+                      className="p-1 bg-white hover:bg-blue-50 text-gray-600 hover:text-blue-600 rounded shadow-sm border border-gray-200 transition-colors"
+                      title="Duplicate Page"
+                    >
+                      <Copy className="w-3.5 h-3.5" />
                     </button>
-                    <button onClick={(e) => handleDelete(e, idx)} className="p-1 hover:bg-red-50 hover:text-red-600 rounded text-gray-600 transition-colors" title="Delete">
-                        <Trash2 className="w-3.5 h-3.5" />
+                    <button 
+                      onClick={(e) => handleDelete(e, idx)}
+                      className="p-1 bg-white hover:bg-red-50 text-gray-600 hover:text-red-600 rounded shadow-sm border border-gray-200 transition-colors"
+                      title="Delete Page"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
                     </button>
+                  </div>
+  
+                <div className="aspect-[1/1.4] w-full flex items-center justify-center overflow-hidden rounded-lg p-1">
+                  <img 
+                    src={page.thumbUrl} 
+                    alt={`Page ${idx + 1}`} 
+                    className="max-w-full max-h-full object-contain pointer-events-none"
+                    style={{ transform: `rotate(${page.rotation}deg)` }}
+                  />
                 </div>
               </div>
 
@@ -139,7 +159,8 @@ export default function Sidebar({ pages, setPages, activePageIndex, setActivePag
             </React.Fragment>
           ))}
         </div>
-      </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { PenTool } from 'lucide-react';
+import React, { useState, useEffect, useRef, Suspense, lazy } from 'react';
+import { PenTool, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { PDFDocument, rgb, StandardFonts, degrees } from 'pdf-lib';
 import * as pdfjsLib from 'pdfjs-dist';
@@ -10,6 +10,11 @@ import Sidebar from './Sidebar';
 import Toolbar from './Toolbar';
 import Canvas from './Canvas';
 import GridView from './GridView';
+
+const CompressPanel = lazy(() => import('./Panels/CompressPanel'));
+const ConvertPanel = lazy(() => import('./Panels/ConvertPanel'));
+const SignPanel = lazy(() => import('./Panels/SignPanel'));
+const AiPanel = lazy(() => import('./Panels/AiPanel'));
 
 import { generateId } from './utils';
 
@@ -31,6 +36,7 @@ export default function PdfEditor() {
   const [zoom, setZoom] = useState(1);
   const [activeTool, setActiveTool] = useState('select'); // select, text, pencil, rect, redact, image, signature, etc.
   const [toolConfig, setToolConfig] = useState({ color: '#ef4444', size: 24, strokeWidth: 4 });
+  const [activeToolPanel, setActiveToolPanel] = useState(null); // null, 'compress', 'convert', 'sign', 'ai'
   
   // Overlays State
   const [overlays, setOverlays] = useState({}); 
@@ -278,6 +284,13 @@ export default function PdfEditor() {
     );
   }
 
+  const togglePanel = (panelName) => {
+    setActiveToolPanel(panelName);
+    if (panelName) {
+      setActiveTool('select');
+    }
+  };
+
   return (
     <div className="flex flex-col h-[calc(100vh-64px)] w-full overflow-hidden bg-[#e5e7eb]">
       <Toolbar 
@@ -302,19 +315,22 @@ export default function PdfEditor() {
         activePageId={pages[activePageIndex]?.id}
         overlays={overlays}
         setOverlays={setOverlays}
+        onTogglePanel={togglePanel}
       />
       <div className="flex flex-1 overflow-hidden relative">
+        <Sidebar 
+          pages={pages} 
+          setPages={setPages} 
+          activePageIndex={activePageIndex} 
+          setActivePageIndex={setActivePageIndex} 
+          pushHistory={pushHistory}
+          onTogglePanel={togglePanel}
+          setViewMode={setViewMode}
+          viewMode={viewMode}
+        />
         {viewMode === 'edit' ? (
-          <>
-            <Sidebar 
-              pages={pages} 
-              setPages={setPages} 
-              activePageIndex={activePageIndex} 
-              setActivePageIndex={setActivePageIndex} 
-              pushHistory={pushHistory}
-            />
-            <Canvas 
-              pages={pages} 
+          <Canvas 
+            pages={pages} 
               activePageIndex={activePageIndex}
               activePageId={pages[activePageIndex]?.id}
               setActivePageIndex={setActivePageIndex}
@@ -328,7 +344,6 @@ export default function PdfEditor() {
               setOverlays={setOverlays}
               pushHistory={pushHistory}
             />
-          </>
         ) : (
           <GridView 
             pages={pages}
@@ -339,6 +354,36 @@ export default function PdfEditor() {
             pushHistory={pushHistory}
             viewMode={viewMode}
           />
+        )}
+
+        {activeToolPanel && (
+          <Suspense fallback={<div className="absolute xl:relative right-0 top-0 bottom-0 w-80 h-full bg-white border-l border-gray-200 shadow-2xl xl:shadow-xl flex flex-col items-center justify-center z-30 flex-shrink-0 animate-in slide-in-from-right duration-300"><Loader2 className="w-6 h-6 animate-spin text-blue-500" /></div>}>
+            {activeToolPanel === 'compress' && <CompressPanel file={file} onClose={() => setActiveToolPanel(null)} />}
+            {activeToolPanel === 'convert' && <ConvertPanel file={file} onClose={() => setActiveToolPanel(null)} />}
+            {activeToolPanel === 'sign' && (
+              <SignPanel 
+                onClose={() => setActiveToolPanel(null)} 
+                onAddSignature={(dataUrl) => {
+                   const newOverlay = {
+                     id: generateId(),
+                     type: 'image',
+                     src: dataUrl,
+                     x: 100,
+                     y: 100,
+                     w: 150,
+                     h: 75
+                   };
+                   const newOverlays = { ...overlays };
+                   if (!newOverlays[pages[activePageIndex]?.id]) newOverlays[pages[activePageIndex]?.id] = [];
+                   newOverlays[pages[activePageIndex]?.id].push(newOverlay);
+                   setOverlays(newOverlays);
+                   pushHistory();
+                   setActiveToolPanel(null);
+                }} 
+              />
+            )}
+            {activeToolPanel === 'ai' && <AiPanel onClose={() => setActiveToolPanel(null)} />}
+          </Suspense>
         )}
       </div>
     </div>
