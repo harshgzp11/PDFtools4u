@@ -46,6 +46,39 @@ export default function PdfEditor() {
     }
   }, []);
 
+  // Keyboard Shortcuts (Hotkeys)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
+
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        handleUndo();
+      } else if ((e.ctrlKey || e.metaKey) && (e.key.toLowerCase() === 'y' || (e.key.toLowerCase() === 'z' && e.shiftKey))) {
+        e.preventDefault();
+        handleRedo();
+      } else if (e.code === 'Space' && !e.repeat) {
+        e.preventDefault();
+        setActiveTool('hand');
+      }
+    };
+
+    const handleKeyUp = (e) => {
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
+      if (e.code === 'Space') {
+        e.preventDefault();
+        setActiveTool('select');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [history, historyIndex]); // Re-bind so handleUndo/Redo have fresh state
+
   const pushHistory = (newState = null) => {
     const newHistory = history.slice(0, historyIndex + 1);
     const stateToSave = newState || { overlays, pages };
@@ -218,7 +251,7 @@ export default function PdfEditor() {
     return (
       <ToolPreviewLayout
         title="PDF Editor"
-        description="Add text, shapes, redactions, and freehand drawings to your PDF files instantly."
+        description="Add text, shapes, redactions, and freehand drawings to your PDF files instantly. All processing is done locally in your browser—your files are never uploaded to any server, ensuring complete data privacy and security."
         icon={PenTool}
         onFileSelect={handleFileUpload}
         isProcessing={isProcessing}
@@ -231,8 +264,9 @@ export default function PdfEditor() {
   const activePageId = pages[activePageIndex]?.id;
 
   return (
-    <div className="flex flex-col h-[calc(100vh-80px)] -mx-6 sm:-mx-10 -mt-6 sm:-mt-10 overflow-hidden bg-gray-50/50 relative z-10">
+    <div className="flex flex-col h-[calc(100vh-64px)] fixed top-[64px] left-0 right-0 overflow-hidden bg-[#f4f4f4] z-50">
       <Toolbar 
+        file={file}
         activeTool={activeTool} 
         setActiveTool={setActiveTool}
         toolConfig={toolConfig}
@@ -246,7 +280,7 @@ export default function PdfEditor() {
         onExport={handleExport}
         isProcessing={isProcessing}
       />
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden h-full">
         <Sidebar 
           pages={pages}
           setPages={setPages}
@@ -261,6 +295,7 @@ export default function PdfEditor() {
           setActivePageIndex={setActivePageIndex}
           pdfJsDoc={pdfJsDoc}
           zoom={zoom}
+          setZoom={setZoom}
           activeTool={activeTool}
           setActiveTool={setActiveTool}
           toolConfig={toolConfig}
