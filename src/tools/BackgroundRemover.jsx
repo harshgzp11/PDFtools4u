@@ -1,94 +1,467 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { removeBackground as imglyRemoveBackground } from '@imgly/background-removal';
-import { Download, Loader2, Sparkles } from 'lucide-react';
+import { Download, Loader2, Sparkles, Zap, Gem, RotateCcw, Eye, Grid3X3, SlidersHorizontal } from 'lucide-react';
 import DragDropZone from '../components/ui/DragDropZone';
+import {
+  blobToImageData,
+  imageDataToBlob,
+  canvasToObjectURL,
+  fillInteriorHoles,
+  softEdgeFeather,
+  addContactShadow,
+  upscaleMask,
+  applyAlphaMask,
+} from '../utils/backgroundUtils';
+
+// ─── Quality Mode Constants ──────────────────────────────────────────
+const MODE_FAST = 'fast';
+const MODE_HQ = 'hq';
 
 export default function BackgroundRemover() {
+  // ─── Core State ──────────────────────────────────────────────────
   const [imageSrc, setImageSrc] = useState(null);
+  const [originalFile, setOriginalFile] = useState(null);
   const [resultSrc, setResultSrc] = useState(null);
   const [fileName, setFileName] = useState('');
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [statusText, setStatusText] = useState('');
 
+  // ─── Settings ────────────────────────────────────────────────────
+  const [qualityMode, setQualityMode] = useState(MODE_FAST);
+  const [featherRadius, setFeatherRadius] = useState(2);
+  const [fillHoles, setFillHoles] = useState(false);
+  const [contactShadow, setContactShadow] = useState(false);
+  const [previewBg, setPreviewBg] = useState('checker');  // checker | white | black
+
+  // ─── Comparison Slider ───────────────────────────────────────────
+  const [sliderPos, setSliderPos] = useState(50);
+  const sliderRef = useRef(null);
+  const isDragging = useRef(false);
+
+  // ─── Handlers ────────────────────────────────────────────────────
   const handleImageUpload = (file) => {
     if (!file.type.startsWith('image/')) return;
     setFileName(file.name.split('.')[0]);
+    setOriginalFile(file);
     setResultSrc(null);
-    
+    setProgress(0);
+    setStatusText('');
+    setSliderPos(50);
+
     const reader = new FileReader();
-    reader.onload = (e) => {
-      setImageSrc(e.target.result);
-    };
+    reader.onload = (e) => setImageSrc(e.target.result);
     reader.readAsDataURL(file);
   };
 
+  const resetTool = () => {
+    setImageSrc(null);
+    setOriginalFile(null);
+    setResultSrc(null);
+    setFileName('');
+    setLoading(false);
+    setProgress(0);
+    setStatusText('');
+    setSliderPos(50);
+  };
+
+  // ─── Inference: Fast Mode (ISNet via @imgly) ─────────────────────
+  const runFastInference = async () => {
+    setStatusText('Loading AI model...');
+    setProgress(5);
+
+    const config = {
+      device: 'gpu',
+      model: 'isnet_fp16',
+      output: {
+        format: 'image/png',
+        quality: 1.0,
+        type: 'foreground',
+      },
+      progress: (key, current, total) => {
+        if (total) {
+          const pct = Math.round((current / total) * 100);
+          setProgress(Math.min(pct, 50)); // Reserve 50-100% for post-processing
+          if (pct < 30) setStatusText('Downloading model...');
+          else if (pct < 80) setStatusText('Processing...');
+          else setStatusText('Generating mask...');
+        }
+      },
+    };
+
+    const blob = await imglyRemoveBackground(imageSrc, config);
+    return blob;
+  };
+
+  // ─── Inference: High Quality Mode (BiRefNet via @huggingface/transformers) ─
+  const runHQInference = async () => {
+    setStatusText('Loading BiRefNet model...');
+    setProgress(2);
+
+    // Dynamic import — only loaded when HQ mode is selected
+    const { AutoModel, AutoProcessor, RawImage } = await import('@huggingface/transformers');
+
+    const modelId = 'onnx-community/BiRefNet_lite-General-2K';
+    const device = (typeof navigator !== 'undefined' && navigator.gpu) ? 'webgpu' : 'wasm';
+
+    setStatusText(`Downloading model (${device.toUpperCase()})...`);
+    setProgress(5);
+
+    const model = await AutoModel.from_pretrained(modelId, {
+      dtype: 'fp32',
+      device,
+      progress_callback: (progressInfo) => {
+        if (progressInfo.status === 'progress' && progressInfo.progress != null) {
+          const pct = Math.round(progressInfo.progress);
+          setProgress(Math.min(5 + Math.round(pct * 0.35), 40)); // 5-40% for download
+          setStatusText(`Downloading model... ${pct}%`);
+        } else if (progressInfo.status === 'ready') {
+          setStatusText('Model loaded!');
+          setProgress(40);
+        }
+      },
+    });
+
+    const processor = await AutoProcessor.from_pretrained(modelId);
+    setStatusText('Analyzing image...');
+    setProgress(42);
+
+    // Load the image for inference
+    const image = await RawImage.fromURL(imageSrc);
+    const { pixel_values } = await processor(image);
+
+    setStatusText('Running BiRefNet inference...');
+    setProgress(45);
+
+    const { result } = await model({ input: pixel_values });
+
+    setStatusText('Extracting mask...');
+    setProgress(50);
+
+    // The model outputs a prediction tensor — convert to mask
+    const maskData = result.data;
+    const maskH = result.dims[2];
+    const maskW = result.dims[3];
+
+    // Create a canvas with the original image
+    const origBitmap = await createImageBitmap(originalFile);
+    const origW = origBitmap.width;
+    const origH = origBitmap.height;
+    const origCanvas = document.createElement('canvas');
+    origCanvas.width = origW;
+    origCanvas.height = origH;
+    const origCtx = origCanvas.getContext('2d');
+    origCtx.drawImage(origBitmap, 0, 0);
+    origBitmap.close();
+
+    // Convert mask logits to 0-255 alpha
+    const rawAlpha = new Uint8Array(maskW * maskH);
+    for (let i = 0; i < maskW * maskH; i++) {
+      // Apply sigmoid to convert logits → probability
+      const sigmoid = 1 / (1 + Math.exp(-maskData[i]));
+      rawAlpha[i] = Math.round(sigmoid * 255);
+    }
+
+    // Upscale mask to original image dimensions via bilinear interpolation
+    const upscaledAlpha = upscaleMask(rawAlpha, maskW, maskH, origW, origH);
+
+    // Get original image data and apply the alpha mask
+    const origImageData = origCtx.getImageData(0, 0, origW, origH);
+    const maskedImageData = applyAlphaMask(origImageData, upscaledAlpha);
+
+    // Convert to blob
+    const resultCanvas = document.createElement('canvas');
+    resultCanvas.width = origW;
+    resultCanvas.height = origH;
+    const resultCtx = resultCanvas.getContext('2d');
+    resultCtx.putImageData(maskedImageData, 0, 0);
+
+    const blob = await new Promise(resolve => resultCanvas.toBlob(resolve, 'image/png'));
+    return blob;
+  };
+
+  // ─── Full Pipeline ───────────────────────────────────────────────
   const removeBackground = async () => {
     if (!imageSrc) return;
     setLoading(true);
     setProgress(0);
-    
-    try {
-      // Configuration for model loading progress and publicPath for WASM/ONNX models
-      const config = {
-        publicPath: "https://static.imgly.com/@imgly/background-removal-data/1.7.0/dist/",
-        progress: (key, current, total) => {
-          if (total) setProgress(Math.round((current / total) * 100));
-        }
-      };
+    setResultSrc(null);
 
-      const imageBlob = await imglyRemoveBackground(imageSrc, config);
-      const url = URL.createObjectURL(imageBlob);
+    try {
+      // Step 1: Inference
+      let blob;
+      if (qualityMode === MODE_HQ) {
+        blob = await runHQInference();
+      } else {
+        blob = await runFastInference();
+      }
+
+      setStatusText('Post-processing...');
+      setProgress(55);
+
+      // Step 2: Convert to ImageData for post-processing
+      let { imageData, canvas } = await blobToImageData(blob);
+
+      // Step 3: Fill interior holes (if enabled)
+      if (fillHoles) {
+        setStatusText('Filling interior holes...');
+        setProgress(65);
+        imageData = fillInteriorHoles(imageData);
+      }
+
+      // Step 4: Edge feathering (at native resolution)
+      if (featherRadius > 0) {
+        setStatusText('Softening edges...');
+        setProgress(75);
+        imageData = softEdgeFeather(imageData, featherRadius);
+      }
+
+      setProgress(85);
+
+      // Step 5: Write processed ImageData back to canvas
+      canvas.width = imageData.width;
+      canvas.height = imageData.height;
+      const ctx = canvas.getContext('2d');
+      ctx.putImageData(imageData, 0, 0);
+
+      // Step 6: Contact shadow (if enabled)
+      if (contactShadow) {
+        setStatusText('Adding contact shadow...');
+        setProgress(90);
+        canvas = addContactShadow(canvas, 20, 0.25, 8);
+      }
+
+      // Step 7: Generate final URL
+      setStatusText('Finalizing...');
+      setProgress(95);
+      const url = await canvasToObjectURL(canvas);
       setResultSrc(url);
+      setProgress(100);
+      setStatusText('Done!');
     } catch (err) {
       console.error(err);
-      alert("Failed to remove background. Please try a different image.");
+      alert(`Failed to remove background: ${err.message || 'Unknown error'}. Try a different image or mode.`);
     } finally {
       setLoading(false);
     }
   };
 
+  // ─── Comparison Slider Logic ─────────────────────────────────────
+  const handleSliderInteraction = useCallback((clientX) => {
+    if (!sliderRef.current) return;
+    const rect = sliderRef.current.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const pct = Math.min(100, Math.max(0, (x / rect.width) * 100));
+    setSliderPos(pct);
+  }, []);
+
+  const onPointerDown = useCallback((e) => {
+    isDragging.current = true;
+    handleSliderInteraction(e.clientX);
+    e.currentTarget.setPointerCapture(e.pointerId);
+  }, [handleSliderInteraction]);
+
+  const onPointerMove = useCallback((e) => {
+    if (!isDragging.current) return;
+    handleSliderInteraction(e.clientX);
+  }, [handleSliderInteraction]);
+
+  const onPointerUp = useCallback(() => {
+    isDragging.current = false;
+  }, []);
+
+  // ─── Background CSS ─────────────────────────────────────────────
+  const getBgStyle = () => {
+    if (previewBg === 'white') return { backgroundColor: '#ffffff' };
+    if (previewBg === 'black') return { backgroundColor: '#1a1a1a' };
+    // Checkerboard
+    return {
+      backgroundImage:
+        'linear-gradient(45deg, #d0d0d0 25%, transparent 25%), ' +
+        'linear-gradient(135deg, #d0d0d0 25%, transparent 25%), ' +
+        'linear-gradient(45deg, transparent 75%, #d0d0d0 75%), ' +
+        'linear-gradient(135deg, transparent 75%, #d0d0d0 75%)',
+      backgroundSize: '20px 20px',
+      backgroundPosition: '0 0, 10px 0, 10px -10px, 0px 10px',
+      backgroundColor: '#f0f0f0',
+    };
+  };
+
+  // ─── Render ──────────────────────────────────────────────────────
   return (
     <div className="space-y-6 animate-in fade-in">
       <div>
         <h2 className="text-2xl font-bold text-gray-900 mb-2">AI Background Remover</h2>
-        <p className="text-gray-500">Automatically remove image backgrounds with AI, running 100% locally in your browser.</p>
-        <p className="text-xs text-orange-600 font-medium mt-1">Note: A one-time ~40MB AI model download is required on the first use.</p>
+        <p className="text-gray-500">Remove image backgrounds with AI, running 100% locally in your browser.</p>
+        <p className="text-xs text-orange-600 font-medium mt-1">Note: A one-time AI model download (~40MB to 80MB) is required on the first use.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="space-y-4">
-          <label className="block text-sm font-medium text-gray-700">Upload Image</label>
-          <DragDropZone 
-            accept="image/*"
-            onFileSelect={handleImageUpload}
-            label="Drag & drop an image here"
-          />
+        {/* ── Left Column: Upload & Settings ── */}
+        <div className="space-y-6">
+          <div className="space-y-4">
+            <label className="block text-sm font-medium text-gray-700">Upload Image</label>
+            {!imageSrc ? (
+              <DragDropZone
+                accept="image/*"
+                onFileSelect={handleImageUpload}
+                label="Drag & drop an image here"
+              />
+            ) : (
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-3 p-3 bg-indigo-50 border border-indigo-100 rounded-lg">
+                  <div className="p-2 bg-white text-indigo-600 rounded shadow-sm flex-shrink-0">
+                    <Sparkles className="w-5 h-5" />
+                  </div>
+                  <div className="overflow-hidden flex-1">
+                    <h3 className="text-sm font-bold text-gray-900 truncate" title={originalFile?.name}>{originalFile?.name}</h3>
+                    <p className="text-xs text-gray-500">{(originalFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                  </div>
+                  <button onClick={resetTool} className="text-xs font-medium text-indigo-600 hover:text-indigo-800 bg-white px-3 py-1.5 rounded border border-indigo-200">
+                    Change
+                  </button>
+                </div>
 
-          {imageSrc && (
-            <div className="space-y-4 mt-6">
-              <button 
-                onClick={removeBackground} 
-                disabled={loading || resultSrc}
-                className="w-full px-4 py-3 bg-indigo-600 border border-transparent rounded-lg shadow-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50 flex items-center justify-center gap-2"
-              >
-                {loading ? (
-                  <><Loader2 className="w-5 h-5 animate-spin"/> Processing... {progress > 0 && `(${progress}%)`}</>
-                ) : resultSrc ? (
-                  'Background Removed!'
-                ) : (
-                  <><Sparkles className="w-5 h-5"/> Remove Background</>
-                )}
-              </button>
-            </div>
-          )}
+                <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm space-y-5">
+                  <h3 className="text-sm font-bold text-gray-900 border-b border-gray-100 pb-2">Processing Settings</h3>
+                  
+                  {/* Quality Mode */}
+                  <div className="space-y-2">
+                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">Quality Mode</label>
+                    <div className="flex flex-col gap-2">
+                      <label className={`flex items-start gap-3 p-3 border-2 rounded-lg cursor-pointer transition-colors ${qualityMode === MODE_FAST ? 'border-yellow-400 bg-yellow-50' : 'border-gray-200 hover:bg-gray-50'}`}>
+                        <input type="radio" name="quality" value={MODE_FAST} checked={qualityMode === MODE_FAST} onChange={() => setQualityMode(MODE_FAST)} className="mt-0.5 w-4 h-4 text-yellow-500" />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-1.5">
+                            <Zap className="w-4 h-4 text-yellow-500" />
+                            <span className="font-bold text-gray-900 text-sm">Fast</span>
+                            <span className="text-[10px] bg-yellow-100 text-yellow-700 px-1.5 py-0.5 rounded-full font-bold">ISNet</span>
+                          </div>
+                          <p className="text-xs text-gray-500 mt-0.5">~40MB model. Good for standard subjects.</p>
+                        </div>
+                      </label>
+                      <label className={`flex items-start gap-3 p-3 border-2 rounded-lg cursor-pointer transition-colors ${qualityMode === MODE_HQ ? 'border-indigo-400 bg-indigo-50' : 'border-gray-200 hover:bg-gray-50'}`}>
+                        <input type="radio" name="quality" value={MODE_HQ} checked={qualityMode === MODE_HQ} onChange={() => setQualityMode(MODE_HQ)} className="mt-0.5 w-4 h-4 text-indigo-600" />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-1.5">
+                            <Gem className="w-4 h-4 text-indigo-500" />
+                            <span className="font-bold text-gray-900 text-sm">High Quality</span>
+                            <span className="text-[10px] bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded-full font-bold">BiRefNet</span>
+                          </div>
+                          <p className="text-xs text-gray-500 mt-0.5">~80MB model. Superior detail preservation (fur/hair).</p>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Edge Feathering */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold text-gray-700 uppercase tracking-wider">Edge Softness</label>
+                      <span className="text-xs font-mono bg-gray-100 text-gray-600 px-2 py-0.5 rounded">{featherRadius}px</span>
+                    </div>
+                    <input
+                      type="range" min="0" max="10" step="1"
+                      value={featherRadius}
+                      onChange={(e) => setFeatherRadius(Number(e.target.value))}
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                    />
+                  </div>
+
+                  {/* Toggles */}
+                  <div className="space-y-2">
+                    <label className="flex items-start gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                      <input type="checkbox" checked={fillHoles} onChange={(e) => setFillHoles(e.target.checked)} className="mt-0.5 w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500" />
+                      <div>
+                        <span className="text-sm font-bold text-gray-800">Fill mesh / cage holes</span>
+                        <p className="text-xs text-gray-500 mt-0.5">Prevents interior regions from being cut out.</p>
+                      </div>
+                    </label>
+                    <label className="flex items-start gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                      <input type="checkbox" checked={contactShadow} onChange={(e) => setContactShadow(e.target.checked)} className="mt-0.5 w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500" />
+                      <div>
+                        <span className="text-sm font-bold text-gray-800">Add contact shadow</span>
+                        <p className="text-xs text-gray-500 mt-0.5">Places a soft shadow beneath the subject.</p>
+                      </div>
+                    </label>
+                  </div>
+
+                  {/* Process Button */}
+                  <button
+                    onClick={removeBackground}
+                    disabled={loading}
+                    className="w-full px-6 py-4 bg-indigo-600 border border-transparent rounded-xl shadow-sm text-lg font-bold text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 transition-all relative overflow-hidden"
+                  >
+                    {loading && (
+                      <div className="absolute left-0 top-0 bottom-0 bg-indigo-500/30 transition-all duration-300" style={{ width: `${progress}%` }} />
+                    )}
+                    {loading ? (
+                      <span className="relative z-10 inline-flex items-center gap-2 text-sm font-bold">
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <span className="truncate max-w-[180px]">{statusText}</span>
+                        <span className="whitespace-nowrap">{progress}%</span>
+                      </span>
+                    ) : resultSrc ? (
+                      <span className="relative z-10 inline-flex items-center gap-2">
+                        <RotateCcw className="w-5 h-5" /> Re-process Settings
+                      </span>
+                    ) : (
+                      <span className="relative z-10 inline-flex items-center gap-2">
+                        <Sparkles className="w-5 h-5" /> Remove Background
+                      </span>
+                    )}
+                  </button>
+                  
+                  <div className="pt-2 border-t border-gray-100 flex items-start gap-2 text-[11px] leading-tight text-gray-500">
+                    <Eye className="w-4 h-4 flex-shrink-0 text-green-500 mt-0.5" />
+                    <span><strong>100% Private:</strong> Processing runs locally in your browser.</span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
         
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">Result Preview</label>
-          <div className="w-full h-96 border border-gray-300 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden p-4 relative bg-grid-pattern">
-             {/* Simple CSS checkerboard pattern for transparent background visibility */}
-             <style dangerouslySetInnerHTML={{__html: `
-                .bg-grid-pattern {
+        {/* ── Right Column: Preview ── */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <label className="block text-sm font-medium text-gray-700">Result Preview</label>
+            {resultSrc && (
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mr-1">Bg:</span>
+                {[
+                  { id: 'checker', title: 'Transparent', icon: <Grid3X3 className="w-3.5 h-3.5" /> },
+                  { id: 'white', title: 'White', color: '#fff' },
+                  { id: 'black', title: 'Black', color: '#1a1a1a' },
+                ].map(bg => (
+                  <button
+                    key={bg.id}
+                    onClick={() => setPreviewBg(bg.id)}
+                    title={bg.title}
+                    className={`w-6 h-6 rounded-md border flex items-center justify-center transition-all ${
+                      previewBg === bg.id ? 'border-indigo-500 ring-1 ring-indigo-500 scale-110' : 'border-gray-300 hover:border-gray-400'
+                    }`}
+                    style={bg.color ? { backgroundColor: bg.color } : {
+                      backgroundImage: 'linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(135deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(135deg, transparent 75%, #ccc 75%)',
+                      backgroundSize: '8px 8px',
+                      backgroundPosition: '0 0, 4px 0, 4px -4px, 0px 4px',
+                    }}
+                  >
+                    {bg.icon}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div 
+            className="w-full h-96 border border-gray-300 rounded-xl bg-gray-50 flex items-center justify-center overflow-hidden p-4 relative"
+            style={resultSrc ? getBgStyle() : {}}
+          >
+            {/* Checkerboard style for when the result is shown and previewBg is checker */}
+            {resultSrc && previewBg === 'checker' && (
+              <style dangerouslySetInnerHTML={{__html: `
+                .bg-checker {
                   background-image: 
                     linear-gradient(45deg, #ccc 25%, transparent 25%), 
                     linear-gradient(135deg, #ccc 25%, transparent 25%),
@@ -97,14 +470,20 @@ export default function BackgroundRemover() {
                   background-size: 20px 20px;
                   background-position: 0 0, 10px 0, 10px -10px, 0px 10px;
                 }
-             `}} />
-
+              `}} />
+            )}
+            
             {resultSrc ? (
-              <img src={resultSrc} alt="Result" className="max-w-full max-h-full object-contain drop-shadow-2xl" />
+              <img src={resultSrc} alt="Result" className="max-w-full max-h-full object-contain drop-shadow-xl" />
             ) : imageSrc ? (
-              <img src={imageSrc} alt="Original" className="max-w-full max-h-full object-contain opacity-70" />
+              <div className="relative w-full h-full flex items-center justify-center">
+                <img src={imageSrc} alt="Original" className="max-w-full max-h-full object-contain opacity-50" />
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                   <span className="bg-white/90 px-4 py-2 rounded-lg shadow-sm text-sm font-medium text-gray-700">Click "Remove Background" to process</span>
+                </div>
+              </div>
             ) : (
-              <span className="text-gray-500 bg-white/80 p-2 rounded text-sm backdrop-blur">No image selected</span>
+              <span className="text-gray-400 font-medium bg-white px-4 py-2 rounded-lg shadow-sm">No image selected</span>
             )}
           </div>
           
@@ -113,7 +492,7 @@ export default function BackgroundRemover() {
               <a 
                 href={resultSrc}
                 download={`${fileName}_nobg.png`}
-                className="px-6 py-2.5 bg-green-600 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white hover:bg-green-700 flex items-center gap-2"
+                className="px-6 py-3 bg-green-600 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white hover:bg-green-700 flex items-center gap-2 transition-transform hover:-translate-y-0.5"
               >
                 <Download className="w-5 h-5"/> Download Transparent PNG
               </a>

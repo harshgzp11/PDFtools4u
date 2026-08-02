@@ -58,12 +58,6 @@ export default function PdfOcr() {
                 percentage: Math.min(display.percentage + 4, 100)
               };
             } else {
-              clearInterval(interval);
-              // Hold at 100% / Complete for a brief, human-perceivable duration (1.2 seconds)
-              setTimeout(() => {
-                setSuccessData(actual.successPayload);
-                setIsProcessing(false);
-              }, 1200);
               return {
                 action: 'Complete',
                 currentPage: actual.totalPages,
@@ -116,6 +110,17 @@ export default function PdfOcr() {
 
     return () => clearInterval(interval);
   }, [isProcessing]);
+
+  // Handle completion side-effects outside of state updaters
+  useEffect(() => {
+    if (actualProgress.isFinished && displayStatus.percentage === 100) {
+      const timer = setTimeout(() => {
+        setSuccessData(actualProgress.successPayload);
+        setIsProcessing(false);
+      }, 1200);
+      return () => clearTimeout(timer);
+    }
+  }, [actualProgress.isFinished, displayStatus.percentage, actualProgress.successPayload]);
 
   const updateProgress = (action, currentPage, totalPages, percentage) => {
     setActualProgress(prev => ({
@@ -175,15 +180,18 @@ export default function PdfOcr() {
         logger: m => {
           if (m.status === 'recognizing text') {
             const p = pageInfoRef.current;
-            const overallProgress = Math.round((((p.current - 1) + m.progress) / p.total) * 100);
-            updateProgress('Processing', p.current, p.total, overallProgress);
+            if (p) {
+              const overallProgress = Math.round((((p.current - 1) + m.progress) / p.total) * 100);
+              updateProgress('Processing', p.current, p.total, overallProgress);
+            }
           } else if (m.status === 'loading tesseract core') {
             updateProgress('Loading Core', 0, 0, 2);
           } else if (m.status.includes('loading language')) {
             updateProgress('Downloading Model', 0, 0, 5);
-          } else {
+          } else if (m.status === 'initializing api' || m.status === 'initializing tesseract') {
             updateProgress('Initializing', 0, 0, 0);
           }
+          // Ignore other intermediate statuses to prevent progress bar from stuttering back to 0
         }
       });
 
@@ -288,15 +296,15 @@ export default function PdfOcr() {
   };
 
   // Build the standardized microcopy
-  const displayStatusText = (() => {
+  const statusInfo = (() => {
     const { action, currentPage, totalPages, percentage } = displayStatus;
+    let text = `${action}...`;
     if (action === 'Complete') {
-      return `Complete! (${percentage}%)`;
+      text = 'Complete!';
+    } else if (totalPages > 0 && currentPage > 0) {
+      text = `${action} Page ${currentPage} of ${totalPages}`;
     }
-    if (totalPages > 0 && currentPage > 0) {
-      return `${action} Page ${currentPage} of ${totalPages} (${percentage}%)`;
-    }
-    return `${action}... (${percentage}%)`;
+    return { text, percentage };
   })();
 
   const processButton = (
@@ -309,13 +317,14 @@ export default function PdfOcr() {
         {isProcessing && (
           <div 
             className="absolute left-0 top-0 bottom-0 bg-indigo-500/30 transition-all duration-300"
-            style={{ width: `${displayStatus.percentage}%` }}
+            style={{ width: `${statusInfo.percentage}%` }}
           />
         )}
         {isProcessing ? (
-          <span className="relative z-10 inline-flex items-center justify-center min-w-[280px] sm:min-w-[320px] h-7 text-sm font-bold whitespace-nowrap overflow-hidden text-ellipsis">
-            {displayStatusText}
-          </span>
+          <div className="relative z-10 flex items-center justify-between w-full max-w-[320px] h-7 text-sm font-bold">
+            <span className="truncate pr-4 text-left">{statusInfo.text}</span>
+            <span className="whitespace-nowrap shrink-0 text-right">{statusInfo.percentage}%</span>
+          </div>
         ) : (
           <><ScanText className="w-6 h-6 relative z-10"/> Apply OCR</>
         )}
