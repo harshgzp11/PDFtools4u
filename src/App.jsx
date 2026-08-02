@@ -58,6 +58,9 @@ const PdfReader = React.lazy(() => import('./tools/PdfReader'));
 const PdfAnnotator = React.lazy(() => import('./tools/PdfAnnotator'));
 const RtfToPdf = React.lazy(() => import('./tools/RtfToPdf'));
 
+const PrivacyPolicy = React.lazy(() => import('./pages/PrivacyPolicy'));
+const TermsOfService = React.lazy(() => import('./pages/TermsOfService'));
+
 const TOOL_COMPONENTS = {
   'edit-pdf': PdfEditor,
   'pdf-converter': PdfConverterHub,
@@ -110,6 +113,8 @@ const TOOL_COMPONENTS = {
   'pdf-reader': PdfReader,
   'pdf-annotator': PdfAnnotator,
   'rtf-to-pdf': RtfToPdf,
+  'privacy': PrivacyPolicy,
+  'terms': TermsOfService,
 };
 
 const PLACEHOLDER_TOOLS = {};

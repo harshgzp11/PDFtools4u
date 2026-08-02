@@ -390,7 +390,6 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
           </div>
         </div>
       </section>
-
     </div>
   );
 }
