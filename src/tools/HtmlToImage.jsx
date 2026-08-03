@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import html2canvas from 'html2canvas';
+import { safeHtml2Canvas } from '../utils/canvasUtils';
 import { Download, Play } from 'lucide-react';
 
 export default function HtmlToImage() {
@@ -13,7 +13,7 @@ export default function HtmlToImage() {
     setLoading(true);
     
     try {
-      const canvas = await html2canvas(renderRef.current, {
+      const canvas = await safeHtml2Canvas(renderRef.current, {
         backgroundColor: null, // transparent
         scale: 2 // High resolution
       });

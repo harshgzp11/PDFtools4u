@@ -3,7 +3,7 @@ import {
   Type, FileJson, Code, FileText, Image as ImageIcon, Layers, Scissors, Stamp, ImagePlus, Eraser, Code2, Crop, SlidersHorizontal,
   Minimize, ScanText, RotateCw, Trash2, FileUp, Files, BookOpen, PenTool, Hash, EyeOff, FileSignature, Share2, 
   FileCode2, FileSpreadsheet, Presentation, Lock, Unlock, Layers3, ArrowLeftRight, ChevronRight, Shield, Zap, MousePointerClick,
-  Maximize, Settings2, FileOutput, ArrowRight, Search, ShieldCheck, ServerOff, Eye, Globe, RefreshCw
+  Maximize, Settings2, FileOutput, ArrowRight, Search, ShieldCheck, ServerOff, Eye, Globe, RefreshCw, CheckCircle2, Sparkles, Cpu
 } from 'lucide-react';
 import { DOMAINS, POPULAR_TOOL_IDS } from '../lib/toolConfig';
 
@@ -87,113 +87,234 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
   return (
     <div className="animate-in fade-in duration-500 pb-20">
       
-      {/* Hero Section */}
-      <section className="flex flex-col gap-16 pt-8 lg:pt-16 px-4 md:px-8">
+      {/* Hero Section - Clean Smallpdf Style */}
+      <section className="relative pt-6 pb-12 lg:pt-12 lg:pb-16 px-4 md:px-8 mb-12">
+        {/* Soft Background Accents */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full bg-gradient-to-b from-blue-50/60 via-indigo-50/20 to-transparent rounded-3xl -z-10 pointer-events-none" />
         
-        {/* Top part: Text + Illustration */}
-        <div className="flex flex-col lg:flex-row items-center gap-12">
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
           
-          {/* Left: Text */}
+          {/* Left: Headline & Actions */}
           <div className="flex-1 space-y-6 text-center lg:text-left">
-            <h1 className="text-5xl lg:text-7xl font-extrabold text-gray-900 tracking-tight leading-tight">
+            
+            {/* Soft Trust Pill */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs sm:text-sm font-semibold shadow-xs">
+              <ShieldCheck className="w-4 h-4 text-blue-600" />
+              <span>100% Free & Completely Private</span>
+            </div>
+
+            {/* Main Title */}
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 tracking-tight leading-tight">
               We make utilities <span className="text-blue-600">easy.</span>
             </h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-              All the tools you'll need to work smarter with PDFs, Images, Documents, and Data. 100% free and completely private.
+
+            {/* Subtitle */}
+            <p className="text-lg sm:text-xl text-gray-600 max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal">
+              All the tools you need to convert, edit, compress, and sign PDFs & documents — right in your browser. Zero file uploads, 100% secure.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
+
+            {/* Search Input Bar (Smallpdf style quick action) */}
+            <div className="pt-2 max-w-lg mx-auto lg:mx-0">
+              <div className="relative flex items-center">
+                <Search className="absolute left-4 w-5 h-5 text-gray-400 pointer-events-none" />
+                <input
+                  type="text"
+                  placeholder="Search 40+ tools (e.g. Merge, OCR, Convert...)"
+                  value={localSearch}
+                  onChange={(e) => setLocalSearch(e.target.value)}
+                  className="w-full pl-11 pr-32 py-3.5 bg-white border border-gray-200 rounded-xl text-base text-gray-900 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                />
+                <button
+                  onClick={scrollToAllTools}
+                  className="absolute right-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-lg shadow-sm transition-all flex items-center gap-1"
+                >
+                  Explore <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Action buttons & Trust row */}
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
               <button 
                 onClick={scrollToAllTools}
-                className="px-8 py-4 bg-blue-600 text-white rounded-xl font-bold text-lg hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
+                className="px-7 py-3.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-base shadow-md hover:shadow-lg transition-all flex items-center gap-2"
               >
-                Explore All Tools <ChevronRight className="w-5 h-5" />
+                Explore All Tools <ArrowRight className="w-5 h-5" />
+              </button>
+              <button
+                onClick={() => onSelectTool('pdf-converter')}
+                className="px-6 py-3.5 bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 rounded-xl font-semibold text-base shadow-xs transition-all flex items-center gap-2"
+              >
+                Universal Converter <Zap className="w-4 h-4 text-amber-500" />
               </button>
             </div>
+
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-6 gap-y-2 text-xs font-medium text-gray-500 pt-1">
+              <span className="flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-emerald-600" /> Client-Side Only</span>
+              <span className="flex items-center gap-1.5"><Zap className="w-4 h-4 text-amber-500" /> No Software Install</span>
+              <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-blue-600" /> No Registration</span>
+            </div>
+
           </div>
-          
-          {/* Right: Illustration / Pics */}
-          <div className="flex-1 w-full flex justify-center items-center">
-            <div className="relative w-full max-w-lg aspect-square flex justify-center items-center">
-              {/* Decorative background blob */}
-              <div className="absolute inset-0 bg-blue-100 rounded-full blur-[80px] opacity-60"></div>
+
+          {/* Right: Smallpdf-Style Clean Soft Cards Showcase */}
+          <div className="flex-1 w-full max-w-xl lg:max-w-none">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               
-              {/* Center icon */}
-              <div className="relative bg-white p-8 rounded-[2rem] shadow-2xl shadow-blue-900/10 z-20 animate-[bounce_4s_infinite]">
-                <FileText className="w-20 h-20 text-blue-600" />
+              {/* Tool Card 1: PDF Converter */}
+              <div 
+                onClick={() => onSelectTool('pdf-converter')}
+                className="group bg-blue-50/70 hover:bg-blue-50 border border-blue-100/80 rounded-2xl p-5 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer flex flex-col justify-between h-40"
+              >
+                <div className="w-11 h-11 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+                  <ArrowLeftRight className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900 text-base group-hover:text-blue-600 transition-colors flex items-center justify-between">
+                    PDF Converter
+                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all" />
+                  </h3>
+                  <p className="text-gray-500 text-xs mt-1 line-clamp-2">Convert PDF to Word, Excel, PPT & Images</p>
+                </div>
               </div>
-              
-              {/* Floating icons */}
-              <div className="absolute top-1/4 left-8 bg-white p-5 rounded-2xl shadow-xl shadow-blue-900/5 -rotate-12 z-10 hover:scale-110 transition-transform">
-                <Scissors className="w-10 h-10 text-cyan-500" />
+
+              {/* Tool Card 2: Compress PDF */}
+              <div 
+                onClick={() => onSelectTool('pdf-compress')}
+                className="group bg-rose-50/70 hover:bg-rose-50 border border-rose-100/80 rounded-2xl p-5 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer flex flex-col justify-between h-40"
+              >
+                <div className="w-11 h-11 rounded-xl bg-rose-600 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+                  <Minimize className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900 text-base group-hover:text-rose-600 transition-colors flex items-center justify-between">
+                    Compress PDF
+                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-rose-600 group-hover:translate-x-0.5 transition-all" />
+                  </h3>
+                  <p className="text-gray-500 text-xs mt-1 line-clamp-2">Reduce document size while maintaining quality</p>
+                </div>
               </div>
-              
-              <div className="absolute bottom-1/4 right-8 bg-white p-5 rounded-2xl shadow-xl shadow-blue-900/5 rotate-12 z-10 hover:scale-110 transition-transform">
-                <ImageIcon className="w-10 h-10 text-yellow-500" />
+
+              {/* Tool Card 3: Edit PDF & Sign */}
+              <div 
+                onClick={() => onSelectTool('pdf-editor')}
+                className="group bg-amber-50/70 hover:bg-amber-50 border border-amber-100/80 rounded-2xl p-5 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer flex flex-col justify-between h-40"
+              >
+                <div className="w-11 h-11 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+                  <PenTool className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900 text-base group-hover:text-amber-600 transition-colors flex items-center justify-between">
+                    Edit & Sign PDF
+                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-amber-600 group-hover:translate-x-0.5 transition-all" />
+                  </h3>
+                  <p className="text-gray-500 text-xs mt-1 line-clamp-2">Add text, annotations, signatures & forms</p>
+                </div>
               </div>
-              
-              <div className="absolute top-12 right-1/4 bg-white p-4 rounded-2xl shadow-xl shadow-blue-900/5 rotate-6 z-10 hover:scale-110 transition-transform">
-                <Layers className="w-8 h-8 text-indigo-500" />
+
+              {/* Tool Card 4: OCR Text Extractor */}
+              <div 
+                onClick={() => onSelectTool('pdf-ocr')}
+                className="group bg-purple-50/70 hover:bg-purple-50 border border-purple-100/80 rounded-2xl p-5 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer flex flex-col justify-between h-40"
+              >
+                <div className="w-11 h-11 rounded-xl bg-purple-600 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+                  <ScanText className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900 text-base group-hover:text-purple-600 transition-colors flex items-center justify-between">
+                    OCR Text Extractor
+                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-purple-600 group-hover:translate-x-0.5 transition-all" />
+                  </h3>
+                  <p className="text-gray-500 text-xs mt-1 line-clamp-2">Extract editable text from scanned documents</p>
+                </div>
               </div>
-              
-              <div className="absolute bottom-12 left-1/4 bg-white p-4 rounded-2xl shadow-xl shadow-blue-900/5 -rotate-6 z-10 hover:scale-110 transition-transform">
-                <Lock className="w-8 h-8 text-green-500" />
+
+              {/* Tool Card 5: Merge PDF */}
+              <div 
+                onClick={() => onSelectTool('pdf-merge')}
+                className="group bg-indigo-50/70 hover:bg-indigo-50 border border-indigo-100/80 rounded-2xl p-5 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer flex flex-col justify-between h-40"
+              >
+                <div className="w-11 h-11 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+                  <Files className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900 text-base group-hover:text-indigo-600 transition-colors flex items-center justify-between">
+                    Merge PDF
+                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-indigo-600 group-hover:translate-x-0.5 transition-all" />
+                  </h3>
+                  <p className="text-gray-500 text-xs mt-1 line-clamp-2">Combine multiple files into a single document</p>
+                </div>
               </div>
+
+              {/* Tool Card 6: Protect PDF */}
+              <div 
+                onClick={() => onSelectTool('pdf-protect')}
+                className="group bg-emerald-50/70 hover:bg-emerald-50 border border-emerald-100/80 rounded-2xl p-5 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer flex flex-col justify-between h-40"
+              >
+                <div className="w-11 h-11 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+                  <Lock className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900 text-base group-hover:text-emerald-600 transition-colors flex items-center justify-between">
+                    Protect & Unlock
+                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all" />
+                  </h3>
+                  <p className="text-gray-500 text-xs mt-1 line-clamp-2">Encrypt PDFs or remove password restrictions</p>
+                </div>
+              </div>
+
             </div>
           </div>
-        </div>
 
-
-
-        {/* Universal PDF Converter CTA (Now below) */}
-        <div className="w-full flex justify-center items-center">
-          <div 
-            onClick={() => onSelectTool('pdf-converter')}
-            className="group relative w-full max-w-5xl bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl p-8 sm:p-12 shadow-2xl hover:shadow-[0_20px_50px_rgba(79,70,229,0.3)] transition-all duration-500 cursor-pointer overflow-hidden transform hover:-translate-y-1"
-          >
-            {/* Subtle background glow/shape */}
-            <div className="absolute -top-24 -right-24 w-96 h-96 bg-white opacity-5 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-10 -left-10 w-64 h-64 bg-white opacity-10 rounded-full blur-2xl"></div>
-            
-            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-10">
-              <div className="flex-1 text-center md:text-left">
-                <div className="inline-block px-4 py-1.5 bg-[#f5c324] text-yellow-900 text-xs font-bold uppercase tracking-wider rounded-full shadow-sm mb-6">
-                  Most Essential
-                </div>
-                
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-4 leading-tight tracking-tight">
-                  Universal Document Converter
-                </h2>
-                <p className="text-blue-100 text-lg mb-8 leading-relaxed max-w-xl mx-auto md:mx-0">
-                  Upload any PDF, Image, Word, Excel, or PPT file. Convert to everything. One tool rules them all.
-                </p>
-                
-                <div className="flex items-center justify-center md:justify-start gap-4">
-                  <span className="bg-white text-blue-600 px-6 py-3 rounded-xl font-bold text-lg hover:bg-blue-50 transition-colors flex items-center gap-2 shadow-lg">
-                    Open Converter <ArrowRight className="w-5 h-5" />
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex-shrink-0 flex items-center justify-center relative">
-                <div className="absolute inset-0 bg-white/20 blur-2xl rounded-full"></div>
-                <div className="relative bg-white/10 p-8 rounded-3xl backdrop-blur-sm border border-white/20">
-                  <ArrowLeftRight className="w-20 h-20 text-white" />
-                  
-                  <div className="absolute -bottom-4 -left-4 w-12 h-12 rounded-full border-4 border-indigo-600 bg-[#ff3b30] flex items-center justify-center text-white z-30 shadow-lg group-hover:scale-110 transition-transform">
-                    <FileText className="w-5 h-5" />
-                  </div>
-                  <div className="absolute -top-4 -right-4 w-12 h-12 rounded-full border-4 border-indigo-600 bg-[#34c759] flex items-center justify-center text-white z-20 shadow-lg group-hover:scale-110 transition-transform">
-                    <FileSpreadsheet className="w-5 h-5" />
-                  </div>
-                  <div className="absolute -bottom-4 -right-4 w-12 h-12 rounded-full border-4 border-indigo-600 bg-[#ff9500] flex items-center justify-center text-white z-10 shadow-lg group-hover:scale-110 transition-transform">
-                    <ImageIcon className="w-5 h-5" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
+
+      {/* Universal Document Converter Banner - Clean Light Style */}
+      <div className="w-full flex justify-center items-center px-4 md:px-8 mb-16">
+        <div 
+          onClick={() => onSelectTool('pdf-converter')}
+          className="group relative w-full max-w-7xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white rounded-3xl p-8 sm:p-10 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden transform hover:-translate-y-0.5"
+        >
+          {/* Decorative subtle background pattern */}
+          <div className="absolute top-0 right-0 -mt-10 -mr-10 w-80 h-80 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+          
+          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="flex-1 text-center md:text-left">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/20 text-white text-xs font-bold uppercase tracking-wider rounded-full backdrop-blur-sm mb-4">
+                <Sparkles className="w-3.5 h-3.5 text-amber-300" /> All-In-One Document Suite
+              </div>
+              
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white mb-3 tracking-tight">
+                Universal Document Converter
+              </h2>
+              <p className="text-blue-100 text-base mb-6 leading-relaxed max-w-xl mx-auto md:mx-0">
+                Convert PDFs, Images, Word, Excel, PowerPoint, and Text instantly in your browser.
+              </p>
+              
+              <div className="flex items-center justify-center md:justify-start gap-4">
+                <span className="bg-white text-blue-700 px-6 py-3 rounded-xl font-bold text-sm hover:bg-blue-50 transition-all flex items-center gap-2 shadow-sm group-hover:gap-3">
+                  Open Converter <ArrowRight className="w-4 h-4 text-blue-600 transition-all" />
+                </span>
+              </div>
+            </div>
+
+            <div className="flex-shrink-0 flex items-center justify-center relative">
+              <div className="relative bg-white/10 p-6 rounded-2xl backdrop-blur-md border border-white/20">
+                <ArrowLeftRight className="w-14 h-14 text-white" />
+                <div className="absolute -bottom-2 -left-2 w-9 h-9 rounded-full border-2 border-white bg-rose-500 flex items-center justify-center text-white shadow-md">
+                  <FileText className="w-4 h-4" />
+                </div>
+                <div className="absolute -top-2 -right-2 w-9 h-9 rounded-full border-2 border-white bg-emerald-500 flex items-center justify-center text-white shadow-md">
+                  <FileSpreadsheet className="w-4 h-4" />
+                </div>
+                <div className="absolute -bottom-2 -right-2 w-9 h-9 rounded-full border-2 border-white bg-amber-500 flex items-center justify-center text-white shadow-md">
+                  <ImageIcon className="w-4 h-4" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Most Popular Tools */}
       <section className="mt-32 px-4 md:px-8">

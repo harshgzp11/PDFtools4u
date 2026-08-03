@@ -213,7 +213,7 @@ export default function ToolPreviewLayout({
       {file && (previewImage || gridMode || customPreviewNode) && !successData && !isLoadingPreview && (
         <div className="flex flex-col lg:flex-row gap-4 flex-1 min-h-0 overflow-hidden w-full h-full">
           {/* Interactive Preview Canvas - scrollable container */}
-          <div className="w-full lg:w-2/3 bg-gray-100/50 rounded-2xl shadow-inner border border-gray-200 h-full min-h-0 overflow-y-auto custom-scrollbar">
+          <div className="w-full lg:w-2/3 bg-slate-100/70 rounded-2xl border border-gray-200 h-full min-h-0 overflow-y-auto custom-scrollbar">
             {renderPreviewContent()}
           </div>
 

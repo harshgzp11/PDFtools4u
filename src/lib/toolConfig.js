@@ -109,6 +109,8 @@ export const DOMAINS = [
           { id: 'docx-to-text', name: 'DOCX to Text', description: 'Extract raw text from Word documents.', icon: FileText, color: 'text-blue-500', bg: 'bg-blue-50' },
           { id: 'docx-to-html', name: 'DOCX to HTML', description: 'Convert Word documents to clean HTML.', icon: Code, color: 'text-green-500', bg: 'bg-green-50' },
           { id: 'text-to-docx', name: 'Text to DOCX', description: 'Generate a Word document from text.', icon: FileCode2, color: 'text-indigo-500', bg: 'bg-indigo-50' },
+          { id: 'word-to-pdf', name: 'WORD to PDF', description: 'Convert Word document to PDF.', icon: FileCode2, color: 'text-red-500', bg: 'bg-red-50' },
+          { id: 'pdf-to-word', name: 'PDF to WORD', description: 'Convert PDF to editable Word document.', icon: FileText, color: 'text-blue-500', bg: 'bg-blue-50' },
         ]
       }
     ]

@@ -1,181 +1,263 @@
 import React, { useState, useEffect } from 'react';
-import { Presentation, Download, AlertTriangle } from 'lucide-react';
+import { Presentation, Download, AlertTriangle, FileText, CheckCircle2, Image as ImageIcon } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import JSZip from 'jszip';
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import { jsPDF } from 'jspdf';
 
 export default function PptToPdf() {
   const [file, setFile] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [successData, setSuccessData] = useState(null);
   const [progress, setProgress] = useState(0);
-  const [previewSlides, setPreviewSlides] = useState([]);
+  const [slides, setSlides] = useState([]);
 
   useEffect(() => {
     if (window.__sharedFile) {
-      if (window.__sharedFile.name.endsWith('.pptx') || window.__sharedFile.type === 'application/vnd.openxmlformats-officedocument.presentationml.presentation') {
+      if (window.__sharedFile.name.endsWith('.pptx') || window.__sharedFile.type.includes('presentation')) {
         handleFile(window.__sharedFile);
       }
       window.__sharedFile = null;
     }
   }, []);
 
-  const handleFile = async (newFile) => {
-    if (newFile && (newFile.name.endsWith('.pptx') || newFile.type.includes('presentation'))) {
-      setFile(newFile);
-      setSuccessData(null);
-      setProgress(0);
-      setPreviewSlides([]);
-      
-      // Extract slide previews immediately for the UI
+  const parsePptxSlides = async (pptxFile) => {
+    const arrayBuffer = await pptxFile.arrayBuffer();
+    const zip = await JSZip.loadAsync(arrayBuffer);
+    const parser = new DOMParser();
+
+    // Find slide files and sort them numerically (slide1.xml, slide2.xml...)
+    const slideFiles = Object.keys(zip.files).filter(name => name.match(/^ppt\/slides\/slide\d+\.xml$/i));
+    slideFiles.sort((a, b) => {
+      const numA = parseInt(a.match(/slide(\d+)\.xml/i)[1], 10);
+      const numB = parseInt(b.match(/slide(\d+)\.xml/i)[1], 10);
+      return numA - numB;
+    });
+
+    if (slideFiles.length === 0) {
+      throw new Error("No slide files found in this presentation.");
+    }
+
+    const parsedSlides = [];
+
+    for (let i = 0; i < slideFiles.length; i++) {
+      const slideName = slideFiles[i];
+      const slideXml = await zip.file(slideName).async("text");
+      const xmlDoc = parser.parseFromString(slideXml, "application/xml");
+
+      // Extract paragraphs (<a:p>) and text (<a:t>)
+      const pNodes = xmlDoc.getElementsByTagNameNS("*", "p");
+      const paragraphs = [];
+      for (let pIdx = 0; pIdx < pNodes.length; pIdx++) {
+        const p = pNodes[pIdx];
+        const tNodes = p.getElementsByTagNameNS("*", "t");
+        let pText = "";
+        for (let tIdx = 0; tIdx < tNodes.length; tIdx++) {
+          pText += tNodes[tIdx].textContent || "";
+        }
+        const trimmed = pText.trim();
+        if (trimmed) {
+          paragraphs.push(trimmed);
+        }
+      }
+
+      // Extract slide images
+      const images = [];
       try {
-        const arrayBuffer = await newFile.arrayBuffer();
-        const zip = await JSZip.loadAsync(arrayBuffer);
-        const slideFiles = Object.keys(zip.files).filter(name => name.match(/ppt\/slides\/slide\d+\.xml/));
-        slideFiles.sort((a, b) => parseInt(a.match(/slide(\d+)/)[1]) - parseInt(b.match(/slide(\d+)/)[1]));
-        
-        const extracted = [];
-        for (const slideName of slideFiles) {
-          const slideXml = await zip.file(slideName).async("text");
-          const textMatches = slideXml.match(/<a:t>.*?<\/a:t>/g) || [];
-          const text = textMatches.map(t => t.replace(/<a:t>/, '').replace(/<\/a:t>/, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')).join(' ');
-          
-          let preview = text.trim();
-          if (!preview) {
-            if (slideXml.includes('<p:pic>')) {
-              preview = '[Image Slide]';
-            } else {
-              preview = 'Empty Slide';
+        const slideNumMatch = slideName.match(/slide(\d+)\.xml/i);
+        const slideNum = slideNumMatch ? slideNumMatch[1] : (i + 1);
+        const relsName = `ppt/slides/_rels/slide${slideNum}.xml.rels`;
+        const relsFile = zip.file(relsName) || Object.keys(zip.files).find(k => k.toLowerCase() === relsName.toLowerCase());
+
+        if (relsFile) {
+          const relsXml = await relsFile.async("text");
+          const relsDoc = parser.parseFromString(relsXml, "application/xml");
+          const relNodes = relsDoc.getElementsByTagNameNS("*", "Relationship");
+          const relMap = {};
+          for (let rIdx = 0; rIdx < relNodes.length; rIdx++) {
+            const id = relNodes[rIdx].getAttribute("Id");
+            const target = relNodes[rIdx].getAttribute("Target");
+            if (id && target) {
+              relMap[id] = target;
             }
           }
-          extracted.push(preview);
-        }
-        setPreviewSlides(extracted);
-      } catch (err) {
-        console.error("Preview extraction failed", err);
-      }
-    } else {
-      alert("Please upload a valid PPTX file.");
-    }
-  };
 
-  const convertPptToPdf = async () => {
-    if (!file) return;
-    setIsProcessing(true);
-    setProgress(0);
-    
-    try {
-      const arrayBuffer = await file.arrayBuffer();
-      const zip = await JSZip.loadAsync(arrayBuffer);
-      
-      const pdfDoc = await PDFDocument.create();
-      const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-      const fontSize = 12;
-      const margin = 50;
+          const blipNodes = xmlDoc.getElementsByTagNameNS("*", "blip");
+          for (let bIdx = 0; bIdx < blipNodes.length; bIdx++) {
+            const blip = blipNodes[bIdx];
+            const embedId = blip.getAttribute("r:embed") || blip.getAttribute("embed") || [...blip.attributes].find(a => a.name.includes("embed"))?.value;
 
-      // Extract slide files
-      const slideFiles = Object.keys(zip.files).filter(name => name.match(/ppt\/slides\/slide\d+\.xml/));
-      // Sort them properly (slide1, slide2, slide10...)
-      slideFiles.sort((a, b) => {
-        const numA = parseInt(a.match(/slide(\d+)/)[1]);
-        const numB = parseInt(b.match(/slide(\d+)/)[1]);
-        return numA - numB;
-      });
+            if (embedId && relMap[embedId]) {
+              let targetPath = relMap[embedId].replace(/^(\.\.\/)+/, '');
+              if (!targetPath.startsWith('ppt/')) {
+                targetPath = 'ppt/' + targetPath;
+              }
 
-      if (slideFiles.length === 0) {
-        throw new Error("No slides found in this presentation.");
-      }
+              const imgZipFile = zip.file(targetPath) || Object.keys(zip.files).find(k => k.toLowerCase() === targetPath.toLowerCase());
 
-      for (let i = 0; i < slideFiles.length; i++) {
-        const slideName = slideFiles[i];
-        const slideXml = await zip.file(slideName).async("text");
-        
-        // Very basic XML text extraction matching <a:t> tags
-        const textMatches = slideXml.match(/<a:t>.*?<\/a:t>/g) || [];
-        const slideTexts = textMatches.map(t => 
-          t.replace(/<a:t>/, '')
-           .replace(/<\/a:t>/, '')
-           .replace(/&lt;/g, '<')
-           .replace(/&gt;/g, '>')
-           .replace(/&amp;/g, '&')
-           .replace(/[^\x00-\x7F]/g, '') // Strip non-ASCII to prevent pdf-lib WinAnsi crashes
-        );
-        
-        let page = pdfDoc.addPage();
-        const { width, height } = page.getSize();
-        let y = height - margin;
-
-        let hasImage = false;
-        try {
-          const relsName = slideName.replace('ppt/slides/', 'ppt/slides/_rels/') + '.rels';
-          if (zip.file(relsName)) {
-            const relsXml = await zip.file(relsName).async("text");
-            const relMatches = [...relsXml.matchAll(/<Relationship[^>]+Id="([^"]+)"[^>]+Target="([^"]+)"/g)];
-            const relMap = {};
-            relMatches.forEach(m => relMap[m[1]] = m[2]);
-
-            const blipMatches = [...slideXml.matchAll(/<a:blip[^>]+r:embed="([^"]+)"/g)];
-            
-            if (blipMatches.length > 0) {
-              const rId = blipMatches[0][1]; // Render the first embedded image on the slide
-              let target = relMap[rId];
-              
-              if (target) {
-                target = target.replace('../', 'ppt/');
-                if (zip.file(target)) {
-                  const imageBytes = await zip.file(target).async("uint8array");
-                  let pdfImage;
-                  if (target.toLowerCase().endsWith('.png')) {
-                    pdfImage = await pdfDoc.embedPng(imageBytes);
-                  } else if (target.toLowerCase().endsWith('.jpg') || target.toLowerCase().endsWith('.jpeg')) {
-                    pdfImage = await pdfDoc.embedJpg(imageBytes);
-                  }
-                  
-                  if (pdfImage) {
-                    hasImage = true;
-                    // For converted PPTXs, scale image to fill the page exactly
-                    page.drawImage(pdfImage, { x: 0, y: 0, width: width, height: height });
-                  }
-                }
+              if (imgZipFile) {
+                const base64Data = await imgZipFile.async("base64");
+                const ext = targetPath.split('.').pop().toLowerCase();
+                const mime = (ext === 'png') ? 'image/png' : (ext === 'jpg' || ext === 'jpeg') ? 'image/jpeg' : (ext === 'svg') ? 'image/svg+xml' : 'image/png';
+                images.push(`data:${mime};base64,${base64Data}`);
               }
             }
           }
-        } catch (err) {
-          console.error("Failed to parse images for slide", slideName, err);
         }
+      } catch (err) {
+        console.warn(`Image extraction notice for slide ${i + 1}:`, err);
+      }
 
-        if (!hasImage) {
-          page.drawText(`Slide ${i + 1}`, { x: margin, y, size: 16, font, color: rgb(0.2, 0.2, 0.8) });
-          y -= 30;
+      const slideTitle = paragraphs.length > 0 ? paragraphs[0] : `Slide ${i + 1}`;
+      const bodyParagraphs = paragraphs.length > 1 ? paragraphs.slice(1) : [];
 
-          for (const line of slideTexts) {
-            if (!line.trim()) continue;
-            
-            if (y < margin) {
-              page = pdfDoc.addPage();
-              y = height - margin;
+      parsedSlides.push({
+        slideNumber: i + 1,
+        title: slideTitle,
+        paragraphs: bodyParagraphs,
+        allParagraphs: paragraphs,
+        images,
+        hasText: paragraphs.length > 0,
+        hasImages: images.length > 0
+      });
+    }
+
+    return parsedSlides;
+  };
+
+  const handleFile = async (newFile) => {
+    if (!newFile) return;
+
+    if (!newFile.name.endsWith('.pptx') && !newFile.type.includes('presentation')) {
+      alert("Please upload a valid PowerPoint (.pptx) file.");
+      return;
+    }
+
+    setFile(newFile);
+    setSuccessData(null);
+    setProgress(0);
+    setSlides([]);
+    setIsAnalyzing(true);
+
+    try {
+      const parsed = await parsePptxSlides(newFile);
+      setSlides(parsed);
+    } catch (err) {
+      console.error("PPTX Analysis Failed:", err);
+      alert("Could not parse PPTX file. Please ensure it is a valid .pptx presentation.");
+      setFile(null);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const getImageDimensions = (base64Str) => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        resolve({ width: img.width || 16, height: img.height || 9 });
+      };
+      img.onerror = () => {
+        resolve({ width: 16, height: 9 });
+      };
+      img.src = base64Str;
+    });
+  };
+
+  const convertPptToPdf = async () => {
+    if (!file || slides.length === 0) return;
+    setIsProcessing(true);
+    setProgress(0);
+
+    try {
+      // Landscape A4 PDF (297mm x 210mm)
+      const pdf = new jsPDF('l', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+
+      for (let i = 0; i < slides.length; i++) {
+        if (i > 0) pdf.addPage();
+
+        const slide = slides[i];
+        const hasImages = slide.images && slide.images.length > 0;
+
+        if (hasImages) {
+          // Slide contains image — scale proportionally to fill page cleanly
+          const imgData = slide.images[0];
+          const format = imgData.includes('data:image/png') ? 'PNG' : 'JPEG';
+          const dims = await getImageDimensions(imgData);
+
+          const margin = 8;
+          const maxW = pdfWidth - (margin * 2);
+          const maxH = pdfHeight - (margin * 2);
+
+          const imgRatio = dims.width / dims.height;
+          const maxRatio = maxW / maxH;
+
+          let renderW, renderH;
+          if (imgRatio > maxRatio) {
+            renderW = maxW;
+            renderH = maxW / imgRatio;
+          } else {
+            renderH = maxH;
+            renderW = maxH * imgRatio;
+          }
+
+          const x = (pdfWidth - renderW) / 2;
+          const y = (pdfHeight - renderH) / 2;
+
+          try {
+            pdf.addImage(imgData, format, x, y, renderW, renderH, undefined, 'FAST');
+          } catch (imgErr) {
+            console.warn(`Could not embed image for slide ${i + 1}:`, imgErr);
+          }
+        } else {
+          // Slide contains text — render clean text across page
+          let y = 25;
+          const margin = 20;
+          const textWidth = pdfWidth - (margin * 2);
+
+          if (slide.title) {
+            pdf.setFont('helvetica', 'bold');
+            pdf.setFontSize(22);
+            pdf.setTextColor(30, 41, 59);
+            pdf.text(slide.title, margin, y);
+            y += 15;
+          }
+
+          pdf.setFont('helvetica', 'normal');
+          pdf.setFontSize(14);
+          pdf.setTextColor(51, 65, 85);
+
+          const textItems = slide.paragraphs.length > 0 ? slide.paragraphs : (slide.allParagraphs.length > 1 ? slide.allParagraphs.slice(1) : []);
+
+          for (const item of textItems) {
+            if (y > pdfHeight - 20) break;
+            const lines = pdf.splitTextToSize(item, textWidth);
+            for (let l = 0; l < lines.length; l++) {
+              if (y > pdfHeight - 20) break;
+              pdf.text(lines[l], margin, y);
+              y += 8;
             }
-            page.drawText(line.substring(0, 80), { x: margin, y, size: fontSize, font }); // clip to avoid wrapping overflow on basic render
-            y -= 20;
+            y += 4;
           }
         }
 
-        setProgress(Math.round(((i + 1) / slideFiles.length) * 100));
+        setProgress(Math.round(((i + 1) / slides.length) * 100));
       }
 
-      const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      
+      const pdfBlob = pdf.output('blob');
+      const url = URL.createObjectURL(pdfBlob);
+
       setSuccessData({
         url,
-        filename: `${file.name.replace('.pptx', '')}_converted.pdf`,
-        title: 'Conversion Complete',
-        subtitle: 'Text has been extracted into a basic PDF document.',
+        filename: `${file.name.replace(/\.pptx$/i, '')}_converted.pdf`,
+        title: 'Conversion Successful!',
+        subtitle: `Successfully converted ${slides.length} slides to PDF.`,
       });
     } catch (err) {
-      console.error(err);
-      alert("Failed to convert PPT to PDF. Make sure it's a valid .pptx file.");
+      console.error("PPT to PDF Conversion Error:", err);
+      alert(`Failed to convert PowerPoint to PDF: ${err.message || err}`);
     } finally {
       setIsProcessing(false);
     }
@@ -185,14 +267,16 @@ export default function PptToPdf() {
     setFile(null);
     setSuccessData(null);
     setIsProcessing(false);
+    setIsAnalyzing(false);
     setProgress(0);
+    setSlides([]);
   };
 
   const processButton = (
     <div className="space-y-3">
       <button 
         onClick={convertPptToPdf} 
-        disabled={isProcessing || !file}
+        disabled={isProcessing || isAnalyzing || !file || slides.length === 0}
         className="w-full px-6 py-4 bg-orange-600 border border-transparent rounded-xl shadow-lg text-lg font-bold text-white hover:bg-orange-700 disabled:opacity-50 flex items-center justify-center gap-3 transition-all hover:shadow-xl hover:-translate-y-1 relative overflow-hidden"
       >
         {isProcessing && (
@@ -202,7 +286,13 @@ export default function PptToPdf() {
           />
         )}
         {isProcessing ? (
-          <span className="relative z-10 inline-flex items-center justify-center min-w-[220px] h-7 text-sm font-bold whitespace-nowrap">Extracting Slides... {progress}%</span>
+          <span className="relative z-10 inline-flex items-center justify-center min-w-[220px] h-7 text-sm font-bold whitespace-nowrap">
+            Generating PDF Pages... {progress}%
+          </span>
+        ) : isAnalyzing ? (
+          <span className="relative z-10 inline-flex items-center justify-center min-w-[220px] h-7 text-sm font-bold whitespace-nowrap">
+            Analyzing Slides...
+          </span>
         ) : (
           <><Presentation className="w-6 h-6 relative z-10"/> Convert to PDF</>
         )}
@@ -210,35 +300,60 @@ export default function PptToPdf() {
     </div>
   );
 
-  const customPreview = previewSlides.length > 0 ? (
-    <div className="w-full h-full flex flex-col min-h-[400px]">
-      <div className="flex items-center justify-between mb-6 px-2">
-        <h3 className="text-xl font-bold text-gray-900">Detected Slides ({previewSlides.length})</h3>
-        <span className="text-sm text-gray-500 font-medium px-3 py-1 bg-white rounded-full shadow-sm border border-gray-200">Text Content Extracted</span>
-      </div>
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 w-full">
-        {previewSlides.map((text, idx) => (
-          <div key={idx} className="relative aspect-[16/9] rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col bg-white hover:shadow-md transition-all group">
-            <div className="flex-1 p-3 overflow-hidden">
-              <p className="text-xs text-gray-700 leading-relaxed font-mono opacity-80 break-words">
-                {text.substring(0, 150)}{text.length > 150 ? '...' : ''}
-              </p>
-            </div>
-            <div className="bg-gray-50 border-t border-gray-100 px-3 py-2 flex items-center justify-between">
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Slide {idx + 1}</span>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  ) : (
+  const customPreview = isAnalyzing ? (
     <div className="w-full h-full min-h-[400px] bg-orange-50/50 flex flex-col items-center justify-center rounded-2xl p-8 text-center border-2 border-dashed border-orange-100">
       <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-sm mb-6 border border-orange-100">
         <Presentation className="w-10 h-10 text-orange-500 animate-pulse" />
       </div>
-      <h3 className="text-xl font-bold text-gray-900 mb-2">Analyzing PowerPoint...</h3>
+      <h3 className="text-xl font-bold text-gray-900 mb-2">Analyzing Presentation...</h3>
       <p className="text-gray-500 max-w-sm text-sm">
-        Reading presentation XML data to prepare for extraction.
+        Parsing slide structure, text contents, and images...
+      </p>
+    </div>
+  ) : slides.length > 0 ? (
+    <div className="w-full h-full overflow-y-auto custom-scrollbar max-h-[700px] pr-2 space-y-6">
+      {slides.map((slide, idx) => (
+          <div key={idx} className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
+            <div className="bg-gray-50 border-b border-gray-100 px-4 py-2 flex items-center justify-between">
+              <span className="text-xs font-bold text-gray-700 truncate max-w-[300px]">
+                {slide.title || `Slide ${slide.slideNumber}`}
+              </span>
+              <span className="text-[11px] font-semibold text-gray-400">
+                Page {slide.slideNumber} of {slides.length}
+              </span>
+            </div>
+
+            <div className="p-4 bg-gray-50/50 flex flex-col items-center justify-center min-h-[220px]">
+              {slide.hasImages ? (
+                <img 
+                  src={slide.images[0]} 
+                  alt={`Slide ${slide.slideNumber}`}
+                  className="max-w-full max-h-[480px] object-contain rounded-lg shadow-sm border border-gray-200 bg-white"
+                />
+              ) : slide.paragraphs.length > 0 ? (
+                <div className="w-full bg-white p-6 rounded-lg border border-gray-200 shadow-sm space-y-3">
+                  {slide.paragraphs.map((para, pIdx) => (
+                    <div key={pIdx} className="flex items-start gap-2 text-sm text-gray-800">
+                      <span className="text-orange-500 font-bold">•</span>
+                      <p className="leading-relaxed">{para}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-sm text-gray-400 italic">Empty Slide</div>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+  ) : (
+    <div className="w-full h-full min-h-[400px] bg-orange-50/50 flex flex-col items-center justify-center rounded-2xl p-8 text-center border-2 border-dashed border-orange-100">
+      <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-sm mb-6 border border-orange-100">
+        <Presentation className="w-10 h-10 text-orange-500" />
+      </div>
+      <h3 className="text-xl font-bold text-gray-900 mb-2">No Presentation Uploaded</h3>
+      <p className="text-gray-500 max-w-sm text-sm">
+        Upload a .pptx file on the right panel to extract slides and convert to PDF.
       </p>
     </div>
   );
@@ -266,8 +381,8 @@ export default function PptToPdf() {
              <span className="bg-orange-200 px-2 py-0.5 rounded-md">.PDF</span>
            </div>
            <div className="flex justify-between text-sm text-orange-800 font-bold">
-             <span>Quality:</span>
-             <span className="bg-orange-200 px-2 py-0.5 rounded-md">Text Only</span>
+             <span>Layout:</span>
+             <span className="bg-orange-200 px-2 py-0.5 rounded-md">16:9 Widescreen PDF</span>
            </div>
            <div className="flex justify-between text-sm text-orange-800 font-bold">
              <span>Processing:</span>
@@ -275,16 +390,17 @@ export default function PptToPdf() {
            </div>
         </div>
 
-        <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mt-4 flex flex-col gap-2">
-          <div className="flex items-center gap-2 text-yellow-800">
-            <AlertTriangle className="w-5 h-5 shrink-0" />
-            <h4 className="font-bold text-sm">Important Notice</h4>
+        <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-xl mt-4 flex flex-col gap-2">
+          <div className="flex items-center gap-2 text-emerald-800">
+            <CheckCircle2 className="w-5 h-5 shrink-0" />
+            <h4 className="font-bold text-sm">High Quality PDF Rendering</h4>
           </div>
-          <p className="text-yellow-800 text-xs font-medium leading-relaxed">
-            Due to browser limitations, PPT to PDF conversion extracts raw text layout only. Images, backgrounds, and styling are intentionally omitted to provide a clean reading experience.
+          <p className="text-emerald-800 text-xs font-medium leading-relaxed">
+            Extracts presentation titles, text paragraphs, bullet points, and embedded slide images into formatted 16:9 landscape PDF pages.
           </p>
         </div>
       </div>
     </ToolPreviewLayout>
   );
 }
+

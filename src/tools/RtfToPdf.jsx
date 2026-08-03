@@ -4,7 +4,7 @@ import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import { toast } from 'sonner';
 import { RTFJS } from 'rtf.js';
 import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import { safeHtml2Canvas } from '../utils/canvasUtils';
 
 // A simple string to ArrayBuffer helper for rtf.js if needed
 function stringToArrayBuffer(string) {
@@ -68,8 +68,8 @@ export default function RtfToPdf() {
     try {
       const rtfContainer = document.getElementById('rtf-render-container');
       
-      // We use html2canvas to render the parsed HTML, then drop it in jsPDF
-      const canvas = await html2canvas(rtfContainer, {
+      // We use safeHtml2Canvas to render the parsed HTML, then drop it in jsPDF
+      const canvas = await safeHtml2Canvas(rtfContainer, {
         scale: 2, // High quality
         useCORS: true,
         logging: false
