@@ -66,7 +66,7 @@ export default function Footer({ onSelectTool }) {
           <div className="flex flex-col gap-4">
             <h4 className="text-white font-bold mb-2">Product</h4>
             <a href="#pricing" className="text-sm hover:text-white transition-colors">Pricing</a>
-            <a href="#api" className="text-sm hover:text-white transition-colors">API API</a>
+            <a href="#api" className="text-sm hover:text-white transition-colors">API</a>
             <a href="#compare" className="text-sm hover:text-white transition-colors">Compare</a>
             <a href="#security" className="text-sm hover:text-white transition-colors">Security</a>
           </div>

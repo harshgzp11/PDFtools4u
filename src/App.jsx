@@ -183,7 +183,7 @@ function App() {
         }} 
         onSelectTool={navigateTo}
         onSearch={(q) => { setSearchQuery(q); navigateTo(null); }}
-        isToolView={!!activeTool}
+        isToolView={!!activeTool && activeTool !== 'blog' && !activeTool.startsWith('blog/') && !['privacy', 'terms', 'about', 'contact'].includes(activeTool)}
       >
         {activeTool ? (
           <div className="relative w-full h-full flex flex-col min-h-0">

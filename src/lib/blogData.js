@@ -10,56 +10,115 @@ export const BLOG_POSTS = [
   // Cluster 1: Government & ID (High Intent / Regional Focus)
   {
     id: "aadhaar-pdf-to-jpg-online",
-    title: "How to Convert Aadhaar Card PDF to JPG Online",
+    title: "How to Convert Aadhaar Card PDF to JPG Online (Password Removal & 300 DPI Guide)",
     cluster: "Government & ID",
-    excerpt: "Step-by-step guide on securely converting your downloaded Aadhaar PDF into image formats for easy mobile sharing and printing.",
-    date: "July 15, 2026",
+    excerpt: "Learn how to remove password protection from your e-Aadhaar PDF and convert it into a crisp, portal-ready JPG image in seconds.",
+    date: "August 1, 2026",
     author: "PDFTools4U Team",
     coverImage: "https://images.unsplash.com/photo-1585036156171-384164a8c675?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "pdf-to-jpg",
     published: true,
+    customSchema: {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "HowTo",
+          "name": "How to Convert Password-Protected e-Aadhaar PDF to JPG",
+          "description": "Step-by-step guide to removing password protection from e-Aadhaar PDFs and converting them into high-resolution 300 DPI JPG images.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Determine PDF Password",
+              "text": "Combine the first 4 uppercase letters of your first name with your 4-digit birth year."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Upload to Converter",
+              "text": "Upload the e-Aadhaar PDF to the client-side PDF to JPG converter."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Export at 300 DPI",
+              "text": "Select 300 DPI image quality and download the unencrypted JPG file."
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "How do I permanently remove the password from an e-Aadhaar file?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Converting your e-Aadhaar PDF to JPG strips away the password protection completely, leaving an unencrypted image file."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Is client-side e-Aadhaar conversion secure?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, processing happens locally in your browser without transmitting your document to remote servers."
+              }
+            }
+          ]
+        }
+      ]
+    },
     content: `
-When you download your e-Aadhaar from the official UIDAI website, it comes in a highly secure, password-protected PDF format. While this is great for security, it can be extremely annoying when you just need to share the Aadhaar image via WhatsApp with a landlord, travel agent, or employer.
+Most official portals—including government recruitment forms, bank KYC verifications, passport applications, and university entrance sites—reject PDF uploads and strictly require a high-resolution JPG or PNG image. 
 
-Most messaging apps and simple online forms prefer image formats like JPG or PNG. Here is exactly how to safely convert your Aadhaar PDF to a JPG.
+Downloading an official e-Aadhaar document from the UIDAI portal provides an encrypted, password-protected PDF. Converting this file into an upload-ready image requires unlocking the document and exporting it at a high pixel density so that personal details and the bottom QR code remain completely legible.
 
-### Step 1: Unlock the Password-Protected PDF
+---
 
-The downloaded e-Aadhaar is encrypted. The password is typically a combination of the **first 4 letters of your name in CAPITAL letters** followed by your **Year of Birth (YYYY)**.
-*(Example: If your name is Suresh Kumar and you were born in 1990, the password is SURE1990).*
+> **Quick Summary:** Drag your e-Aadhaar PDF into our **[PDF to JPG Converter](/pdf-to-jpg)**, enter your 8-character password combination (first 4 uppercase letters of your name + birth year), select **300 DPI**, and download your unencrypted JPG file.
 
-Before you can convert it, you must remove this password.
-1. Go to our [Unlock PDF](/unlock-pdf) tool.
-2. Upload your e-Aadhaar PDF.
-3. Enter the password when prompted.
-4. Download the newly unlocked, password-free PDF.
+---
 
-*(Note: Our tools run locally in your browser, meaning your Aadhaar is never uploaded to our servers. Your data remains completely private.)*
+### Step 1: Decode Your e-Aadhaar PDF Password
 
-### Step 2: Convert the Unlocked PDF to JPG
+Official e-Aadhaar files are encrypted by default. Your password combination follows a standardized 8-character rule:
+* **First 4 Characters:** The first 4 letters of your first name in **UPPERCASE** block letters.
+* **Last 4 Characters:** Your 4-digit birth year in \`YYYY\` format.
 
-Now that you have an unlocked PDF, converting it is simple.
+*Example:* If your official name is **KUMAR SWAMY** and your birth year is **1998**, your password is \`KUMA1998\`.
 
-1. Navigate to our [PDF to JPG](/pdf-to-jpg) converter.
-2. Upload the unlocked Aadhaar PDF you just downloaded.
-3. Click "Convert".
-4. The tool will generate a high-quality JPG image of your Aadhaar card.
+---
 
-### Step 3: Crop the Image (Optional)
+### Step 2: Convert Your Encrypted PDF to JPG
 
-The e-Aadhaar PDF contains a full A4 page of instructions, with the actual card at the very bottom. If you only want to share the card portion:
-1. Open the downloaded JPG in your phone's default gallery app.
-2. Select "Edit" and use the "Crop" tool to cut out the top instructions.
-3. Save the cropped image.
+1. Open the **[PDF to JPG Converter Tool](/pdf-to-jpg)**.
+2. Drag and drop your downloaded e-Aadhaar PDF file into the secure browser upload box.
+3. Enter your 8-character password when prompted by the converter.
+4. Set your output quality to **High Quality (300 DPI)**.
+5. Click **Convert to JPG** and save the converted \`.jpg\` file to your device.
 
-### Why not just take a screenshot?
+---
 
-You might be wondering, *"Why can't I just open the PDF on my phone and take a screenshot?"*
+### Portal File Upload Standards Comparison
 
-You can! However, screenshots significantly reduce the resolution of the document. If the person receiving the Aadhaar needs to scan the QR code on it, or read the fine print of the address, a low-resolution screenshot will often fail. Converting the PDF directly to a JPG ensures maximum quality and readability.
+| Requirement Category | Standard Portal Threshold | Optimization Strategy |
+|---|---|---|
+| **Accepted Formats** | \`.jpg\`, \`.jpeg\`, \`.png\` | Export as **JPG** from the conversion dropdown menu. |
+| **File Size Limit** | 100 KB – 500 KB | Use our **[Compress Image Tool](/compress-image)** if the JPG exceeds size limits. |
+| **Image Resolution** | Minimum 300 DPI | Render at 300 DPI so automated scanners can read the embedded QR code. |
+| **Page Margins** | Full page or Cropped Card | Crop out blank background margins prior to final submission. |
 
-**Privacy Warning:** Your Aadhaar card contains sensitive biometric-linked data. Only share it with trusted entities, and avoid using shady, ad-filled conversion websites that store your files on foreign servers. Always use client-side tools like PDFTools4U for sensitive documents!
-    `
+---
+
+### Frequently Asked Questions
+
+* **How do I permanently remove the password from an e-Aadhaar file?**  
+  Converting your e-Aadhaar PDF to JPG strips away the encryption layer entirely. The resulting image file opens instantly without prompting for a password.
+
+* **Is client-side e-Aadhaar conversion secure?**  
+  Yes. Processing happens locally in your web browser using client-side execution. Your private identity document is never uploaded to or stored on external servers.
+
+* **Why is the QR code on my converted JPG blurry or rejected by portals?**  
+  Standard converters compress images at 72 DPI, which blurs fine pixels. Converting at 300 DPI ensures all photo elements and QR codes remain crisp and verification-ready.
+`
   },
   {
     id: "remove-e-aadhaar-password-online",
@@ -369,7 +428,7 @@ By using high-quality conversion algorithms and understanding the limitations of
     targetToolUrl: "convert-image",
     published: true,
     content: `
-If you take photos on a modern iPhone, you might have noticed they are saved as `.HEIC` files instead of standard JPGs. Apple introduced the High Efficiency Image Container (HEIC) to save storage space while maintaining high image quality.
+If you take photos on a modern iPhone, you might have noticed they are saved as \`.HEIC\` files instead of standard JPGs. Apple introduced the High Efficiency Image Container (HEIC) to save storage space while maintaining high image quality.
 
 While great for your phone's storage, it's terrible for compatibility. Most government portals, older Windows computers, and web forms completely reject HEIC files.
 

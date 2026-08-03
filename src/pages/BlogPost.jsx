@@ -57,25 +57,51 @@ export default function BlogPost({ id, onNavigate }) {
       if (post.published) {
         script = document.createElement('script');
         script.type = 'application/ld+json';
-        script.text = JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Article",
-          "headline": post.title,
-          "image": [post.coverImage],
-          "datePublished": new Date(post.date).toISOString(),
-          "author": [{
-              "@type": "Organization",
-              "name": post.author,
-              "url": "https://pdftools4u.in"
-            }]
-        });
+        
+        let schemaData = post.customSchema;
+        
+        if (!schemaData) {
+          // Use HowTo schema if the title suggests a tutorial
+          const isTutorial = post.title.toLowerCase().includes('how to') || post.title.toLowerCase().includes('guide');
+          
+          schemaData = isTutorial ? {
+            "@context": "https://schema.org",
+            "@type": "HowTo",
+            "name": post.title,
+            "description": post.excerpt,
+            "image": post.coverImage,
+            "step": [
+              {
+                "@type": "HowToStep",
+                "text": "Upload your file to the designated tool."
+              },
+              {
+                "@type": "HowToStep",
+                "text": "Click convert and download the processed file."
+              }
+            ]
+          } : {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": post.title,
+            "image": [post.coverImage],
+            "datePublished": new Date(post.date).toISOString(),
+            "author": [{
+                "@type": "Organization",
+                "name": post.author,
+                "url": "https://pdftools4u.in"
+              }]
+          };
+        }
+
+        script.text = JSON.stringify(schemaData);
         document.head.appendChild(script);
       }
 
       return () => {
         document.title = 'PDFTools4U';
-        injectedTags.forEach(tag => document.head.removeChild(tag));
-        if (script) document.head.removeChild(script);
+        injectedTags.forEach(tag => tag.remove());
+        if (script) script.remove();
       };
     }
   }, [post]);
@@ -96,12 +122,12 @@ export default function BlogPost({ id, onNavigate }) {
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 py-12 animate-in fade-in">
-      <button 
-        onClick={() => onNavigate('blog')}
-        className="flex items-center gap-2 text-gray-500 hover:text-gray-900 font-medium mb-10 transition-colors"
-      >
-        <ArrowLeft className="w-4 h-4" /> Back to all articles
-      </button>
+        <button 
+          onClick={() => onNavigate('blog')}
+          className="flex items-center gap-2 text-gray-500 hover:text-gray-900 font-medium mb-10 transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" /> Back to all articles
+        </button>
 
       <div className="mb-12 text-center flex flex-col items-center">
         <span className="bg-indigo-100 text-indigo-700 text-sm font-bold px-4 py-1.5 rounded-full mb-6 flex items-center gap-2">
