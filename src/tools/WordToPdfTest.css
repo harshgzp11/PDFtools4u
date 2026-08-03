@@ -1,0 +1,21 @@
+/* WordToPdf Test CSS */
+* { box-sizing: border-box; }
+.app { min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 48px 16px; }
+.card { background: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); padding: 32px; width: 100%; max-width: 720px; }
+h1 { margin: 0 0 4px; font-size: 24px; }
+.subtitle { margin: 0 0 24px; color: #6b7280; font-size: 14px; }
+.dropzone { display: block; border: 2px dashed #d1d5db; border-radius: 12px; padding: 48px 24px; text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s; }
+.dropzone:hover { border-color: #6366f1; background: #f5f5ff; }
+.dropzone-content .icon { font-size: 36px; display: block; margin-bottom: 8px; }
+.status { color: #6366f1; font-weight: 500; }
+.error { color: #dc2626; font-weight: 500; }
+.file-info { display: flex; align-items: center; justify-content: space-between; background: #f9fafb; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-size: 14px; }
+.link-btn { background: none; border: none; color: #6366f1; cursor: pointer; font-size: 13px; text-decoration: underline; }
+.preview { margin-top: 16px; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; max-height: 400px; overflow-y: auto; background: #fafafa; }
+.preview h3 { margin-top: 0; font-size: 14px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; }
+.preview-content { background: #fff; padding: 16px; border-radius: 4px; font-size: 14px; line-height: 1.6; }
+.preview-content img { max-width: 100%; }
+.primary-btn { margin-top: 20px; width: 100%; padding: 12px 20px; background: #6366f1; color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+.primary-btn:hover:not(:disabled) { background: #4f46e5; }
+.primary-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
