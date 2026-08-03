@@ -22,9 +22,12 @@ export default function PrivacyPolicy() {
         </section>
 
         <section>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">3. Analytics and Cookies</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">3. Analytics, Cookies, and Advertising</h2>
+          <p className="text-gray-600 leading-relaxed mb-4">
+            We use third-party advertising companies like Google AdSense to serve ads when you visit our website. These companies may use information (not including your name, address, email address, or telephone number) about your visits to this and other websites in order to provide advertisements about goods and services of interest to you.
+          </p>
           <p className="text-gray-600 leading-relaxed">
-            We may use basic, anonymized analytics to understand how our tools are used and to improve your user experience. We do not track personally identifiable information (PII). Cookies used are strictly for essential site functionality.
+            Google, as a third-party vendor, uses cookies (such as the DoubleClick cookie) to serve ads based on your prior visits to our website or other websites on the Internet. You may opt out of the use of the DoubleClick cookie for interest-based advertising by visiting the Google Ads Preference Manager.
           </p>
         </section>
 
@@ -45,7 +48,7 @@ export default function PrivacyPolicy() {
         <section>
           <h2 className="text-2xl font-bold text-gray-900 mb-4">6. Contact Us</h2>
           <p className="text-gray-600 leading-relaxed">
-            If you have any questions or concerns regarding our privacy practices, please contact us at support@pdftools4u.com.
+            If you have any questions or concerns regarding our privacy practices, please contact us at <strong>support@pdftools4u.in</strong>.
           </p>
         </section>
       </div>

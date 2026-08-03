@@ -41,3 +41,15 @@ test_pdf_lib.pdf
 unlocked.pdf
 locked.pdf
 empty_slides_test.pdf
+
+# Ignore all test documents dropped in the root directory
+/*.pdf
+/*.docx
+/*.pptx
+/*.xlsx
+/*.csv
+/*.txt
+/*.jpg
+/*.jpeg
+/*.png
+/*.zip

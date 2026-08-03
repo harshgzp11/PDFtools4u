@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { Search, Shield, Zap, Menu, X, FileText, Image as ImageIcon, ChevronDown } from 'lucide-react';
+import { Search, Shield, Zap, Menu, X, FileText, Image as ImageIcon, ChevronDown, BookOpen } from 'lucide-react';
 import { DOMAINS } from '../lib/toolConfig';
 import Footer from './Footer';
 
@@ -129,6 +129,15 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
                   )}
                 </div>
               ))}
+              
+              <button 
+                onClick={() => onSelectTool('blog')}
+                className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors flex items-center gap-1.5 ml-2"
+              >
+                 <BookOpen className="w-4 h-4" />
+                 Blog
+              </button>
+
               {/* Search Button */}
               <div className="ml-3 pl-3 border-l border-gray-200/80">
                 <button 
@@ -207,6 +216,14 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
                 )}
               </div>
             ))}
+            
+            <button 
+              onClick={() => { onSelectTool('blog'); setIsMobileMenuOpen(false); }}
+              className="flex items-center gap-2 text-base font-medium text-gray-700 hover:text-blue-600 py-2 w-full text-left"
+            >
+              <BookOpen className="w-4 h-4" />
+              Blog & Tips
+            </button>
           </div>
         </div>
       )}

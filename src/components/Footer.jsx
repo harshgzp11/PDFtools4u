@@ -57,10 +57,9 @@ export default function Footer({ onSelectTool }) {
           {/* Company */}
           <div className="flex flex-col gap-4">
             <h4 className="text-white font-bold mb-2">Company</h4>
-            <a href="#about" className="text-sm hover:text-white transition-colors">About Us</a>
-            <a href="#careers" className="text-sm hover:text-white transition-colors">Careers</a>
-            <a href="#blog" className="text-sm hover:text-white transition-colors">Blog</a>
-            <a href="#contact" className="text-sm hover:text-white transition-colors">Contact</a>
+            <button onClick={() => onSelectTool('about')} className="text-left text-sm hover:text-white transition-colors">About Us</button>
+            <button onClick={() => onSelectTool('blog')} className="text-left text-sm hover:text-white transition-colors">Blog</button>
+            <button onClick={() => onSelectTool('contact')} className="text-left text-sm hover:text-white transition-colors">Contact</button>
           </div>
 
           {/* Product */}
@@ -123,7 +122,7 @@ export default function Footer({ onSelectTool }) {
             <button onClick={() => onSelectTool('privacy')} className="hover:text-white transition-colors cursor-pointer">Privacy Policy</button>
             <button onClick={() => onSelectTool('terms')} className="hover:text-white transition-colors cursor-pointer">Terms of Service</button>
             <a href="#imprint" className="hover:text-white transition-colors">Imprint</a>
-            <a href="#contactus" className="hover:text-white transition-colors">Contact Us</a>
+            <button onClick={() => onSelectTool('contact')} className="hover:text-white transition-colors cursor-pointer">Contact Us</button>
             <div className="flex items-center gap-1.5 ml-4">
               <Globe className="w-4 h-4" />
               <span>English</span>

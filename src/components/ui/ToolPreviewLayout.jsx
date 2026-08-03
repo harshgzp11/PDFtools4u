@@ -245,9 +245,9 @@ export default function ToolPreviewLayout({
               </button>
             </div>
             
-            <div className="mt-3 pt-3 border-t border-gray-100 flex items-start gap-2 text-[11px] leading-tight text-green-700 bg-green-50 p-2.5 rounded-lg border border-green-100 flex-shrink-0">
-              <ShieldCheck className="w-4 h-4 flex-shrink-0 text-green-500" />
-              <span><strong>Local Privacy:</strong> Processing occurs locally in your browser memory. No data is sent to external servers.</span>
+            <div className="mt-3 pt-3 border-t border-gray-100 flex items-start gap-2 text-[12px] leading-tight text-green-800 bg-green-50 p-3 rounded-xl border border-green-200 flex-shrink-0 shadow-sm">
+              <ShieldCheck className="w-5 h-5 flex-shrink-0 text-green-600 mt-0.5" />
+              <span><strong>Data Privacy:</strong> Your files are processed locally/safely and deleted automatically after 1 hour. We never store your sensitive documents on our servers.</span>
             </div>
           </div>
         </div>

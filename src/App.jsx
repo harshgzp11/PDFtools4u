@@ -5,6 +5,7 @@ import Layout from './components/Layout';
 import Dashboard from './components/Dashboard';
 import ToolSkeleton from './components/ui/ToolSkeleton';
 import PlaceholderTool from './tools/PlaceholderTool';
+import ToolSEOContent from './components/ui/ToolSEOContent';
 
 const PdfEditor = React.lazy(() => import('./tools/PdfEditor/index'));
 const PdfConverterHub = React.lazy(() => import('./tools/PdfConverterHub'));
@@ -61,6 +62,14 @@ const RtfToPdf = React.lazy(() => import('./tools/RtfToPdf'));
 const PrivacyPolicy = React.lazy(() => import('./pages/PrivacyPolicy'));
 const TermsOfService = React.lazy(() => import('./pages/TermsOfService'));
 
+// Blog System
+const BlogList = React.lazy(() => import('./pages/BlogList'));
+const BlogPost = React.lazy(() => import('./pages/BlogPost'));
+
+// Legal & Trust
+const AboutUs = React.lazy(() => import('./pages/AboutUs'));
+const ContactUs = React.lazy(() => import('./pages/ContactUs'));
+
 const TOOL_COMPONENTS = {
   'edit-pdf': PdfEditor,
   'pdf-converter': PdfConverterHub,
@@ -115,6 +124,8 @@ const TOOL_COMPONENTS = {
   'rtf-to-pdf': RtfToPdf,
   'privacy': PrivacyPolicy,
   'terms': TermsOfService,
+  'about': AboutUs,
+  'contact': ContactUs,
 };
 
 const PLACEHOLDER_TOOLS = {};
@@ -177,28 +188,41 @@ function App() {
         {activeTool ? (
           <div className="relative w-full h-full flex flex-col min-h-0">
             <Suspense fallback={<ToolSkeleton />}>
-              {visitedTools.map(toolId => {
-                const isPlaceholder = PLACEHOLDER_TOOLS[toolId];
-                const ToolComponent = TOOL_COMPONENTS[toolId];
-                
-                if (!isPlaceholder && !ToolComponent) return null;
-                
-                const isActive = activeTool === toolId;
-                
-                return (
-                  <div 
-                    key={toolId}
-                    style={{ display: isActive ? 'flex' : 'none' }}
-                    className={isActive ? "flex-1 flex flex-col w-full h-full min-h-0 overflow-hidden animate-in fade-in zoom-in-[0.98] duration-300" : ""}
-                  >
-                    {isPlaceholder ? (
-                      <PlaceholderTool toolName={PLACEHOLDER_TOOLS[toolId]} />
-                    ) : (
-                      <ToolComponent />
-                    )}
-                  </div>
-                );
-              })}
+              {activeTool === 'blog' ? (
+                <BlogList onNavigate={navigateTo} />
+              ) : activeTool.startsWith('blog/') ? (
+                <BlogPost id={activeTool.split('/')[1]} onNavigate={navigateTo} />
+              ) : (
+                visitedTools.map(toolId => {
+                  if (toolId === 'blog' || toolId.startsWith('blog/')) return null;
+                  
+                  const isPlaceholder = PLACEHOLDER_TOOLS[toolId];
+                  const ToolComponent = TOOL_COMPONENTS[toolId];
+                  
+                  if (!isPlaceholder && !ToolComponent) return null;
+                  
+                  const isActive = activeTool === toolId;
+                  
+                  return (
+                    <div 
+                      key={toolId}
+                      style={{ display: isActive ? 'flex' : 'none' }}
+                      className={isActive ? "flex-1 flex flex-col w-full h-full min-h-0 overflow-hidden animate-in fade-in zoom-in-[0.98] duration-300 custom-scrollbar" : ""}
+                    >
+                      <div className="flex-shrink-0 min-h-full flex flex-col">
+                        {isPlaceholder ? (
+                          <PlaceholderTool toolName={PLACEHOLDER_TOOLS[toolId]} />
+                        ) : (
+                          <ToolComponent />
+                        )}
+                        
+                        {/* SEO Content Injection */}
+                        <ToolSEOContent toolId={toolId} />
+                      </div>
+                    </div>
+                  );
+                })
+              )}
             </Suspense>
           </div>
         ) : (
