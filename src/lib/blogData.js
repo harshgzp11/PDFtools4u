@@ -81,9 +81,9 @@ Downloading an official e-Aadhaar document from the UIDAI portal provides an enc
 
 Official e-Aadhaar files are encrypted by default. Your password combination follows a standardized 8-character rule:
 * **First 4 Characters:** The first 4 letters of your first name in **UPPERCASE** block letters.
-* **Last 4 Characters:** Your 4-digit birth year in \`YYYY\` format.
+* **Last 4 Characters:** Your 4-digit birth year in **YYYY** format.
 
-*Example:* If your official name is **KUMAR SWAMY** and your birth year is **1998**, your password is \`KUMA1998\`.
+*Example:* If your official name is **KUMAR SWAMY** and your birth year is **1998**, your password is **KUMA1998**.
 
 ---
 
@@ -93,7 +93,7 @@ Official e-Aadhaar files are encrypted by default. Your password combination fol
 2. Drag and drop your downloaded e-Aadhaar PDF file into the secure browser upload box.
 3. Enter your 8-character password when prompted by the converter.
 4. Set your output quality to **High Quality (300 DPI)**.
-5. Click **Convert to JPG** and save the converted \`.jpg\` file to your device.
+5. Click **Convert to JPG** and save the converted **.jpg** file to your device.
 
 ---
 
@@ -101,7 +101,7 @@ Official e-Aadhaar files are encrypted by default. Your password combination fol
 
 | Requirement Category | Standard Portal Threshold | Optimization Strategy |
 |---|---|---|
-| **Accepted Formats** | \`.jpg\`, \`.jpeg\`, \`.png\` | Export as **JPG** from the conversion dropdown menu. |
+| **Accepted Formats** | **.jpg**, **.jpeg**, **.png** | Export as **JPG** from the conversion dropdown menu. |
 | **File Size Limit** | 100 KB – 500 KB | Use our **[Compress Image Tool](/compress-image)** if the JPG exceeds size limits. |
 | **Image Resolution** | Minimum 300 DPI | Render at 300 DPI so automated scanners can read the embedded QR code. |
 | **Page Margins** | Full page or Cropped Card | Crop out blank background margins prior to final submission. |
@@ -428,7 +428,7 @@ By using high-quality conversion algorithms and understanding the limitations of
     targetToolUrl: "convert-image",
     published: true,
     content: `
-If you take photos on a modern iPhone, you might have noticed they are saved as \`.HEIC\` files instead of standard JPGs. Apple introduced the High Efficiency Image Container (HEIC) to save storage space while maintaining high image quality.
+If you take photos on a modern iPhone, you might have noticed they are saved as **.HEIC** files instead of standard JPGs. Apple introduced the High Efficiency Image Container (HEIC) to save storage space while maintaining high image quality.
 
 While great for your phone's storage, it's terrible for compatibility. Most government portals, older Windows computers, and web forms completely reject HEIC files.
 
