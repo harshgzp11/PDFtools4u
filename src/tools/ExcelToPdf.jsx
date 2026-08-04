@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 
 export default function ExcelToPdf() {
   const [file, setFile] = useState(null);
@@ -17,7 +17,7 @@ export default function ExcelToPdf() {
   const [activeSheet, setActiveSheet] = useState('');
   
   const [sheetData, setSheetData] = useState([]);
-  const [orientation, setOrientation] = useState('landscape');
+  const [orientation, setOrientation] = useState('auto');
 
   useEffect(() => {
     if (window.__sharedFile) {
@@ -82,15 +82,34 @@ export default function ExcelToPdf() {
       return;
     }
     
-    const data = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+    const rawData = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
     
-    if (data.length === 0 || (data.length === 1 && data[0].length === 0)) {
+    if (!rawData || rawData.length === 0) {
        toast.error(`Sheet "${sheetName}" is empty.`);
        setSheetData([]);
        return;
     }
 
-    setSheetData(data);
+    // Find maximum column count across all rows in the sheet
+    const maxCols = Math.max(...rawData.map(r => (Array.isArray(r) ? r.length : 0)), 0);
+
+    if (maxCols === 0) {
+       toast.error(`Sheet "${sheetName}" is empty.`);
+       setSheetData([]);
+       return;
+    }
+
+    // Normalize all rows to a uniform length of maxCols with safe string cell values
+    const normalizedData = rawData.map(row => {
+      const cleanRow = [];
+      for (let i = 0; i < maxCols; i++) {
+        const cell = Array.isArray(row) ? row[i] : '';
+        cleanRow.push(cell !== undefined && cell !== null ? String(cell) : '');
+      }
+      return cleanRow;
+    });
+
+    setSheetData(normalizedData);
   };
 
   const handleSheetChange = (e) => {
@@ -109,8 +128,13 @@ export default function ExcelToPdf() {
     setIsProcessing(true);
     
     try {
+      const maxCols = sheetData.length > 0 ? sheetData[0].length : 0;
+      const targetOrientation = orientation === 'auto'
+        ? (maxCols > 6 ? 'landscape' : 'portrait')
+        : orientation;
+
       const doc = new jsPDF({
-        orientation: orientation,
+        orientation: targetOrientation,
         unit: 'pt',
         format: 'a4'
       });
@@ -118,27 +142,35 @@ export default function ExcelToPdf() {
       const head = sheetData.length > 0 ? [sheetData[0]] : [];
       const body = sheetData.length > 1 ? sheetData.slice(1) : [];
 
-      doc.autoTable({
+      autoTable(doc, {
         head: head,
         body: body,
-        startY: 40,
+        showHead: 'firstPage',
+        startY: 20,
         theme: 'grid',
         styles: {
-          fontSize: 8,
-          cellPadding: 4,
-          textColor: [40, 40, 40]
+          fontSize: 9,
+          cellPadding: 6,
+          textColor: [30, 30, 30],
+          overflow: 'linebreak',
+          lineWidth: 0.75,
+          lineColor: [211, 211, 211] // #d3d3d3 Standard Excel grey gridlines
         },
         headStyles: {
-          fillColor: [63, 131, 248],
-          textColor: 255,
-          fontStyle: 'bold'
+          fillColor: [243, 244, 246], // Excel header grey
+          textColor: [31, 41, 55],
+          fontStyle: 'bold',
+          lineWidth: 0.75,
+          lineColor: [211, 211, 211]
         },
-        margin: { top: 40, right: 30, bottom: 40, left: 30 },
-        didDrawPage: (data) => {
-          doc.setFontSize(14);
-          doc.setTextColor(40);
-          doc.text(`${file.name} - ${activeSheet}`, data.settings.margin.left, 25);
-        }
+        alternateRowStyles: {
+          fillColor: [255, 255, 255]
+        },
+        tableLineWidth: 0.75,
+        tableLineColor: [211, 211, 211],
+        pageBreak: 'auto',
+        rowPageBreak: 'avoid',
+        margin: { top: 20, right: 20, bottom: 20, left: 20 }
       });
       
       const blob = doc.output('blob');
@@ -148,11 +180,11 @@ export default function ExcelToPdf() {
         url,
         filename: `${file.name.replace(/\.[^/.]+$/, "")}_${activeSheet}.pdf`,
         title: 'PDF Created Successfully!',
-        subtitle: 'Your spreadsheet has been elegantly converted to PDF format.'
+        subtitle: 'Your spreadsheet has been elegantly converted to PDF format with professional page layout.'
       });
       toast.success("Conversion successful!");
     } catch (err) {
-      console.error(err);
+      console.error("ExcelToPdf conversion error:", err);
       toast.error("An error occurred while generating the PDF.");
     } finally {
       setIsProcessing(false);
@@ -166,6 +198,7 @@ export default function ExcelToPdf() {
     setSheetNames([]);
     setActiveSheet('');
     setSheetData([]);
+    setOrientation('auto');
     setIsProcessing(false);
     setIsParsing(false);
   };
@@ -186,7 +219,7 @@ export default function ExcelToPdf() {
              Parsing spreadsheet, please wait...
            </div>
          ) : sheetData.length > 0 ? (
-           <table className="w-full border-collapse bg-white shadow-sm text-sm text-left">
+           <table className="excel-pdf-table w-full border-collapse bg-white shadow-sm text-sm text-left">
              <thead>
                <tr>
                  <th className="border border-gray-300 bg-gray-100 p-2 text-gray-500 font-semibold w-10 text-center select-none sticky top-0 left-0 z-30 shadow-[1px_1px_0_0_#d1d5db]"></th>
@@ -292,8 +325,18 @@ export default function ExcelToPdf() {
           </label>
           <div className="flex bg-gray-100 p-1 rounded-xl shadow-inner">
             <button
+              onClick={() => setOrientation('auto')}
+              className={`flex-1 py-2 px-3 text-xs font-bold rounded-lg transition-all ${
+                orientation === 'auto' 
+                  ? 'bg-white text-gray-900 shadow-sm border border-gray-200' 
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              Auto (Smart)
+            </button>
+            <button
               onClick={() => setOrientation('portrait')}
-              className={`flex-1 py-2 px-4 text-sm font-bold rounded-lg transition-all ${
+              className={`flex-1 py-2 px-3 text-xs font-bold rounded-lg transition-all ${
                 orientation === 'portrait' 
                   ? 'bg-white text-gray-900 shadow-sm border border-gray-200' 
                   : 'text-gray-500 hover:text-gray-700'
@@ -303,7 +346,7 @@ export default function ExcelToPdf() {
             </button>
             <button
               onClick={() => setOrientation('landscape')}
-              className={`flex-1 py-2 px-4 text-sm font-bold rounded-lg transition-all ${
+              className={`flex-1 py-2 px-3 text-xs font-bold rounded-lg transition-all ${
                 orientation === 'landscape' 
                   ? 'bg-white text-gray-900 shadow-sm border border-gray-200' 
                   : 'text-gray-500 hover:text-gray-700'
@@ -313,7 +356,7 @@ export default function ExcelToPdf() {
             </button>
           </div>
           <p className="text-xs text-gray-500 ml-1">
-            * Landscape is highly recommended for tables with many columns to prevent text clipping.
+            * Auto mode dynamically chooses Landscape for tables with &gt; 6 columns to prevent text clipping.
           </p>
         </div>
 

@@ -1,5 +1,6 @@
 import * as pdfjsLib from 'pdfjs-dist';
 import { Document, Packer, Paragraph, TextRun, AlignmentType, ImageRun } from 'docx';
+import * as XLSX from 'xlsx';
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
@@ -269,9 +270,10 @@ export const convertPdfToPpt = async (file, onProgress) => {
 };
 
 /**
- * Converts a PDF file to a CSV (acting as Excel) using Text-to-CSV logic
- * @param {File} file 
- * @param {Function} onProgress 
+ * Converts a PDF file to an Excel (.xlsx) file using Sequential Row Mapping with Auto-Sized Columns.
+ * @param {File} file - The PDF file to extract tables from
+ * @param {Function} onProgress - Progress callback function (0 to 100)
+ * @returns {Promise<Blob>} - The resulting Excel (.xlsx) Blob
  */
 export const convertPdfToExcel = async (file, onProgress) => {
   if (!file) throw new Error("No file provided");
@@ -280,54 +282,143 @@ export const convertPdfToExcel = async (file, onProgress) => {
   const arrayBuffer = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
   const numPages = pdf.numPages;
-  
-  let csvText = "";
-  let hasText = false;
-  
-  for (let i = 1; i <= numPages; i++) {
-    const page = await pdf.getPage(i);
+
+  const allTableRows = [];
+  let totalExtractedItems = 0;
+
+  const ROW_Y_TOLERANCE = 5; // Y-tolerance in PDF points (+/- 5px)
+  const MERGE_GAP_X_THRESHOLD = 6; // Proximity merge gap (<= 6px)
+
+  for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+    const page = await pdf.getPage(pageNum);
     const textContent = await page.getTextContent();
-    const items = textContent.items;
-    
+
+    // Filter out items without non-whitespace content
+    const items = (textContent.items || []).filter(item => item.str && item.str.trim().length > 0);
+
     if (items.length > 0) {
-      hasText = true;
+      totalExtractedItems += items.length;
+
+      // 1. Group text items into rows based on Y-coordinate (transform[5])
       const rows = [];
-      const TOLERANCE = 5;
-      
       items.forEach(item => {
+        const x = item.transform[4];
         const y = item.transform[5];
-        let foundRow = rows.find(r => Math.abs(r.y - y) < TOLERANCE);
+
+        let foundRow = rows.find(r => Math.abs(r.y - y) <= ROW_Y_TOLERANCE);
         if (!foundRow) {
           foundRow = { y, items: [] };
           rows.push(foundRow);
         }
-        foundRow.items.push(item);
+        foundRow.items.push({ text: item.str, x, y, width: item.width || 0 });
       });
-      
+
+      // 2. Sort rows top to bottom (descending Y in PDF coordinates)
       rows.sort((a, b) => b.y - a.y);
-      
+
+      // 3. Process each row: Sort left to right by X, apply Proximity Merging (<= 6px), and map sequentially
       rows.forEach(row => {
-        row.items.sort((a, b) => a.transform[4] - b.transform[4]);
-        const rowText = row.items.map(item => {
-          let str = item.str.replace(/"/g, '""');
-          if (str.includes(',') || str.includes('"') || str.includes('\n')) {
-            return `"${str}"`;
+        // Sort items within row from left to right by X-coordinate
+        row.items.sort((a, b) => a.x - b.x);
+
+        const mergedItems = [];
+        row.items.forEach(item => {
+          if (mergedItems.length === 0) {
+            mergedItems.push({ ...item });
+          } else {
+            const prevItem = mergedItems[mergedItems.length - 1];
+            const prevRightX = prevItem.x + (prevItem.width || 0);
+            const gap = item.x - prevRightX;
+
+            // Proximity Merging (<= 6px)
+            if (gap <= MERGE_GAP_X_THRESHOLD) {
+              const prevText = prevItem.text;
+              const currText = item.text;
+
+              let separator = '';
+
+              // 1. Lower threshold: Any gap larger than 1px is a space.
+              if (gap > 1) {
+                separator = ' ';
+              }
+
+              // 2. The CamelCase Safety Net (e.g. "Result" + "Status" -> "Result Status")
+              const lastChar = prevText.slice(-1);
+              const nextChar = currText.charAt(0);
+              const isCamelCaseSmash = /[a-z]/.test(lastChar) && /[A-Z]/.test(nextChar);
+
+              if (isCamelCaseSmash) {
+                separator = ' ';
+              }
+
+              // 3. The "of" Safety Net (Fixes "Year ofPassing")
+              if (prevText.trim().toLowerCase().endsWith('of')) {
+                separator = ' ';
+              }
+
+              // 4. Protect email/URL kerning when gap <= 1px
+              if (gap <= 1) {
+                const isSymbolJunction =
+                  prevText.trim().endsWith('@') || currText.trim().startsWith('@') ||
+                  prevText.trim().endsWith('.') || currText.trim().startsWith('.') ||
+                  prevText.trim().endsWith('/') || currText.trim().startsWith('/') ||
+                  prevText.trim().endsWith('-') || currText.trim().startsWith('-') ||
+                  prevText.trim().endsWith('_') || currText.trim().startsWith('_') ||
+                  prevText.trim().endsWith(':') || currText.trim().startsWith(':');
+
+                if (isSymbolJunction) {
+                  separator = '';
+                }
+              }
+
+              // Prevent double spaces
+              if (/\s$/.test(prevText) || /^\s/.test(currText)) {
+                separator = '';
+              }
+
+              prevItem.text = prevText + separator + currText;
+              const newRightX = Math.max(prevRightX, item.x + (item.width || 0));
+              prevItem.width = newRightX - prevItem.x;
+            } else {
+              mergedItems.push({ ...item });
+            }
           }
-          return str;
-        }).join(',');
-        csvText += rowText + '\n';
+        });
+
+        // 4. Sequential Row Mapping
+        const rowCells = mergedItems.map(item => item.text.trim()).filter(text => text.length > 0);
+        if (rowCells.length > 0) {
+          allTableRows.push(rowCells);
+        }
       });
     }
-    
-    onProgress(Math.round((i / numPages) * 100));
+
+    onProgress(Math.round((pageNum / numPages) * 100));
     await yieldToMain();
   }
-  
-  if (!hasText || !csvText.trim()) {
+
+  if (totalExtractedItems === 0 || allTableRows.length === 0) {
     throw new Error("No tabular text could be extracted. The PDF might be a scanned image or composed of vectors.");
   }
 
-  // Add UTF-8 BOM
-  const blob = new Blob(['\uFEFF' + csvText], { type: 'text/csv;charset=utf-8;' });
-  return blob;
+  // Create Excel workbook and worksheet using SheetJS (XLSX)
+  const worksheet = XLSX.utils.aoa_to_sheet(allTableRows);
+
+  // Auto-size column widths based on maximum cell string length
+  const colWidths = [];
+  allTableRows.forEach(row => {
+    row.forEach((cell, i) => {
+      const cellLength = cell ? cell.toString().length : 0;
+      if (!colWidths[i] || colWidths[i].wch < cellLength + 2) {
+        colWidths[i] = { wch: cellLength + 2 };
+      }
+    });
+  });
+  worksheet['!cols'] = colWidths;
+
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  return new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
 };
