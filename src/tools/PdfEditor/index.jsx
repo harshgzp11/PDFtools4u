@@ -20,7 +20,12 @@ import { generateId } from './utils';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
-export default function PdfEditor() {
+export default function PdfEditor({ 
+  initialTool = 'select',
+  title = "PDF Editor",
+  description = "Add text, shapes, redactions, and freehand drawings to your PDF files instantly. All processing is done locally in your browser—your files are never uploaded to any server, ensuring complete data privacy and security.",
+  allowedTools = null
+}) {
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState('document'); // without .pdf extension
   const [isProcessing, setIsProcessing] = useState(false);
@@ -34,7 +39,7 @@ export default function PdfEditor() {
   // View & Tool State
   const [viewMode, setViewMode] = useState('edit'); // 'edit' | 'grid' | 'thumbnail'
   const [zoom, setZoom] = useState(1);
-  const [activeTool, setActiveTool] = useState('select'); // select, text, pencil, rect, redact, image, signature, etc.
+  const [activeTool, setActiveTool] = useState(initialTool); // select, text, pencil, rect, redact, image, signature, etc.
   const [toolConfig, setToolConfig] = useState({ color: '#ef4444', size: 24, strokeWidth: 4 });
   const [activeToolPanel, setActiveToolPanel] = useState(null); // null, 'compress', 'convert', 'sign', 'ai'
   
@@ -273,8 +278,8 @@ export default function PdfEditor() {
   if (!file || pages.length === 0) {
     return (
       <ToolPreviewLayout
-        title="PDF Editor"
-        description="Add text, shapes, redactions, and freehand drawings to your PDF files instantly. All processing is done locally in your browser—your files are never uploaded to any server, ensuring complete data privacy and security."
+        title={title}
+        description={description}
         icon={PenTool}
         onFileSelect={handleFileUpload}
         isProcessing={isProcessing}
@@ -315,7 +320,10 @@ export default function PdfEditor() {
         activePageId={pages[activePageIndex]?.id}
         overlays={overlays}
         setOverlays={setOverlays}
+        allowedTools={allowedTools}
         onTogglePanel={togglePanel}
+        pages={pages}
+        activePageIndex={activePageIndex}
       />
       <div className="flex flex-1 overflow-hidden relative">
         <Sidebar 

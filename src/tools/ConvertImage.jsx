@@ -87,8 +87,8 @@ export default function ConvertImage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] animate-in fade-in zoom-in-95 duration-500">
         <div className="text-center mb-10 space-y-4">
-          <h2 className="text-5xl font-extrabold text-gray-900 tracking-tight">Convert Image</h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">Convert Image</h2>
+          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
             Convert your images to PNG, JPG, or WebP instantly.
           </p>
         </div>

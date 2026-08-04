@@ -185,8 +185,8 @@ export default function ToolPreviewLayout({
   return (
     <div className="flex-1 w-full mx-auto animate-in fade-in flex flex-col h-full min-h-0">
       <div className="text-center space-y-1.5 flex-shrink-0 mb-4">
-        <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight">{title}</h2>
-        <p className="text-sm text-gray-500 max-w-2xl mx-auto">{description}</p>
+        <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">{title}</h2>
+        <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">{description}</p>
       </div>
 
       {!file && (

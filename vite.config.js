@@ -1,8 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
-import vitePrerender from 'vite-plugin-prerender'
 import path from 'path'
+import { createRequire } from 'node:module'
+
+const require = createRequire(import.meta.url)
+const vitePrerender = require('vite-plugin-prerender')
 
 export default defineConfig({
   plugins: [

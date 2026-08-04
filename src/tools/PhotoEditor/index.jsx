@@ -106,7 +106,7 @@ export default function PhotoEditor() {
       <div className="flex flex-col items-center justify-center min-h-[60vh] animate-in fade-in zoom-in-95 duration-500">
         <div className="text-center mb-10 space-y-4">
           <h1 className="text-4xl font-black text-gray-900 tracking-tight">Photo editor</h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
             Add text, stickers, effects and filters to your photos. Edit your photos online.
           </p>
         </div>

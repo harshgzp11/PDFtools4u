@@ -10,12 +10,12 @@ export const BLOG_POSTS = [
   // Cluster 1: Government & ID (High Intent / Regional Focus)
   {
     id: "aadhaar-pdf-to-jpg-online",
-    title: "How to Convert Aadhaar Card PDF to JPG Online (Password Removal & 300 DPI Guide)",
+    title: "How to Convert Aadhaar Card PDF to JPG Online",
     cluster: "Government & ID",
     excerpt: "Learn how to remove password protection from your e-Aadhaar PDF and convert it into a crisp, portal-ready JPG image in seconds.",
     date: "August 1, 2026",
     author: "PDFTools4U Team",
-    coverImage: "https://images.unsplash.com/photo-1585036156171-384164a8c675?auto=format&fit=crop&q=80&w=1000",
+    coverImage: "/images/aadhaar-sample.png",
     targetToolUrl: "pdf-to-jpg",
     published: true,
     customSchema: {
