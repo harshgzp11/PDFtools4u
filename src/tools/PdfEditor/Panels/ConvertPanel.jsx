@@ -27,7 +27,7 @@ export default function ConvertPanel({ file, onClose }) {
         filename += '.docx';
       } else if (format === 'xlsx') {
         blob = await convertPdfToExcel(file, setProgress);
-        filename += '.csv'; // Excel compatibility format
+        filename += '.xlsx';
       } else if (format === 'image') {
         blob = await convertPdfToImages(file, imageFormat, setProgress);
         filename += '_images.zip';
@@ -168,7 +168,7 @@ export default function ConvertPanel({ file, onClose }) {
               {format === 'xlsx' && (
                 <div className="flex items-start gap-2 text-indigo-700 bg-indigo-50 border border-indigo-100 p-3 rounded-lg text-xs leading-relaxed">
                   <Info className="w-4 h-4 mt-0.5 shrink-0" />
-                  <p><strong>Note:</strong> This performs Text-to-CSV extraction. It works best on simple, single-column lists. Complex layouts or scanned tables may lose alignment.</p>
+                  <p><strong>Note:</strong> Table data is extracted using X/Y coordinate spatial mapping into a native Excel (.xlsx) file directly in your browser.</p>
                 </div>
               )}
 
