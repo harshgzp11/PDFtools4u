@@ -8,19 +8,19 @@ export default function ToolSEOContent({ toolId }) {
   if (!content) return null;
 
   return (
-    <div className="w-full max-w-4xl mx-auto mt-16 px-4 pb-24 space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="w-full mx-auto mt-16 px-4 pb-24 space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
       
       {/* Introduction */}
       <div className="text-center space-y-4">
         <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">{content.title}</h2>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+        <p className="text-lg text-gray-600 mx-auto leading-relaxed">
           {content.description}
         </p>
       </div>
 
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
         {/* How to use */}
-        <div className="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+        <div className="py-8">
           <div className="flex items-center gap-3 mb-6">
             <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl">
               <FileText className="w-6 h-6" />
@@ -40,7 +40,7 @@ export default function ToolSEOContent({ toolId }) {
         </div>
 
         {/* Features */}
-        <div className="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+        <div className="py-8">
           <div className="flex items-center gap-3 mb-6">
             <div className="p-2.5 bg-green-50 text-green-600 rounded-xl">
               <Lightbulb className="w-6 h-6" />
@@ -65,8 +65,8 @@ export default function ToolSEOContent({ toolId }) {
       </div>
 
       {/* Why Section */}
-      <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-2xl p-8 md:p-10 border border-indigo-100">
-        <h3 className="text-2xl font-bold text-gray-900 mb-4">Why use our {content.title.split(' ')[0]} tool?</h3>
+      <div className="py-8 md:py-10">
+        <h3 className="text-2xl font-bold text-gray-900 mb-4 text-center">Why use our {content.title.split(' ')[0]} tool?</h3>
         <p className="text-gray-700 leading-relaxed text-lg">
           {content.why}
         </p>
@@ -81,7 +81,7 @@ export default function ToolSEOContent({ toolId }) {
           <h3 className="text-3xl font-extrabold text-gray-900 text-center">Frequently Asked Questions</h3>
         </div>
         
-        <div className="space-y-4 max-w-3xl mx-auto">
+        <div className="space-y-2 w-full mx-auto">
           {content.faq.map((item, idx) => (
             <FAQItem key={idx} question={item.q} answer={item.a} />
           ))}
@@ -95,7 +95,7 @@ function FAQItem({ question, answer }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="border border-gray-200 rounded-2xl bg-white overflow-hidden transition-all hover:border-blue-200">
+    <div className="border-b border-gray-200 overflow-hidden transition-all hover:border-gray-300">
       <button 
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center justify-between p-5 text-left focus:outline-none"

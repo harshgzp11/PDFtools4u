@@ -37,7 +37,7 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
   };
 
   return (
-    <div className={`bg-white text-gray-900 flex flex-col font-sans selection:bg-blue-100 custom-scrollbar ${isToolView ? 'h-screen min-h-[700px] overflow-hidden' : 'min-h-screen overflow-y-auto'}`}>
+    <div className={`bg-white text-gray-900 flex flex-col font-sans selection:bg-blue-100 min-h-screen overflow-y-auto custom-scrollbar`}>
       {/* Navbar */}
       <nav className={`flex-shrink-0 sticky top-0 z-[100] transition-all duration-300 bg-white/80 backdrop-blur-2xl border-b border-gray-200/80 ${
         scrolled ? 'shadow-sm' : ''
@@ -229,7 +229,7 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
       )}
 
       {/* Main Layout Area */}
-      <div className={`flex-1 flex w-full max-w-[1920px] mx-auto px-2 sm:px-4 py-4 gap-4 xl:gap-6 justify-center ${isToolView ? 'items-stretch min-h-0 overflow-hidden' : 'items-start'}`}>
+      <div className={`flex-1 flex w-full max-w-[1920px] mx-auto px-2 sm:px-4 py-4 gap-4 xl:gap-6 justify-center items-start`}>
         
         {/* Left Sidebar Ad */}
         <aside className="hidden 2xl:flex flex-col w-[160px] flex-shrink-0 h-full max-h-full rounded-2xl relative overflow-hidden">
@@ -238,8 +238,8 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
           </div>
         </aside>
 
-        <main className={`flex-1 w-full min-w-0 flex flex-col ${isToolView ? 'h-full min-h-0 overflow-hidden' : ''}`}>
-          <div className={`flex-1 w-full rounded-2xl ${isToolView ? 'flex flex-col min-h-0 overflow-hidden h-full' : ''}`}>
+        <main className={`flex-1 w-full min-w-0 flex flex-col`}>
+          <div className={`flex-1 w-full rounded-2xl flex flex-col`}>
             {children}
           </div>
         </main>

@@ -22,8 +22,8 @@ export default function PlaceholderTool({ toolName }) {
           <div className="inline-block px-3 py-1 bg-blue-100 text-blue-800 text-xs font-bold uppercase tracking-wide rounded-full border border-blue-200 shadow-sm mb-2">
             Coming Soon
           </div>
-          <h2 className="text-5xl font-extrabold text-gray-900 tracking-tight">{toolName || "Tool"}</h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">{toolName || "Tool"}</h2>
+          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
             This tool is currently under construction. You can test the new interface below!
           </p>
         </div>

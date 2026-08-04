@@ -98,19 +98,29 @@ export const DOMAINS = [
     ]
   },
   {
-    title: "Document Tools (DOCX)",
+    title: "Document Tools (DOCX, XLSX, PPTX, TXT)",
     color: "text-blue-600",
     bg: "bg-blue-50",
     border: "border-blue-200",
     categories: [
       {
-        name: "Word Utilities",
+        name: "WORD & TEXT (DOCX, DOC, TXT)",
         tools: [
-          { id: 'docx-to-text', name: 'DOCX to Text', description: 'Extract raw text from Word documents.', icon: FileText, color: 'text-blue-500', bg: 'bg-blue-50' },
-          { id: 'docx-to-html', name: 'DOCX to HTML', description: 'Convert Word documents to clean HTML.', icon: Code, color: 'text-green-500', bg: 'bg-green-50' },
+          { id: 'word-to-pdf', name: 'WORD to PDF', description: 'Convert Word document (.docx, .doc) to PDF.', icon: FileCode2, color: 'text-red-500', bg: 'bg-red-50' },
+          { id: 'pdf-to-word', name: 'PDF to WORD', description: 'Convert PDF to editable Word document (.docx).', icon: FileText, color: 'text-blue-500', bg: 'bg-blue-50' },
+          { id: 'docx-to-text', name: 'DOCX to Text', description: 'Extract raw text from Word documents.', icon: FileText, color: 'text-sky-500', bg: 'bg-sky-50' },
+          { id: 'docx-to-html', name: 'DOCX to HTML', description: 'Convert Word documents to clean HTML code.', icon: Code, color: 'text-green-500', bg: 'bg-green-50' },
           { id: 'text-to-docx', name: 'Text to DOCX', description: 'Generate a Word document from text.', icon: FileCode2, color: 'text-indigo-500', bg: 'bg-indigo-50' },
-          { id: 'word-to-pdf', name: 'WORD to PDF', description: 'Convert Word document to PDF.', icon: FileCode2, color: 'text-red-500', bg: 'bg-red-50' },
-          { id: 'pdf-to-word', name: 'PDF to WORD', description: 'Convert PDF to editable Word document.', icon: FileText, color: 'text-blue-500', bg: 'bg-blue-50' },
+          { id: 'txt-to-pdf', name: 'TXT to PDF', description: 'Convert plain text files (.txt) into formatted PDF.', icon: FileText, color: 'text-purple-500', bg: 'bg-purple-50' },
+        ]
+      },
+      {
+        name: "SPREADSHEETS & PRESENTATIONS (XLSX, XLS, PPTX, PPT)",
+        tools: [
+          { id: 'excel-to-pdf', name: 'EXCEL to PDF', description: 'Convert Excel spreadsheets (.xlsx, .xls, .csv) to PDF.', icon: FileSpreadsheet, color: 'text-emerald-500', bg: 'bg-emerald-50' },
+          { id: 'pdf-to-excel', name: 'PDF to EXCEL', description: 'Convert PDF tables into Excel spreadsheet (.xlsx).', icon: FileSpreadsheet, color: 'text-green-500', bg: 'bg-green-50' },
+          { id: 'ppt-to-pdf', name: 'POWERPOINT to PDF', description: 'Convert PowerPoint (.pptx, .ppt) to PDF.', icon: Presentation, color: 'text-orange-500', bg: 'bg-orange-50' },
+          { id: 'pdf-to-ppt', name: 'PDF to POWERPOINT', description: 'Convert PDF to PowerPoint presentation (.pptx).', icon: Presentation, color: 'text-amber-500', bg: 'bg-amber-50' },
         ]
       }
     ]

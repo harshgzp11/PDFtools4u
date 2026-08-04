@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Trash2, ArrowLeft, ArrowRight, ZoomIn, ZoomOut, Maximize } from 'lucide-react';
+import { Trash2, ArrowLeft, ArrowRight } from 'lucide-react';
 import { generateId } from './utils';
 
 export default function Canvas({
@@ -234,33 +234,73 @@ export default function Canvas({
     }
   }, [activeTool, toolConfig, isDrawing]);
 
+  // Auto fit-to-width when pages load or document changes
+  useEffect(() => {
+    if (!pages || pages.length === 0) return;
+
+    const performFit = () => {
+      const activePage = pages[activePageIndex] || pages[0];
+      if (!activePage || !activePage.width) return;
+
+      const container = containerRef.current?.closest('.flex-1') || document.querySelector('.flex-1.bg-\\[\\#e5e7eb\\]') || document.querySelector('.flex-1');
+      if (container && container.clientWidth > 0) {
+        const availableWidth = container.clientWidth - 80; // Comfortable padding
+        if (availableWidth > 0) {
+          // Convert PDF points (72dpi) to CSS pixels (96dpi: 1pt = 1.333px)
+          const cssPageWidth = activePage.width * (96 / 72);
+          const fitZoom = availableWidth / cssPageWidth;
+          // Cap at 1.05 max so pages render at comfortable paper size
+          const clampedZoom = Math.min(1.05, Math.max(0.5, Number(fitZoom.toFixed(2))));
+          setZoom(clampedZoom);
+        }
+      }
+    };
+
+    performFit();
+    const t1 = setTimeout(performFit, 50);
+    const t2 = setTimeout(performFit, 200);
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, [pages, activePageIndex, pdfJsDoc]);
+
   const activePage = pages[activePageIndex];
   if (!activePage) return null;
 
   const pageOverlays = overlays[activePageId] || [];
 
   return (
-    <div className="flex-1 bg-[#e5e7eb] overflow-auto relative flex flex-col items-center justify-start p-8 pb-32">
+    <div className="flex-1 bg-[#e5e7eb] overflow-auto custom-scrollbar relative flex flex-col items-center justify-start p-6 pb-24">
       
+      {/* Sizing Wrapper: Layout box matches scaled size so scrollbars only appear when zoomed in too much */}
       <div 
-        ref={containerRef}
-        className={`relative bg-white shadow-2xl transition-transform duration-200 origin-top ${
-          activeTool === 'hand' ? (isPanning ? 'cursor-grabbing' : 'cursor-grab') 
-          : activeTool === 'eraser' ? 'cursor-not-allowed'
-          : ['pencil', 'highlighter'].includes(activeTool) ? 'cursor-crosshair'
-          : 'cursor-default'
-        }`}
         style={{ 
-          width: activePage.width, 
-          height: activePage.height,
-          transform: `scale(${zoom})`
-        }}
-        onClick={handleContainerClick}
-        onMouseDown={onMouseDown}
-        onMouseMove={onMouseMove}
-        onMouseUp={onMouseUp}
-        onMouseLeave={onMouseUp}
+          width: activePage.width * zoom, 
+          height: activePage.height * zoom 
+        }} 
+        className="shrink-0 relative flex items-center justify-center my-auto transition-all duration-200"
       >
+        <div 
+          ref={containerRef}
+          className={`relative bg-white shadow-2xl transition-transform duration-200 origin-top-left ${
+            activeTool === 'hand' ? (isPanning ? 'cursor-grabbing' : 'cursor-grab') 
+            : activeTool === 'eraser' ? 'cursor-not-allowed'
+            : ['pencil', 'highlighter'].includes(activeTool) ? 'cursor-crosshair'
+            : 'cursor-default'
+          }`}
+          style={{ 
+            width: activePage.width, 
+            height: activePage.height,
+            transform: `scale(${zoom})`
+          }}
+          onClick={handleContainerClick}
+          onMouseDown={onMouseDown}
+          onMouseMove={onMouseMove}
+          onMouseUp={onMouseUp}
+          onMouseLeave={onMouseUp}
+        >
         <PageCanvasRenderer 
           pdfJsDoc={pdfJsDoc} 
           pageIndex={activePage.originalIndex + 1} 
@@ -388,6 +428,7 @@ export default function Canvas({
           </div>
         ))}
       </div>
+      </div>
 
       {/* Floating Pagination Footer */}
       <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-900/90 backdrop-blur-md rounded-full shadow-2xl px-6 py-2.5 flex items-center gap-6 z-50">
@@ -410,32 +451,6 @@ export default function Canvas({
         >
           <ArrowRight className="w-5 h-5" />
         </button>
-      </div>
-
-      {/* Floating Zoom Dock (Bottom Right) */}
-      <div className="fixed bottom-6 right-6 bg-gray-900/90 backdrop-blur-md rounded-full shadow-2xl px-2 py-1.5 flex items-center gap-1 z-50">
-         <button onClick={() => setZoom(Math.max(0.25, zoom - 0.25))} className="p-2 text-white hover:text-blue-400 transition-colors rounded-full"><ZoomOut className="w-4 h-4" /></button>
-         <div className="text-white font-medium text-xs tracking-wide w-12 text-center select-none">
-           {Math.round(zoom * 100)}%
-         </div>
-         <button onClick={() => setZoom(Math.min(3, zoom + 0.25))} className="p-2 text-white hover:text-blue-400 transition-colors rounded-full"><ZoomIn className="w-4 h-4" /></button>
-         <div className="w-px h-4 bg-white/20 mx-1"></div>
-         <button 
-           onClick={() => {
-             if (containerRef.current?.parentElement) {
-               const parent = containerRef.current.parentElement;
-               // Calculate zoom to fit container width (minus padding)
-               const newZoom = (parent.clientWidth - 64) / activePage.width;
-               setZoom(Math.min(3, Math.max(0.25, newZoom)));
-             } else {
-               setZoom(1);
-             }
-           }} 
-           className="p-2 text-white hover:text-blue-400 transition-colors rounded-full" 
-           title="Fit to width"
-         >
-           <Maximize className="w-4 h-4" />
-         </button>
       </div>
 
     </div>

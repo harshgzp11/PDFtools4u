@@ -19,16 +19,24 @@ export default function PdfConverterHub() {
     setThumbnailUrl(null);
     setIsMenuOpen(true);
     
+    const ext = (newFile.name || '').split('.').pop().toLowerCase();
+    const type = newFile.type || '';
+
     // Determine type
-    if (newFile.type === 'application/pdf') {
+    if (type === 'application/pdf' || ext === 'pdf') {
       setFileType('pdf');
       generatePdfThumbnail(newFile);
-    } else if (newFile.type.startsWith('image/')) {
+    } else if (type.startsWith('image/') || ['jpg', 'jpeg', 'png', 'webp', 'gif', 'bmp', 'svg'].includes(ext)) {
       setFileType('image');
       setThumbnailUrl(URL.createObjectURL(newFile));
-    } else if (newFile.name.endsWith('.docx') || newFile.type.includes('wordprocessingml')) {
-      setFileType('docx');
-      // No standard thumbnail for docx in browser, will show icon
+    } else if (['docx', 'doc'].includes(ext) || type.includes('word')) {
+      setFileType('word');
+    } else if (['xlsx', 'xls', 'csv'].includes(ext) || type.includes('sheet') || type.includes('excel')) {
+      setFileType('excel');
+    } else if (['pptx', 'ppt'].includes(ext) || type.includes('presentation') || type.includes('powerpoint')) {
+      setFileType('ppt');
+    } else if (['txt', 'text', 'log', 'md'].includes(ext) || type.startsWith('text/')) {
+      setFileType('txt');
     } else {
       setFileType('other');
     }
@@ -78,7 +86,7 @@ export default function PdfConverterHub() {
       <div className="flex flex-col items-center justify-center min-h-[60vh] animate-in fade-in zoom-in-95 duration-500">
         <div className="text-center mb-10 space-y-4">
           
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
             Upload any document or image. We'll give you all the conversion options.
           </p>
         </div>
@@ -93,14 +101,19 @@ export default function PdfConverterHub() {
             className="p-20 py-32 bg-blue-50/50 hover:bg-blue-100 border-blue-300 hover:border-blue-400 mb-8"
           />
           
-          <div className="flex flex-wrap items-center justify-center gap-3 bg-blue-50/30 p-4 rounded-2xl border border-blue-100">
-            <span className="text-gray-600 font-medium text-lg mr-2">Supported formats:</span>
-            <span className="px-4 py-1.5 bg-red-100 text-red-700 font-bold rounded-full text-sm">PDF</span>
-            <span className="px-4 py-1.5 bg-blue-100 text-blue-700 font-bold rounded-full text-sm">DOC</span>
-            <span className="px-4 py-1.5 bg-green-100 text-green-700 font-bold rounded-full text-sm">XLS</span>
-            <span className="px-4 py-1.5 bg-orange-100 text-orange-700 font-bold rounded-full text-sm">PPT</span>
-            <span className="px-4 py-1.5 bg-amber-100 text-amber-700 font-bold rounded-full text-sm">PNG</span>
-            <span className="px-4 py-1.5 bg-amber-100 text-amber-700 font-bold rounded-full text-sm">JPG</span>
+          <div className="flex flex-wrap items-center justify-center gap-2.5 bg-blue-50/40 p-4 rounded-2xl border border-blue-100 max-w-3xl mx-auto shadow-xs">
+            <span className="text-gray-700 font-semibold text-base mr-1">Supported formats:</span>
+            <span className="px-3.5 py-1 bg-red-100 text-red-700 font-bold rounded-full text-xs sm:text-sm">PDF</span>
+            <span className="px-3.5 py-1 bg-blue-100 text-blue-700 font-bold rounded-full text-xs sm:text-sm">DOCX</span>
+            <span className="px-3.5 py-1 bg-sky-100 text-sky-700 font-bold rounded-full text-xs sm:text-sm">DOC</span>
+            <span className="px-3.5 py-1 bg-emerald-100 text-emerald-700 font-bold rounded-full text-xs sm:text-sm">XLSX</span>
+            <span className="px-3.5 py-1 bg-green-100 text-green-700 font-bold rounded-full text-xs sm:text-sm">XLS</span>
+            <span className="px-3.5 py-1 bg-orange-100 text-orange-700 font-bold rounded-full text-xs sm:text-sm">PPTX</span>
+            <span className="px-3.5 py-1 bg-amber-100 text-amber-700 font-bold rounded-full text-xs sm:text-sm">PPT</span>
+            <span className="px-3.5 py-1 bg-yellow-100 text-yellow-800 font-bold rounded-full text-xs sm:text-sm">JPG</span>
+            <span className="px-3.5 py-1 bg-lime-100 text-lime-800 font-bold rounded-full text-xs sm:text-sm">PNG</span>
+            <span className="px-3.5 py-1 bg-purple-100 text-purple-700 font-bold rounded-full text-xs sm:text-sm">WEBP</span>
+            <span className="px-3.5 py-1 bg-indigo-100 text-indigo-700 font-bold rounded-full text-xs sm:text-sm">TXT</span>
           </div>
         </div>
       </div>
@@ -122,7 +135,10 @@ export default function PdfConverterHub() {
             </div>
           ) : (
             <div className="w-[300px] h-[400px] flex items-center justify-center bg-gray-50 text-gray-400">
-              {fileType === 'docx' ? <FileText className="w-32 h-32 text-blue-500" /> : <FileText className="w-32 h-32" />}
+              {['word', 'docx'].includes(fileType) ? <FileText className="w-32 h-32 text-blue-500" /> :
+               ['excel'].includes(fileType) ? <FileSpreadsheet className="w-32 h-32 text-emerald-500" /> :
+               ['ppt'].includes(fileType) ? <Presentation className="w-32 h-32 text-orange-500" /> :
+               <FileText className="w-32 h-32" />}
             </div>
           )}
           
@@ -155,7 +171,7 @@ export default function PdfConverterHub() {
               <div className="p-2 bg-red-50 text-red-500 rounded-lg">
                 <ArrowLeftRight className="w-8 h-8" />
               </div>
-              <h3 className="text-2xl font-extrabold text-gray-900 tracking-tight">Convert to:</h3>
+              <h3 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">Convert to:</h3>
             </div>
             {isMenuOpen ? <ChevronDown className="w-8 h-8 text-gray-400" /> : <ChevronUp className="w-8 h-8 text-gray-400" />}
           </button>
@@ -183,8 +199,13 @@ export default function PdfConverterHub() {
                 />
                 <ConversionOption 
                   icon={ImageIcon} color="text-yellow-500" bg="bg-yellow-50"
-                  title="Image" subtitle="(.jpg / .png / and more...)" 
+                  title="Image" subtitle="(.jpg / .png / .webp)" 
                   onClick={() => handleConversionSelect('pdf-to-jpg')}
+                />
+                <ConversionOption 
+                  icon={FileText} color="text-indigo-500" bg="bg-indigo-50"
+                  title="Raw Text" subtitle="(.txt)" 
+                  onClick={() => handleConversionSelect('pdf-to-text')}
                 />
                 <ConversionOption 
                   icon={ScanText} color="text-red-500" bg="bg-red-50"
@@ -204,14 +225,14 @@ export default function PdfConverterHub() {
                 />
                 <ConversionOption 
                   icon={ArrowLeftRight} color="text-orange-500" bg="bg-orange-50"
-                  title="Other Image Formats" subtitle="(.png, .webp)" 
+                  title="Other Image Formats" subtitle="(.png, .webp, .jpg)" 
                   onClick={() => handleConversionSelect('convert-image')}
                 />
               </>
             )}
 
-            {/* Options for DOCX */}
-            {fileType === 'docx' && (
+            {/* Options for Word (DOCX / DOC) */}
+            {fileType === 'word' && (
               <>
                 <ConversionOption 
                   icon={FileText} color="text-red-500" bg="bg-red-50"
@@ -227,6 +248,49 @@ export default function PdfConverterHub() {
                   icon={Code} color="text-green-500" bg="bg-green-50"
                   title="HTML Code" subtitle="(.html)" 
                   onClick={() => handleConversionSelect('docx-to-html')}
+                />
+              </>
+            )}
+
+            {/* Options for Excel (XLSX / XLS) */}
+            {fileType === 'excel' && (
+              <>
+                <ConversionOption 
+                  icon={FileText} color="text-red-500" bg="bg-red-50"
+                  title="PDF Document" subtitle="(.pdf)" 
+                  onClick={() => handleConversionSelect('excel-to-pdf')}
+                />
+                <ConversionOption 
+                  icon={FileSpreadsheet} color="text-emerald-500" bg="bg-emerald-50"
+                  title="CSV / JSON Data" subtitle="(.csv / .json)" 
+                  onClick={() => handleConversionSelect('data-converter')}
+                />
+              </>
+            )}
+
+            {/* Options for PowerPoint (PPTX / PPT) */}
+            {fileType === 'ppt' && (
+              <>
+                <ConversionOption 
+                  icon={FileText} color="text-red-500" bg="bg-red-50"
+                  title="PDF Document" subtitle="(.pdf)" 
+                  onClick={() => handleConversionSelect('ppt-to-pdf')}
+                />
+              </>
+            )}
+
+            {/* Options for Text (TXT) */}
+            {fileType === 'txt' && (
+              <>
+                <ConversionOption 
+                  icon={FileText} color="text-red-500" bg="bg-red-50"
+                  title="PDF Document" subtitle="(.pdf)" 
+                  onClick={() => handleConversionSelect('txt-to-pdf')}
+                />
+                <ConversionOption 
+                  icon={FileCode2} color="text-blue-500" bg="bg-blue-50"
+                  title="Word Document" subtitle="(.docx)" 
+                  onClick={() => handleConversionSelect('text-to-docx')}
                 />
               </>
             )}

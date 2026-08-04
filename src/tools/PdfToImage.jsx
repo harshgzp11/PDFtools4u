@@ -49,7 +49,7 @@ export default function PdfToImage() {
       
       for (let i = 1; i <= numPages; i++) {
         const page = await pdf.getPage(i);
-        const viewport = page.getViewport({ scale: 2.0 }); // High quality
+        const viewport = page.getViewport({ scale: 4.4 }); // ~317 DPI (72 * 4.4)
         
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');

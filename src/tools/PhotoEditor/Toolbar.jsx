@@ -3,7 +3,7 @@ import {
   Wand2, Maximize, Crop as CropIcon, Move3d, 
   Pencil, Type, Square, SmilePlus, 
   Frame, SquareUser, PaintBucket,
-  X, Check, Download, ArrowRight,
+  X, Check, Download,
   MousePointer2
 } from 'lucide-react';
 
@@ -213,13 +213,6 @@ export default function Toolbar({
           >
             <Download className="w-3.5 h-3.5" />
             Download
-          </button>
-          <button 
-            onClick={onCloseImage}
-            className="px-3 py-1.5 text-blue-600 bg-white border border-blue-200 hover:bg-blue-50 rounded-lg text-sm font-medium flex items-center gap-1 transition-colors"
-          >
-            Finish
-            <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>

@@ -118,7 +118,7 @@ export default function CropPdf() {
     <div className="w-full h-full overflow-y-auto custom-scrollbar p-4 lg:p-8">
       <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in">
       <div className="text-center space-y-4">
-        <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">Crop PDF</h2>
+        <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">Crop PDF</h2>
         <p className="text-xl text-gray-500 max-w-2xl mx-auto">
           Visually select an area to trim margins and remove white space from your PDF document.
         </p>

@@ -211,7 +211,7 @@ export default function PdfOcr() {
         updateProgress('Extracting', i, numPages, startPct);
         
         const page = await pdf.getPage(i);
-        const viewport = page.getViewport({ scale: 2.0 });
+        const viewport = page.getViewport({ scale: 4.4 });
         
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');

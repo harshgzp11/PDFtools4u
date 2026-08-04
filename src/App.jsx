@@ -77,6 +77,7 @@ const TOOL_COMPONENTS = {
   'data-converter': DataConverter,
   'dev-tools': DevTools,
   'pdf-extractor': PdfTextExtractor,
+  'pdf-to-text': PdfTextExtractor,
   'pdf-compiler': TextToPdfCompiler,
   'image-converter': ImageConverter,
   'pdf-merge': PdfMerger,
@@ -84,6 +85,7 @@ const TOOL_COMPONENTS = {
   'pdf-watermark': PdfWatermark,
   'rotate-pdf': RotatePdf,
   'jpg-to-pdf': JpgToPdf,
+  'png-to-pdf': JpgToPdf,
   'bg-remover': BackgroundRemover,
   'html-to-image': HtmlToImage,
   'image-crop': ImageCropRotate,
@@ -112,6 +114,7 @@ const TOOL_COMPONENTS = {
   'text-to-docx': TextToDocx,
 
   'pdf-to-jpg': PdfToImage,
+  'pdf-to-png': PdfToImage,
   'pdf-to-word': PdfToWord,
   'pdf-to-excel': PdfToExcel,
   'pdf-to-ppt': PdfToPpt,
@@ -207,7 +210,7 @@ function App() {
                     <div 
                       key={toolId}
                       style={{ display: isActive ? 'flex' : 'none' }}
-                      className={isActive ? "flex-1 flex flex-col w-full h-full min-h-0 overflow-hidden animate-in fade-in zoom-in-[0.98] duration-300 custom-scrollbar" : ""}
+                      className={isActive ? "flex-1 flex flex-col w-full h-full min-h-0 animate-in fade-in zoom-in-[0.98] duration-300" : ""}
                     >
                       <div className="flex-shrink-0 min-h-full flex flex-col">
                         {isPlaceholder ? (

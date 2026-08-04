@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FileText, Download, RefreshCw, Settings } from 'lucide-react';
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import DragDropZone from '../components/ui/DragDropZone';
@@ -12,6 +12,16 @@ export default function TxtToPdf() {
 
   // Settings
   const [fontSize, setFontSize] = useState(12);
+
+  useEffect(() => {
+    if (window.__sharedFile) {
+      const ext = (window.__sharedFile.name || '').split('.').pop().toLowerCase();
+      if (['txt', 'text', 'log', 'md'].includes(ext) || window.__sharedFile.type.startsWith('text/')) {
+        setFile(window.__sharedFile);
+      }
+      window.__sharedFile = null;
+    }
+  }, []);
 
   const handleProcess = async () => {
     if (!file) return;
@@ -101,7 +111,7 @@ export default function TxtToPdf() {
   return (
     <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in">
       <div className="text-center space-y-4">
-        <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">TXT to PDF</h2>
+        <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">TXT to PDF</h2>
         <p className="text-xl text-gray-500">
           Convert plain text files into clean, readable PDF documents entirely in your browser.
         </p>
