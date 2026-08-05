@@ -3,8 +3,6 @@ import { FileText } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import * as docx from 'docx-preview';
 import mammoth from 'mammoth';
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
 
 export default function WordToPdf() {
   const [file, setFile] = useState(null);
@@ -22,6 +20,82 @@ export default function WordToPdf() {
       window.__sharedFile = null;
     }
   }, []);
+
+  const sanitizeWordHtml = (htmlString) => {
+    if (!htmlString) return '<p>No content found in document.</p>';
+
+    let rawHtml = htmlString;
+    rawHtml = rawHtml.replace(/\$|&#36;|&dollar;/gi, '');
+    rawHtml = rawHtml.replace(/~|&#126;/gi, ' ');
+
+    // Standardize all rogue bullets to a single, easily identifiable character (•)
+    let cleanHtml = rawHtml
+      .replace(/>(\s|&nbsp;)*[Oo·◦▪◆](\s|&nbsp;)+/g, '>• ')
+      .replace(/>(\s|&nbsp;)*[Oo·◦▪◆](?=[0-9])/g, '>• ');
+
+    return cleanHtml;
+  };
+
+  const getWordThemeCss = () => `
+    <style>
+      .docx-pdf-wrapper {
+        font-family: 'Calibri', 'Arial', sans-serif;
+        font-size: 11pt;
+        line-height: 1.5;
+        color: #000000;
+        padding: 40px;
+        background: #ffffff;
+        box-sizing: border-box;
+        width: 100%;
+      }
+      .docx-pdf-wrapper h1, .docx-pdf-wrapper h2, .docx-pdf-wrapper h3, .docx-pdf-wrapper h4, .docx-pdf-wrapper h5, .docx-pdf-wrapper h6 {
+        color: #2F5496; /* Microsoft Word Blue */
+        font-weight: bold;
+        margin-top: 18pt;
+        margin-bottom: 6pt;
+        page-break-after: avoid;
+      }
+      .docx-pdf-wrapper table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 12pt;
+        page-break-inside: avoid;
+      }
+      .docx-pdf-wrapper th, .docx-pdf-wrapper td {
+        border: 1px solid #000000;
+        padding: 6px;
+        text-align: left;
+      }
+      .docx-pdf-wrapper ul, .docx-pdf-wrapper ol {
+        padding-left: 24px;
+        margin-top: 0;
+        margin-bottom: 12pt;
+      }
+      .docx-pdf-wrapper li {
+        list-style-type: disc;
+        list-style-position: outside; /* Enforces the hanging indent */
+        margin-bottom: 4px;
+      }
+      .docx-pdf-wrapper p {
+        margin-top: 0;
+        margin-bottom: 6pt;
+      }
+    </style>
+  `;
+
+  const wrapWithWordTheme = (htmlContent) => {
+    let clean = htmlContent || '';
+    // Brute-force global strip of MathJax/KaTeX artifacts
+    clean = clean.replace(/\$/g, ''); // Nukes all rogue dollar signs
+    clean = clean.replace(/~/g, ' '); // Replaces rogue tildes with standard spaces
+
+    return `
+      ${getWordThemeCss()}
+      <div class="docx-pdf-wrapper docx-pdf-container">
+        ${clean}
+      </div>
+    `;
+  };
 
   const handleFile = async (newFile) => {
     if (!newFile || (!newFile.name.endsWith('.doc') && !newFile.name.endsWith('.docx') && !newFile.type.includes('word'))) {
@@ -57,13 +131,16 @@ export default function WordToPdf() {
         }
 
         if (!usedDocxPreview) {
-          const result = await mammoth.convertToHtml({ arrayBuffer });
-          const rawHtml = result.value || '<p>No content found in document.</p>';
-          container.innerHTML = `
-            <div style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6; padding: 40px; color: #111827; background: #ffffff; border-radius: 8px; width: 100%;">
-              ${rawHtml}
-            </div>
-          `;
+          const result = await mammoth.convertToHtml({
+            arrayBuffer,
+            styleMap: [
+              "p[style-name='List Bullet'] => ul > li:fresh",
+              "p[style-name='List Bullet 2'] => ul > li:fresh",
+              "p[style-name='List Bullet 3'] => ul > li:fresh"
+            ]
+          });
+          const cleaned = sanitizeWordHtml(result.value);
+          container.innerHTML = wrapWithWordTheme(cleaned);
         }
       } catch (err) {
         console.error("Document preview error:", err);
@@ -77,210 +154,137 @@ export default function WordToPdf() {
     if (!file) return;
     setIsProcessing(true);
 
-    // 1. Isolated Mounting Container
-    const targetContainer = document.createElement('div');
-    targetContainer.style.position = 'fixed';
-    targetContainer.style.left = '-9999px';
-    targetContainer.style.top = '0';
-    targetContainer.style.width = '794px';
-    targetContainer.style.background = 'white';
-    document.body.appendChild(targetContainer);
-
     try {
       const arrayBuffer = await file.arrayBuffer();
 
-      // 2. Render & Wait Routine
-      try {
-        await docx.renderAsync(arrayBuffer, targetContainer, null, { breakPages: true, useBase64URL: true });
-      } catch (docxErr) {
-        console.warn("docx-preview failed in isolated container, falling back to mammoth:", docxErr);
-        const result = await mammoth.convertToHtml({ arrayBuffer });
-        const rawHtml = result.value || '<p>No content found in document.</p>';
-        targetContainer.innerHTML = `
-          <div style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6; padding: 40px; color: #111827; background: #ffffff; width: 794px;">
-            ${rawHtml}
-          </div>
-        `;
-      }
-
-      await document.fonts.ready;
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      // 3. CSS Cleanup Before Capture
-      targetContainer.querySelectorAll('.docx-wrapper').forEach(el => el.style.padding = '0');
-      targetContainer.querySelectorAll('section.docx').forEach(el => {
-        el.style.boxShadow = 'none';
-        el.style.margin = '0';
+      // 1. Initial Word Conversion
+      const result = await mammoth.convertToHtml({
+        arrayBuffer,
+        styleMap: [
+          "p[style-name='List Bullet'] => ul > li:fresh",
+          "p[style-name='List Bullet 2'] => ul > li:fresh",
+          "p[style-name='List Bullet 3'] => ul > li:fresh"
+        ]
       });
+
+      let rawHtml = result.value || '<p>No content found.</p>';
       
-      // Fix docx-preview table floating/overlapping issues
-      targetContainer.querySelectorAll('table').forEach(table => {
-        table.style.setProperty('float', 'none', 'important');
-        table.style.setProperty('position', 'static', 'important');
-        table.style.setProperty('clear', 'both', 'important');
-        table.style.marginTop = '15px';
-        table.style.marginBottom = '15px';
-      });
-      targetContainer.querySelectorAll('p, h1, h2, h3, h4, h5, h6').forEach(p => {
-        p.style.setProperty('clear', 'both', 'important');
-      });
+      // Clean math artifacts
+      rawHtml = rawHtml.replace(/\$|&#36;|&dollar;/gi, '').replace(/~|&#126;/gi, ' ');
 
-      // 4. Sequential Page Processing with Smart Slicing
-      const pageElements = targetContainer.querySelectorAll('section.docx');
-      const pagesToProcess = pageElements.length > 0 ? Array.from(pageElements) : [targetContainer];
+      // 2. In-Memory DOM Parsing for Perfect Hanging Indents & Bullet Removal
+      const domParserDiv = document.createElement('div');
+      domParserDiv.innerHTML = rawHtml;
 
-      const pdf = new jsPDF('p', 'pt', 'a4');
-      const pdfWidth = pdf.internal.pageSize.getWidth(); // 595.28
-      const pdfHeight = pdf.internal.pageSize.getHeight(); // 841.89
-      const pageRatio = pdfHeight / pdfWidth;
+      const BULLET_PATTERN = /^(\s|&nbsp;)*[•oO·◦▪◆▫■□–—\u2022\u25aa\u25cf\u25cb\u25a0\u25a1\u2013\u2014](\s|&nbsp;)+/;
 
-      let isFirstPage = true;
-
-      for (let i = 0; i < pagesToProcess.length; i++) {
-        const pageEl = pagesToProcess[i];
-        pageEl.style.boxShadow = 'none';
-        pageEl.style.margin = '0';
-        pageEl.style.background = '#ffffff';
-
-        const canvas = await html2canvas(pageEl, {
-          scale: 2,
-          useCORS: true,
-          logging: false,
-          windowWidth: 794
-        });
-
-        if (!canvas || canvas.width === 0 || canvas.height === 0) continue;
-
-        const canvasW = canvas.width;
-        const canvasH = canvas.height;
-        const targetPageH = Math.round(canvasW * pageRatio);
-
-        const ctx = canvas.getContext('2d', { willReadFrequently: true });
-
-        // Helper to find a clean horizontal gap (white row) to avoid cutting text
-        const findPageBreak = (startY) => {
-          if (startY >= canvasH) return canvasH;
-          const searchLimit = Math.min(startY, 400); // Search up to 400px upwards
-          const imgData = ctx.getImageData(0, startY - searchLimit, canvasW, searchLimit).data;
-          
-          let minNonWhiteCount = canvasW;
-          let bestY = startY;
-
-          for (let y = searchLimit - 1; y >= 0; y--) {
-            let nonWhiteCount = 0;
-            // Ignore edges to avoid scrollbars or borders throwing off the count
-            for (let x = 20; x < canvasW - 20; x++) {
-              const idx = (y * canvasW + x) * 4;
-              const r = imgData[idx];
-              const g = imgData[idx+1];
-              const b = imgData[idx+2];
-              const a = imgData[idx+3];
-              
-              // Count only darker pixels (text, lines). 
-              // Light backgrounds (like #f0f0f0) will have r+g+b > 700 and will be ignored!
-              if (a > 50 && (r + g + b) < 700) {
-                nonWhiteCount++;
-              }
-            }
-
-            if (nonWhiteCount === 0) {
-              return (startY - searchLimit) + y; // Perfect clean break!
-            }
-
-            if (nonWhiteCount < minNonWhiteCount) {
-              minNonWhiteCount = nonWhiteCount;
-              bestY = (startY - searchLimit) + y;
-            }
+      // Fix Native Lists (Strip literal dots so we don't get double-bullets)
+      domParserDiv.querySelectorAll('li').forEach(li => {
+        const walker = document.createTreeWalker(li, NodeFilter.SHOW_TEXT, null, false);
+        let node;
+        while ((node = walker.nextNode())) {
+          if (node.nodeValue && BULLET_PATTERN.test(node.nodeValue)) {
+            node.nodeValue = node.nodeValue.replace(BULLET_PATTERN, '');
+            break;
           }
-
-          // If the row with the fewest dark pixels has very few dark pixels 
-          // (e.g. just a few vertical table borders), it's a safe break point!
-          if (minNonWhiteCount < canvasW * 0.05) { 
-             return bestY;
-          }
-
-          return startY; // Fallback if no clean break is found (e.g. massive images or dark blocks)
-        };
-
-        let currentY = 0;
-        const marginH = Math.round(canvasW * 0.12); // ~1 inch margin (12% of A4 width)
-
-        while (currentY < canvasH) {
-          const isFirstSlice = (currentY === 0);
-          
-          // First slice already has top padding from docx-preview.
-          // Middle/last slices need both top and bottom margins.
-          const availableH = isFirstSlice 
-            ? (targetPageH - marginH) 
-            : (targetPageH - marginH * 2);
-
-          let sliceH = availableH;
-          let breakY = currentY + sliceH;
-          
-          if (breakY < canvasH) {
-            breakY = findPageBreak(breakY);
-            sliceH = breakY - currentY;
-          } else {
-            sliceH = canvasH - currentY;
-          }
-
-          if (sliceH <= 0) break;
-
-          const sliceCanvas = document.createElement('canvas');
-          sliceCanvas.width = canvasW;
-          sliceCanvas.height = targetPageH; // Force A4 aspect ratio height
-          const sliceCtx = sliceCanvas.getContext('2d');
-          sliceCtx.fillStyle = '#ffffff';
-          sliceCtx.fillRect(0, 0, canvasW, targetPageH);
-
-          // Draw slice with appropriate top margin offset
-          const destY = isFirstSlice ? 0 : marginH;
-
-          // Draw the slice onto the A4 canvas
-          sliceCtx.drawImage(
-            canvas,
-            0, currentY, canvasW, sliceH,
-            0, destY, canvasW, sliceH
-          );
-
-          const sliceImgData = sliceCanvas.toDataURL('image/jpeg', 0.95);
-
-          if (!isFirstPage) {
-            pdf.addPage('a4', 'p');
-          }
-          isFirstPage = false;
-
-          pdf.addImage(sliceImgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-
-          sliceCanvas.width = 0;
-          sliceCanvas.height = 0;
-
-          currentY = breakY;
         }
-
-        canvas.width = 0;
-        canvas.height = 0;
-      }
-
-      const outputFilename = file?.name ? `${file.name.replace(/\.docx?$/i, '')}_converted.pdf` : 'converted.pdf';
-      pdf.save(outputFilename);
-
-      const pdfBlob = pdf.output('blob');
-      const pdfUrl = URL.createObjectURL(pdfBlob);
-
-      setSuccessData({
-        url: pdfUrl,
-        filename: outputFilename,
-        title: 'Conversion Complete',
-        subtitle: 'Your Word document has been successfully converted to PDF.',
       });
+
+      // Fix Fake Lists (Convert manual paragraph bullets into real CSS lists)
+      domParserDiv.querySelectorAll('p').forEach(p => {
+        if (!p.closest('li')) {
+          const walker = document.createTreeWalker(p, NodeFilter.SHOW_TEXT, null, false);
+          let node;
+          while ((node = walker.nextNode())) {
+            if (node.nodeValue && BULLET_PATTERN.test(node.nodeValue)) {
+              node.nodeValue = node.nodeValue.replace(BULLET_PATTERN, '');
+              p.style.display = 'list-item';
+              p.style.listStyleType = 'disc';
+              p.style.listStylePosition = 'outside';
+              p.style.marginLeft = '24px';
+              p.style.marginBottom = '4pt';
+              break;
+            }
+          }
+        }
+      });
+
+      const perfectedHtml = domParserDiv.innerHTML;
+
+      // 3. Assemble Final Print Payload
+      const printCss = `
+        <style>
+          @media print {
+            /* Restores 20mm standard margins on the physical paper and forces A4 */
+            @page { margin: 20mm; size: A4 portrait; }
+            body { margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          }
+          .docx-pdf-wrapper { font-family: 'Calibri', 'Arial', sans-serif; font-size: 11pt; line-height: 1.5; color: #000; }
+          .docx-pdf-wrapper h1, .docx-pdf-wrapper h2, .docx-pdf-wrapper h3 { color: #2F5496; font-weight: bold; margin-top: 18pt; margin-bottom: 6pt; page-break-after: avoid; }
+          .docx-pdf-wrapper table { table-layout: fixed; width: 100%; border-collapse: collapse; margin-bottom: 12pt; }
+          .docx-pdf-wrapper th, .docx-pdf-wrapper td { border: 1px solid #000; padding: 6px; text-align: left; }
+          
+          /* Pagination Safeguards: Prevent tables and bullets from slicing across pages */
+          .docx-pdf-wrapper tr { page-break-inside: avoid; }
+          .docx-pdf-wrapper li { page-break-inside: avoid; list-style-position: outside !important; margin-bottom: 4px; }
+          
+          /* Native List Styles */
+          .docx-pdf-wrapper ul, .docx-pdf-wrapper ol { padding-left: 24px; margin-top: 0; margin-bottom: 12pt; }
+          
+          /* Visual Nesting Hierarchy */
+          .docx-pdf-wrapper ul { list-style-type: disc; }
+          .docx-pdf-wrapper ul ul { list-style-type: circle; }
+          .docx-pdf-wrapper ul ul ul { list-style-type: square; }
+        </style>
+      `;
+
+      const finalPayload = `
+        ${printCss}
+        <div class="docx-pdf-wrapper">
+          ${perfectedHtml}
+        </div>
+      `;
+
+      // 4. Print via Iframe
+      const iframe = document.createElement('iframe');
+      iframe.style.position = 'fixed';
+      iframe.style.right = '0';
+      iframe.style.bottom = '0';
+      iframe.style.width = '0';
+      iframe.style.height = '0';
+      iframe.style.border = '0';
+      document.body.appendChild(iframe);
+
+      const iframeDoc = iframe.contentWindow.document;
+      iframeDoc.open();
+      iframeDoc.write(finalPayload);
+      iframeDoc.close();
+
+      // 4. Print directly
+      setTimeout(() => {
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+
+        // Cleanup and show success UI after print dialog interaction
+        setTimeout(() => {
+          if (iframe && iframe.parentNode) {
+            document.body.removeChild(iframe);
+          }
+
+          setSuccessData({
+            url: null, // No blob URL needed since browser handled local save
+            filename: file.name.replace(/\.docx?$/i, '') + '.pdf',
+            title: 'Document Ready',
+            subtitle: 'Your true-text PDF was successfully generated via the browser print dialog.',
+          });
+
+          setIsProcessing(false);
+        }, 1000);
+      }, 500);
+
     } catch (err) {
       console.error("Word to PDF Error:", err);
       alert(`Conversion error: ${err.message || 'Failed to process document'}`);
-    } finally {
-      if (targetContainer && targetContainer.parentNode) {
-        targetContainer.parentNode.removeChild(targetContainer);
-      }
       setIsProcessing(false);
     }
   };
@@ -298,7 +302,7 @@ export default function WordToPdf() {
       disabled={isProcessing || !file || isLoadingPreview}
       className="w-full px-4 py-3 bg-blue-600 border border-transparent rounded-xl shadow-md text-base font-bold text-white hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center gap-2 transition-all hover:shadow-lg hover:-translate-y-0.5 relative overflow-hidden"
     >
-      {isProcessing ? 'Converting...' : <><FileText className="w-5 h-5"/> Convert to PDF</>}
+      {isProcessing ? 'Preparing Print Dialog...' : <><FileText className="w-5 h-5"/> Convert to PDF</>}
     </button>
   );
 

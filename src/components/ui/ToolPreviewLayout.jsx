@@ -268,13 +268,15 @@ export default function ToolPreviewLayout({
             </div>
           )}
 
-          <button
-            onClick={handleDownload}
-            className="mx-auto flex items-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-xl font-bold text-lg hover:bg-blue-700 transition-all shadow-md hover:shadow-lg mb-8"
-          >
-            <Download className="w-5 h-5" />
-            {successData.downloadText || 'Download File'}
-          </button>
+          {successData.url && (
+            <button
+              onClick={handleDownload}
+              className="mx-auto flex items-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-xl font-bold text-lg hover:bg-blue-700 transition-all shadow-md hover:shadow-lg mb-8"
+            >
+              <Download className="w-5 h-5" />
+              {successData.downloadText || 'Download File'}
+            </button>
+          )}
 
           {successData.quickActions && (
             <div className="border-t border-gray-100 pt-6 w-full max-w-2xl">

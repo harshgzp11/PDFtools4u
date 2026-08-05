@@ -1,5 +1,5 @@
 import * as pdfjsLib from 'pdfjs-dist';
-import { Document, Packer, Paragraph, TextRun, AlignmentType, ImageRun } from 'docx';
+import { Document, Packer, Paragraph, TextRun, AlignmentType, ImageRun, HeadingLevel } from 'docx';
 import * as XLSX from 'xlsx';
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
 
@@ -7,144 +7,262 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
 const yieldToMain = () => new Promise(resolve => setTimeout(resolve, 0));
 
+const readArrayBuffer = (fileObj) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (e.target && e.target.result) resolve(e.target.result);
+      else reject(new Error("File content is empty."));
+    };
+    reader.onerror = () => reject(new Error("Failed to read file from disk."));
+    reader.readAsArrayBuffer(fileObj);
+  });
+};
+
+const loadPdfDocument = async (fileObj) => {
+  let arrayBuffer;
+  try {
+    arrayBuffer = await fileObj.arrayBuffer();
+  } catch {
+    arrayBuffer = await readArrayBuffer(fileObj);
+  }
+
+  if (!arrayBuffer || arrayBuffer.byteLength === 0) {
+    arrayBuffer = await readArrayBuffer(fileObj);
+  }
+
+  if (!arrayBuffer || arrayBuffer.byteLength === 0) {
+    throw new Error("The selected file is empty or corrupted.");
+  }
+
+  // Attempt 1: Standard load with Uint8Array copy and cMaps
+  try {
+    const loadingTask = pdfjsLib.getDocument({
+      data: new Uint8Array(arrayBuffer.slice(0)),
+      cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/cmaps/',
+      cMapPacked: true,
+    });
+    return await loadingTask.promise;
+  } catch (err1) {
+    console.warn("PDF.js primary load failed, attempting basic load:", err1);
+  }
+
+  // Attempt 2: Basic load without cMap parameters
+  try {
+    const loadingTask = pdfjsLib.getDocument({
+      data: new Uint8Array(arrayBuffer.slice(0)),
+    });
+    return await loadingTask.promise;
+  } catch (err2) {
+    console.warn("PDF.js basic load failed, attempting FileReader fresh slice load:", err2);
+  }
+
+  // Attempt 3: FileReader fresh buffer load
+  const freshBuffer = await readArrayBuffer(fileObj);
+  const loadingTaskFinal = pdfjsLib.getDocument({
+    data: new Uint8Array(freshBuffer),
+  });
+  return await loadingTaskFinal.promise;
+};
+
 /**
- * Converts a PDF file to a Word (DOCX) file.
+ * Converts a PDF file to a Word (DOCX) file using two distinct modes: 'text' (heuristic editable) or 'visual' (exact canvas replica).
  * @param {File} file - The PDF file
- * @param {string} mode - 'editable' or 'visual'
+ * @param {string} mode - 'text' or 'visual'
  * @param {Function} onProgress - Callback for progress (0 to 100)
  * @returns {Promise<Blob>} - The resulting DOCX Blob
  */
-export const convertPdfToDocx = async (file, mode = 'editable', onProgress) => {
+export const convertPdfToDocx = async (file, mode = 'text', onProgress) => {
   if (!file) throw new Error("No file provided");
-  onProgress(0);
+  if (onProgress) onProgress(0);
   
-  const arrayBuffer = await file.arrayBuffer();
-  const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
-  const numPages = pdf.numPages;
+  const pdfDoc = await loadPdfDocument(file);
+  const numPages = pdfDoc.numPages;
   
-  const paragraphs = [];
-  
-  if (mode === 'visual') {
-    for (let i = 1; i <= numPages; i++) {
-      const page = await pdf.getPage(i);
-      const viewport = page.getViewport({ scale: 1.5 });
-      
+  const docParagraphs = [];
+  const commonHeadings = [
+    'Personal Details', 'Educational Details', '10th Details', 
+    '12th Details', 'Graduation Details', 'Father\'s Details', 
+    'Mother\'s Details', 'Declaration', 'Address For Correspondence', 'Upload Documents', 'Application Form'
+  ];
+
+  for (let i = 1; i <= numPages; i++) {
+    const page = await pdfDoc.getPage(i);
+
+    // Page Divider
+    if (numPages > 1) {
+      docParagraphs.push(
+        new Paragraph({
+          text: `--- Page ${i} ---`,
+          heading: HeadingLevel.HEADING_3,
+          spacing: { before: 200, after: 100 },
+        })
+      );
+    }
+
+    if (mode === 'visual') {
+      // ==========================================
+      // MODE: VISUAL LAYOUT (Canvas Rendering)
+      // ==========================================
+      const viewport = page.getViewport({ scale: 2.0 });
       const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      canvas.width = viewport.width;
+      const context = canvas.getContext('2d');
       canvas.height = viewport.height;
+      canvas.width = viewport.width;
+
+      context.fillStyle = '#ffffff';
+      context.fillRect(0, 0, canvas.width, canvas.height);
+
+      await page.render({ canvasContext: context, viewport: viewport }).promise;
       
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      await page.render({ canvasContext: ctx, viewport }).promise;
-      const imgDataUrl = canvas.toDataURL('image/jpeg', 0.85);
-      
-      const base64Data = imgDataUrl.split(',')[1];
-      const binaryString = atob(base64Data);
-      const len = binaryString.length;
-      const bytes = new Uint8Array(len);
-      for (let j = 0; j < len; j++) {
-        bytes[j] = binaryString.charCodeAt(j);
-      }
-      
-      paragraphs.push(
+      const base64Data = canvas.toDataURL('image/png').replace(/^data:image\/png;base64,/, "");
+      const imageBuffer = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+
+      docParagraphs.push(
         new Paragraph({
           alignment: AlignmentType.CENTER,
           children: [
             new ImageRun({
-              data: bytes,
+              data: imageBuffer,
               transformation: {
-                width: 600, // Standard page width in docx roughly
-                height: (600 / viewport.width) * viewport.height
-              }
-            })
+                width: 595, // Standard A4 pt width
+                height: 595 * (viewport.height / viewport.width),
+              },
+            }),
           ],
-          spacing: { after: 200 }
+          spacing: { after: 200 },
         })
       );
-      
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      canvas.width = 0; 
+
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      canvas.width = 0;
       canvas.height = 0;
-      
-      onProgress(Math.round((i / numPages) * 70));
-      await yieldToMain();
-    }
-  } else {
-    let totalTextLength = 0;
-    for (let i = 1; i <= numPages; i++) {
-      const page = await pdf.getPage(i);
-      const textContent = await page.getTextContent();
-      const items = textContent.items;
-      
-      if (items.length > 0) {
-        const rows = [];
-        const TOLERANCE = 5; 
-        
-        items.forEach(item => {
-          totalTextLength += item.str.trim().length;
-          const y = item.transform[5];
-          let foundRow = rows.find(r => Math.abs(r.y - y) < TOLERANCE);
-          if (!foundRow) {
-            foundRow = { y, items: [] };
-            rows.push(foundRow);
-          }
-          foundRow.items.push(item);
-        });
-        
-        rows.sort((a, b) => b.y - a.y);
-        
-        rows.forEach(row => {
-          row.items.sort((a, b) => a.transform[4] - b.transform[4]);
+    } else {
+      // ==========================================
+      // MODE: EDITABLE TEXT (Heuristic X-Axis Math)
+      // ==========================================
+      let pageTextExtracted = false;
+
+      try {
+        const textContent = await page.getTextContent();
+        if (textContent && textContent.items && textContent.items.length > 0) {
+          const validItems = textContent.items.filter(item => item.str && item.str.trim() !== '');
           
-          const children = [];
-          let firstX = null;
+          if (validItems.length > 0) {
+            let linesMap = {};
+            validItems.forEach((item) => {
+              const y = Math.round(item.transform[5] / 5) * 5; 
+              if (!linesMap[y]) linesMap[y] = [];
+              
+              const startX = item.transform[4];
+              const itemWidth = item.width || (item.str ? item.str.length * 6 : 0);
+              linesMap[y].push({ 
+                text: item.str, 
+                startX,
+                endX: startX + itemWidth 
+              });
+            });
 
-          row.items.forEach(item => {
-             const str = item.str.trim();
-             if (!str) return;
-             
-             if (firstX === null) firstX = item.transform[4];
-             const fontSize = item.transform[0];
+            const sortedYs = Object.keys(linesMap).sort((a, b) => Number(b) - Number(a));
 
-             children.push(new TextRun({
-               text: str + " ",
-               size: Math.max(16, Math.round(fontSize * 2)), 
-             }));
-          });
-          
-          if (children.length > 0) {
-            let alignment = AlignmentType.LEFT;
-            if (firstX > 150 && firstX < 450) {
-              alignment = AlignmentType.CENTER;
-            }
+            sortedYs.forEach((y) => {
+              const lineItems = linesMap[y].sort((a, b) => a.startX - b.startX);
+              
+              let formattedLine = [];
+              let lastEndX = null;
 
-            paragraphs.push(new Paragraph({
-              children,
-              alignment,
-              spacing: { after: 80 }
-            }));
+              lineItems.forEach((item) => {
+                if (lastEndX !== null) {
+                  const gap = item.startX - lastEndX;
+                  
+                  if (gap > 40) {
+                    formattedLine.push(new TextRun({ text: '\t', font: 'Calibri', size: 22 }));
+                  } else if (gap > 5) {
+                    formattedLine.push(new TextRun({ text: ' ', font: 'Calibri', size: 22 }));
+                  }
+                }
+                
+                formattedLine.push(new TextRun({ text: item.text.trim(), font: 'Calibri', size: 22 }));
+                lastEndX = item.endX;
+              });
+
+              const rawString = lineItems.map(i => i.text).join(' ').trim();
+              if (rawString.length === 0) return;
+
+              const isHeading = commonHeadings.some(h => rawString.toLowerCase() === h.toLowerCase() || rawString.toLowerCase().includes(h.toLowerCase()));
+
+              docParagraphs.push(
+                new Paragraph({
+                  text: isHeading ? rawString : undefined,
+                  heading: isHeading ? HeadingLevel.HEADING_2 : undefined,
+                  children: isHeading ? undefined : formattedLine,
+                  spacing: isHeading ? { before: 240, after: 120 } : { after: 100 },
+                })
+              );
+            });
+
+            pageTextExtracted = true;
           }
-        });
-        paragraphs.push(new Paragraph({ children: [new TextRun({ text: " " })] }));
+        }
+      } catch (textErr) {
+        console.warn(`Text extraction fallback for page ${i}:`, textErr);
       }
-      
-      onProgress(Math.round((i / numPages) * 70));
+
+      // Fallback for scanned/empty text pages in 'text' mode
+      if (!pageTextExtracted) {
+        try {
+          const viewport = page.getViewport({ scale: 2.0 });
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+
+          context.fillStyle = '#ffffff';
+          context.fillRect(0, 0, canvas.width, canvas.height);
+
+          await page.render({ canvasContext: context, viewport: viewport }).promise;
+          
+          const base64Data = canvas.toDataURL('image/png').replace(/^data:image\/png;base64,/, "");
+          const imageBuffer = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+
+          docParagraphs.push(
+            new Paragraph({
+              alignment: AlignmentType.CENTER,
+              children: [
+                new ImageRun({
+                  data: imageBuffer,
+                  transformation: {
+                    width: 595,
+                    height: 595 * (viewport.height / viewport.width),
+                  },
+                }),
+              ],
+              spacing: { after: 200 },
+            })
+          );
+        } catch (imgErr) {
+          console.error(`Page ${i} image fallback error:`, imgErr);
+        }
+      }
     }
-    
-    if (totalTextLength === 0) {
-      throw new Error("No text could be extracted. The PDF might be a scanned image or composed of vectors. Try 'Visual Layout' mode instead.");
-    }
+
+    if (onProgress) onProgress(Math.round((i / numPages) * 70));
+    await yieldToMain();
   }
-  
-  onProgress(80);
+
+  if (onProgress) onProgress(80);
 
   const doc = new Document({
-    sections: [{
-      properties: {},
-      children: paragraphs,
-    }],
+    sections: [
+      {
+        properties: {
+          page: {
+            margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 }, // 1 inch margins
+          },
+        },
+        children: docParagraphs,
+      },
+    ],
   });
 
   const blob = await Packer.toBlob(doc);
