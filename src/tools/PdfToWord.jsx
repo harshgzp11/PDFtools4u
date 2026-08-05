@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FileCode2, Download } from 'lucide-react';
+import { FileCode2 } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
@@ -11,7 +11,7 @@ export default function PdfToWord() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [successData, setSuccessData] = useState(null);
   const [progress, setProgress] = useState(0);
-  const [docxMode, setDocxMode] = useState('editable');
+  const [exportMode, setExportMode] = useState('text');
 
   const [previewText, setPreviewText] = useState("");
 
@@ -25,11 +25,36 @@ export default function PdfToWord() {
   }, []);
 
   useEffect(() => {
-    if (file && docxMode === 'editable') {
+    if (file) {
       const extractPreview = async () => {
         try {
-          const arrayBuffer = await file.arrayBuffer();
-          const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
+          let arrayBuffer;
+          try {
+            arrayBuffer = await file.arrayBuffer();
+          } catch {
+            arrayBuffer = await new Promise((res, rej) => {
+              const r = new FileReader();
+              r.onload = () => res(r.result);
+              r.onerror = () => rej(new Error("File read error"));
+              r.readAsArrayBuffer(file);
+            });
+          }
+
+          if (!arrayBuffer || arrayBuffer.byteLength === 0) return;
+          
+          const bufferCopy = arrayBuffer.slice(0);
+          let pdf;
+          try {
+            pdf = await pdfjsLib.getDocument({
+              data: new Uint8Array(bufferCopy),
+              cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/cmaps/',
+              cMapPacked: true,
+            }).promise;
+          } catch {
+            pdf = await pdfjsLib.getDocument({
+              data: new Uint8Array(bufferCopy),
+            }).promise;
+          }
           
           let fullText = "";
           const maxPages = pdf.numPages; // Extract all pages for preview
@@ -63,14 +88,14 @@ export default function PdfToWord() {
             }
           }
           
-          setPreviewText(fullText.trim() || "No text detected on the first few pages.");
+          setPreviewText(fullText.trim() || "No text detected. Scanned image pages will be converted into high-resolution pages in Word.");
         } catch (err) {
-          console.error(err);
+          console.error("Preview extraction notice:", err);
         }
       };
       extractPreview();
     }
-  }, [file, docxMode]);
+  }, [file]);
 
   const handleFile = async (newFile) => {
     if (newFile && newFile.type === 'application/pdf') {
@@ -96,18 +121,28 @@ export default function PdfToWord() {
     setIsProcessing(true);
     setProgress(0);
     try {
-      const blob = await convertPdfToDocx(file, docxMode, setProgress);
-      const url = URL.createObjectURL(blob);
-      
+      const blob = await convertPdfToDocx(file, exportMode, setProgress);
+      const outputFilename = file?.name ? `${file.name.replace(/\.pdf$/i, '')}_converted.docx` : 'converted.docx';
+      const downloadUrl = URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = outputFilename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
       setSuccessData({
-        url,
-        filename: `${file.name.replace('.pdf', '')}.docx`,
-        title: 'Word Document Ready!',
-        subtitle: 'Your PDF has been converted successfully.',
+        url: downloadUrl,
+        filename: outputFilename,
+        title: 'Conversion Complete',
+        subtitle: exportMode === 'visual' 
+          ? 'Your visual layout PDF has been converted into high-resolution Word pages.' 
+          : 'Your PDF text has been successfully structured into an editable Word document.',
       });
     } catch (err) {
-      console.error(err);
-      alert(err.message || "Failed to convert PDF to Word. Note: Complex layouts might not be perfectly preserved client-side.");
+      console.error("PDF to Word Error:", err);
+      alert(`Conversion error: ${err.message || 'Failed to process document'}`);
     } finally {
       setIsProcessing(false);
     }
@@ -135,7 +170,7 @@ export default function PdfToWord() {
     </div>
   );
 
-  const customPreview = docxMode === 'editable' ? (
+  const customPreview = (
     <div className="w-full min-h-full p-8 bg-white text-left font-serif text-gray-800 text-sm md:text-base leading-relaxed break-words whitespace-pre-wrap">
       {previewText ? previewText : (
          <div className="animate-pulse space-y-4 pt-4">
@@ -147,7 +182,7 @@ export default function PdfToWord() {
          </div>
       )}
     </div>
-  ) : undefined;
+  );
 
   return (
     <ToolPreviewLayout
@@ -163,31 +198,31 @@ export default function PdfToWord() {
       customPreviewNode={customPreview}
     >
       <div className="space-y-4">
-        <h3 className="text-xl font-extrabold text-gray-900 mb-2">Export Mode</h3>
-        
-        <div className="flex flex-col gap-3 mb-6">
-          <label className={`flex items-start gap-4 p-4 border-2 rounded-2xl cursor-pointer transition-colors ${docxMode === 'editable' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:bg-gray-50'}`}>
-            <input type="radio" name="docxMode" value="editable" checked={docxMode === 'editable'} onChange={() => setDocxMode('editable')} className="mt-1 w-4 h-4 text-blue-600" />
-            <div>
-              <div className="font-bold text-gray-900">Editable Text</div>
-              <div className="text-sm text-gray-600 mt-1 leading-relaxed">Extracts selectable text and headings. Ideal for re-writing or editing content.</div>
+        <div className="mb-6 space-y-3">
+          <h3 className="font-bold text-gray-800">Export Mode</h3>
+          
+          <label className={`block p-4 border rounded-xl cursor-pointer transition-all ${exportMode === 'text' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}>
+            <div className="flex items-center gap-3 mb-1">
+              <input type="radio" name="exportMode" value="text" checked={exportMode === 'text'} onChange={(e) => setExportMode(e.target.value)} className="w-4 h-4 text-blue-600" />
+              <span className="font-semibold text-gray-800">Editable Text</span>
             </div>
+            <p className="text-sm text-gray-500 ml-7">Extracts selectable text and formats layouts natively. Ideal for re-writing content.</p>
           </label>
 
-          <label className={`flex items-start gap-4 p-4 border-2 rounded-2xl cursor-pointer transition-colors ${docxMode === 'visual' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:bg-gray-50'}`}>
-            <input type="radio" name="docxMode" value="visual" checked={docxMode === 'visual'} onChange={() => setDocxMode('visual')} className="mt-1 w-4 h-4 text-blue-600" />
-            <div>
-              <div className="font-bold text-gray-900">Visual Layout (Exact Copy)</div>
-              <div className="text-sm text-gray-600 mt-1 leading-relaxed">Preserves original fonts, tables, and multi-column designs as high-res images inside Word.</div>
+          <label className={`block p-4 border rounded-xl cursor-pointer transition-all ${exportMode === 'visual' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}>
+            <div className="flex items-center gap-3 mb-1">
+              <input type="radio" name="exportMode" value="visual" checked={exportMode === 'visual'} onChange={(e) => setExportMode(e.target.value)} className="w-4 h-4 text-blue-600" />
+              <span className="font-semibold text-gray-800">Visual Layout (Exact Copy)</span>
             </div>
+            <p className="text-sm text-gray-500 ml-7">Preserves exact fonts, tables, and scanned images as high-res pictures inside Word.</p>
           </label>
         </div>
 
-        <div className="bg-green-50 border border-green-200 p-4 rounded-xl mt-4">
+        <div className="bg-green-50 border border-green-200 p-4 rounded-xl">
           <p className="text-green-800 text-sm font-medium flex gap-2 items-start">
             <span className="text-lg">🔒</span>
             <span>
-              <strong>100% Private & Local Processing:</strong> Your files never leave your device. Because we process everything securely inside your browser without external servers, complex PDF tables in "Editable Text" mode are extracted as plain structured text.
+              <strong>100% Private & Local Processing:</strong> Your files never leave your device. We process everything securely inside your browser without external servers.
             </span>
           </p>
         </div>

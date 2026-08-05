@@ -38,3 +38,61 @@
   page-break-inside: avoid;
 }
 
+/* Word Simulation CSS for DOCX to PDF */
+.docx-pdf-container {
+  font-family: 'Calibri', 'Arial', sans-serif;
+  font-size: 11pt;
+  line-height: 1.5;
+  color: #000000;
+  background: #ffffff;
+  padding: 40px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.docx-pdf-container p {
+  margin-top: 0;
+  margin-bottom: 6pt;
+}
+
+/* Restore Headers */
+.docx-pdf-container h1, .docx-pdf-container h2, .docx-pdf-container h3, .docx-pdf-container h4, .docx-pdf-container h5, .docx-pdf-container h6 {
+  color: #2F5496; /* Standard Word Blue */
+  font-weight: bold;
+  margin-top: 18pt;
+  margin-bottom: 6pt;
+  page-break-after: avoid;
+}
+
+/* Restore Tables */
+.docx-pdf-container table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 12pt;
+  page-break-inside: avoid; /* Prevent table splitting */
+}
+.docx-pdf-container th, .docx-pdf-container td {
+  border: 1px solid #000000;
+  padding: 6px;
+  text-align: left;
+}
+
+/* Restore Lists and Fix Corrupt Bullets */
+.docx-pdf-container ul, .docx-pdf-container ol {
+  margin-top: 0;
+  margin-bottom: 12pt;
+  padding-left: 24pt;
+}
+.docx-pdf-container li {
+  margin-bottom: 4pt;
+}
+
+.docx-fixed-bullet {
+  display: list-item;
+  list-style-type: disc;
+  margin-left: 24pt;
+  margin-bottom: 6pt;
+}
+
+
+
