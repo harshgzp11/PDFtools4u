@@ -1,5 +1,16 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Production build outputs
+dist/
+dist-ssr/
+build/
+out/
+coverage/
+
 # Logs
-logs
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -7,28 +18,50 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Caches and temporary directories
+.cache/
+.vite/
+.eslintcache
+.temp/
+tmp/
+*.tsbuildinfo
 
-# Editor directories and files
+# OS metadata files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+*.stackdump
+
+# Editor & IDE files
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+*.sublime-workspace
+*.sublime-project
 
 # Environment variables
 .env
-.env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
 !.env.example
 
-# Test and temporary files
+# Test and sample files generated during local development
 test.pdf
 test.pptx
 test2.pptx
@@ -42,14 +75,11 @@ unlocked.pdf
 locked.pdf
 empty_slides_test.pdf
 
-# Ignore all test documents dropped in the root directory
+# Ignore single test documents dropped in root directory
 /*.pdf
 /*.docx
 /*.pptx
 /*.xlsx
 /*.csv
 /*.txt
-/*.jpg
-/*.jpeg
-/*.png
 /*.zip
