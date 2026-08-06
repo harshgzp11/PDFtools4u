@@ -395,10 +395,9 @@ export const convertPdfToPpt = async (file, onProgress) => {
  */
 export const convertPdfToExcel = async (file, onProgress) => {
   if (!file) throw new Error("No file provided");
-  onProgress(0);
+  if (onProgress) onProgress(0);
 
-  const arrayBuffer = await file.arrayBuffer();
-  const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
+  const pdf = await loadPdfDocument(file);
   const numPages = pdf.numPages;
 
   const allTableRows = [];

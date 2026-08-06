@@ -37,10 +37,21 @@ export default function Footer({ onSelectTool }) {
           {/* Brand */}
           <div className="col-span-2 lg:col-span-1 flex flex-col gap-4">
             <div className="flex items-center">
-              <div className="p-1.5 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg mr-2.5 shadow-lg">
-                <Zap className="h-5 w-5 text-white" />
+              <img 
+                src="/images/Logo-Photoroom.png" 
+                alt="PDFTools4U Logo" 
+                className="h-10 md:h-12 w-auto max-w-[220px] object-contain brightness-0 invert"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                }}
+              />
+              <div className="hidden items-center">
+                <div className="p-1.5 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg mr-2.5 shadow-lg">
+                  <Zap className="h-5 w-5 text-white" />
+                </div>
+                <span className="font-extrabold text-xl tracking-tight text-white">PDFTools4U</span>
               </div>
-              <span className="font-extrabold text-xl tracking-tight text-white">PDFTools4U</span>
             </div>
             <p className="text-gray-400 text-sm">We make PDF easy, fast, and local.</p>
           </div>

@@ -46,10 +46,21 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <div className="flex items-center cursor-pointer group" onClick={() => { onNavigateToDomain(null); setIsMobileMenuOpen(false); }}>
-              <div className="p-1.5 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg mr-2.5 group-hover:scale-105 transition-transform shadow-lg shadow-blue-500/30">
-                <Zap className="h-5 w-5 text-white" />
+              <img 
+                src="/images/Logo-Photoroom.png" 
+                alt="PDFTools4U Logo" 
+                className="h-10 md:h-12 w-auto max-w-[220px] object-contain group-hover:scale-105 transition-transform duration-200"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                }}
+              />
+              <div className="hidden items-center">
+                <div className="p-1.5 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg mr-2.5 shadow-lg shadow-blue-500/30">
+                  <Zap className="h-5 w-5 text-white" />
+                </div>
+                <span className="font-extrabold text-xl tracking-tight text-gray-900">PDFTools4U</span>
               </div>
-              <span className="font-extrabold text-xl tracking-tight text-gray-900">PDFTools4U</span>
             </div>
             
             {/* Desktop Navigation */}
