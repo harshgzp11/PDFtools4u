@@ -33,9 +33,9 @@ export default function Footer({ onSelectTool }) {
     <footer className="bg-gray-900 text-gray-300 pt-20 pb-8 px-4 md:px-8 mt-32 w-full">
       <div className="max-w-7xl mx-auto flex flex-col gap-12">
         {/* Top Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           {/* Brand */}
-          <div className="col-span-2 lg:col-span-1 flex flex-col gap-4">
+          <div className="flex flex-col gap-4">
             <div className="flex items-center">
               <img 
                 src="/images/pdftool4u-logo.png" 
@@ -53,16 +53,16 @@ export default function Footer({ onSelectTool }) {
                 <span className="font-extrabold text-xl tracking-tight text-white">PDFTools4U</span>
               </div>
             </div>
-            <p className="text-gray-400 text-sm">We make PDF easy, fast, and local.</p>
+            <p className="text-gray-400 text-sm">100% Free, Secure & Local PDF & Image Tools in your Browser.</p>
           </div>
 
-          {/* Solutions */}
+          {/* Tools */}
           <div className="flex flex-col gap-4">
-            <h4 className="text-white font-bold mb-2">Solutions</h4>
-            <a href="#business" className="text-sm hover:text-white transition-colors">Business</a>
-            <a href="#education" className="text-sm hover:text-white transition-colors">Education</a>
-            <a href="#developers" className="text-sm hover:text-white transition-colors">Developers</a>
-            <a href="#designers" className="text-sm hover:text-white transition-colors">Designers</a>
+            <h4 className="text-white font-bold mb-2">Tools</h4>
+            <button onClick={() => onSelectTool('pdf-merge')} className="text-left text-sm hover:text-white transition-colors">Merge PDF</button>
+            <button onClick={() => onSelectTool('compress-pdf')} className="text-left text-sm hover:text-white transition-colors">Compress PDF</button>
+            <button onClick={() => onSelectTool('pdf-to-jpg')} className="text-left text-sm hover:text-white transition-colors">PDF to Image</button>
+            <button onClick={() => onSelectTool('pdf-to-word')} className="text-left text-sm hover:text-white transition-colors">PDF to Word</button>
           </div>
 
           {/* Company */}
@@ -70,30 +70,19 @@ export default function Footer({ onSelectTool }) {
             <h4 className="text-white font-bold mb-2">Company</h4>
             <button onClick={() => onSelectTool('about')} className="text-left text-sm hover:text-white transition-colors">About Us</button>
             <button onClick={() => onSelectTool('blog')} className="text-left text-sm hover:text-white transition-colors">Blog</button>
-            <button onClick={() => onSelectTool('contact')} className="text-left text-sm hover:text-white transition-colors">Contact</button>
+            <button onClick={() => onSelectTool('contact')} className="text-left text-sm hover:text-white transition-colors">Contact Us</button>
           </div>
 
-          {/* Product */}
+          {/* Legal & Security */}
           <div className="flex flex-col gap-4">
-            <h4 className="text-white font-bold mb-2">Product</h4>
-            <a href="#pricing" className="text-sm hover:text-white transition-colors">Pricing</a>
-            <a href="#api" className="text-sm hover:text-white transition-colors">API</a>
-            <a href="#compare" className="text-sm hover:text-white transition-colors">Compare</a>
-            <a href="#security" className="text-sm hover:text-white transition-colors">Security</a>
-          </div>
-
-          {/* Apps */}
-          <div className="flex flex-col gap-4">
-            <h4 className="text-white font-bold mb-2">Apps</h4>
-            <a href="#webapp" className="text-sm hover:text-white transition-colors">Web App</a>
-            <a href="#windows" className="text-sm hover:text-white transition-colors">Windows Desktop</a>
-            <a href="#mac" className="text-sm hover:text-white transition-colors">Mac Desktop</a>
-            <a href="#chrome" className="text-sm hover:text-white transition-colors">Browser Extension</a>
+            <h4 className="text-white font-bold mb-2">Legal & Security</h4>
+            <button onClick={() => onSelectTool('privacy')} className="text-left text-sm hover:text-white transition-colors">Privacy Policy</button>
+            <button onClick={() => onSelectTool('terms')} className="text-left text-sm hover:text-white transition-colors">Terms of Service</button>
           </div>
         </div>
 
-        {/* Social Icons & Store Badges */}
-        <div className="border-t border-gray-800 pt-8 pb-4 flex flex-col md:flex-row justify-between items-center gap-6">
+        {/* Social Icons */}
+        <div className="border-t border-gray-800 pt-8 pb-4 flex justify-between items-center gap-6">
           <div className="flex items-center gap-6">
             <a href="#linkedin" className="text-gray-400 hover:text-white transition-colors">
               <LinkedinIcon className="w-5 h-5" />
@@ -108,21 +97,6 @@ export default function Footer({ onSelectTool }) {
               <TwitterIcon className="w-5 h-5" />
             </a>
           </div>
-          
-          <div className="flex flex-wrap justify-center items-center gap-4">
-            <button className="flex flex-col items-start bg-gray-800 hover:bg-gray-700 text-white px-4 py-1.5 rounded-lg transition-colors border border-gray-700">
-              <span className="text-[10px] text-gray-400">Download for</span>
-              <span className="text-sm font-bold leading-tight">Windows</span>
-            </button>
-            <button className="flex flex-col items-start bg-gray-800 hover:bg-gray-700 text-white px-4 py-1.5 rounded-lg transition-colors border border-gray-700">
-              <span className="text-[10px] text-gray-400">Get it on</span>
-              <span className="text-sm font-bold leading-tight">Google Chrome</span>
-            </button>
-            <button className="flex flex-col items-start bg-gray-800 hover:bg-gray-700 text-white px-4 py-1.5 rounded-lg transition-colors border border-gray-700">
-              <span className="text-[10px] text-gray-400">Download on the</span>
-              <span className="text-sm font-bold leading-tight">App Store</span>
-            </button>
-          </div>
         </div>
 
         {/* Bottom Legal Section */}
@@ -132,7 +106,6 @@ export default function Footer({ onSelectTool }) {
           <div className="flex flex-wrap items-center justify-center gap-6">
             <button onClick={() => onSelectTool('privacy')} className="hover:text-white transition-colors cursor-pointer">Privacy Policy</button>
             <button onClick={() => onSelectTool('terms')} className="hover:text-white transition-colors cursor-pointer">Terms of Service</button>
-            <a href="#imprint" className="hover:text-white transition-colors">Imprint</a>
             <button onClick={() => onSelectTool('contact')} className="hover:text-white transition-colors cursor-pointer">Contact Us</button>
             <div className="flex items-center gap-1.5 ml-4">
               <Globe className="w-4 h-4" />
