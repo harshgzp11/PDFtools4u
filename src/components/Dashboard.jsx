@@ -180,7 +180,7 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
 
               {/* Tool Card 2: Compress PDF */}
               <div 
-                onClick={() => onSelectTool('pdf-compress')}
+                onClick={() => onSelectTool('compress-pdf')}
                 className="group bg-rose-50/70 hover:bg-rose-50 border border-rose-100/80 rounded-2xl p-5 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer flex flex-col justify-between h-40"
               >
                 <div className="w-11 h-11 rounded-xl bg-rose-600 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
@@ -197,7 +197,7 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
 
               {/* Tool Card 3: Edit PDF & Sign */}
               <div 
-                onClick={() => onSelectTool('pdf-editor')}
+                onClick={() => onSelectTool('edit-pdf')}
                 className="group bg-amber-50/70 hover:bg-amber-50 border border-amber-100/80 rounded-2xl p-5 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer flex flex-col justify-between h-40"
               >
                 <div className="w-11 h-11 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
@@ -248,7 +248,7 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
 
               {/* Tool Card 6: Protect PDF */}
               <div 
-                onClick={() => onSelectTool('pdf-protect')}
+                onClick={() => onSelectTool('protect-pdf')}
                 className="group bg-emerald-50/70 hover:bg-emerald-50 border border-emerald-100/80 rounded-2xl p-5 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer flex flex-col justify-between h-40"
               >
                 <div className="w-11 h-11 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
