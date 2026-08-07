@@ -30,7 +30,7 @@ const YoutubeIcon = (props) => (
 
 export default function Footer({ onSelectTool }) {
   return (
-    <footer className="bg-gray-900 text-gray-300 pt-20 pb-8 px-4 md:px-8 mt-32 w-full">
+    <footer className="bg-black text-gray-300 pt-20 pb-8 px-4 md:px-8 mt-32 w-full border-t border-zinc-900">
       <div className="max-w-7xl mx-auto flex flex-col gap-12">
         {/* Top Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
@@ -96,7 +96,7 @@ export default function Footer({ onSelectTool }) {
         </div>
 
         {/* Social Icons */}
-        <div className="border-t border-gray-800 pt-8 pb-4 flex justify-between items-center gap-6">
+        <div className="border-t border-zinc-800/80 pt-8 pb-4 flex justify-between items-center gap-6">
           <div className="flex items-center gap-6">
             <a href="#linkedin" className="text-gray-400 hover:text-white transition-colors">
               <LinkedinIcon className="w-5 h-5" />
@@ -114,7 +114,7 @@ export default function Footer({ onSelectTool }) {
         </div>
 
         {/* Bottom Legal Section */}
-        <div className="border-t border-gray-800 pt-8 flex flex-col lg:flex-row justify-between items-center gap-4 text-xs text-gray-500">
+        <div className="border-t border-zinc-800/80 pt-8 flex flex-col lg:flex-row justify-between items-center gap-4 text-xs text-gray-500">
           <p>&copy; {new Date().getFullYear()} PDFTools4U &mdash; Made with ❤️ for local-first users.</p>
           
           <div className="flex flex-wrap items-center justify-center gap-6">
