@@ -48,17 +48,19 @@ const TOOL_KEYWORDS = {
   'html-to-image': ['html', 'css', 'render html', 'code to image', 'screenshot'],
 };
 
-// Calculate Levenshtein Distance for typo matching
+// Calculate Levenshtein Distance for typo matching (case-insensitive)
 export function levenshteinDistance(a, b) {
-  if (a.length === 0) return b.length;
-  if (b.length === 0) return a.length;
-  
-  const matrix = Array.from({ length: b.length + 1 }, (_, i) => [i]);
-  for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+  const str1 = a.toLowerCase();
+  const str2 = b.toLowerCase();
+  if (str1.length === 0) return str2.length;
+  if (str2.length === 0) return str1.length;
 
-  for (let i = 1; i <= b.length; i++) {
-    for (let j = 1; j <= a.length; j++) {
-      if (b.charAt(i - 1) === a.charAt(j - 1)) {
+  const matrix = Array.from({ length: str2.length + 1 }, (_, i) => [i]);
+  for (let j = 0; j <= str1.length; j++) matrix[0][j] = j;
+
+  for (let i = 1; i <= str2.length; i++) {
+    for (let j = 1; j <= str1.length; j++) {
+      if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
         matrix[i][j] = matrix[i - 1][j - 1];
       } else {
         matrix[i][j] = Math.min(
@@ -69,7 +71,7 @@ export function levenshteinDistance(a, b) {
       }
     }
   }
-  return matrix[b.length][a.length];
+  return matrix[str2.length][str1.length];
 }
 
 // Flatten all tools with domain & category context
@@ -86,9 +88,6 @@ export function getAllRegisteredTools() {
           searchKeywords: [
             tool.name.toLowerCase(),
             tool.id.toLowerCase(),
-            tool.description.toLowerCase(),
-            category.name.toLowerCase(),
-            domain.title.toLowerCase(),
             ...extraKeywords
           ]
         });
@@ -98,74 +97,92 @@ export function getAllRegisteredTools() {
   return tools;
 }
 
-// Calculate fuzzy score (0 to 100) between query and a tool
+// Precise & Typo-Tolerant Fuzzy Scoring Algorithm
 export function calculateFuzzyScore(query, tool) {
   const q = query.toLowerCase().trim();
   if (!q) return 0;
 
-  const toolName = tool.name.toLowerCase();
-  const toolId = tool.id.toLowerCase();
+  const name = tool.name.toLowerCase();
+  const id = tool.id.toLowerCase();
   const description = tool.description.toLowerCase();
-  const keywords = TOOL_KEYWORDS[tool.id] || [];
+  const keywords = (TOOL_KEYWORDS[tool.id] || []).map(k => k.toLowerCase());
 
-  // 1. Exact match on ID or Name -> Max Score
-  if (toolName === q || toolId === q) return 1000;
+  // 1. Exact Match on Tool Name or ID -> Highest Priority
+  if (name === q || id === q) return 1000;
 
-  // 2. Substring match at start of Name -> High Score
-  if (toolName.startsWith(q)) return 500 + (q.length / toolName.length) * 50;
+  // 2. Direct Substring Match on Tool Name
+  if (name.startsWith(q)) return 800;
+  if (name.includes(q)) return 600;
 
-  // 3. Substring match anywhere in Name
-  if (toolName.includes(q)) return 300 + (q.length / toolName.length) * 30;
-
-  // 4. Substring match in ID or Keywords
+  // 3. Direct Substring Match on ID or Keywords
   for (const kw of keywords) {
-    if (kw === q) return 400;
-    if (kw.startsWith(q)) return 250;
-    if (kw.includes(q)) return 200;
+    if (kw === q) return 700;
+    if (kw.startsWith(q)) return 550;
+    if (kw.includes(q)) return 450;
   }
 
-  // 5. Substring match in Description
-  if (description.includes(q)) return 150;
+  // 4. Direct Substring Match in Description
+  if (description.includes(q)) return 300;
 
-  // 6. Typo Tolerance / Token Fuzzy Matching (e.g. "excl" -> "excel", "convet" -> "convert")
-  const queryTokens = q.split(/\s+/);
-  let totalTokenScore = 0;
+  // 5. Typo-Tolerant Token Matching (e.g. "ecel" -> "excel", "wrd" -> "word", "comprss" -> "compress")
+  const queryWords = q.split(/\s+/).filter(Boolean);
+  const targetWords = [
+    ...name.split(/[\s\-_]+/),
+    ...id.split(/[\s\-_]+/),
+    ...keywords
+  ].map(w => w.toLowerCase());
 
-  for (const qTok of queryTokens) {
-    if (qTok.length < 2) continue;
-    let maxTokScore = 0;
+  let totalMatchScore = 0;
 
-    // Compare with all target tokens (name, id, keywords)
-    const targetTokens = [...toolName.split(/\s+/), ...toolId.split('-'), ...keywords];
+  for (const qWord of queryWords) {
+    if (qWord.length < 2) continue;
+    let bestWordScore = 0;
 
-    for (const tTok of targetTokens) {
-      if (tTok.length < 2) continue;
-      if (tTok.includes(qTok) || qTok.includes(tTok)) {
-        maxTokScore = Math.max(maxTokScore, 80);
+    for (const tWord of targetWords) {
+      if (tWord.length < 2) continue;
+
+      // Direct prefix/substring match of word
+      if (tWord === qWord) {
+        bestWordScore = Math.max(bestWordScore, 500);
+      } else if (tWord.startsWith(qWord)) {
+        bestWordScore = Math.max(bestWordScore, 400);
+      } else if (tWord.includes(qWord)) {
+        bestWordScore = Math.max(bestWordScore, 300);
       } else {
-        const dist = levenshteinDistance(qTok, tTok);
-        const maxLen = Math.max(qTok.length, tTok.length);
-        if (maxLen > 0) {
+        // Levenshtein Typo Check
+        const dist = levenshteinDistance(qWord, tWord);
+        const maxLen = Math.max(qWord.length, tWord.length);
+
+        // Strict typo threshold:
+        // For 3-4 letter words: max 1 typo (e.g. "ecel" -> "excel", "wrd" -> "word", "splt" -> "split")
+        // For 5+ letter words: max 2 typos (e.g. "comprss" -> "compress", "convet" -> "convert")
+        const allowedTypos = qWord.length <= 4 ? 1 : 2;
+
+        if (dist <= allowedTypos) {
           const similarity = (maxLen - dist) / maxLen;
-          // Allow max 1-2 typos for words >= 3 letters
-          if (similarity >= 0.5) {
-            maxTokScore = Math.max(maxTokScore, similarity * 70);
+          if (similarity >= 0.65) {
+            // Strong match score for typos
+            bestWordScore = Math.max(bestWordScore, Math.round(similarity * 450));
           }
         }
       }
     }
-    totalTokenScore += maxTokScore;
+
+    if (bestWordScore === 0) {
+      // If a word in a multi-word query doesn't match at all, penalize
+      return 0;
+    }
+    totalMatchScore += bestWordScore;
   }
 
-  const averageTokenScore = queryTokens.length > 0 ? totalTokenScore / queryTokens.length : 0;
-  return averageTokenScore;
+  return totalMatchScore / queryWords.length;
 }
 
-// Search and rank all registered tools
+// Search and rank all registered tools with strict relevance filtering
 export function searchToolsFuzzy(query) {
   const allTools = getAllRegisteredTools();
   if (!query || !query.trim()) {
-    return allTools; // Return all tools default
+    return allTools; // Return all tools when query is empty
   }
 
   const scored = allTools
@@ -173,7 +190,7 @@ export function searchToolsFuzzy(query) {
       tool,
       score: calculateFuzzyScore(query, tool)
     }))
-    .filter(item => item.score > 25)
+    .filter(item => item.score >= 200) // Strict cutoff so unrelated tools are NEVER shown
     .sort((a, b) => b.score - a.score);
 
   return scored.map(item => item.tool);
