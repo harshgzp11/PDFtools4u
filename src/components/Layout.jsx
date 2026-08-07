@@ -47,8 +47,8 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
             {/* Logo */}
             <div className="flex items-center cursor-pointer group" onClick={() => { onNavigateToDomain(null); setIsMobileMenuOpen(false); }}>
               <img 
-                src="/images/Logo-Photoroom.png" 
-                alt="PDFTools4U Logo" 
+                src="/images/pdftool4u-logo.png" 
+                alt="PDFTools4u Logo" 
                 className="h-10 md:h-12 w-auto max-w-[220px] object-contain group-hover:scale-105 transition-transform duration-200"
                 onError={(e) => {
                   e.target.style.display = 'none';
