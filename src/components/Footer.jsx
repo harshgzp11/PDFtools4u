@@ -38,8 +38,8 @@ export default function Footer({ onSelectTool }) {
           <div className="col-span-2 lg:col-span-1 flex flex-col gap-4">
             <div className="flex items-center">
               <img 
-                src="/images/Logo-Photoroom.png" 
-                alt="PDFTools4U Logo" 
+                src="/images/pdftool4u-logo.png" 
+                alt="PDFTools4u Logo" 
                 className="h-10 md:h-12 w-auto max-w-[220px] object-contain brightness-0 invert"
                 onError={(e) => {
                   e.target.style.display = 'none';
