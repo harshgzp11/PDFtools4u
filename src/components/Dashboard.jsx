@@ -6,8 +6,7 @@ import {
   Maximize, Settings2, FileOutput, ArrowRight, Search, ShieldCheck, ServerOff, Eye, Globe, RefreshCw, CheckCircle2, Sparkles, Cpu
 } from 'lucide-react';
 import { DOMAINS, POPULAR_TOOL_IDS } from '../lib/toolConfig';
-
-
+import { searchToolsFuzzy } from '../lib/fuzzySearch';
 
 export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defaultTab }) {
   const [activeTab, setActiveTab] = useState(defaultTab || DOMAINS[0].title);
@@ -32,11 +31,9 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
     }
   };
 
-  // If user is searching, show flattened search results
+  // If user is searching, show fuzzy matching search results
   if (query) {
-    const filteredTools = allTools.filter(tool => 
-      tool.name.toLowerCase().includes(query) || tool.description.toLowerCase().includes(query)
-    );
+    const filteredTools = searchToolsFuzzy(query);
     
     return (
       <div className="space-y-10 animate-in fade-in duration-500 p-4 md:p-8">
