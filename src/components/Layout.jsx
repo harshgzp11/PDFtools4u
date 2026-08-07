@@ -264,34 +264,7 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
 
       </div>
 
-      {!isToolView && (
-        <Footer onSelectTool={onSelectTool} />
-      )}
-
-      {/* Ultra-Compact Footer */}
-      {/* Ultra-Compact Footer */}
-      {isToolView && (
-        <footer className="flex-shrink-0 bg-white border-t border-gray-100 w-full h-8 flex items-center px-4 sm:px-6 lg:px-8 z-10 relative">
-          <div className="w-full flex justify-between items-center text-[11px] font-medium text-gray-500">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-1.5 text-emerald-600 font-bold">
-                <Shield className="w-3 h-3" />
-                <span>100% Private</span>
-              </div>
-              <div className="hidden sm:block text-gray-300">|</div>
-              <span className="hidden sm:block text-gray-400">Processed locally in your browser.</span>
-            </div>
-            
-            <div className="flex items-center gap-4">
-              <button onClick={() => onSelectTool('privacy')} className="hover:text-blue-600 transition-colors cursor-pointer">Privacy</button>
-              <button onClick={() => onSelectTool('terms')} className="hover:text-blue-600 transition-colors cursor-pointer">Terms</button>
-              <div className="hidden md:block ml-2 text-gray-400">
-                &copy; {new Date().getFullYear()} PDFTools4U
-              </div>
-            </div>
-          </div>
-        </footer>
-      )}
+      <Footer onSelectTool={onSelectTool} />
     </div>
   );
 }
