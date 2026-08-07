@@ -2,57 +2,107 @@ import React from 'react';
 
 export default function PrivacyPolicy() {
   return (
-    <div className="w-full h-full overflow-y-auto custom-scrollbar">
-      <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-gray-800 animate-in fade-in">
-      <h1 className="text-4xl font-extrabold text-gray-900 mb-8 text-center">Privacy Policy</h1>
-      
-      <div className="space-y-8">
-        <section>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">1. Information We Collect</h2>
-          <p className="text-gray-600 leading-relaxed">
-            At PDFTools4U, your privacy is our top priority. We do not collect, store, or transmit your files to any external servers. All file processing is performed locally within your browser using JavaScript.
+    <div className="w-full h-full overflow-y-auto custom-scrollbar bg-gray-50/50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto bg-white border border-gray-200/80 rounded-2xl shadow-sm p-6 sm:p-10 text-gray-800 animate-in fade-in">
+        
+        <div className="border-b border-gray-100 pb-6 mb-8 text-center sm:text-left">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">Privacy Policy</h1>
+          <p className="text-sm font-medium text-gray-500 mt-2">
+            PDFTools4u &bull; Last Updated: August 7, 2026
           </p>
-        </section>
+        </div>
 
-        <section>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">2. Local Processing</h2>
-          <p className="text-gray-600 leading-relaxed">
-            When you use our tools to convert, edit, or manipulate PDFs and images, the operations happen entirely on your device. This means your sensitive documents never leave your computer, ensuring complete confidentiality and security.
-          </p>
-        </section>
+        <div className="prose prose-gray max-w-none space-y-8 text-sm sm:text-base leading-relaxed text-gray-600">
+          
+          <section>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">1. Introduction</h2>
+            <p>
+              This Privacy Policy explains how PDFTools4u (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) collects, uses, and discloses information when you use our website (<a href="https://pdftools4u.in" className="text-blue-600 hover:underline font-medium">pdftools4u.in</a>). Data privacy regulations require that we clearly communicate with website visitors about the data we collect and process, as well as inform you about your privacy rights.
+            </p>
+          </section>
 
-        <section>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">3. Analytics, Cookies, and Advertising</h2>
-          <p className="text-gray-600 leading-relaxed mb-4">
-            We use third-party advertising companies like Google AdSense to serve ads when you visit our website. These companies may use information (not including your name, address, email address, or telephone number) about your visits to this and other websites in order to provide advertisements about goods and services of interest to you.
-          </p>
-          <p className="text-gray-600 leading-relaxed">
-            Google, as a third-party vendor, uses cookies (such as the DoubleClick cookie) to serve ads based on your prior visits to our website or other websites on the Internet. You may opt out of the use of the DoubleClick cookie for interest-based advertising by visiting the Google Ads Preference Manager.
-          </p>
-        </section>
+          <section className="bg-blue-50/60 border border-blue-100 rounded-xl p-5">
+            <h2 className="text-xl sm:text-2xl font-bold text-blue-950 mb-3">2. Client-Side Processing (Your Files Are Safe)</h2>
+            <p className="mb-3 text-blue-900">
+              PDFTools4u operates strictly as a client-side web application. This means:
+            </p>
+            <ul className="list-disc pl-6 space-y-2 text-blue-900">
+              <li>All document processing, merging, splitting, compressing, and editing happens locally within your web browser.</li>
+              <li>We do not upload, store, or transmit your PDF files or their contents to any external servers.</li>
+            </ul>
+          </section>
 
-        <section>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">4. Third-Party Services</h2>
-          <p className="text-gray-600 leading-relaxed">
-            Since our tools operate locally, we do not share your files or data with third-party services. However, standard browser extensions or services you have installed may interact with the webpage independently of our control.
-          </p>
-        </section>
+          <section>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">3. Information We Collect</h2>
+            <p className="mb-3">
+              While we absolutely do not access or collect your document files, we may collect standard internet infrastructure data:
+            </p>
+            <ul className="list-disc pl-6 space-y-2">
+              <li>We may collect standard log information, including your IP address, browser type, device information, and operating system settings.</li>
+              <li>We collect usage data via analytics tools to understand how our services are used and to improve our platform.</li>
+            </ul>
+          </section>
 
-        <section>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">5. Changes to This Policy</h2>
-          <p className="text-gray-600 leading-relaxed">
-            We reserve the right to update this Privacy Policy at any time. Any changes will be posted on this page immediately. By continuing to use PDFTools4U after changes are made, you agree to the revised policy.
-          </p>
-        </section>
+          <section>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">4. Cookies and Tracking Technologies</h2>
+            <p className="mb-3">
+              We use cookies to personalize content, serve advertisements, and analyze our traffic.
+            </p>
+            <p>
+              This includes the use of both first-party cookies and third-party cookies.
+            </p>
+          </section>
 
-        <section>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">6. Contact Us</h2>
-          <p className="text-gray-600 leading-relaxed">
-            If you have any questions or concerns regarding our privacy practices, please contact us at <strong>support@pdftools4u.in</strong>.
-          </p>
-        </section>
+          <section>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">5. Advertising and Third-Party Data Sharing</h2>
+            <ul className="list-disc pl-6 space-y-2">
+              <li>We use third-party vendors, including Google AdSense, to serve advertisements on our site.</li>
+              <li>We share necessary data with third-party vendors and ad networks that serve these advertisements.</li>
+              <li>Google uses cookies to serve personalized ads based on your prior visits to this website or other websites on the internet.</li>
+              <li>Users can opt out of personalized advertisements at any time by visiting Google&apos;s Ads Settings.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">6. Your Privacy Rights (GDPR &amp; CCPA)</h2>
+            <p className="mb-3">
+              Depending on your location, data privacy laws grant you specific rights regarding your personal information:
+            </p>
+            <ul className="list-disc pl-6 space-y-2">
+              <li>You have the right to access, restrict processing, or request the deletion of your personal data.</li>
+              <li>You have the right to opt out of the sale or sharing of your data for targeted advertising purposes.</li>
+              <li>We provide an email address for you to contact us and exercise these rights.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">7. Data Retention</h2>
+            <ul className="list-disc pl-6 space-y-2">
+              <li>We base our retention periods for analytics and usage data on strict legal requirements and legitimate business needs.</li>
+              <li>When this data is no longer needed, we securely delete or anonymize it.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">8. Children&apos;s Privacy</h2>
+            <ul className="list-disc pl-6 space-y-2">
+              <li>Our services are not directed at minors, and we set an age threshold of 13 years old to ensure we do not knowingly collect personal data from children.</li>
+              <li>Additionally, we do not run targeted advertisements aimed at minors through our AdSense services.</li>
+            </ul>
+          </section>
+
+          <section className="bg-gray-50 border border-gray-200/80 rounded-xl p-6">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">9. Contact Us</h2>
+            <p className="mb-3">
+              If you have any questions or concerns regarding this policy, you may contact us for privacy inquiries:
+            </p>
+            <p>
+              <strong>Email:</strong> <a href="mailto:support@pdftools4u.in" className="text-blue-600 hover:underline">support@pdftools4u.in</a>
+            </p>
+          </section>
+
+        </div>
       </div>
-    </div>
     </div>
   );
 }
