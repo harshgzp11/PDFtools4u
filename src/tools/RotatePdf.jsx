@@ -77,15 +77,39 @@ export default function RotatePdf() {
         subtitle: 'Your document is ready to download.',
         quickActions: (
           <>
-            <a href="#pdf-split" onClick={() => window.scrollTo(0,0)} className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors border border-gray-100 flex flex-col items-center gap-2 group">
+            <a 
+              href="/pdf-split" 
+              onClick={(e) => {
+                e.preventDefault();
+                window.history.pushState({}, "", "/pdf-split");
+                window.dispatchEvent(new Event('popstate'));
+              }} 
+              className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors border border-gray-100 flex flex-col items-center gap-2 group cursor-pointer"
+            >
               <Scissors className="w-6 h-6 text-gray-400 group-hover:text-blue-500 transition-colors" />
               <span className="text-sm font-medium text-gray-700">Split PDF</span>
             </a>
-            <a href="#number-pages" onClick={() => window.scrollTo(0,0)} className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors border border-gray-100 flex flex-col items-center gap-2 group">
+            <a 
+              href="/number-pages" 
+              onClick={(e) => {
+                e.preventDefault();
+                window.history.pushState({}, "", "/number-pages");
+                window.dispatchEvent(new Event('popstate'));
+              }} 
+              className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors border border-gray-100 flex flex-col items-center gap-2 group cursor-pointer"
+            >
               <ListOrdered className="w-6 h-6 text-gray-400 group-hover:text-blue-500 transition-colors" />
               <span className="text-sm font-medium text-gray-700">Add Numbers</span>
             </a>
-            <a href="#compress-pdf" onClick={() => window.scrollTo(0,0)} className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors border border-gray-100 flex flex-col items-center gap-2 group">
+            <a 
+              href="/compress-pdf" 
+              onClick={(e) => {
+                e.preventDefault();
+                window.history.pushState({}, "", "/compress-pdf");
+                window.dispatchEvent(new Event('popstate'));
+              }} 
+              className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors border border-gray-100 flex flex-col items-center gap-2 group cursor-pointer"
+            >
               <RefreshCw className="w-6 h-6 text-gray-400 group-hover:text-blue-500 transition-colors" />
               <span className="text-sm font-medium text-gray-700">Compress</span>
             </a>
