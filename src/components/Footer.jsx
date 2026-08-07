@@ -98,16 +98,16 @@ export default function Footer({ onSelectTool }) {
         {/* Social Icons */}
         <div className="border-t border-zinc-800/80 pt-8 pb-4 flex justify-between items-center gap-6">
           <div className="flex items-center gap-6">
-            <a href="#linkedin" className="text-gray-400 hover:text-white transition-colors">
+            <a href="#" onClick={(e) => e.preventDefault()} title="LinkedIn" className="text-gray-400 hover:text-white transition-colors cursor-pointer">
               <LinkedinIcon className="w-5 h-5" />
             </a>
-            <a href="#facebook" className="text-gray-400 hover:text-white transition-colors">
+            <a href="#" onClick={(e) => e.preventDefault()} title="Facebook" className="text-gray-400 hover:text-white transition-colors cursor-pointer">
               <FacebookIcon className="w-5 h-5" />
             </a>
-            <a href="#youtube" className="text-gray-400 hover:text-white transition-colors">
+            <a href="#" onClick={(e) => e.preventDefault()} title="YouTube" className="text-gray-400 hover:text-white transition-colors cursor-pointer">
               <YoutubeIcon className="w-5 h-5" />
             </a>
-            <a href="#twitter" className="text-gray-400 hover:text-white transition-colors">
+            <a href="#" onClick={(e) => e.preventDefault()} title="Twitter / X" className="text-gray-400 hover:text-white transition-colors cursor-pointer">
               <TwitterIcon className="w-5 h-5" />
             </a>
           </div>

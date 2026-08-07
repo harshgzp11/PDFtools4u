@@ -257,19 +257,51 @@ export default function CropPdf() {
           <div className="border-t border-gray-100 pt-10">
             <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-6">Continue working on this PDF</h4>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <a href="#compress-pdf" onClick={() => window.scrollTo(0,0)} className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors border border-gray-100 flex flex-col items-center gap-2 group">
+              <a 
+                href="/compress-pdf" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.history.pushState({}, "", "/compress-pdf");
+                  window.dispatchEvent(new Event('popstate'));
+                }} 
+                className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors border border-gray-100 flex flex-col items-center gap-2 group cursor-pointer"
+              >
                 <Minimize className="w-6 h-6 text-gray-400 group-hover:text-blue-500 transition-colors" />
                 <span className="text-sm font-medium text-gray-700">Compress</span>
               </a>
-              <a href="#pdf-split" onClick={() => window.scrollTo(0,0)} className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors border border-gray-100 flex flex-col items-center gap-2 group">
+              <a 
+                href="/pdf-split" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.history.pushState({}, "", "/pdf-split");
+                  window.dispatchEvent(new Event('popstate'));
+                }} 
+                className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors border border-gray-100 flex flex-col items-center gap-2 group cursor-pointer"
+              >
                 <Scissors className="w-6 h-6 text-gray-400 group-hover:text-blue-500 transition-colors" />
                 <span className="text-sm font-medium text-gray-700">Split PDF</span>
               </a>
-              <a href="#number-pages" onClick={() => window.scrollTo(0,0)} className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors border border-gray-100 flex flex-col items-center gap-2 group">
+              <a 
+                href="/number-pages" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.history.pushState({}, "", "/number-pages");
+                  window.dispatchEvent(new Event('popstate'));
+                }} 
+                className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors border border-gray-100 flex flex-col items-center gap-2 group cursor-pointer"
+              >
                 <ListOrdered className="w-6 h-6 text-gray-400 group-hover:text-blue-500 transition-colors" />
                 <span className="text-sm font-medium text-gray-700">Add Numbers</span>
               </a>
-              <a href="#rotate-pdf" onClick={() => window.scrollTo(0,0)} className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors border border-gray-100 flex flex-col items-center gap-2 group">
+              <a 
+                href="/rotate-pdf" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.history.pushState({}, "", "/rotate-pdf");
+                  window.dispatchEvent(new Event('popstate'));
+                }} 
+                className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors border border-gray-100 flex flex-col items-center gap-2 group cursor-pointer"
+              >
                 <RefreshCw className="w-6 h-6 text-gray-400 group-hover:text-blue-500 transition-colors" />
                 <span className="text-sm font-medium text-gray-700">Rotate</span>
               </a>

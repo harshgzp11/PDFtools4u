@@ -171,7 +171,34 @@ export default function BlogPost({ id, onNavigate }) {
       </div>
 
       <article className="prose prose-lg md:prose-xl prose-indigo mx-auto max-w-3xl prose-headings:font-bold prose-a:text-blue-600 hover:prose-a:text-blue-800 prose-img:rounded-xl">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+        <ReactMarkdown 
+          remarkPlugins={[remarkGfm]}
+          components={{
+            a: ({ href, children, ...props }) => {
+              if (href && href.startsWith('/')) {
+                return (
+                  <a
+                    href={href}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const toolId = href.replace(/^\//, '');
+                      onNavigate(toolId || null);
+                    }}
+                    className="text-blue-600 hover:underline font-semibold cursor-pointer"
+                    {...props}
+                  >
+                    {children}
+                  </a>
+                );
+              }
+              return (
+                <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline" {...props}>
+                  {children}
+                </a>
+              );
+            }
+          }}
+        >
           {post.content}
         </ReactMarkdown>
       </article>
