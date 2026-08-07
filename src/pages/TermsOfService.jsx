@@ -143,7 +143,20 @@ export default function TermsOfService() {
             </p>
             <ul className="space-y-2">
               <li><strong>Email:</strong> <a href="mailto:support@pdftools4u.in" className="text-blue-600 hover:underline">support@pdftools4u.in</a></li>
-              <li><strong>Website Contact Page:</strong> <a href="https://pdftools4u.in/contact" className="text-blue-600 hover:underline">https://pdftools4u.in/contact</a></li>
+              <li>
+                <strong>Website Contact Page:</strong>{' '}
+                <a 
+                  href="/contact" 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.history.pushState({}, "", "/contact");
+                    window.dispatchEvent(new Event('popstate'));
+                  }} 
+                  className="text-blue-600 hover:underline cursor-pointer"
+                >
+                  https://pdftools4u.in/contact
+                </a>
+              </li>
             </ul>
           </section>
         </div>
