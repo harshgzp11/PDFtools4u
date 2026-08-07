@@ -33,9 +33,9 @@ export default function Footer({ onSelectTool }) {
     <footer className="bg-gray-900 text-gray-300 pt-20 pb-8 px-4 md:px-8 mt-32 w-full">
       <div className="max-w-7xl mx-auto flex flex-col gap-12">
         {/* Top Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-          {/* Brand */}
-          <div className="flex flex-col gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
+          {/* Brand & Keyword-Rich Tagline */}
+          <div className="col-span-1 sm:col-span-2 lg:col-span-1 flex flex-col gap-4">
             <div className="flex items-center">
               <img 
                 src="/images/pdftool4u-logo.png" 
@@ -53,31 +53,45 @@ export default function Footer({ onSelectTool }) {
                 <span className="font-extrabold text-xl tracking-tight text-white">PDFTools4U</span>
               </div>
             </div>
-            <p className="text-gray-400 text-sm">100% Free, Secure & Local PDF & Image Tools in your Browser.</p>
+            <p className="text-gray-400 text-sm leading-relaxed">
+              Free, secure online PDF converter and editor. Convert, merge, compress, and edit PDFs directly in your browser with zero file uploads.
+            </p>
           </div>
 
-          {/* Tools */}
+          {/* Column 1: Popular Utilities */}
           <div className="flex flex-col gap-4">
-            <h4 className="text-white font-bold mb-2">Tools</h4>
-            <button onClick={() => onSelectTool('pdf-merge')} className="text-left text-sm hover:text-white transition-colors">Merge PDF</button>
-            <button onClick={() => onSelectTool('compress-pdf')} className="text-left text-sm hover:text-white transition-colors">Compress PDF</button>
-            <button onClick={() => onSelectTool('pdf-to-jpg')} className="text-left text-sm hover:text-white transition-colors">PDF to Image</button>
-            <button onClick={() => onSelectTool('pdf-to-word')} className="text-left text-sm hover:text-white transition-colors">PDF to Word</button>
+            <h4 className="text-white font-bold mb-2">Popular Utilities</h4>
+            <button onClick={() => onSelectTool('pdf-merge')} title="Merge PDF Online - Combine PDF files free" className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Merge PDF</button>
+            <button onClick={() => onSelectTool('compress-pdf')} title="Compress PDF File Size - Reduce PDF size free" className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Compress PDF</button>
+            <button onClick={() => onSelectTool('pdf-split')} title="Split PDF Pages - Extract pages from PDF" className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Split PDF</button>
+            <button onClick={() => onSelectTool('pdf-ocr')} title="OCR PDF Online - Convert scanned PDF to text" className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">OCR PDF</button>
           </div>
 
-          {/* Company */}
+          {/* Column 2: Convert & Edit */}
           <div className="flex flex-col gap-4">
-            <h4 className="text-white font-bold mb-2">Company</h4>
-            <button onClick={() => onSelectTool('about')} className="text-left text-sm hover:text-white transition-colors">About Us</button>
-            <button onClick={() => onSelectTool('blog')} className="text-left text-sm hover:text-white transition-colors">Blog</button>
-            <button onClick={() => onSelectTool('contact')} className="text-left text-sm hover:text-white transition-colors">Contact Us</button>
+            <h4 className="text-white font-bold mb-2">Convert & Edit</h4>
+            <button onClick={() => onSelectTool('pdf-to-word')} title="PDF to Word Converter Free" className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">PDF to Word</button>
+            <button onClick={() => onSelectTool('word-to-pdf')} title="Convert DOCX to PDF Online" className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Word to PDF</button>
+            <button onClick={() => onSelectTool('excel-to-pdf')} title="Convert Excel Sheet to PDF" className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Excel to PDF</button>
+            <button onClick={() => onSelectTool('pdf-to-jpg')} title="Convert PDF Pages to JPG PNG" className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">PDF to Image</button>
           </div>
 
-          {/* Legal & Security */}
+          {/* Column 3: Security & Privacy */}
           <div className="flex flex-col gap-4">
-            <h4 className="text-white font-bold mb-2">Legal & Security</h4>
-            <button onClick={() => onSelectTool('privacy')} className="text-left text-sm hover:text-white transition-colors">Privacy Policy</button>
-            <button onClick={() => onSelectTool('terms')} className="text-left text-sm hover:text-white transition-colors">Terms of Service</button>
+            <h4 className="text-white font-bold mb-2">Security & Privacy</h4>
+            <button onClick={() => onSelectTool('about')} title="100% Client-Side Private Processing - Files Stay in Browser" className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Client-Side Security</button>
+            <button onClick={() => onSelectTool('unlock-pdf')} title="Remove PDF Password Online Free" className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Unlock PDF</button>
+            <button onClick={() => onSelectTool('protect-pdf')} title="Add Password to PDF Free" className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Protect PDF</button>
+            <button onClick={() => onSelectTool('sign-pdf')} title="Electronic Signature PDF Free" className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Sign PDF</button>
+          </div>
+
+          {/* Column 4: Company & Legal */}
+          <div className="flex flex-col gap-4">
+            <h4 className="text-white font-bold mb-2">Company & Legal</h4>
+            <button onClick={() => onSelectTool('about')} className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">About Us</button>
+            <button onClick={() => onSelectTool('privacy')} className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Privacy Policy</button>
+            <button onClick={() => onSelectTool('terms')} className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Terms of Service</button>
+            <button onClick={() => onSelectTool('blog')} className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Blog / Guides</button>
           </div>
         </div>
 
