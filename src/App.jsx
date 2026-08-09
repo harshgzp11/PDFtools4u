@@ -70,6 +70,17 @@ const BlogPost = React.lazy(() => import('./pages/BlogPost'));
 const AboutUs = React.lazy(() => import('./pages/AboutUs'));
 const ContactUs = React.lazy(() => import('./pages/ContactUs'));
 
+// Redirect map: non-canonical alias → canonical slug
+// Users hitting an alias URL get seamlessly redirected to the canonical URL
+const URL_REDIRECTS = {
+  'merge-pdf': 'pdf-merge',
+  'split-pdf': 'pdf-split',
+  'pdf-protect': 'protect-pdf',
+  'pdf-unlock': 'unlock-pdf',
+  'pdf-compress': 'compress-pdf',
+  'ocr-pdf': 'pdf-ocr',
+};
+
 const TOOL_COMPONENTS = {
   'edit-pdf': PdfEditor,
   'pdf-editor': PdfEditor,
@@ -82,9 +93,7 @@ const TOOL_COMPONENTS = {
   'pdf-compiler': TextToPdfCompiler,
   'image-converter': ImageConverter,
   'pdf-merge': PdfMerger,
-  'merge-pdf': PdfMerger,
   'pdf-split': PdfSplitter,
-  'split-pdf': PdfSplitter,
   'pdf-watermark': PdfWatermark,
   'rotate-pdf': RotatePdf,
   'jpg-to-pdf': JpgToPdf,
@@ -98,13 +107,10 @@ const TOOL_COMPONENTS = {
   'extract-pdf-pages': ExtractPdfPages,
   'organize-pdf': OrganizePdf,
   'protect-pdf': ProtectPdf,
-  'pdf-protect': ProtectPdf,
   'unlock-pdf': UnlockPdf,
-  'pdf-unlock': UnlockPdf,
   'flatten-pdf': FlattenPdf,
   'sign-pdf': SignPdf,
   'compress-pdf': CompressPdf,
-  'pdf-compress': CompressPdf,
   'number-pages': NumberPages,
   'pdf-form-filler': PdfFormFiller,
   'crop-pdf': CropPdf,
@@ -126,7 +132,6 @@ const TOOL_COMPONENTS = {
   'pdf-to-ppt': PdfToPpt,
   'ppt-to-pdf': PptToPdf,
   'pdf-ocr': PdfOcr,
-  'ocr-pdf': PdfOcr,
   'excel-to-pdf': ExcelToPdf,
   'word-to-pdf': WordToPdf,
   'pdf-reader': PdfReader,
@@ -140,14 +145,25 @@ const TOOL_COMPONENTS = {
 
 const PLACEHOLDER_TOOLS = {};
 
+// Resolve a slug: if it's an alias, return the canonical slug; otherwise return as-is
+function resolveSlug(slug) {
+  return URL_REDIRECTS[slug] || slug;
+}
+
 function App() {
   const [activeTool, setActiveTool] = useState(() => {
-    const path = window.location.pathname.replace('/', '');
+    const rawPath = window.location.pathname.replace('/', '');
+    const path = resolveSlug(rawPath);
+    // If the URL was an alias, silently replace it with the canonical URL
+    if (rawPath && path !== rawPath) {
+      window.history.replaceState({}, '', '/' + path + window.location.search);
+    }
     return path || null;
   });
   
   const [visitedTools, setVisitedTools] = useState(() => {
-    const path = window.location.pathname.replace('/', '');
+    const rawPath = window.location.pathname.replace('/', '');
+    const path = resolveSlug(rawPath);
     return path ? [path] : [];
   });
   
@@ -157,7 +173,12 @@ function App() {
   // Sync state when browser back/forward buttons are pressed
   useEffect(() => {
     const handlePopState = () => {
-      const path = window.location.pathname.replace('/', '');
+      const rawPath = window.location.pathname.replace('/', '');
+      const path = resolveSlug(rawPath);
+      // Redirect alias URLs on back/forward navigation too
+      if (rawPath && path !== rawPath) {
+        window.history.replaceState({}, '', '/' + path + window.location.search);
+      }
       setActiveTool(path || null);
       if (path) {
         setVisitedTools(prev => prev.includes(path) ? prev : [...prev, path]);
@@ -171,9 +192,11 @@ function App() {
 
   const navigateTo = (toolId) => {
     if (toolId) {
-      window.history.pushState({}, "", "/" + toolId + window.location.search);
-      setActiveTool(toolId);
-      setVisitedTools(prev => prev.includes(toolId) ? prev : [...prev, toolId]);
+      // Always resolve to canonical slug before navigating
+      const canonicalId = resolveSlug(toolId);
+      window.history.pushState({}, "", "/" + canonicalId + window.location.search);
+      setActiveTool(canonicalId);
+      setVisitedTools(prev => prev.includes(canonicalId) ? prev : [...prev, canonicalId]);
       window.scrollTo(0, 0);
     } else {
       window.history.pushState({}, "", "/" + window.location.search);

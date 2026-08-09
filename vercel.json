@@ -1,4 +1,12 @@
 {
+  "redirects": [
+    { "source": "/merge-pdf", "destination": "/pdf-merge", "permanent": true },
+    { "source": "/split-pdf", "destination": "/pdf-split", "permanent": true },
+    { "source": "/pdf-protect", "destination": "/protect-pdf", "permanent": true },
+    { "source": "/pdf-unlock", "destination": "/unlock-pdf", "permanent": true },
+    { "source": "/pdf-compress", "destination": "/compress-pdf", "permanent": true },
+    { "source": "/ocr-pdf", "destination": "/pdf-ocr", "permanent": true }
+  ],
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "/sitemap.xml" },
     { "source": "/robots.txt", "destination": "/robots.txt" },
