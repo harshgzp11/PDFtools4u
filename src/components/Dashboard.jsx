@@ -102,13 +102,13 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
 
             {/* Main Title */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 tracking-tight leading-tight">
-              We make utilities <span className="text-blue-600">easy.</span>
+              Free Online <span className="text-blue-600">PDF & Image Tools</span>
             </h1>
 
-            {/* Subtitle */}
-            <p className="text-lg sm:text-xl text-gray-600 max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal">
-              All the tools you need to convert, edit, compress, and sign PDFs & documents — right in your browser. Zero file uploads, 100% secure.
-            </p>
+            {/* Subtitle — supporting long-tail keywords */}
+            <h2 className="text-lg sm:text-xl text-gray-600 max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal">
+              Edit, convert, compress, merge & sign documents right in your browser. Zero file uploads, 100% secure & private.
+            </h2>
 
             {/* Search Input Bar (Smallpdf style quick action) */}
             <div className="pt-2 max-w-lg mx-auto lg:mx-0">

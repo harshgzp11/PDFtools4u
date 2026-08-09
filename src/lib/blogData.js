@@ -122,27 +122,194 @@ Official e-Aadhaar files are encrypted by default. Your password combination fol
   },
   {
     id: "remove-e-aadhaar-password-online",
-    title: "Remove e-Aadhaar Password Online Safely",
+    title: "How to Remove e-Aadhaar Password Online Safely Without Uploading",
     cluster: "Government & ID",
-    excerpt: "Learn how to permanently remove the password from your downloaded Aadhaar PDF safely without uploading it to third-party servers.",
+    excerpt: "Learn how to permanently remove the password from your downloaded Aadhaar PDF safely without uploading it to third-party servers. 100% local processing.",
     date: "August 4, 2026",
     author: "PDFTools4U Team",
     coverImage: "https://images.unsplash.com/photo-1555848962-6e79363ec58f?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "unlock-pdf",
-    published: false,
-    content: ``
+    published: true,
+    customSchema: {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "HowTo",
+          "name": "How to Remove e-Aadhaar Password Online",
+          "description": "Safely remove password protection from your e-Aadhaar PDF without uploading to external servers.",
+          "step": [
+            { "@type": "HowToStep", "text": "Determine your e-Aadhaar password: first 4 letters of name (UPPERCASE) + 4-digit birth year" },
+            { "@type": "HowToStep", "text": "Open the Unlock PDF tool at pdftools4u.in/unlock-pdf" },
+            { "@type": "HowToStep", "text": "Upload the e-Aadhaar PDF and enter your password" },
+            { "@type": "HowToStep", "text": "Download the unlocked PDF that opens without any password" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            { "@type": "Question", "name": "What is my e-Aadhaar PDF password?", "acceptedAnswer": { "@type": "Answer", "text": "Your e-Aadhaar password is the first 4 letters of your name in UPPERCASE followed by your 4-digit birth year. Example: If your name is RAJESH and birth year is 1990, your password is RAJE1990." } },
+            { "@type": "Question", "name": "Is it safe to remove the Aadhaar password online?", "acceptedAnswer": { "@type": "Answer", "text": "On PDFTools4U, yes. The decryption happens entirely in your browser — your Aadhaar is never uploaded to any server." } }
+          ]
+        }
+      ]
+    },
+    content: `
+Every time you download your e-Aadhaar from the UIDAI website, it comes as a **password-protected PDF**. While the encryption protects your identity document during download, it becomes a constant annoyance when you need to use it — portals reject it, you can't convert it, and you have to type the password every single time you open it.
+
+Here's how to permanently remove the password so your Aadhaar opens freely.
+
+---
+
+> **Quick Unlock:** Upload your e-Aadhaar to our **[Unlock PDF](/unlock-pdf)** tool, enter your password once, and download an unprotected version.
+
+---
+
+### What Is Your e-Aadhaar Password?
+
+The UIDAI uses a standard password format:
+
+**First 4 letters of your name (UPPERCASE) + 4-digit birth year**
+
+| Your Name | Birth Year | Password |
+|---|---|---|
+| PRIYA SHARMA | 1995 | PRIY1995 |
+| KUMAR SWAMY | 1988 | KUMA1988 |
+| DEEPAK VERMA | 2001 | DEEP2001 |
+| AL | 1990 | AL1990 |
+
+> **Note:** If your name has fewer than 4 letters, use all available letters + birth year.
+
+### How to Remove the Password
+
+1. **Open the Tool:** Go to our [Unlock PDF](/unlock-pdf) tool.
+2. **Upload:** Drag your e-Aadhaar PDF into the upload area.
+3. **Enter Password:** When prompted, type your 8-character password.
+4. **Download:** Save the unlocked PDF. It now opens without any password prompt.
+
+The unlocked file is identical in every way to the original — same text, same QR code, same photo — just without the encryption layer.
+
+### Why Not Use Random Online Unlockers?
+
+Most "PDF password remover" websites **upload your file to their servers** for processing. Your Aadhaar contains:
+- Your **full name and address**
+- Your **12-digit Aadhaar number**
+- Your **photograph and date of birth**
+- A **QR code** containing biometric reference data
+
+Uploading this to a random server is an identity theft risk. PDFTools4U processes everything **locally in your browser** — your file never leaves your device.
+
+### After Unlocking: Next Steps
+
+Once your Aadhaar is unlocked, you can:
+- **Convert to JPG** for portal uploads using our [PDF to JPG](/pdf-to-jpg) tool (select 300 DPI)
+- **Compress** to meet size limits using our [Compress PDF](/compress-pdf) tool
+- **Merge** with other documents using our [Merge PDF](/pdf-merge) tool
+
+---
+
+### Frequently Asked Questions
+
+* **What is my e-Aadhaar PDF password?**
+  Your e-Aadhaar password is the first 4 letters of your name in UPPERCASE followed by your 4-digit birth year. Example: If your name is RAJESH and birth year is 1990, your password is RAJE1990.
+
+* **Is it safe to remove the Aadhaar password online?**
+  On PDFTools4U, yes. The decryption happens entirely in your browser — your Aadhaar is never uploaded to any server.
+
+* **Will the QR code still work after removing the password?**
+  Yes. Removing password encryption does not alter the QR code data. It will still scan correctly for verification purposes.
+`
   },
   {
     id: "pan-card-pdf-to-jpg-converter",
-    title: "PAN Card PDF to JPG Converter Guide",
+    title: "How to Convert PAN Card PDF to JPG for KYC Uploads",
     cluster: "Government & ID",
-    excerpt: "Easily convert your digital PAN card into a high-quality JPG format for seamless KYC uploads across financial platforms.",
+    excerpt: "Convert your digital PAN card PDF into a high-quality JPG image for seamless KYC uploads across banks, mutual funds, and demat account portals.",
     date: "August 5, 2026",
     author: "PDFTools4U Team",
     coverImage: "https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "pdf-to-jpg",
-    published: false,
-    content: ``
+    published: true,
+    customSchema: {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "HowTo",
+          "name": "How to Convert PAN Card PDF to JPG",
+          "description": "Convert your digital PAN card from PDF format to JPG for KYC verification uploads.",
+          "step": [
+            { "@type": "HowToStep", "text": "Open the PDF to JPG converter at pdftools4u.in/pdf-to-jpg" },
+            { "@type": "HowToStep", "text": "Upload your PAN card PDF from the income tax website" },
+            { "@type": "HowToStep", "text": "Select 300 DPI output quality for KYC compliance" },
+            { "@type": "HowToStep", "text": "Download the JPG and upload to your KYC portal" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            { "@type": "Question", "name": "Is it safe to convert my PAN card online?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, PDFTools4U processes files locally in your browser. Your PAN card is never uploaded to any server." } },
+            { "@type": "Question", "name": "What DPI should I use for PAN card KYC?", "acceptedAnswer": { "@type": "Answer", "text": "300 DPI ensures all text, the hologram area, and the photo remain crisp enough for automated KYC verification systems." } }
+          ]
+        }
+      ]
+    },
+    content: `
+When opening a bank account, demat account, or mutual fund investment, you'll almost always need to upload your PAN card as a **JPG or PNG image** — not as a PDF. The problem? The Income Tax Department's e-PAN and digital PAN downloads are always delivered as PDF files.
+
+Here's how to convert your PAN card PDF to a high-quality JPG in under 30 seconds.
+
+---
+
+> **Quick Convert:** Drag your PAN card PDF into our **[PDF to JPG Converter](/pdf-to-jpg)**, select **300 DPI**, and download your KYC-ready image.
+
+---
+
+### Where to Get Your Digital PAN Card PDF
+
+If you don't have your PAN card PDF, you can download it from:
+- **Income Tax e-Filing Portal** (incometax.gov.in) → Profile → PAN Details
+- **NSDL e-PAN Portal** (onlineservices.nsdl.com) → Download e-PAN
+- **UTIITSL Portal** → PAN Card Services
+
+The downloaded file is typically a password-protected PDF. The password is usually your **date of birth in DDMMYYYY format** (e.g., 15071995).
+
+### Conversion Steps
+
+1. **Open the Converter:** Navigate to our [PDF to JPG](/pdf-to-jpg) tool.
+2. **Upload the PAN PDF:** Drag your downloaded PAN card PDF into the upload area.
+3. **Enter Password (if prompted):** Type your date of birth in DDMMYYYY format.
+4. **Select Quality:** Choose **High Quality (300 DPI)** — this ensures the PAN number, photo, and signature are sharp enough for automated verification systems.
+5. **Download:** Save the JPG to your device.
+
+### KYC Portal Requirements
+
+| Portal Type | Accepted Formats | Max Size | Min Resolution |
+|---|---|---|---|
+| Bank KYC | JPG, PNG | 500KB - 2MB | 200 DPI |
+| Demat Account | JPG, JPEG | 500KB | 200 DPI |
+| Mutual Fund KYC | JPG, PDF | 1MB | 150 DPI |
+| Insurance KYC | JPG, PNG, PDF | 2MB | Any |
+
+### If Your JPG Is Too Large
+
+After converting at 300 DPI, if the resulting JPG exceeds the portal's size limit, run it through our [Compress Image](/compress-image) tool to reduce the file size while keeping it sharp.
+
+### Privacy & Security
+
+Your PAN card contains your **Permanent Account Number** — one of the most sensitive pieces of financial identity in India. Our converter runs **100% in your browser**. The PDF never leaves your device, and zero data is logged or stored.
+
+---
+
+### Frequently Asked Questions
+
+* **Is it safe to convert my PAN card online?**
+  Yes, PDFTools4U processes files locally in your browser. Your PAN card is never uploaded to any server.
+
+* **What DPI should I use for PAN card KYC?**
+  300 DPI ensures all text, the hologram area, and the photo remain crisp enough for automated KYC verification systems.
+
+* **My PAN PDF is password-protected. What do I do?**
+  Use our [Unlock PDF](/unlock-pdf) tool first to remove the password, then convert to JPG. Or enter the password directly when prompted by the converter.
+`
   },
   {
     id: "resize-passport-photo-signature-online",
@@ -215,15 +382,89 @@ If your bank statement is a physical piece of paper that you scanned, standard c
   },
   {
     id: "compress-form-16-pdf-under-500kb",
-    title: "Compress Form 16 PDF Under 500KB",
+    title: "How to Compress Form 16 PDF Under 500KB for ITR Filing",
     cluster: "Financial & Tax",
-    excerpt: "A quick guide to reducing your Form 16 document size so it can be easily uploaded to tax filing portals without errors.",
+    excerpt: "Your Form 16 PDF is too large for the income tax portal? Learn how to compress it under 500KB without losing quality or breaking digital signatures.",
     date: "August 10, 2026",
     author: "PDFTools4U Team",
     coverImage: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "compress-pdf",
-    published: false,
-    content: ``
+    published: true,
+    customSchema: {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "HowTo",
+          "name": "How to Compress Form 16 PDF Under 500KB",
+          "description": "Step-by-step guide to reducing Form 16 PDF file size for income tax portal uploads.",
+          "step": [
+            { "@type": "HowToStep", "text": "Open the Compress PDF tool at pdftools4u.in/compress-pdf" },
+            { "@type": "HowToStep", "text": "Upload your Form 16 PDF document" },
+            { "@type": "HowToStep", "text": "Select High Compression level for maximum size reduction" },
+            { "@type": "HowToStep", "text": "Download and verify the compressed file is under 500KB" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            { "@type": "Question", "name": "What is the maximum file size for Form 16 upload on the income tax portal?", "acceptedAnswer": { "@type": "Answer", "text": "Most Indian income tax filing portals accept Form 16 uploads up to 500KB in PDF format." } },
+            { "@type": "Question", "name": "Will compressing Form 16 affect the digital signature?", "acceptedAnswer": { "@type": "Answer", "text": "Our compression preserves the visual appearance of all text and signatures. However, cryptographic digital signatures may need to be re-applied after compression." } }
+          ]
+        }
+      ]
+    },
+    content: `
+Every year during tax season, thousands of salaried employees in India face the same frustrating error: **"File size exceeds the maximum allowed limit"** when trying to upload their Form 16 to the income tax e-filing portal.
+
+Employers often generate Form 16 documents as high-resolution scanned PDFs, especially if the original document was printed and re-scanned. These files frequently exceed 1MB or even 2MB, far beyond the 500KB upload limit.
+
+---
+
+> **Quick Fix:** Upload your Form 16 to our **[Compress PDF](/compress-pdf)** tool, select **High Compression**, and download a portal-compliant file in seconds.
+
+---
+
+### Why Is Your Form 16 So Large?
+
+Form 16 has two parts — **Part A** (TDS certificate from employer) and **Part B** (detailed salary breakup). When your employer scans the physical document or exports it with embedded company logos and letterheads, the resulting PDF contains high-resolution raster images that bloat the file size.
+
+| Common Cause | Typical Size | Solution |
+|---|---|---|
+| Scanned from printer | 1.5MB - 3MB | High Compression removes scan artifacts |
+| Embedded company logos | 800KB - 1.5MB | Image optimization within the PDF |
+| Multiple pages with headers | 600KB - 1MB | Metadata stripping + smart compression |
+
+### How to Compress Form 16 Step by Step
+
+1. **Open the Tool:** Navigate to our [Compress PDF](/compress-pdf) tool.
+2. **Upload:** Drag and drop your Form 16 PDF into the upload area.
+3. **Select Compression Level:** Choose **"High"** compression for maximum reduction. This is the best option when you need to hit a strict size limit like 500KB.
+4. **Download:** Click compress and download. Check the final file size — it should be well under 500KB.
+5. **Verify Readability:** Open the compressed PDF and confirm all text, tables, and salary figures remain perfectly legible.
+
+### What If It's Still Too Large?
+
+If your Form 16 is a scanned image PDF that's extremely large (3MB+), consider:
+- Using our [PDF Split](/pdf-split) tool to separate Part A and Part B, compressing them individually
+- Using our [PDF OCR](/pdf-ocr) tool to convert the scanned image into a text-based PDF first, which compresses much more efficiently
+
+### Privacy Note
+
+Form 16 contains your PAN number, salary details, and tax deduction information — extremely sensitive financial data. Our compressor processes everything **locally in your browser**. Your Form 16 is never uploaded to any server, and no data is stored or logged.
+
+---
+
+### Frequently Asked Questions
+
+* **What is the maximum file size for Form 16 upload on the income tax portal?**
+  Most Indian income tax filing portals (including the official e-filing portal) accept Form 16 uploads up to 500KB in PDF format.
+
+* **Will compressing Form 16 affect the digital signature?**
+  Our compression preserves the visual appearance of all text and signatures. However, cryptographic digital signatures may need to be re-applied after compression. For most ITR filing purposes, the visual signature is sufficient.
+
+* **Can I compress Form 16 on my phone?**
+  Yes. Our tool works in any modern mobile browser (Chrome, Safari) — no app download needed.
+`
   },
   {
     id: "pdf-invoice-to-excel-spreadsheet",
@@ -288,27 +529,183 @@ Using these simple steps, you can bypass the "File too large" error and submit y
   },
   {
     id: "combine-multiple-marksheets-into-one-pdf",
-    title: "Combine Multiple Marksheets Into One PDF",
+    title: "How to Combine Multiple Marksheets Into One PDF for Exam Portals",
     cluster: "Academic",
-    excerpt: "Need to submit all your semester marksheets as a single file? Learn how to merge them seamlessly in the correct order.",
+    excerpt: "Need to submit all your semester marksheets as a single file? Learn how to merge them in the correct chronological order for UPSC, SSC & university portals.",
     date: "August 14, 2026",
     author: "PDFTools4U Team",
     coverImage: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "pdf-merge",
-    published: false,
-    content: ``
+    published: true,
+    customSchema: {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "HowTo",
+          "name": "How to Combine Multiple Marksheets Into One PDF",
+          "description": "Merge semester marksheets, certificates, and transcripts into a single PDF for exam portal submissions.",
+          "step": [
+            { "@type": "HowToStep", "text": "Open the Merge PDF tool and upload all marksheet PDFs" },
+            { "@type": "HowToStep", "text": "Drag thumbnails to arrange marksheets in chronological order" },
+            { "@type": "HowToStep", "text": "Click Merge PDF and download the combined document" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            { "@type": "Question", "name": "How many marksheets can I merge at once?", "acceptedAnswer": { "@type": "Answer", "text": "There is no fixed limit. You can merge as many marksheet PDFs as your browser memory supports — typically dozens of files without any issues." } },
+            { "@type": "Question", "name": "Will merging change the quality of my marksheet scans?", "acceptedAnswer": { "@type": "Answer", "text": "No. The merge process preserves the original resolution, text clarity, and image quality of every individual marksheet page." } }
+          ]
+        }
+      ]
+    },
+    content: `
+Government exam portals like UPSC, SSC, Banking recruitment, and university admission systems frequently require applicants to upload **all semester marksheets as a single PDF file**. If you have 6 or 8 separate semester marksheet PDFs, manually combining them is a painful process — especially right before a deadline.
+
+---
+
+> **Quick Solution:** Upload all your marksheet PDFs to our **[Merge PDF](/pdf-merge)** tool, drag them into chronological order, and download a single combined document.
+
+---
+
+### Why Portals Require a Single File
+
+Recruitment portals have strict upload limits — often just 1-2 file upload slots for "Academic Documents". They expect a single, consolidated PDF containing all your transcripts in order. Uploading individual files is either impossible or causes processing errors.
+
+### Step-by-Step Guide
+
+1. **Gather All Marksheets:** Collect PDFs of every semester marksheet. If you only have physical copies, scan them first using your phone's camera app or a scanning app.
+2. **Open the Tool:** Go to our [Merge PDF](/pdf-merge) tool.
+3. **Upload All Files:** Drag and drop all your marksheet PDFs into the upload area. You can add as many files as needed.
+4. **Arrange in Order:** Use the visual thumbnail preview to drag marksheets into the correct chronological sequence (Semester 1 first, then 2, 3, etc.).
+5. **Merge & Download:** Click "Merge PDF" and save the combined file.
+6. **Check File Size:** If the merged document exceeds the portal's size limit, run it through our [Compress PDF](/compress-pdf) tool to reduce it.
+
+### Portal Requirements Comparison
+
+| Portal | Max File Size | Max Pages | Format |
+|---|---|---|---|
+| UPSC | 2MB | No limit | PDF only |
+| SSC | 1MB | No limit | PDF, JPG |
+| Bank PO (IBPS) | 500KB | No limit | PDF only |
+| University Admissions | Varies (500KB-2MB) | No limit | PDF only |
+
+### Tips for a Clean Combined Document
+
+- **Remove blank pages** first using our [Delete PDF Pages](/delete-pdf-pages) tool
+- **Ensure correct orientation** — rotated scans look unprofessional. Use our [Rotate PDF](/rotate-pdf) tool if needed
+- **Add page numbers** using our [Number Pages](/number-pages) tool for easy reference during verification
+
+### Privacy Assurance
+
+Your academic records contain personal information including your roll number, date of birth, and institution details. All merging happens **entirely in your browser** — your marksheets never leave your device.
+
+---
+
+### Frequently Asked Questions
+
+* **How many marksheets can I merge at once?**
+  There is no fixed limit. You can merge as many marksheet PDFs as your browser memory supports — typically dozens of files without any issues.
+
+* **Will merging change the quality of my marksheet scans?**
+  No. The merge process preserves the original resolution, text clarity, and image quality of every individual marksheet page.
+
+* **Can I change the order after uploading?**
+  Yes, simply drag the thumbnails to rearrange them before clicking Merge.
+`
   },
   {
     id: "make-signature-background-transparent",
-    title: "Make Signature Background Transparent for PDF",
+    title: "How to Make Signature Background Transparent for PDF Documents",
     cluster: "Academic",
-    excerpt: "Remove the messy grey background from your scanned signature so it blends perfectly into any PDF document.",
+    excerpt: "Remove the grey or white background from your scanned signature photo so it blends perfectly into any PDF form, contract, or official document.",
     date: "August 15, 2026",
     author: "PDFTools4U Team",
     coverImage: "https://images.unsplash.com/photo-1583526362016-c3137c71cc3a?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "bg-remover",
-    published: false,
-    content: ``
+    published: true,
+    customSchema: {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "HowTo",
+          "name": "How to Make Signature Background Transparent",
+          "description": "Remove the background from a scanned signature so it overlays cleanly on PDF documents.",
+          "step": [
+            { "@type": "HowToStep", "text": "Take a clear photo of your signature on white paper" },
+            { "@type": "HowToStep", "text": "Upload the signature image to the Background Remover tool" },
+            { "@type": "HowToStep", "text": "Download the transparent PNG signature" },
+            { "@type": "HowToStep", "text": "Place the transparent signature on your PDF using the Edit PDF or Sign PDF tool" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            { "@type": "Question", "name": "Why does my signature look bad on PDF forms?", "acceptedAnswer": { "@type": "Answer", "text": "When you insert a signature photo with a white or grey background onto a PDF, the rectangular block covers the underlying text and lines. A transparent PNG signature overlays cleanly without hiding any content." } },
+            { "@type": "Question", "name": "What format should my transparent signature be?", "acceptedAnswer": { "@type": "Answer", "text": "Always save transparent signatures as PNG files. JPG format does not support transparency." } }
+          ]
+        }
+      ]
+    },
+    content: `
+You've scanned your handwritten signature, inserted it into a PDF form, and... it looks terrible. There's a visible white rectangle around the signature, covering the form's lines and text. This happens because your scanned signature has a **solid white or grey background** instead of being transparent.
+
+Here's how to fix it in under 30 seconds using AI-powered background removal.
+
+---
+
+> **Quick Fix:** Upload your signature image to our **[Background Remover](/bg-remover)** tool. The AI removes the background instantly, giving you a clean transparent PNG.
+
+---
+
+### Why Transparent Signatures Matter
+
+When you place a regular JPG or scanned signature onto a PDF:
+- The **white rectangle** covers form lines, printed text, and boxes underneath
+- It looks **unprofessional** and immediately signals that the signature was digitally pasted
+- Some portals and institutions **reject** documents with visible signature boxes
+
+A transparent PNG signature overlays cleanly — only the ink strokes are visible, blending naturally with the document.
+
+### How to Create a Transparent Signature
+
+1. **Capture Your Signature:** Sign on a clean white piece of paper with a dark pen (black ink works best). Take a photo in good lighting — avoid shadows.
+2. **Remove Background:** Upload the photo to our [Background Remover](/bg-remover) tool. The AI automatically detects and removes the paper background.
+3. **Download as PNG:** Save the result as a PNG file (PNG supports transparency; JPG does not).
+4. **Use on Documents:** Place your transparent signature using:
+   - Our [Sign PDF](/sign-pdf) tool for quick signing
+   - Our [Edit PDF](/edit-pdf) tool for precise placement and sizing
+
+### Tips for the Best Results
+
+| Tip | Why It Helps |
+|---|---|
+| Use **black or dark blue ink** | Maximum contrast makes AI detection more accurate |
+| Sign on **plain white paper** | Lined or grid paper confuses the background remover |
+| **Good lighting, no shadows** | Shadows create gray artifacts around the signature |
+| **Crop tightly** before uploading | Less background = cleaner result |
+
+### Combining With PDF Tools
+
+Once you have your transparent signature PNG:
+- **[Sign PDF](/sign-pdf):** Drag your signature onto any page of a PDF document
+- **[Edit PDF](/edit-pdf):** Position and resize the signature with pixel-precision
+- **[Protect PDF](/protect-pdf):** Lock the signed document with a password after signing
+- **[Flatten PDF](/flatten-pdf):** Make the signature permanent and non-removable
+
+---
+
+### Frequently Asked Questions
+
+* **Why does my signature look bad on PDF forms?**
+  When you insert a signature photo with a white or grey background onto a PDF, the rectangular block covers the underlying text and lines. A transparent PNG signature overlays cleanly without hiding any content.
+
+* **What format should my transparent signature be?**
+  Always save transparent signatures as PNG files. JPG format does not support transparency — it fills transparent areas with white.
+
+* **Can I reuse the same transparent signature on multiple PDFs?**
+  Yes. Save your transparent PNG signature file and reuse it on any number of documents.
+`
   },
   {
     id: "marksheet-pdf-to-jpg-converter",

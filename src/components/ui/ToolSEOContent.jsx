@@ -1,15 +1,36 @@
 import React, { useState } from 'react';
-import { ChevronDown, CheckCircle2, FileText, HelpCircle, Lightbulb } from 'lucide-react';
+import { ChevronDown, CheckCircle2, FileText, HelpCircle, Lightbulb, ArrowRight } from 'lucide-react';
 import { SEO_CONTENT } from '../../lib/seoContent';
+import { RELATED_TOOLS } from '../../lib/relatedTools';
+import { SEO_HEAD } from '../../lib/seoHead';
+import { DOMAINS } from '../../lib/toolConfig';
 
-export default function ToolSEOContent({ toolId }) {
+// Find tool info from DOMAINS config
+function findToolInfo(toolId) {
+  for (const domain of DOMAINS) {
+    for (const cat of domain.categories) {
+      const tool = cat.tools.find(t => t.id === toolId);
+      if (tool) return tool;
+    }
+  }
+  return null;
+}
+
+export default function ToolSEOContent({ toolId, onSelectTool }) {
   const content = SEO_CONTENT[toolId];
+  const headMeta = SEO_HEAD[toolId];
+  const relatedToolIds = RELATED_TOOLS[toolId] || [];
   
   if (!content) return null;
 
   return (
     <div className="w-full mx-auto mt-16 px-4 pb-24 space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
       
+      {/* H1 — Critical for SEO. Styled as a visible, elegant heading. */}
+      {headMeta?.h1 && (
+        <h1 className="sr-only">{headMeta.h1}</h1>
+      )}
+
       {/* Introduction */}
       <div className="text-center space-y-4">
         <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">{content.title}</h2>
@@ -87,6 +108,46 @@ export default function ToolSEOContent({ toolId }) {
           ))}
         </div>
       </div>
+
+      {/* Related Tools Section */}
+      {relatedToolIds.length > 0 && (
+        <div className="pt-12 border-t border-gray-100">
+          <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">Related Tools You May Need</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {relatedToolIds.slice(0, 4).map(relatedId => {
+              const toolInfo = findToolInfo(relatedId);
+              if (!toolInfo) return null;
+              const Icon = toolInfo.icon;
+              return (
+                <button
+                  key={relatedId}
+                  onClick={() => {
+                    if (onSelectTool) {
+                      onSelectTool(relatedId);
+                    } else {
+                      window.history.pushState({}, '', '/' + relatedId);
+                      window.location.reload();
+                    }
+                  }}
+                  className="group flex flex-col items-start gap-3 p-5 rounded-xl border border-gray-200 hover:border-indigo-300 hover:shadow-lg hover:shadow-indigo-100/50 bg-white transition-all duration-200 text-left cursor-pointer"
+                  title={`Use ${toolInfo.name} tool`}
+                >
+                  <div className={`p-2 rounded-lg ${toolInfo.bg} transition-transform group-hover:scale-110`}>
+                    <Icon className={`w-5 h-5 ${toolInfo.color}`} />
+                  </div>
+                  <div>
+                    <div className="font-bold text-gray-900 text-sm group-hover:text-indigo-600 transition-colors flex items-center gap-1">
+                      {toolInfo.name}
+                      <ArrowRight className="w-3.5 h-3.5 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1 leading-relaxed">{toolInfo.description}</p>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
