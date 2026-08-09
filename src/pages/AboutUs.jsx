@@ -192,7 +192,7 @@ export default function AboutUs() {
             </p>
 
             <p className="text-gray-600 text-sm">
-              Have feedback or a tool suggestion? Reach out directly via our <a href="/contact" onClick={handleNavigateContact} className="text-blue-600 hover:underline font-semibold">Contact Us</a> page or email us at <a href="mailto:support@pdftools4u.in" className="text-blue-600 hover:underline font-semibold">support@pdftools4u.in</a>.
+              Have feedback or a tool suggestion? Reach out directly via our <a href="/contact" onClick={handleNavigateContact} className="text-blue-600 hover:underline font-semibold">Contact Us</a> page or email us at <a href="mailto:pdftools4u.official@gmail.com" className="text-blue-600 hover:underline font-semibold">pdftools4u.official@gmail.com</a>.
             </p>
 
             <div className="pt-2 flex flex-wrap items-center justify-center md:justify-start gap-3">
@@ -205,11 +205,11 @@ export default function AboutUs() {
                 <ArrowRight className="w-4 h-4" />
               </a>
               <a
-                href="mailto:support@pdftools4u.in"
+                href="mailto:pdftools4u.official@gmail.com"
                 className="inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 font-semibold text-sm rounded-xl shadow-xs transition-all"
               >
                 <Mail className="w-4 h-4 text-blue-600" />
-                <span>support@pdftools4u.in</span>
+                <span>pdftools4u.official@gmail.com</span>
               </a>
             </div>
           </div>
