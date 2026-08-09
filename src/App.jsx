@@ -6,6 +6,7 @@ import Dashboard from './components/Dashboard';
 import ToolSkeleton from './components/ui/ToolSkeleton';
 import PlaceholderTool from './tools/PlaceholderTool';
 import ToolSEOContent from './components/ui/ToolSEOContent';
+import SEOHead from './components/SEOHead';
 
 const PdfEditor = React.lazy(() => import('./tools/PdfEditor/index'));
 const PdfConverterHub = React.lazy(() => import('./tools/PdfConverterHub'));
@@ -69,6 +70,9 @@ const BlogPost = React.lazy(() => import('./pages/BlogPost'));
 // Legal & Trust
 const AboutUs = React.lazy(() => import('./pages/AboutUs'));
 const ContactUs = React.lazy(() => import('./pages/ContactUs'));
+
+// 404 Page
+const NotFound = React.lazy(() => import('./pages/NotFound'));
 
 // Redirect map: non-canonical alias → canonical slug
 // Users hitting an alias URL get seamlessly redirected to the canonical URL
@@ -207,6 +211,7 @@ function App() {
 
   return (
     <>
+      <SEOHead activeTool={activeTool} />
       <Toaster theme="light" position="bottom-right" />
       <CommandMenu onSelectTool={navigateTo} />
       <Layout 
@@ -225,8 +230,14 @@ function App() {
                 <BlogList onNavigate={navigateTo} />
               ) : activeTool.startsWith('blog/') ? (
                 <BlogPost id={activeTool.split('/')[1]} onNavigate={navigateTo} />
-              ) : (
-                visitedTools.map(toolId => {
+              ) : (() => {
+                // Check if activeTool matches any known component
+                const hasKnownTool = TOOL_COMPONENTS[activeTool] || PLACEHOLDER_TOOLS[activeTool];
+                if (!hasKnownTool) {
+                  // 404: Unknown route — show NotFound page with related tools
+                  return <NotFound onSelectTool={navigateTo} />;
+                }
+                return visitedTools.map(toolId => {
                   if (toolId === 'blog' || toolId.startsWith('blog/')) return null;
                   
                   const isPlaceholder = PLACEHOLDER_TOOLS[toolId];
@@ -250,12 +261,12 @@ function App() {
                         )}
                         
                         {/* SEO Content Injection */}
-                        <ToolSEOContent toolId={toolId} />
+                        <ToolSEOContent toolId={toolId} onSelectTool={navigateTo} />
                       </div>
                     </div>
                   );
-                })
-              )}
+                });
+              })()}
             </Suspense>
           </div>
         ) : (
