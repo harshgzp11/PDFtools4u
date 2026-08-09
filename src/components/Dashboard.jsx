@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Type, FileJson, Code, FileText, Image as ImageIcon, Layers, Scissors, Stamp, ImagePlus, Eraser, Code2, Crop, SlidersHorizontal,
   Minimize, ScanText, RotateCw, Trash2, FileUp, Files, BookOpen, PenTool, Hash, EyeOff, FileSignature, Share2, 
@@ -11,6 +11,8 @@ import { searchToolsFuzzy } from '../lib/fuzzySearch';
 export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defaultTab }) {
   const [activeTab, setActiveTab] = useState(defaultTab || DOMAINS[0].title);
   const [localSearch, setLocalSearch] = useState('');
+  const searchInputRef = useRef(null);
+  const heroSearchRef = useRef(null);
   
   useEffect(() => {
     if (defaultTab) {
@@ -18,6 +20,24 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
       setTimeout(scrollToAllTools, 100);
     }
   }, [defaultTab]);
+
+  // Maintain focus on search input when switching views
+  useEffect(() => {
+    if (localSearch && searchInputRef.current && document.activeElement !== searchInputRef.current) {
+      searchInputRef.current.focus();
+      const length = searchInputRef.current.value.length;
+      // Use setTimeout to ensure the cursor moves to the end on all browsers
+      setTimeout(() => {
+        if (searchInputRef.current) {
+          searchInputRef.current.setSelectionRange(length, length);
+        }
+      }, 0);
+    } else if (!localSearch && heroSearchRef.current && document.activeElement !== heroSearchRef.current) {
+      if (document.activeElement === document.body) {
+        heroSearchRef.current.focus();
+      }
+    }
+  }, [localSearch]);
 
   const query = (globalQuery || localSearch).toLowerCase();
   
@@ -44,6 +64,7 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
               <Search className="h-6 w-6 text-gray-400" />
             </div>
             <input
+              ref={searchInputRef}
               id="dashboard-search"
               type="text"
               className="block w-full pl-12 pr-4 py-4 bg-white border border-gray-200 rounded-2xl text-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm"
@@ -115,6 +136,7 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
               <div className="relative flex items-center">
                 <Search className="absolute left-4 w-5 h-5 text-gray-400 pointer-events-none" />
                 <input
+                  ref={heroSearchRef}
                   type="text"
                   placeholder="Search 40+ tools (e.g. Merge, OCR, Convert...)"
                   value={localSearch}
