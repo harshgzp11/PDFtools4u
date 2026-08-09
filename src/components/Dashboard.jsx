@@ -13,6 +13,7 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
   const [localSearch, setLocalSearch] = useState('');
   const searchInputRef = useRef(null);
   const heroSearchRef = useRef(null);
+  const previousSearchRef = useRef('');
   
   useEffect(() => {
     if (defaultTab) {
@@ -23,6 +24,8 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
 
   // Maintain focus on search input when switching views
   useEffect(() => {
+    const wasTyping = previousSearchRef.current.length > 0;
+    
     if (localSearch && searchInputRef.current && document.activeElement !== searchInputRef.current) {
       searchInputRef.current.focus();
       const length = searchInputRef.current.value.length;
@@ -32,11 +35,13 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
           searchInputRef.current.setSelectionRange(length, length);
         }
       }, 0);
-    } else if (!localSearch && heroSearchRef.current && document.activeElement !== heroSearchRef.current) {
+    } else if (!localSearch && wasTyping && heroSearchRef.current && document.activeElement !== heroSearchRef.current) {
       if (document.activeElement === document.body) {
         heroSearchRef.current.focus();
       }
     }
+    
+    previousSearchRef.current = localSearch;
   }, [localSearch]);
 
   const query = (globalQuery || localSearch).toLowerCase();

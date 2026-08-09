@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { UploadCloud, Sparkles } from 'lucide-react';
+import { UploadCloud } from 'lucide-react';
 
 export default function DragDropZone({ 
   onFileSelect, 
@@ -7,11 +7,9 @@ export default function DragDropZone({
   label = "Drag & drop your files here, or browse", 
   multiple = false,
   className = "",
-  icon: Icon = UploadCloud,
-  showSample = true
+  icon: Icon = UploadCloud
 }) {
   const [isDragging, setIsDragging] = useState(false);
-  const [loadingSample, setLoadingSample] = useState(false);
   const fileInputRef = useRef(null);
 
   const handleDragOver = (e) => {
@@ -50,26 +48,7 @@ export default function DragDropZone({
     }
   };
 
-  const handleLoadSample = async (e) => {
-    e.stopPropagation();
-    try {
-      setLoadingSample(true);
-      const res = await fetch('/images/aadhaar-sample.png');
-      const blob = await res.blob();
-      const sampleFile = new File([blob], 'aadhaar-sample.png', { type: 'image/png' });
-      if (multiple) {
-        onFileSelect([sampleFile]);
-      } else {
-        onFileSelect(sampleFile);
-      }
-    } catch (err) {
-      console.error("Failed to load sample image:", err);
-    } finally {
-      setLoadingSample(false);
-    }
-  };
 
-  const isImageAccept = !accept || accept.includes('image') || accept.includes('.png') || accept.includes('.jpg') || accept.includes('.jpeg') || accept.includes('*');
 
   return (
     <div 
@@ -96,18 +75,6 @@ export default function DragDropZone({
       
       <p className="text-2xl font-bold text-gray-800 mb-2 pointer-events-none">{label}</p>
       <p className="text-sm font-medium text-gray-500 pointer-events-none mb-5">Maximum privacy. Processed entirely in your browser.</p>
-
-      {showSample && isImageAccept && (
-        <button
-          type="button"
-          onClick={handleLoadSample}
-          disabled={loadingSample}
-          className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-blue-700 bg-blue-100 hover:bg-blue-200 border border-blue-200 rounded-full transition-all shadow-sm cursor-pointer hover:scale-105"
-        >
-          <Sparkles className="w-3.5 h-3.5 text-blue-600 animate-pulse" />
-          {loadingSample ? 'Loading sample...' : 'Try with Sample Image (Aadhaar Card)'}
-        </button>
-      )}
     </div>
   );
 }
