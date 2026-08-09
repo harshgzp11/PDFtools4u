@@ -122,7 +122,7 @@ Official e-Aadhaar files are encrypted by default. Your password combination fol
   },
   {
     id: "remove-e-aadhaar-password-online",
-    title: "How to Remove e-Aadhaar Password Online Safely Without Uploading",
+    title: "How to Remove e-Aadhaar Password Online Safely",
     cluster: "Government & ID",
     excerpt: "Learn how to permanently remove the password from your downloaded Aadhaar PDF safely without uploading it to third-party servers. 100% local processing.",
     date: "August 4, 2026",
@@ -181,10 +181,14 @@ The UIDAI uses a standard password format:
 
 ### How to Remove the Password
 
+> **Note:** You should only unlock Aadhaar files that belong to you or for which you have explicit authorization.
+
 1. **Open the Tool:** Go to our [Unlock PDF](/unlock-pdf) tool.
 2. **Upload:** Drag your e-Aadhaar PDF into the upload area.
 3. **Enter Password:** When prompted, type your 8-character password.
 4. **Download:** Save the unlocked PDF. It now opens without any password prompt.
+
+> **Tip:** Since the unlocked file no longer requires a password, make sure you save it in a secure folder on your device.
 
 The unlocked file is identical in every way to the original — same text, same QR code, same photo — just without the encryption layer.
 
