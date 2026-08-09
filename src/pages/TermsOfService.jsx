@@ -142,7 +142,7 @@ export default function TermsOfService() {
               If you have any questions, concerns, or legal inquiries regarding these Terms of Service, please contact us at:
             </p>
             <ul className="space-y-2">
-              <li><strong>Email:</strong> <a href="mailto:support@pdftools4u.in" className="text-blue-600 hover:underline">support@pdftools4u.in</a></li>
+              <li><strong>Email:</strong> <a href="mailto:pdftools4u.official@gmail.com" className="text-blue-600 hover:underline">pdftools4u.official@gmail.com</a></li>
               <li>
                 <strong>Website Contact Page:</strong>{' '}
                 <a 

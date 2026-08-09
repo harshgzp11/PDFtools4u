@@ -20,11 +20,11 @@ export default function ContactUs() {
           </p>
           
           <a 
-            href="mailto:support@pdftools4u.in" 
+            href="mailto:pdftools4u.official@gmail.com" 
             className="inline-flex items-center justify-center px-8 py-4 bg-blue-600 text-white rounded-xl font-bold text-lg hover:bg-blue-700 transition-colors gap-3"
           >
             <Mail className="w-5 h-5" />
-            support@pdftools4u.in
+            pdftools4u.official@gmail.com
           </a>
         </div>
       </div>
