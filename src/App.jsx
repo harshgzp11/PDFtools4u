@@ -8,71 +8,92 @@ import PlaceholderTool from './tools/PlaceholderTool';
 import ToolSEOContent from './components/ui/ToolSEOContent';
 import SEOHead from './components/SEOHead';
 
-const PdfEditor = React.lazy(() => import('./tools/PdfEditor/index'));
-const PdfConverterHub = React.lazy(() => import('./tools/PdfConverterHub'));
-const TextReformatter = React.lazy(() => import('./tools/TextReformatter'));
-const DataConverter = React.lazy(() => import('./tools/DataConverter'));
-const DevTools = React.lazy(() => import('./tools/DevTools'));
-const PdfTextExtractor = React.lazy(() => import('./tools/PdfTextExtractor'));
-const TextToPdfCompiler = React.lazy(() => import('./tools/TextToPdfCompiler'));
-const ImageConverter = React.lazy(() => import('./tools/ImageConverter'));
-const PdfMerger = React.lazy(() => import('./tools/PdfMerger'));
-const PdfSplitter = React.lazy(() => import('./tools/PdfSplitter'));
-const PdfWatermark = React.lazy(() => import('./tools/PdfWatermark'));
-const RotatePdf = React.lazy(() => import('./tools/RotatePdf'));
-const JpgToPdf = React.lazy(() => import('./tools/JpgToPdf'));
-const BackgroundRemover = React.lazy(() => import('./tools/BackgroundRemover'));
-const HtmlToImage = React.lazy(() => import('./tools/HtmlToImage'));
-const ImageCropRotate = React.lazy(() => import('./tools/ImageCropRotate'));
-const PhotoEditor = React.lazy(() => import('./tools/PhotoEditor/index'));
 
-const DeletePdfPages = React.lazy(() => import('./tools/DeletePdfPages'));
-const ExtractPdfPages = React.lazy(() => import('./tools/ExtractPdfPages'));
-const OrganizePdf = React.lazy(() => import('./tools/OrganizePdf'));
-const ProtectPdf = React.lazy(() => import('./tools/ProtectPdf'));
-const UnlockPdf = React.lazy(() => import('./tools/UnlockPdf'));
-const FlattenPdf = React.lazy(() => import('./tools/FlattenPdf'));
-const SignPdf = React.lazy(() => import('./tools/SignPdf'));
-const CompressPdf = React.lazy(() => import('./tools/CompressPdf'));
-const NumberPages = React.lazy(() => import('./tools/NumberPages'));
-const PdfFormFiller = React.lazy(() => import('./tools/PdfFormFiller'));
-const CropPdf = React.lazy(() => import('./tools/CropPdf'));
-const RedactPdf = React.lazy(() => import('./tools/RedactPdf'));
-const TxtToPdf = React.lazy(() => import('./tools/TxtToPdf'));
+// Custom lazy function to handle Vite chunk loading errors
+const lazyWithRetry = (componentImport) =>
+  React.lazy(async () => {
+    const pageHasAlreadyBeenForceRefreshed = JSON.parse(
+      window.sessionStorage.getItem('page-has-been-force-refreshed') || 'false'
+    );
+    try {
+      const component = await componentImport();
+      window.sessionStorage.setItem('page-has-been-force-refreshed', 'false');
+      return component;
+    } catch (error) {
+      if (!pageHasAlreadyBeenForceRefreshed) {
+        window.sessionStorage.setItem('page-has-been-force-refreshed', 'true');
+        window.location.reload();
+        return { default: () => null }; // Prevent React from crashing before reload
+      }
+      throw error;
+    }
+  });
 
-const CompressImage = React.lazy(() => import('./tools/CompressImage'));
-const ResizeImage = React.lazy(() => import('./tools/ResizeImage'));
-const ConvertImage = React.lazy(() => import('./tools/ConvertImage'));
+const PdfEditor = lazyWithRetry(() => import('./tools/PdfEditor/index'));
+const PdfConverterHub = lazyWithRetry(() => import('./tools/PdfConverterHub'));
+const TextReformatter = lazyWithRetry(() => import('./tools/TextReformatter'));
+const DataConverter = lazyWithRetry(() => import('./tools/DataConverter'));
+const DevTools = lazyWithRetry(() => import('./tools/DevTools'));
+const PdfTextExtractor = lazyWithRetry(() => import('./tools/PdfTextExtractor'));
+const TextToPdfCompiler = lazyWithRetry(() => import('./tools/TextToPdfCompiler'));
+const ImageConverter = lazyWithRetry(() => import('./tools/ImageConverter'));
+const PdfMerger = lazyWithRetry(() => import('./tools/PdfMerger'));
+const PdfSplitter = lazyWithRetry(() => import('./tools/PdfSplitter'));
+const PdfWatermark = lazyWithRetry(() => import('./tools/PdfWatermark'));
+const RotatePdf = lazyWithRetry(() => import('./tools/RotatePdf'));
+const JpgToPdf = lazyWithRetry(() => import('./tools/JpgToPdf'));
+const BackgroundRemover = lazyWithRetry(() => import('./tools/BackgroundRemover'));
+const HtmlToImage = lazyWithRetry(() => import('./tools/HtmlToImage'));
+const ImageCropRotate = lazyWithRetry(() => import('./tools/ImageCropRotate'));
+const PhotoEditor = lazyWithRetry(() => import('./tools/PhotoEditor/index'));
 
-const DocxToText = React.lazy(() => import('./tools/DocxToText'));
-const DocxToHtml = React.lazy(() => import('./tools/DocxToHtml'));
-const TextToDocx = React.lazy(() => import('./tools/TextToDocx'));
+const DeletePdfPages = lazyWithRetry(() => import('./tools/DeletePdfPages'));
+const ExtractPdfPages = lazyWithRetry(() => import('./tools/ExtractPdfPages'));
+const OrganizePdf = lazyWithRetry(() => import('./tools/OrganizePdf'));
+const ProtectPdf = lazyWithRetry(() => import('./tools/ProtectPdf'));
+const UnlockPdf = lazyWithRetry(() => import('./tools/UnlockPdf'));
+const FlattenPdf = lazyWithRetry(() => import('./tools/FlattenPdf'));
+const SignPdf = lazyWithRetry(() => import('./tools/SignPdf'));
+const CompressPdf = lazyWithRetry(() => import('./tools/CompressPdf'));
+const NumberPages = lazyWithRetry(() => import('./tools/NumberPages'));
+const PdfFormFiller = lazyWithRetry(() => import('./tools/PdfFormFiller'));
+const CropPdf = lazyWithRetry(() => import('./tools/CropPdf'));
+const RedactPdf = lazyWithRetry(() => import('./tools/RedactPdf'));
+const TxtToPdf = lazyWithRetry(() => import('./tools/TxtToPdf'));
 
-const PdfToImage = React.lazy(() => import('./tools/PdfToImage'));
-const PdfToWord = React.lazy(() => import('./tools/PdfToWord'));
-const PdfToExcel = React.lazy(() => import('./tools/PdfToExcel'));
-const PdfToPpt = React.lazy(() => import('./tools/PdfToPpt'));
-const PptToPdf = React.lazy(() => import('./tools/PptToPdf'));
-const PdfOcr = React.lazy(() => import('./tools/PdfOcr'));
-const ExcelToPdf = React.lazy(() => import('./tools/ExcelToPdf'));
-const WordToPdf = React.lazy(() => import('./tools/WordToPdf'));
-const PdfReader = React.lazy(() => import('./tools/PdfReader'));
-const PdfAnnotator = React.lazy(() => import('./tools/PdfAnnotator'));
-const RtfToPdf = React.lazy(() => import('./tools/RtfToPdf'));
+const CompressImage = lazyWithRetry(() => import('./tools/CompressImage'));
+const ResizeImage = lazyWithRetry(() => import('./tools/ResizeImage'));
+const ConvertImage = lazyWithRetry(() => import('./tools/ConvertImage'));
 
-const PrivacyPolicy = React.lazy(() => import('./pages/PrivacyPolicy'));
-const TermsOfService = React.lazy(() => import('./pages/TermsOfService'));
+const DocxToText = lazyWithRetry(() => import('./tools/DocxToText'));
+const DocxToHtml = lazyWithRetry(() => import('./tools/DocxToHtml'));
+const TextToDocx = lazyWithRetry(() => import('./tools/TextToDocx'));
+
+const PdfToImage = lazyWithRetry(() => import('./tools/PdfToImage'));
+const PdfToWord = lazyWithRetry(() => import('./tools/PdfToWord'));
+const PdfToExcel = lazyWithRetry(() => import('./tools/PdfToExcel'));
+const PdfToPpt = lazyWithRetry(() => import('./tools/PdfToPpt'));
+const PptToPdf = lazyWithRetry(() => import('./tools/PptToPdf'));
+const PdfOcr = lazyWithRetry(() => import('./tools/PdfOcr'));
+const ExcelToPdf = lazyWithRetry(() => import('./tools/ExcelToPdf'));
+const WordToPdf = lazyWithRetry(() => import('./tools/WordToPdf'));
+const PdfReader = lazyWithRetry(() => import('./tools/PdfReader'));
+const PdfAnnotator = lazyWithRetry(() => import('./tools/PdfAnnotator'));
+const RtfToPdf = lazyWithRetry(() => import('./tools/RtfToPdf'));
+
+const PrivacyPolicy = lazyWithRetry(() => import('./pages/PrivacyPolicy'));
+const TermsOfService = lazyWithRetry(() => import('./pages/TermsOfService'));
 
 // Blog System
-const BlogList = React.lazy(() => import('./pages/BlogList'));
-const BlogPost = React.lazy(() => import('./pages/BlogPost'));
+const BlogList = lazyWithRetry(() => import('./pages/BlogList'));
+const BlogPost = lazyWithRetry(() => import('./pages/BlogPost'));
 
 // Legal & Trust
-const AboutUs = React.lazy(() => import('./pages/AboutUs'));
-const ContactUs = React.lazy(() => import('./pages/ContactUs'));
+const AboutUs = lazyWithRetry(() => import('./pages/AboutUs'));
+const ContactUs = lazyWithRetry(() => import('./pages/ContactUs'));
 
 // 404 Page
-const NotFound = React.lazy(() => import('./pages/NotFound'));
+const NotFound = lazyWithRetry(() => import('./pages/NotFound'));
 
 // Redirect map: non-canonical alias → canonical slug
 // Users hitting an alias URL get seamlessly redirected to the canonical URL
