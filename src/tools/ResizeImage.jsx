@@ -75,6 +75,7 @@ export default function ResizeImage() {
       setSuccessData({
         url: URL.createObjectURL(blob),
         filename: `resized_${file.name}`,
+        originalSize: file.size,
         outputSize: blob.size,
         title: 'Image Resized Successfully!',
         subtitle: `New dimensions: ${width}x${height}px`,

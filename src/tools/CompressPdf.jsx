@@ -59,6 +59,7 @@ export default function CompressPdf() {
       setSuccessData({
         url,
         filename: `compressed_${file.name}`,
+        originalSize: file.size,
         outputSize: blob.size,
         title: 'PDF Compressed Successfully!',
         subtitle: 'We significantly reduced your file size.',
@@ -121,7 +122,9 @@ export default function CompressPdf() {
       });
     } catch (err) {
       console.error(err);
-      trackError('Compress PDF', err?.message || 'unknown_error');
+      let errorType = 'compression_failed';
+      if (err.message?.toLowerCase().includes('encrypt')) errorType = 'encrypted_file';
+      trackError('Compress PDF', errorType);
       alert("Failed to compress document. It might be encrypted or corrupted.");
     } finally {
       setIsProcessing(false);

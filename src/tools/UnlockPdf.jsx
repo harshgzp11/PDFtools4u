@@ -55,13 +55,15 @@ export default function UnlockPdf() {
       
     } catch (err) {
       console.error("Unlock error:", err);
-      trackError('Unlock PDF', err?.message || 'unknown_error');
-      // Check if it's a password error (pdf-lib usually throws specific errors for bad passwords)
+      let errorType = 'unknown_error';
       if (err.message && err.message.toLowerCase().includes('password')) {
+        errorType = 'invalid_password';
         setErrorMsg('Incorrect password. Please try again.');
       } else {
+        errorType = 'corrupted_file';
         setErrorMsg('Failed to unlock document. The file might be corrupted or uses an unsupported encryption method.');
       }
+      trackError('Unlock PDF', errorType);
     } finally {
       setLoading(false);
     }

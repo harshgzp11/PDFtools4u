@@ -143,7 +143,13 @@ export default function PdfToWord() {
       });
     } catch (err) {
       console.error("PDF to Word Error:", err);
-      trackError('PDF to Word', err?.message || 'unknown_error');
+      let errorType = 'conversion_failed';
+      if (err.message?.toLowerCase().includes('password') || err.message?.toLowerCase().includes('encrypt')) {
+         errorType = 'encrypted_file';
+      } else if (err.message?.toLowerCase().includes('corrupt') || err.message?.toLowerCase().includes('format error')) {
+         errorType = 'corrupted_file';
+      }
+      trackError('PDF to Word', errorType);
       alert(`Conversion error: ${err.message || 'Failed to process document'}`);
     } finally {
       setIsProcessing(false);

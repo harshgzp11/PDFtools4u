@@ -37,10 +37,20 @@
     <meta name="google-site-verification" content="E1bZLNmMZdaOzfd59xEzPCmHoaLDnShXvdNJGVRlDbU" />
     <script>
       window.addEventListener('error', function(event) {
-        document.body.innerHTML = '<div style="color: red; padding: 20px; font-size: 20px;">' + event.error.stack + '</div>';
+        try {
+          var errStr = (event.error && event.error.stack) ? event.error.stack : (event.message || String(event));
+          document.body.innerHTML = '<div style="color: red; padding: 20px; font-size: 20px; white-space: pre-wrap;">' + errStr + '</div>';
+        } catch (e) {
+          console.error("Error in error handler", e);
+        }
       });
       window.addEventListener('unhandledrejection', function(event) {
-        document.body.innerHTML = '<div style="color: red; padding: 20px; font-size: 20px;">' + (event.reason && event.reason.stack ? event.reason.stack : event.reason) + '</div>';
+        try {
+          var reasonStr = (event.reason && event.reason.stack) ? event.reason.stack : String(event.reason);
+          document.body.innerHTML = '<div style="color: red; padding: 20px; font-size: 20px; white-space: pre-wrap;">' + reasonStr + '</div>';
+        } catch (e) {
+          console.error("Error in rejection handler", e);
+        }
       });
     </script>
   </head>

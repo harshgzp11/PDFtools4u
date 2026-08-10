@@ -68,6 +68,9 @@ export default function ToolPreviewLayout({
       if (successData.outputSize) {
         eventParams.output_size_kb = Math.round(successData.outputSize / 1024);
       }
+      if (successData.originalSize) {
+        eventParams.original_size_kb = Math.round(successData.originalSize / 1024);
+      }
 
       trackEvent('tool_success', eventParams);
       
@@ -173,6 +176,7 @@ export default function ToolPreviewLayout({
     
     trackEvent('file_downloaded', {
       tool_name: title || 'unknown_tool',
+      file_size_kb: successData.outputSize ? Math.round(successData.outputSize / 1024) : undefined,
     });
 
     const link = document.createElement('a');
