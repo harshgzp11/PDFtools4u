@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, CheckCircle2, FileText, HelpCircle, Lightbulb, ArrowRight } from 'lucide-react';
+import { ChevronDown, CheckCircle2, FileText, HelpCircle, Lightbulb, ArrowRight, ShieldCheck } from 'lucide-react';
 import { SEO_CONTENT } from '../../lib/seoContent';
 import { RELATED_TOOLS } from '../../lib/relatedTools';
 import { SEO_HEAD } from '../../lib/seoHead';
@@ -92,6 +92,26 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
         <p className="text-gray-700 leading-relaxed text-lg">
           {content.why}
         </p>
+      </div>
+
+      {/* Global Privacy Trust Banner for all tools */}
+      <div className="my-8 md:my-12 max-w-4xl mx-auto bg-gradient-to-br from-indigo-900 via-indigo-800 to-blue-900 rounded-[2rem] p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl relative overflow-hidden border border-indigo-700/50">
+        {/* Decorative background elements */}
+        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-72 h-72 bg-indigo-500 rounded-full mix-blend-overlay filter blur-[64px] opacity-60 animate-pulse"></div>
+        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-72 h-72 bg-blue-400 rounded-full mix-blend-overlay filter blur-[64px] opacity-60"></div>
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
+
+        <div className="flex flex-col gap-3 flex-1 text-center md:text-left relative z-10">
+          <div className="inline-flex items-center justify-center md:justify-start gap-2 text-indigo-200 text-sm mb-1">
+            <ShieldCheck className="w-5 h-5 text-emerald-400" /> 100% Client-Side Processing
+          </div>
+          <h3 className="text-2xl md:text-3xl font-semibold text-white leading-tight">
+            Your Privacy is Guaranteed
+          </h3>
+          <p className="text-indigo-100/90 text-lg max-w-xl leading-relaxed">
+            Unlike other converters, we process your files entirely inside your web browser using WebAssembly. <span className="text-white font-medium">Your files are never uploaded to our servers.</span>
+          </p>
+        </div>
       </div>
 
       {/* FAQ Section */}

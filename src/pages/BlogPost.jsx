@@ -138,14 +138,22 @@ export default function BlogPost({ id, onNavigate }) {
 
       {/* Bottom Tool CTA */}
       {targetTool && (
-        <div className="mt-16 max-w-3xl mx-auto border border-gray-200/80 bg-white/60 backdrop-blur-xl rounded-2xl p-8 flex flex-col md:flex-row items-center justify-between gap-8 shadow-sm">
-          <div className="flex flex-col gap-2 flex-1 text-center md:text-left">
-            <h3 className="text-xl font-extrabold text-gray-900 flex items-center justify-center md:justify-start gap-2">
-              <Zap className="w-5 h-5 text-indigo-500" />
-              Use the {targetTool.name} tool
+        <div className="mt-16 max-w-4xl mx-auto bg-gradient-to-br from-indigo-900 via-indigo-800 to-blue-900 rounded-[2rem] p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl relative overflow-hidden border border-indigo-700/50">
+          {/* Decorative background elements */}
+          <div className="absolute top-0 right-0 -mr-20 -mt-20 w-72 h-72 bg-indigo-500 rounded-full mix-blend-overlay filter blur-[64px] opacity-60 animate-pulse"></div>
+          <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-72 h-72 bg-blue-400 rounded-full mix-blend-overlay filter blur-[64px] opacity-60"></div>
+          
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
+
+          <div className="flex flex-col gap-3 flex-1 text-center md:text-left relative z-10">
+            <div className="inline-flex items-center justify-center md:justify-start gap-2 text-indigo-200 text-sm mb-1">
+              <ShieldCheck className="w-4 h-4 text-emerald-400" /> 100% Secure & Local
+            </div>
+            <h3 className="text-2xl md:text-3xl font-semibold text-white flex items-center justify-center md:justify-start gap-3 leading-tight">
+              Ready to use the {targetTool.name} tool?
             </h3>
-            <p className="text-gray-500 font-medium text-sm">
-              Process your files locally in your browser. Complete privacy, no uploads.
+            <p className="text-indigo-100/90 text-lg max-w-xl leading-relaxed">
+              Process your files instantly in your browser. <span className="text-white font-medium">Zero server uploads.</span> Complete privacy guaranteed.
             </p>
           </div>
           <button 
@@ -156,9 +164,9 @@ export default function BlogPost({ id, onNavigate }) {
               });
               onNavigate(targetTool.id);
             }}
-            className="group flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-bold transition-all w-full md:w-auto shadow-md shadow-indigo-200"
+            className="group relative z-10 flex items-center justify-center gap-3 bg-white hover:bg-gray-50 text-indigo-900 px-8 py-3.5 rounded-2xl font-semibold transition-all duration-300 w-full md:w-auto shadow-lg hover:scale-105 active:scale-95"
           >
-            Launch Tool <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            Launch Tool <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
       )}
