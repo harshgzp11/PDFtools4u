@@ -4,6 +4,7 @@ import { SEO_CONTENT } from '../../lib/seoContent';
 import { RELATED_TOOLS } from '../../lib/relatedTools';
 import { SEO_HEAD } from '../../lib/seoHead';
 import { DOMAINS } from '../../lib/toolConfig';
+import { trackEvent } from '../../lib/analytics';
 
 // Find tool info from DOMAINS config
 function findToolInfo(toolId) {
@@ -122,6 +123,10 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
                 <button
                   key={relatedId}
                   onClick={() => {
+                    trackEvent('related_tool_click', {
+                      source_tool: toolId,
+                      destination_tool: relatedId,
+                    });
                     if (onSelectTool) {
                       onSelectTool(relatedId);
                     } else {

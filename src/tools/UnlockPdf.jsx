@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { PDFDocument } from '@cantoo/pdf-lib';
 import { Unlock, FileText, CheckCircle, ArrowLeft, RefreshCw, Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
+import { trackError } from '../lib/analytics';
 
 export default function UnlockPdf() {
   const [file, setFile] = useState(null);
@@ -54,11 +55,12 @@ export default function UnlockPdf() {
       
     } catch (err) {
       console.error("Unlock error:", err);
+      trackError('Unlock PDF', err?.message || 'unknown_error');
       // Check if it's a password error (pdf-lib usually throws specific errors for bad passwords)
       if (err.message && err.message.toLowerCase().includes('password')) {
         setErrorMsg('Incorrect password. Please try again.');
       } else {
-        setErrorMsg('Incorrect password or file is not encrypted.');
+        setErrorMsg('Failed to unlock document. The file might be corrupted or uses an unsupported encryption method.');
       }
     } finally {
       setLoading(false);

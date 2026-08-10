@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowRight, Search, AlertTriangle } from 'lucide-react';
 import { DOMAINS } from '../lib/toolConfig';
+import { trackEvent } from '../lib/analytics';
 
 const SUGGESTED_TOOLS = [
   'compress-pdf', 'pdf-to-word', 'pdf-merge', 'jpg-to-pdf', 
@@ -49,7 +50,12 @@ export default function NotFound({ onSelectTool }) {
             return (
               <button
                 key={tool.id}
-                onClick={() => onSelectTool(tool.id)}
+                onClick={() => {
+                  trackEvent('404_suggested_tool_click', {
+                    destination_tool: tool.id,
+                  });
+                  onSelectTool(tool.id);
+                }}
                 className="group flex flex-col items-start gap-3 p-5 rounded-xl border border-gray-200 hover:border-indigo-300 hover:shadow-lg hover:shadow-indigo-100/50 bg-white transition-all duration-200 text-left cursor-pointer"
                 title={`Use ${tool.name} tool`}
               >

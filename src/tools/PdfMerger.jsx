@@ -3,6 +3,7 @@ import { PDFDocument } from 'pdf-lib';
 import { Download, PlusCircle, Trash2, FileText, CheckCircle, ArrowLeft, RefreshCw, Loader2, GripVertical } from 'lucide-react';
 import DragDropZone from '../components/ui/DragDropZone';
 import { getPdfThumbnails } from '../lib/pdfRenderer';
+import { trackError } from '../lib/analytics';
 
 export default function PdfMerger() {
   const [files, setFiles] = useState([]); // Array of { file, thumbDataUrl, id }
@@ -76,6 +77,7 @@ export default function PdfMerger() {
       });
     } catch (err) {
       console.error(err);
+      trackError('Merge PDF', err?.message || 'unknown_error');
       alert("Failed to merge PDFs. One of the files might be encrypted or corrupted.");
     } finally {
       setLoading(false);

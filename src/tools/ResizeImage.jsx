@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Maximize, Image as ImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
+import { trackError } from '../lib/analytics';
 
 export default function ResizeImage() {
   const [file, setFile] = useState(null);
@@ -70,13 +71,13 @@ export default function ResizeImage() {
       
       const response = await fetch(dataUrl);
       const blob = await response.blob();
-      const outputUrl = URL.createObjectURL(blob);
       
       setSuccessData({
-        url: outputUrl,
+        url: URL.createObjectURL(blob),
         filename: `resized_${file.name}`,
-        title: "Image Resized!",
-        subtitle: `New dimensions: ${canvas.width} x ${canvas.height}px`,
+        outputSize: blob.size,
+        title: 'Image Resized Successfully!',
+        subtitle: `New dimensions: ${width}x${height}px`,
         quickActions: [
           <button 
             key="editor"
@@ -94,6 +95,7 @@ export default function ResizeImage() {
       URL.revokeObjectURL(url);
     } catch (err) {
       console.error(err);
+      trackError('Resize Image', err?.message || 'unknown_error');
       toast.error("Failed to resize image.");
     } finally {
       setIsProcessing(false);

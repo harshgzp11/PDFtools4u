@@ -5,6 +5,7 @@ import DragDropZone from './DragDropZone';
 import AdSlot from './AdSlot';
 import { getPdfThumbnails } from '../../lib/pdfRenderer';
 import { getDynamicGridClass } from '../../lib/utils';
+import { trackEvent } from '../../lib/analytics';
 
 export default function ToolPreviewLayout({
   title,
@@ -27,6 +28,52 @@ export default function ToolPreviewLayout({
   const [previewImage, setPreviewImage] = useState(null);
   const [thumbnails, setThumbnails] = useState([]);
   const [isLoadingPreview, setIsLoadingPreview] = useState(false);
+  const [processingStartTime, setProcessingStartTime] = useState(null);
+
+  // Track tool_start
+  useEffect(() => {
+    if (file) {
+      const fileArray = Array.isArray(file) ? file : [file];
+      if (fileArray.length > 0) {
+        const totalSize = fileArray.reduce((acc, f) => acc + (f.size || 0), 0);
+        trackEvent('tool_start', {
+          tool_name: title || 'unknown_tool',
+          file_type: fileArray[0].type || fileArray[0].name?.split('.').pop() || 'unknown',
+          file_size_kb: Math.round(totalSize / 1024),
+          file_count: fileArray.length,
+        });
+      }
+    }
+  }, [file, title]);
+
+  // Track processing start time
+  useEffect(() => {
+    if (isProcessing) {
+      setProcessingStartTime(Date.now());
+    } else if (!successData) {
+      setProcessingStartTime(null);
+    }
+  }, [isProcessing]);
+
+  // Track tool_success
+  useEffect(() => {
+    if (successData) {
+      const processingTime = processingStartTime ? Date.now() - processingStartTime : 0;
+      
+      const eventParams = {
+        tool_name: title || 'unknown_tool',
+        processing_time_ms: processingTime,
+      };
+
+      if (successData.outputSize) {
+        eventParams.output_size_kb = Math.round(successData.outputSize / 1024);
+      }
+
+      trackEvent('tool_success', eventParams);
+      
+      setProcessingStartTime(null);
+    }
+  }, [successData, title]); // Removed processingStartTime from deps to avoid re-triggering if it clears
 
   useEffect(() => {
     if (!file) {
@@ -123,6 +170,11 @@ export default function ToolPreviewLayout({
 
   const handleDownload = () => {
     if (!successData || !successData.url) return;
+    
+    trackEvent('file_downloaded', {
+      tool_name: title || 'unknown_tool',
+    });
+
     const link = document.createElement('a');
     link.href = successData.url;
     link.download = successData.filename || 'download';
