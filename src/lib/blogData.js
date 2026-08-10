@@ -381,7 +381,7 @@ Your Permanent Account Number (PAN) is critical financial identity data. Unlike 
     author: "PDFTools4U Team",
     coverImage: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "pdf-to-excel",
-    published: true,
+    published: false,
     content: `
 Converting bank statements from PDF to Excel is one of the most common tasks for accountants, freelancers, and small business owners. When tax season approaches, manually typing hundreds of transactions into a spreadsheet is not just tedious—it's prone to massive errors.
 
@@ -777,7 +777,7 @@ Once you have your transparent signature PNG:
     author: "PDFTools4U Team",
     coverImage: "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "pdf-to-word",
-    published: true,
+    published: false,
     content: `
 Converting a PDF to a Word document is easy. Converting a PDF to a Word document *without the entire layout breaking* is a different story entirely. 
 
