@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import { Download, Trash2, FileText } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
+import { trackError } from '../lib/analytics';
 
 export default function DeletePdfPages() {
   const [file, setFile] = useState(null);
@@ -20,6 +21,7 @@ export default function DeletePdfPages() {
         const pdf = await PDFDocument.load(arrayBuffer);
         setPageCount(pdf.getPageCount());
       } catch (e) {
+      trackError('Delete Pdf Pages', 'processing_error');
         console.error(e);
       }
     }
@@ -66,12 +68,15 @@ export default function DeletePdfPages() {
       const url = URL.createObjectURL(blob);
       
       setSuccessData({
+        originalSize: (typeof file !== 'undefined' && file?.size) || (typeof selectedFile !== 'undefined' && selectedFile?.size) || (typeof currentFile !== 'undefined' && currentFile?.size) || 0,
+        outputSize: (typeof newPdfBytes !== 'undefined' && newPdfBytes?.length) || (typeof pdfBytes !== 'undefined' && pdfBytes?.length) || (typeof blob !== 'undefined' && blob?.size) || (typeof outputBlob !== 'undefined' && outputBlob?.size) || 0,
         url,
         filename: `deleted_${file.name}`,
         title: 'PDF pages removed!',
         subtitle: 'Your new document is ready to download.',
       });
     } catch (err) {
+      trackError('Delete Pdf Pages', 'processing_error');
       console.error(err);
       alert("Failed to delete pages. The file might be encrypted or corrupted.");
     } finally {

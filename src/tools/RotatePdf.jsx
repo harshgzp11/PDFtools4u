@@ -4,6 +4,7 @@ import { Download, RotateCw, RotateCcw, FileText, CheckCircle, ArrowLeft, Loader
 import { getPdfThumbnails } from '../lib/pdfRenderer';
 import { getDynamicGridClass } from '../lib/utils';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
+import { trackError } from '../lib/analytics';
 
 export default function RotatePdf() {
   const [file, setFile] = useState(null);
@@ -27,6 +28,7 @@ export default function RotatePdf() {
         const thumbs = await getPdfThumbnails(newFile, 0.5);
         setThumbnails(thumbs);
       } catch (e) {
+      trackError('Rotate Pdf', 'processing_error');
         console.error(e);
         alert(`Failed to load PDF: ${e.message}`);
         setFile(null);
@@ -71,6 +73,8 @@ export default function RotatePdf() {
       const url = URL.createObjectURL(blob);
       
       setSuccessData({
+        originalSize: (typeof file !== 'undefined' && file?.size) || (typeof selectedFile !== 'undefined' && selectedFile?.size) || (typeof currentFile !== 'undefined' && currentFile?.size) || 0,
+        outputSize: (typeof newPdfBytes !== 'undefined' && newPdfBytes?.length) || (typeof pdfBytes !== 'undefined' && pdfBytes?.length) || (typeof blob !== 'undefined' && blob?.size) || (typeof outputBlob !== 'undefined' && outputBlob?.size) || 0,
         url,
         filename: `rotated_${file.name}`,
         title: 'PDF Rotated Successfully!',
@@ -118,6 +122,7 @@ export default function RotatePdf() {
       });
       
     } catch (err) {
+      trackError('Rotate Pdf', 'processing_error');
       console.error(err);
       alert("Failed to rotate PDF. The file might be encrypted or corrupted.");
     } finally {

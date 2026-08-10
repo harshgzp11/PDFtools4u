@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { PDFDocument, rgb, degrees } from '@cantoo/pdf-lib';
 import { Stamp, Type } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
+import { trackError } from '../lib/analytics';
 
 export default function PdfWatermark() {
   const [file, setFile] = useState(null);
@@ -73,12 +74,15 @@ export default function PdfWatermark() {
       const url = URL.createObjectURL(blob);
       
       setSuccessData({
+        originalSize: (typeof file !== 'undefined' && file?.size) || (typeof selectedFile !== 'undefined' && selectedFile?.size) || (typeof currentFile !== 'undefined' && currentFile?.size) || 0,
+        outputSize: (typeof newPdfBytes !== 'undefined' && newPdfBytes?.length) || (typeof pdfBytes !== 'undefined' && pdfBytes?.length) || (typeof blob !== 'undefined' && blob?.size) || (typeof outputBlob !== 'undefined' && outputBlob?.size) || 0,
         url,
         filename: `watermarked_${file.name}`,
         title: 'Watermark Applied!',
         subtitle: 'Your stamped document is ready to download.',
       });
     } catch (err) {
+      trackError('Pdf Watermark', 'processing_error');
       console.error(err);
       alert("Failed to add watermark. The file might be encrypted or corrupted.");
     } finally {

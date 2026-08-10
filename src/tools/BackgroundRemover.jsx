@@ -181,6 +181,7 @@ export default function BackgroundRemover() {
       setProgress(100);
       setStatusText('Done!');
     } catch (err) {
+      trackError('Background Remover', 'processing_error');
       console.error(err);
       let errorType = 'background_removal_failed';
       if (err.message?.toLowerCase().includes('memory') || err.message?.toLowerCase().includes('too large')) {

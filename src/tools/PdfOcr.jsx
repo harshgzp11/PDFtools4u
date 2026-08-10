@@ -5,6 +5,7 @@ import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
 import { createWorker } from 'tesseract.js';
+import { trackError } from '../lib/analytics';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
@@ -266,6 +267,7 @@ export default function PdfOcr() {
         }
       }));
     } catch (err) {
+      trackError('Pdf Ocr', 'processing_error');
       console.error(err);
       alert("Failed to perform OCR on this PDF. Please check the console for details.");
       if (worker) {

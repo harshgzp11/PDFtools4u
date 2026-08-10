@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { RTFJS } from 'rtf.js';
 import jsPDF from 'jspdf';
 import { safeHtml2Canvas } from '../utils/canvasUtils';
+import { trackError } from '../lib/analytics';
 
 // A simple string to ArrayBuffer helper for rtf.js if needed
 function stringToArrayBuffer(string) {
@@ -47,6 +48,7 @@ export default function RtfToPdf() {
       setHtmlContent(elements);
       
     } catch (err) {
+      trackError('Rtf To Pdf', 'processing_error');
       console.error(err);
       toast.error("Failed to parse RTF file. It may be corrupted or unsupported.");
       setFile(null);
@@ -104,6 +106,8 @@ export default function RtfToPdf() {
       const pdfUrl = URL.createObjectURL(pdfBlob);
       
       setSuccessData({
+        originalSize: (typeof file !== 'undefined' && file?.size) || (typeof selectedFile !== 'undefined' && selectedFile?.size) || (typeof currentFile !== 'undefined' && currentFile?.size) || 0,
+        outputSize: (typeof newPdfBytes !== 'undefined' && newPdfBytes?.length) || (typeof pdfBytes !== 'undefined' && pdfBytes?.length) || (typeof blob !== 'undefined' && blob?.size) || (typeof outputBlob !== 'undefined' && outputBlob?.size) || 0,
         url: pdfUrl,
         filename: file.name.replace(/\.[^/.]+$/, "") + ".pdf",
         title: "Conversion Complete!",
@@ -122,6 +126,7 @@ export default function RtfToPdf() {
       });
 
     } catch (err) {
+      trackError('Rtf To Pdf', 'processing_error');
       console.error(err);
       toast.error("An error occurred during PDF generation.");
     } finally {

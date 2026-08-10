@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { copyToClipboard, downloadTextAsFile } from '../lib/utils';
 import { Copy, Download, Trash2, ArrowRightLeft } from 'lucide-react';
+import { trackError } from '../lib/analytics';
 
 export default function DataConverter() {
   const [input, setInput] = useState('');
@@ -25,6 +26,7 @@ export default function DataConverter() {
       setOutput(JSON.stringify(result, null, 2));
       setError('');
     } catch (err) {
+      trackError('Data Converter', 'processing_error');
       setError(err.message || "Invalid CSV format.");
     }
   };
@@ -44,6 +46,7 @@ export default function DataConverter() {
       setOutput(csv);
       setError('');
     } catch (err) {
+      trackError('Data Converter', 'processing_error');
       setError("Invalid JSON format. Please provide a valid JSON array of objects.");
     }
   };
@@ -53,6 +56,7 @@ export default function DataConverter() {
       setOutput(btoa(input));
       setError('');
     } catch (err) {
+      trackError('Data Converter', 'processing_error');
       setError("Failed to encode text.");
     }
   };
@@ -62,6 +66,7 @@ export default function DataConverter() {
       setOutput(atob(input));
       setError('');
     } catch (err) {
+      trackError('Data Converter', 'processing_error');
       setError("Invalid Base64 string.");
     }
   };

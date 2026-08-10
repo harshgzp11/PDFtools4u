@@ -4,6 +4,7 @@ import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import DragDropZone from '../components/ui/DragDropZone';
 import AdSlot from '../components/ui/AdSlot';
 import ExportActions from '../components/ui/ExportActions';
+import { trackError } from '../lib/analytics';
 
 export default function TxtToPdf() {
   const [file, setFile] = useState(null);
@@ -96,6 +97,7 @@ export default function TxtToPdf() {
       const bytes = await pdfDoc.save();
       setPdfBytes(bytes);
     } catch (error) {
+      trackError('Txt To Pdf', 'processing_error');
       console.error('Error generating PDF:', error);
       alert('Failed to generate PDF. Make sure it is a valid text file.');
     } finally {

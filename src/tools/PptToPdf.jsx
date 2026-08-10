@@ -3,6 +3,7 @@ import { Presentation, Download, AlertTriangle, FileText, CheckCircle2, Image as
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import JSZip from 'jszip';
 import { jsPDF } from 'jspdf';
+import { trackError } from '../lib/analytics';
 
 export default function PptToPdf() {
   const [file, setFile] = useState(null);
@@ -105,6 +106,7 @@ export default function PptToPdf() {
           }
         }
       } catch (err) {
+      trackError('Ppt To Pdf', 'processing_error');
         console.warn(`Image extraction notice for slide ${i + 1}:`, err);
       }
 
@@ -143,6 +145,7 @@ export default function PptToPdf() {
       const parsed = await parsePptxSlides(newFile);
       setSlides(parsed);
     } catch (err) {
+      trackError('Ppt To Pdf', 'processing_error');
       console.error("PPTX Analysis Failed:", err);
       alert("Could not parse PPTX file. Please ensure it is a valid .pptx presentation.");
       setFile(null);
@@ -209,6 +212,7 @@ export default function PptToPdf() {
           try {
             pdf.addImage(imgData, format, x, y, renderW, renderH, undefined, 'FAST');
           } catch (imgErr) {
+      trackError('Ppt To Pdf', 'processing_error');
             console.warn(`Could not embed image for slide ${i + 1}:`, imgErr);
           }
         } else {
@@ -250,12 +254,15 @@ export default function PptToPdf() {
       const url = URL.createObjectURL(pdfBlob);
 
       setSuccessData({
+        originalSize: (typeof file !== 'undefined' && file?.size) || (typeof selectedFile !== 'undefined' && selectedFile?.size) || (typeof currentFile !== 'undefined' && currentFile?.size) || 0,
+        outputSize: (typeof newPdfBytes !== 'undefined' && newPdfBytes?.length) || (typeof pdfBytes !== 'undefined' && pdfBytes?.length) || (typeof blob !== 'undefined' && blob?.size) || (typeof outputBlob !== 'undefined' && outputBlob?.size) || 0,
         url,
         filename: `${file.name.replace(/\.pptx$/i, '')}_converted.pdf`,
         title: 'Conversion Successful!',
         subtitle: `Successfully converted ${slides.length} slides to PDF.`,
       });
     } catch (err) {
+      trackError('Ppt To Pdf', 'processing_error');
       console.error("PPT to PDF Conversion Error:", err);
       alert(`Failed to convert PowerPoint to PDF: ${err.message || err}`);
     } finally {

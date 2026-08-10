@@ -5,6 +5,7 @@ import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import { getPdfThumbnails } from '../lib/pdfRenderer';
 import { getDynamicGridClass } from '../lib/utils';
 import { toast } from 'sonner';
+import { trackError } from '../lib/analytics';
 
 export default function OrganizePdf() {
   const [files, setFiles] = useState([]); 
@@ -42,6 +43,7 @@ export default function OrganizePdf() {
       
       setPagesOrder(prev => [...prev, ...newPages]);
     } catch (err) {
+      trackError('Organize Pdf', 'processing_error');
       console.error(err);
       toast.error("Failed to parse PDF file.");
     } finally {
@@ -68,6 +70,7 @@ export default function OrganizePdf() {
       setPagesOrder(newPages);
       toast.success("Workspace reset to original state.");
     } catch (e) {
+      trackError('Organize Pdf', 'processing_error');
       console.error(e);
       toast.error("Failed to reset workspace.");
     }
@@ -173,12 +176,15 @@ export default function OrganizePdf() {
       const url = URL.createObjectURL(blob);
       
       setSuccessData({
+        originalSize: (typeof file !== 'undefined' && file?.size) || (typeof selectedFile !== 'undefined' && selectedFile?.size) || (typeof currentFile !== 'undefined' && currentFile?.size) || 0,
+        outputSize: (typeof newPdfBytes !== 'undefined' && newPdfBytes?.length) || (typeof pdfBytes !== 'undefined' && pdfBytes?.length) || (typeof blob !== 'undefined' && blob?.size) || (typeof outputBlob !== 'undefined' && outputBlob?.size) || 0,
         url,
         filename: `organized_${files[0].name}`,
         title: 'PDF Organized Successfully!',
         subtitle: 'Your customized document is ready to download.',
       });
     } catch (err) {
+      trackError('Organize Pdf', 'processing_error');
       console.error(err);
       toast.error("Failed to organize PDF. A file might be corrupted or encrypted.");
     } finally {

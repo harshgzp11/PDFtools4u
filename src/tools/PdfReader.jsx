@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import DragDropZone from '../components/ui/DragDropZone';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
+import { trackError } from '../lib/analytics';
 
 // Configure the worker for Vite
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
@@ -44,6 +45,7 @@ const Thumbnail = ({ pdfDocument, pageNum, isActive, onClick }) => {
           renderTask = page.render({ canvasContext: canvas.getContext('2d'), viewport });
           await renderTask.promise;
         } catch (e) {
+      trackError('Pdf Reader', 'processing_error');
           if (e.name !== 'RenderingCancelledException') {
             console.error("Thumbnail render error:", e);
           }
@@ -114,6 +116,7 @@ export default function PdfReader() {
       setPageInputValue('1');
       setZoom(1.2); // Default comfy zoom
     } catch (err) {
+      trackError('Pdf Reader', 'processing_error');
       console.error(err);
       toast.error("Failed to read the PDF. It may be corrupted or encrypted.");
       setFile(null);
@@ -143,6 +146,7 @@ export default function PdfReader() {
           renderTask = page.render(renderContext);
           await renderTask.promise;
         } catch(e) {
+      trackError('Pdf Reader', 'processing_error');
           if (e.name !== 'RenderingCancelledException') {
              console.error("Main page render error:", e);
           }

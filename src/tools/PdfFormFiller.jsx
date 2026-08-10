@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { PDFDocument, PDFTextField, PDFDropdown, PDFCheckBox, PDFRadioGroup, PDFOptionList } from '@cantoo/pdf-lib';
 import { FileSignature, FileText, Eraser, Loader2, AlertCircle } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
+import { trackError } from '../lib/analytics';
 
 export default function PdfFormFiller() {
   const [file, setFile] = useState(null);
@@ -74,6 +75,7 @@ export default function PdfFormFiller() {
       setFormFields(extractedFields);
       setFormData(initialData);
     } catch (err) {
+      trackError('Pdf Form Filler', 'processing_error');
       console.error(err);
       setErrorMsg("Failed to read PDF form. The file might be encrypted or corrupted.");
     } finally {
@@ -132,6 +134,7 @@ export default function PdfFormFiller() {
             else field.clear();
           }
         } catch (fieldErr) {
+      trackError('Pdf Form Filler', 'processing_error');
           console.warn(`Failed to set field ${name}:`, fieldErr);
         }
       }
@@ -145,6 +148,8 @@ export default function PdfFormFiller() {
       const url = URL.createObjectURL(blob);
       
       setSuccessData({
+        originalSize: (typeof file !== 'undefined' && file?.size) || (typeof selectedFile !== 'undefined' && selectedFile?.size) || (typeof currentFile !== 'undefined' && currentFile?.size) || 0,
+        outputSize: (typeof newPdfBytes !== 'undefined' && newPdfBytes?.length) || (typeof pdfBytes !== 'undefined' && pdfBytes?.length) || (typeof blob !== 'undefined' && blob?.size) || (typeof outputBlob !== 'undefined' && outputBlob?.size) || 0,
         url,
         filename: flatten ? `completed_${file.name}` : `filled_${file.name}`,
         title: 'Form Filled Successfully!',
@@ -152,6 +157,7 @@ export default function PdfFormFiller() {
         downloadText: 'Download Completed PDF'
       });
     } catch (err) {
+      trackError('Pdf Form Filler', 'processing_error');
       console.error(err);
       setErrorMsg("Failed to process the form.");
     } finally {

@@ -6,6 +6,7 @@ import 'react-image-crop/dist/ReactCrop.css';
 import DragDropZone from '../components/ui/DragDropZone';
 import AdSlot from '../components/ui/AdSlot';
 import { getPdfThumbnails } from '../lib/pdfRenderer';
+import { trackError } from '../lib/analytics';
 
 export default function CropPdf() {
   const [file, setFile] = useState(null);
@@ -39,6 +40,7 @@ export default function CropPdf() {
         setPreviewImage(thumbnails[0].dataUrl);
       }
     } catch (error) {
+      trackError('Crop Pdf', 'processing_error');
       console.error("Error loading PDF preview:", error);
       alert("Could not render PDF preview. It might be corrupted or encrypted.");
       setFile(null);
@@ -80,10 +82,13 @@ export default function CropPdf() {
 
       const newPdfBytes = await pdfDoc.save();
       setSuccessData({
+        originalSize: (typeof file !== 'undefined' && file?.size) || (typeof selectedFile !== 'undefined' && selectedFile?.size) || (typeof currentFile !== 'undefined' && currentFile?.size) || 0,
+        outputSize: (typeof newPdfBytes !== 'undefined' && newPdfBytes?.length) || (typeof pdfBytes !== 'undefined' && pdfBytes?.length) || (typeof blob !== 'undefined' && blob?.size) || (typeof outputBlob !== 'undefined' && outputBlob?.size) || 0,
         pdfBytes: newPdfBytes,
         fileName: `cropped_${file.name}`
       });
     } catch (error) {
+      trackError('Crop Pdf', 'processing_error');
       console.error('Error cropping PDF:', error);
       alert('Failed to crop the PDF. It might be encrypted or corrupted.');
     } finally {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeftRight, CheckCircle, Download, RefreshCw, Image as ImageIcon, Loader2 } from 'lucide-react';
 import DragDropZone from '../components/ui/DragDropZone';
+import { trackError } from '../lib/analytics';
 
 export default function ConvertImage() {
   const [file, setFile] = useState(null);
@@ -75,6 +76,7 @@ export default function ConvertImage() {
       setOutputUrl(URL.createObjectURL(blob));
       setSuccess(true);
     } catch (err) {
+      trackError('Convert Image', 'processing_error');
       console.error(err);
       alert("Failed to convert image.");
     } finally {

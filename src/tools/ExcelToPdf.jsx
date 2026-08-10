@@ -5,6 +5,7 @@ import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { trackError } from '../lib/analytics';
 
 export default function ExcelToPdf() {
   const [file, setFile] = useState(null);
@@ -66,6 +67,7 @@ export default function ExcelToPdf() {
       setSheetNames(wb.SheetNames);
       loadSheetData(wb, wb.SheetNames[0]);
     } catch (err) {
+      trackError('Excel To Pdf', 'processing_error');
       console.error(err);
       toast.error("Failed to parse this file. It may be corrupted or unsupported.");
       resetTool();
@@ -177,6 +179,8 @@ export default function ExcelToPdf() {
       const url = URL.createObjectURL(blob);
       
       setSuccessData({
+        originalSize: (typeof file !== 'undefined' && file?.size) || (typeof selectedFile !== 'undefined' && selectedFile?.size) || (typeof currentFile !== 'undefined' && currentFile?.size) || 0,
+        outputSize: (typeof newPdfBytes !== 'undefined' && newPdfBytes?.length) || (typeof pdfBytes !== 'undefined' && pdfBytes?.length) || (typeof blob !== 'undefined' && blob?.size) || (typeof outputBlob !== 'undefined' && outputBlob?.size) || 0,
         url,
         filename: `${file.name.replace(/\.[^/.]+$/, "")}_${activeSheet}.pdf`,
         title: 'PDF Created Successfully!',
@@ -184,6 +188,7 @@ export default function ExcelToPdf() {
       });
       toast.success("Conversion successful!");
     } catch (err) {
+      trackError('Excel To Pdf', 'processing_error');
       console.error("ExcelToPdf conversion error:", err);
       toast.error("An error occurred while generating the PDF.");
     } finally {

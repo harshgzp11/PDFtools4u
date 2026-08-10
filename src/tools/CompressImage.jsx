@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Minimize, CheckCircle, Download, RefreshCw, Image as ImageIcon, Loader2 } from 'lucide-react';
 import DragDropZone from '../components/ui/DragDropZone';
+import { trackError } from '../lib/analytics';
 
 export default function CompressImage() {
   const [file, setFile] = useState(null);
@@ -101,6 +102,7 @@ export default function CompressImage() {
       setOutputUrl(URL.createObjectURL(bestBlob));
       setSuccess(true);
     } catch (err) {
+      trackError('Compress Image', 'processing_error');
       console.error(err);
       alert("Failed to compress image.");
     } finally {

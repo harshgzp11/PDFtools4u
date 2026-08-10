@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import { Download, SplitSquareVertical, CheckCircle, FileOutput, GripHorizontal, File } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
+import { trackError } from '../lib/analytics';
 
 export default function PdfSplitter() {
   const [file, setFile] = useState(null);
@@ -22,6 +23,7 @@ export default function PdfSplitter() {
       setPdfInfo({ pages });
       setPageRange(`1-${Math.min(3, pages)}, ${Math.min(4, pages)}-${pages}`);
     } catch (err) {
+      trackError('Pdf Splitter', 'processing_error');
       alert("Could not read PDF info.");
     }
   };
@@ -115,12 +117,15 @@ export default function PdfSplitter() {
       const url = URL.createObjectURL(content);
       
       setSuccessData({
+        originalSize: (typeof file !== 'undefined' && file?.size) || (typeof selectedFile !== 'undefined' && selectedFile?.size) || (typeof currentFile !== 'undefined' && currentFile?.size) || 0,
+        outputSize: (typeof newPdfBytes !== 'undefined' && newPdfBytes?.length) || (typeof pdfBytes !== 'undefined' && pdfBytes?.length) || (typeof blob !== 'undefined' && blob?.size) || (typeof outputBlob !== 'undefined' && outputBlob?.size) || 0,
         url,
         filename: `${folderName}.zip`,
         title: 'PDF Split Successfully!',
         subtitle: `Your split PDFs are packaged in a ZIP file.`,
       });
     } catch (err) {
+      trackError('Pdf Splitter', 'processing_error');
       console.error(err);
       alert(err.message || "Failed to split PDF.");
     } finally {

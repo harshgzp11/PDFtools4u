@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Hash, Download, Settings, RefreshCw, FileText, Loader2, ListOrdered, Scissors } from 'lucide-react';
 import { PDFDocument, rgb } from 'pdf-lib';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
+import { trackError } from '../lib/analytics';
 
 export default function NumberPages() {
   const [file, setFile] = useState(null);
@@ -49,6 +50,8 @@ export default function NumberPages() {
       const url = URL.createObjectURL(blob);
       
       setSuccessData({
+        originalSize: (typeof file !== 'undefined' && file?.size) || (typeof selectedFile !== 'undefined' && selectedFile?.size) || (typeof currentFile !== 'undefined' && currentFile?.size) || 0,
+        outputSize: (typeof newPdfBytes !== 'undefined' && newPdfBytes?.length) || (typeof pdfBytes !== 'undefined' && pdfBytes?.length) || (typeof blob !== 'undefined' && blob?.size) || (typeof outputBlob !== 'undefined' && outputBlob?.size) || 0,
         url,
         filename: `numbered_${file.name}`,
         title: 'Pages Numbered Successfully!',
@@ -83,6 +86,7 @@ export default function NumberPages() {
         )
       });
     } catch (error) {
+      trackError('Number Pages', 'processing_error');
       console.error('Error adding page numbers:', error);
       alert('Failed to process the PDF. It might be encrypted or corrupted.');
     } finally {
