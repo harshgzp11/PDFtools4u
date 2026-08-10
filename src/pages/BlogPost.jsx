@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { ArrowLeft, Calendar, User, Clock, ArrowRight, Zap, Folder, ShieldCheck, Share2 } from 'lucide-react';
+import rehypeRaw from 'rehype-raw';
+import { ArrowLeft, Calendar, User, Clock, ArrowRight, Zap, Folder, ShieldCheck, Share2, ChevronDown } from 'lucide-react';
 import { BLOG_POSTS } from '../lib/blogData';
 import { DOMAINS } from '../lib/toolConfig';
 import { trackEvent } from '../lib/analytics';
@@ -97,7 +98,15 @@ export default function BlogPost({ id, onNavigate }) {
       <article className="prose prose-lg md:prose-xl prose-indigo mx-auto max-w-3xl prose-headings:font-bold prose-a:text-blue-600 hover:prose-a:text-blue-800 prose-img:rounded-xl">
         <ReactMarkdown 
           remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeRaw]}
           components={{
+            details: ({node, ...props}) => <details className="group border-b border-gray-200 overflow-hidden transition-all hover:border-gray-300 [&_summary::-webkit-details-marker]:hidden" {...props} />,
+            summary: ({node, children, ...props}) => (
+              <summary className="w-full flex items-center justify-between py-5 text-left focus:outline-none cursor-pointer bg-transparent" {...props}>
+                <span className="font-bold text-gray-900 pr-4">{children}</span>
+                <ChevronDown className="w-5 h-5 text-gray-400 transition-transform duration-300 flex-shrink-0 group-open:rotate-180" />
+              </summary>
+            ),
             a: ({ href, children, ...props }) => {
               if (href && href.startsWith('/')) {
                 return (
