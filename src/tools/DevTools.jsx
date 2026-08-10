@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { copyToClipboard, downloadTextAsFile } from '../lib/utils';
 import { Copy, Download } from 'lucide-react';
+import { trackError } from '../lib/analytics';
 
 export default function DevTools() {
   const [input, setInput] = useState('');
@@ -26,6 +27,7 @@ export default function DevTools() {
       setOutput(JSON.stringify(parsed));
       setError('');
     } catch (err) {
+      trackError('Dev Tools', 'processing_error');
       setError("Invalid JSON format.");
     }
   };
@@ -37,6 +39,7 @@ export default function DevTools() {
       setOutput(JSON.stringify(parsed, null, 2));
       setError('');
     } catch (err) {
+      trackError('Dev Tools', 'processing_error');
       setError("Invalid JSON format.");
     }
   };

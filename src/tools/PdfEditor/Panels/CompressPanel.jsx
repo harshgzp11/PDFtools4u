@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FileArchive, Download, Loader2, X, AlertCircle } from 'lucide-react';
 import { compressPdfToTarget } from '../../../utils/pdfCompression';
+import { trackError } from "../../../lib/analytics";
 
 export default function CompressPanel({ file, onClose }) {
   const [targetSizeMB, setTargetSizeMB] = useState(
@@ -25,6 +26,7 @@ export default function CompressPanel({ file, onClose }) {
       setSuccessUrl(url);
       setCompressedSize(blob.size);
     } catch (err) {
+      trackError('Compress Panel', 'processing_error');
       console.error(err);
       setError("Failed to compress PDF. Please try a different file.");
     } finally {

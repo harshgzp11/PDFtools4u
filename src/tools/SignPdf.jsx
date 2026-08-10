@@ -5,6 +5,7 @@ import DragDropZone from '../components/ui/DragDropZone';
 import SignatureModal from '../components/ui/SignatureModal';
 import DraggableOverlay from '../components/ui/DraggableOverlay';
 import { getPdfThumbnails } from '../lib/pdfRenderer';
+import { trackError } from '../lib/analytics';
 
 // Pre-rendered base64 data URLs for standard annotations (check, cross)
 const CHECKMARK_DATA = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMTExODE4IiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBvbHlsaW5lIHBvaW50cz0iMjAgNiA5IDE3IDQgMTIiPjwvcG9seWxpbmU+PC9zdmc+";
@@ -41,6 +42,7 @@ export default function SignPdf() {
         const thumbs = await getPdfThumbnails(newFile, 1.5); // High quality for main stage
         setThumbnails(thumbs);
       } catch (e) {
+      trackError('Sign Pdf', 'processing_error');
         console.error(e);
         alert(`Failed to load PDF: ${e.message}`);
         setFile(null);
@@ -153,6 +155,7 @@ export default function SignPdf() {
       link.download = `signed_${file.name}`;
       link.click();
     } catch (err) {
+      trackError('Sign Pdf', 'processing_error');
       console.error(err);
       alert("Failed to export document. It might be encrypted or corrupted.");
     } finally {

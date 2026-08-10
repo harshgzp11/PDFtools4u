@@ -29,6 +29,7 @@ export default function PdfMerger() {
           thumbDataUrl: thumbs.length > 0 ? thumbs[0].dataUrl : null
         });
       } catch (err) {
+      trackError('Pdf Merger', 'processing_error');
         console.error("Could not generate thumbnail for", file.name, err);
         newFileObjects.push({
           id: Math.random().toString(36).substr(2, 9),
@@ -70,6 +71,8 @@ export default function PdfMerger() {
       const url = URL.createObjectURL(blob);
       
       setSuccessData({
+        originalSize: (typeof file !== 'undefined' && file?.size) || (typeof selectedFile !== 'undefined' && selectedFile?.size) || (typeof currentFile !== 'undefined' && currentFile?.size) || 0,
+        outputSize: (typeof newPdfBytes !== 'undefined' && newPdfBytes?.length) || (typeof pdfBytes !== 'undefined' && pdfBytes?.length) || (typeof blob !== 'undefined' && blob?.size) || (typeof outputBlob !== 'undefined' && outputBlob?.size) || 0,
         url,
         filename: 'merged_document.pdf',
         title: 'PDFs Merged Successfully!',

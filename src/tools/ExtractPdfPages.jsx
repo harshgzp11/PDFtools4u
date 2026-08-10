@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import { Download, FileUp, CheckCircle } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
+import { trackError } from '../lib/analytics';
 
 export default function ExtractPdfPages() {
   const [file, setFile] = useState(null);
@@ -20,6 +21,7 @@ export default function ExtractPdfPages() {
         const pdf = await PDFDocument.load(arrayBuffer);
         setPageCount(pdf.getPageCount());
       } catch (e) {
+      trackError('Extract Pdf Pages', 'processing_error');
         console.error(e);
       }
     }
@@ -68,12 +70,15 @@ export default function ExtractPdfPages() {
       const url = URL.createObjectURL(blob);
       
       setSuccessData({
+        originalSize: (typeof file !== 'undefined' && file?.size) || (typeof selectedFile !== 'undefined' && selectedFile?.size) || (typeof currentFile !== 'undefined' && currentFile?.size) || 0,
+        outputSize: (typeof newPdfBytes !== 'undefined' && newPdfBytes?.length) || (typeof pdfBytes !== 'undefined' && pdfBytes?.length) || (typeof blob !== 'undefined' && blob?.size) || (typeof outputBlob !== 'undefined' && outputBlob?.size) || 0,
         url,
         filename: `extracted_${file.name}`,
         title: 'Pages Extracted Successfully!',
         subtitle: 'Your new document is ready to download.',
       });
     } catch (err) {
+      trackError('Extract Pdf Pages', 'processing_error');
       console.error(err);
       alert("Failed to extract pages. The file might be encrypted or corrupted.");
     } finally {

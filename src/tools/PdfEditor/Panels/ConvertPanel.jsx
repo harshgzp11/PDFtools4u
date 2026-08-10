@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowLeftRight, Download, Loader2, X, AlertCircle, FileCode2, Info } from 'lucide-react';
 import { convertPdfToDocx, convertPdfToExcel, convertPdfToImages, convertPdfToPpt } from '../../../utils/pdfConversion';
+import { trackError } from '../../../lib/analytics';
 
 export default function ConvertPanel({ file, onClose }) {
   const [format, setFormat] = useState('docx');
@@ -42,6 +43,7 @@ export default function ConvertPanel({ file, onClose }) {
       setSuccessUrl(url);
       setSuccessFilename(filename);
     } catch (err) {
+      trackError('Convert Panel', 'processing_error');
       console.error(err);
       setError(err.message || "Failed to convert PDF. The PDF might be scanned or composed of vectors.");
     } finally {

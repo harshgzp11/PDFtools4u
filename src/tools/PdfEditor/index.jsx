@@ -17,6 +17,7 @@ const SignPanel = lazy(() => import('./Panels/SignPanel'));
 const AiPanel = lazy(() => import('./Panels/AiPanel'));
 
 import { generateId } from './utils';
+import { trackError } from '../../lib/analytics';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
@@ -168,6 +169,7 @@ export default function PdfEditor({
       setHistoryIndex(0);
       toast.success('PDF loaded successfully!');
     } catch (err) {
+      trackError('index', 'processing_error');
       console.error(err);
       toast.error('Failed to load PDF: ' + (err.message || 'Unknown error'));
       setFile(null);
@@ -268,6 +270,7 @@ export default function PdfEditor({
       
       toast.success('Document downloaded successfully!');
     } catch (err) {
+      trackError('index', 'processing_error');
       console.error(err);
       toast.error('Failed to export PDF.');
     } finally {

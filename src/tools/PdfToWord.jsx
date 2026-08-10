@@ -91,6 +91,7 @@ export default function PdfToWord() {
           
           setPreviewText(fullText.trim() || "No text detected. Scanned image pages will be converted into high-resolution pages in Word.");
         } catch (err) {
+      trackError('Pdf To Word', 'processing_error');
           console.error("Preview extraction notice:", err);
         }
       };
@@ -134,6 +135,8 @@ export default function PdfToWord() {
       document.body.removeChild(link);
 
       setSuccessData({
+        originalSize: (typeof file !== 'undefined' && file?.size) || (typeof selectedFile !== 'undefined' && selectedFile?.size) || (typeof currentFile !== 'undefined' && currentFile?.size) || 0,
+        outputSize: (typeof newPdfBytes !== 'undefined' && newPdfBytes?.length) || (typeof pdfBytes !== 'undefined' && pdfBytes?.length) || (typeof blob !== 'undefined' && blob?.size) || (typeof outputBlob !== 'undefined' && outputBlob?.size) || 0,
         url: downloadUrl,
         filename: outputFilename,
         title: 'Conversion Complete',
@@ -142,6 +145,7 @@ export default function PdfToWord() {
           : 'Your PDF text has been successfully structured into an editable Word document.',
       });
     } catch (err) {
+      trackError('Pdf To Word', 'processing_error');
       console.error("PDF to Word Error:", err);
       let errorType = 'conversion_failed';
       if (err.message?.toLowerCase().includes('password') || err.message?.toLowerCase().includes('encrypt')) {

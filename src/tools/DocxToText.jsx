@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import mammoth from 'mammoth';
 import { FileText, CheckCircle, Download, RefreshCw, Loader2, Copy } from 'lucide-react';
 import DragDropZone from '../components/ui/DragDropZone';
+import { trackError } from '../lib/analytics';
 
 export default function DocxToText() {
   const [file, setFile] = useState(null);
@@ -29,6 +30,7 @@ export default function DocxToText() {
         setExtractedText(result.value);
         setSuccess(true);
       } catch (err) {
+      trackError('Docx To Text', 'processing_error');
         console.error(err);
         alert("Failed to extract text from DOCX.");
         setFile(null);

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import mammoth from 'mammoth';
 import { Code, CheckCircle, Download, RefreshCw, Loader2, Copy, FileCode2 } from 'lucide-react';
 import DragDropZone from '../components/ui/DragDropZone';
+import { trackError } from '../lib/analytics';
 
 export default function DocxToHtml() {
   const [file, setFile] = useState(null);
@@ -30,6 +31,7 @@ export default function DocxToHtml() {
         setExtractedHtml(result.value);
         setSuccess(true);
       } catch (err) {
+      trackError('Docx To Html', 'processing_error');
         console.error(err);
         alert("Failed to extract HTML from DOCX.");
         setFile(null);

@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Trash2, ArrowLeft, ArrowRight } from 'lucide-react';
 import { generateId } from './utils';
+import { trackError } from '../../lib/analytics';
 
 export default function Canvas({
   pages,
@@ -487,6 +488,7 @@ function PageCanvasRenderer({ pdfJsDoc, pageIndex, width, height, rotation }) {
         
         await renderTask.promise;
       } catch (err) {
+      trackError('Canvas', 'processing_error');
         if (err.name !== 'RenderingCancelledException') {
           console.error("Error rendering page", err);
         }

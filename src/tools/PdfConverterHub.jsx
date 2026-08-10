@@ -3,6 +3,7 @@ import { ArrowLeftRight, FileText, Image as ImageIcon, FileCode2, ChevronDown, C
 import DragDropZone from '../components/ui/DragDropZone';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
+import { trackError } from '../lib/analytics';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
@@ -59,6 +60,7 @@ export default function PdfConverterHub() {
       
       setThumbnailUrl(canvas.toDataURL('image/jpeg', 0.8));
     } catch (err) {
+      trackError('Pdf Converter Hub', 'processing_error');
       console.error("Failed to generate PDF thumbnail", err);
     } finally {
       setIsGeneratingThumbnail(false);

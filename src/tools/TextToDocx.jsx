@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
 import { FileCode2, Download, RefreshCw, Loader2, FileText, CheckCircle } from 'lucide-react';
+import { trackError } from '../lib/analytics';
 
 export default function TextToDocx() {
   const [text, setText] = useState('');
@@ -48,6 +49,7 @@ export default function TextToDocx() {
       setOutputUrl(url);
       setSuccess(true);
     } catch (err) {
+      trackError('Text To Docx', 'processing_error');
       console.error(err);
       alert("Failed to generate DOCX document.");
     } finally {

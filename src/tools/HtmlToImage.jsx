@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { safeHtml2Canvas } from '../utils/canvasUtils';
 import { Download, Play } from 'lucide-react';
+import { trackError } from '../lib/analytics';
 
 export default function HtmlToImage() {
   const [htmlContent, setHtmlContent] = useState('<div style="padding: 40px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; text-align: center; font-family: sans-serif; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);">\n  <h1 style="margin: 0; font-size: 32px;">Hello World!</h1>\n  <p style="margin-top: 10px; opacity: 0.9;">Edit this HTML to generate a beautiful image.</p>\n</div>');
@@ -20,6 +21,7 @@ export default function HtmlToImage() {
       
       setImageResult(canvas.toDataURL('image/png'));
     } catch (err) {
+      trackError('Html To Image', 'processing_error');
       console.error(err);
       alert("Failed to render HTML to image.");
     } finally {

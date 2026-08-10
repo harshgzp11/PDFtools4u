@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import jsPDF from 'jspdf';
 import { Download, PlusCircle, Trash2, Image as ImageIcon, CheckCircle, ArrowLeft, ImagePlus, FileUp } from 'lucide-react';
 import DragDropZone from '../components/ui/DragDropZone';
+import { trackError } from '../lib/analytics';
 
 export default function JpgToPdf() {
   const [images, setImages] = useState([]);
@@ -85,6 +86,7 @@ export default function JpgToPdf() {
       link.download = 'converted_images.pdf';
       link.click();
     } catch (err) {
+      trackError('Jpg To Pdf', 'processing_error');
       console.error(err);
       alert("Failed to create PDF.");
     } finally {

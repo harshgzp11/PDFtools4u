@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FileSpreadsheet, AlertTriangle, Loader2 } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import { convertPdfToExcel } from '../utils/pdfConversion';
+import { trackError } from '../lib/analytics';
 
 export default function PdfToExcel() {
   const [file, setFile] = useState(null);
@@ -38,12 +39,15 @@ export default function PdfToExcel() {
       const url = URL.createObjectURL(blob);
 
       setSuccessData({
+        originalSize: (typeof file !== 'undefined' && file?.size) || (typeof selectedFile !== 'undefined' && selectedFile?.size) || (typeof currentFile !== 'undefined' && currentFile?.size) || 0,
+        outputSize: (typeof newPdfBytes !== 'undefined' && newPdfBytes?.length) || (typeof pdfBytes !== 'undefined' && pdfBytes?.length) || (typeof blob !== 'undefined' && blob?.size) || (typeof outputBlob !== 'undefined' && outputBlob?.size) || 0,
         url,
         filename: `${file.name.replace(/\.pdf$/i, '')}.xlsx`,
         title: 'Excel Spreadsheet Ready!',
         subtitle: 'Your PDF tabular data has been converted to an Excel (.xlsx) file.',
       });
     } catch (err) {
+      trackError('Pdf To Excel', 'processing_error');
       console.error(err);
       alert(err.message || "Failed to convert PDF to Excel format.");
     } finally {

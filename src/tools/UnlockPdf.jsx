@@ -46,6 +46,8 @@ export default function UnlockPdf() {
       const url = URL.createObjectURL(blob);
       
       setSuccessData({
+        originalSize: (typeof file !== 'undefined' && file?.size) || (typeof selectedFile !== 'undefined' && selectedFile?.size) || (typeof currentFile !== 'undefined' && currentFile?.size) || 0,
+        outputSize: (typeof newPdfBytes !== 'undefined' && newPdfBytes?.length) || (typeof pdfBytes !== 'undefined' && pdfBytes?.length) || (typeof blob !== 'undefined' && blob?.size) || (typeof outputBlob !== 'undefined' && outputBlob?.size) || 0,
         url,
         filename: `unlocked_${file.name}`,
         title: 'PDF Unlocked Successfully!',
@@ -54,6 +56,7 @@ export default function UnlockPdf() {
       });
       
     } catch (err) {
+      trackError('Unlock Pdf', 'processing_error');
       console.error("Unlock error:", err);
       let errorType = 'unknown_error';
       if (err.message && err.message.toLowerCase().includes('password')) {

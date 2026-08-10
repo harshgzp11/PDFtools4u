@@ -3,6 +3,7 @@ import { FileText } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import * as docx from 'docx-preview';
 import mammoth from 'mammoth';
+import { trackError } from '../lib/analytics';
 
 export default function WordToPdf() {
   const [file, setFile] = useState(null);
@@ -127,6 +128,7 @@ export default function WordToPdf() {
           });
           usedDocxPreview = true;
         } catch (docxErr) {
+      trackError('Word To Pdf', 'processing_error');
           console.warn("docx-preview parsing notice, attempting mammoth fallback:", docxErr);
         }
 
@@ -143,6 +145,7 @@ export default function WordToPdf() {
           container.innerHTML = wrapWithWordTheme(cleaned);
         }
       } catch (err) {
+      trackError('Word To Pdf', 'processing_error');
         console.error("Document preview error:", err);
       } finally {
         setIsLoadingPreview(false);
@@ -272,6 +275,8 @@ export default function WordToPdf() {
           }
 
           setSuccessData({
+        originalSize: (typeof file !== 'undefined' && file?.size) || (typeof selectedFile !== 'undefined' && selectedFile?.size) || (typeof currentFile !== 'undefined' && currentFile?.size) || 0,
+        outputSize: (typeof newPdfBytes !== 'undefined' && newPdfBytes?.length) || (typeof pdfBytes !== 'undefined' && pdfBytes?.length) || (typeof blob !== 'undefined' && blob?.size) || (typeof outputBlob !== 'undefined' && outputBlob?.size) || 0,
             url: null, // No blob URL needed since browser handled local save
             filename: file.name.replace(/\.docx?$/i, '') + '.pdf',
             title: 'Document Ready',
@@ -283,6 +288,7 @@ export default function WordToPdf() {
       }, 500);
 
     } catch (err) {
+      trackError('Word To Pdf', 'processing_error');
       console.error("Word to PDF Error:", err);
       alert(`Conversion error: ${err.message || 'Failed to process document'}`);
       setIsProcessing(false);

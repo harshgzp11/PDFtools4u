@@ -4,6 +4,7 @@ import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
 import pptxgen from 'pptxgenjs';
+import { trackError } from '../lib/analytics';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
@@ -81,12 +82,15 @@ export default function PdfToPpt() {
       const url = URL.createObjectURL(blob);
       
       setSuccessData({
+        originalSize: (typeof file !== 'undefined' && file?.size) || (typeof selectedFile !== 'undefined' && selectedFile?.size) || (typeof currentFile !== 'undefined' && currentFile?.size) || 0,
+        outputSize: (typeof newPdfBytes !== 'undefined' && newPdfBytes?.length) || (typeof pdfBytes !== 'undefined' && pdfBytes?.length) || (typeof blob !== 'undefined' && blob?.size) || (typeof outputBlob !== 'undefined' && outputBlob?.size) || 0,
         url,
         filename: `${file.name.replace('.pdf', '')}_converted.pptx`,
         title: 'Conversion Successful!',
         subtitle: 'Your PDF has been converted to a native PowerPoint presentation.',
       });
     } catch (err) {
+      trackError('Pdf To Ppt', 'processing_error');
       console.error(err);
       alert("Failed to convert PDF to PPT.");
     } finally {

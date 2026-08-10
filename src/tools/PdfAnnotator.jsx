@@ -6,6 +6,7 @@ import * as pdfjsLib from 'pdfjs-dist';
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import SignatureCanvas from 'react-signature-canvas';
+import { trackError } from '../lib/analytics';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
@@ -58,6 +59,7 @@ export default function PdfAnnotator() {
       setPageDrawings({});
       setTextAnnotations({});
     } catch (err) {
+      trackError('Pdf Annotator', 'processing_error');
       console.error(err);
       toast.error("Failed to read the PDF.");
       setFile(null);
@@ -112,6 +114,7 @@ export default function PdfAnnotator() {
           
           setTimeout(() => loadCurrentPageDrawing(currentPage), 50);
         } catch(e) {
+      trackError('Pdf Annotator', 'processing_error');
           if (e.name !== 'RenderingCancelledException') {
              console.error(e);
           }
@@ -245,6 +248,7 @@ export default function PdfAnnotator() {
         
         toast.success("Annotated PDF downloaded successfully!");
       } catch (err) {
+      trackError('Pdf Annotator', 'processing_error');
         console.error(err);
         toast.error("Failed to export annotated PDF.");
       } finally {

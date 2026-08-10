@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import { Layers3 } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
+import { trackError } from '../lib/analytics';
 
 export default function FlattenPdf() {
   const [file, setFile] = useState(null);
@@ -40,12 +41,15 @@ export default function FlattenPdf() {
       const url = URL.createObjectURL(blob);
       
       setSuccessData({
+        originalSize: (typeof file !== 'undefined' && file?.size) || (typeof selectedFile !== 'undefined' && selectedFile?.size) || (typeof currentFile !== 'undefined' && currentFile?.size) || 0,
+        outputSize: (typeof newPdfBytes !== 'undefined' && newPdfBytes?.length) || (typeof pdfBytes !== 'undefined' && pdfBytes?.length) || (typeof blob !== 'undefined' && blob?.size) || (typeof outputBlob !== 'undefined' && outputBlob?.size) || 0,
         url,
         filename: `flattened_${file.name}`,
         title: 'PDF is now flattened!',
         subtitle: 'Your uneditable document is ready to download.',
       });
     } catch (err) {
+      trackError('Flatten Pdf', 'processing_error');
       console.error(err);
       alert("Failed to flatten PDF. The file might be encrypted or corrupted.");
     } finally {
