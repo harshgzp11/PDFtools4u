@@ -293,45 +293,47 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
         </div>
       </section>
 
-      {/* Universal Document Converter Banner - Clean Light Style */}
+      {/* Universal Document Converter Banner - Premium Dark Style */}
       <div className="w-full flex justify-center items-center px-4 md:px-8 mb-16">
         <div 
           onClick={() => onSelectTool('pdf-converter')}
-          className="group relative w-full max-w-7xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white rounded-3xl p-8 sm:p-10 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden transform hover:-translate-y-0.5"
+          className="group relative w-full max-w-7xl bg-gradient-to-br from-indigo-900 via-indigo-800 to-blue-900 rounded-[2rem] p-8 sm:p-12 shadow-2xl hover:shadow-[0_20px_40px_-15px_rgba(79,70,229,0.5)] transition-all duration-300 cursor-pointer overflow-hidden border border-indigo-700/50"
         >
-          {/* Decorative subtle background pattern */}
-          <div className="absolute top-0 right-0 -mt-10 -mr-10 w-80 h-80 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+          {/* Decorative background elements */}
+          <div className="absolute top-0 right-0 -mr-20 -mt-20 w-72 h-72 bg-indigo-500 rounded-full mix-blend-overlay filter blur-[64px] opacity-60 animate-pulse"></div>
+          <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-72 h-72 bg-blue-400 rounded-full mix-blend-overlay filter blur-[64px] opacity-60"></div>
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay pointer-events-none"></div>
           
           <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="flex-1 text-center md:text-left">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/20 text-white text-xs font-bold uppercase tracking-wider rounded-full backdrop-blur-sm mb-4">
-                <Sparkles className="w-3.5 h-3.5 text-amber-300" /> All-In-One Document Suite
+            <div className="flex-1 text-center md:text-left flex flex-col gap-3">
+              <div className="inline-flex items-center justify-center md:justify-start gap-2 text-indigo-200 text-sm mb-1">
+                <Sparkles className="w-4 h-4 text-amber-300" /> All-In-One Document Suite
               </div>
               
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white mb-3 tracking-tight">
+              <h2 className="text-3xl sm:text-4xl font-semibold text-white leading-tight">
                 Universal Document Converter
               </h2>
-              <p className="text-blue-100 text-base mb-6 leading-relaxed max-w-xl mx-auto md:mx-0">
+              <p className="text-indigo-100/90 text-lg mb-4 leading-relaxed max-w-xl mx-auto md:mx-0">
                 Convert PDFs, Images, Word, Excel, PowerPoint, and Text instantly in your browser.
               </p>
               
               <div className="flex items-center justify-center md:justify-start gap-4">
-                <span className="bg-white text-blue-700 px-6 py-3 rounded-xl font-bold text-sm hover:bg-blue-50 transition-all flex items-center gap-2 shadow-sm group-hover:gap-3">
-                  Open Converter <ArrowRight className="w-4 h-4 text-blue-600 transition-all" />
+                <span className="bg-white hover:bg-gray-50 text-indigo-900 px-8 py-3.5 rounded-2xl font-semibold transition-all duration-300 shadow-lg flex items-center gap-3 group-hover:scale-105 active:scale-95">
+                  Open Converter <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </span>
               </div>
             </div>
 
-            <div className="flex-shrink-0 flex items-center justify-center relative">
-              <div className="relative bg-white/10 p-6 rounded-2xl backdrop-blur-md border border-white/20">
-                <ArrowLeftRight className="w-14 h-14 text-white" />
-                <div className="absolute -bottom-2 -left-2 w-9 h-9 rounded-full border-2 border-white bg-rose-500 flex items-center justify-center text-white shadow-md">
+            <div className="flex-shrink-0 flex items-center justify-center relative mt-4 md:mt-0">
+              <div className="relative bg-white/10 p-8 rounded-3xl backdrop-blur-md border border-white/20 shadow-xl group-hover:scale-105 transition-transform duration-300">
+                <ArrowLeftRight className="w-16 h-16 text-white" />
+                <div className="absolute -bottom-3 -left-3 w-10 h-10 rounded-full border-2 border-white bg-rose-500 flex items-center justify-center text-white shadow-lg">
                   <FileText className="w-4 h-4" />
                 </div>
-                <div className="absolute -top-2 -right-2 w-9 h-9 rounded-full border-2 border-white bg-emerald-500 flex items-center justify-center text-white shadow-md">
+                <div className="absolute -top-3 -right-3 w-10 h-10 rounded-full border-2 border-white bg-emerald-500 flex items-center justify-center text-white shadow-lg">
                   <FileSpreadsheet className="w-4 h-4" />
                 </div>
-                <div className="absolute -bottom-2 -right-2 w-9 h-9 rounded-full border-2 border-white bg-amber-500 flex items-center justify-center text-white shadow-md">
+                <div className="absolute -bottom-3 -right-3 w-10 h-10 rounded-full border-2 border-white bg-amber-500 flex items-center justify-center text-white shadow-lg">
                   <ImageIcon className="w-4 h-4" />
                 </div>
               </div>
