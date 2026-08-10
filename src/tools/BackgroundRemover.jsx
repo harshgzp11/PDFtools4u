@@ -182,7 +182,11 @@ export default function BackgroundRemover() {
       setStatusText('Done!');
     } catch (err) {
       console.error(err);
-      trackError('Background Remover', err?.message || 'unknown_error');
+      let errorType = 'background_removal_failed';
+      if (err.message?.toLowerCase().includes('memory') || err.message?.toLowerCase().includes('too large')) {
+         errorType = 'file_too_large';
+      }
+      trackError('Background Remover', errorType);
       alert(`Failed to remove background: ${err.message || 'Unknown error'}. Try a different image or mode.`);
     } finally {
       setLoading(false);

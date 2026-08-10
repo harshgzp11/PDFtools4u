@@ -77,7 +77,9 @@ export default function PdfMerger() {
       });
     } catch (err) {
       console.error(err);
-      trackError('Merge PDF', err?.message || 'unknown_error');
+      let errorType = 'merge_failed';
+      if (err.message?.toLowerCase().includes('encrypt')) errorType = 'encrypted_file';
+      trackError('Merge PDF', errorType);
       alert("Failed to merge PDFs. One of the files might be encrypted or corrupted.");
     } finally {
       setLoading(false);
