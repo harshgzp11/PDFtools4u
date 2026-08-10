@@ -156,15 +156,24 @@ export const SEO_CONTENT = {
       "Click Unlock: Select 'Remove Password' to strip away encryption layers.",
       "Download: Save your unencrypted, fully accessible PDF document."
     ],
+<<<<<<< HEAD
     "why": "Official files like bank statements and salary slips come encrypted with default passwords that prevent editing, printing, or uploading to official portal forms. Our unlock tool permanently removes restrictions so you can view, print, or convert your documents without re-entering passwords every time.",
+=======
+    "why": "Official files like e-Aadhaar PDFs, bank statements, and salary slips come encrypted with default passwords that prevent editing, printing, or uploading to official portal forms. Our unlock tool permanently removes restrictions so you can view, print, or convert your documents without re-entering passwords every time.",
+>>>>>>> 084dc24babcb8bfe27b72f9d9bd9a82ea4c5d789
     "features": [
       "100% Secure & Private Processing: Decryption occurs entirely on your device browser.",
       "Data Protection: Your passwords and sensitive identity documents remain 100% private and are never saved or shared."
     ],
     "faq": [
       {
+<<<<<<< HEAD
         "q": "How do I remove the password from a PDF permanently?",
         "a": "Upload your document, type your password once, and download an unlocked PDF that opens freely."
+=======
+        "q": "How do I remove the password from an e-Aadhaar PDF permanently?",
+        "a": "Upload your e-Aadhaar, type your 8-character password combination once, and download an unlocked PDF that opens freely."
+>>>>>>> 084dc24babcb8bfe27b72f9d9bd9a82ea4c5d789
       },
       {
         "q": "Is it legal to remove passwords from my own PDF files?",
