@@ -72,7 +72,7 @@ export default function AboutUs() {
                   Advanced PDF Utilities
                 </h3>
                 <p className="text-sm text-gray-600 leading-relaxed">
-                  A comprehensive toolkit built to organize, optimize, and secure your files. From high-speed PDF compression tools optimized for Indian portal limits (like UPSC, SSC, and EPFO) to Aadhaar card PDF converters, we handle your documentation challenges effortlessly with our <strong className="text-gray-900 font-semibold">secure PDF processing tools</strong> and <strong className="text-gray-900 font-semibold">secure file converter</strong>.
+                  A comprehensive toolkit built to organize, optimize, and secure your files. From high-speed PDF compression tools optimized for Indian portal limits (like UPSC, SSC, and EPFO) to advanced PDF converters, we handle your documentation challenges effortlessly with our <strong className="text-gray-900 font-semibold">secure PDF processing tools</strong> and <strong className="text-gray-900 font-semibold">secure file converter</strong>.
                 </p>
               </div>
               <div className="mt-6 pt-4 border-t border-gray-100 flex items-center gap-2 text-xs font-semibold text-blue-600">

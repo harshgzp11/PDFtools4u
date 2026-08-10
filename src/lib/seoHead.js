@@ -99,9 +99,9 @@ export const SEO_HEAD = {
   // ═══════════════════════════════════════════
   'pdf-to-jpg': {
     title: 'PDF to JPG Converter Free Online — High Quality 300 DPI | PDFTools4U',
-    description: 'Convert PDF pages to high-quality JPG images at 300 DPI. Perfect for Aadhaar, PAN card & marksheet conversions. Free, private, no watermarks.',
+    description: 'Convert PDF pages to high-quality JPG images at 300 DPI. Perfect for passports, invoices & marksheet conversions. Free, private, no watermarks.',
     h1: 'Convert PDF to JPG — High Resolution 300 DPI Images',
-    keywords: ['pdf to jpg converter free', 'convert pdf to image', 'pdf to jpg 300 dpi', 'aadhaar pdf to jpg'],
+    keywords: ['pdf to jpg converter free', 'convert pdf to image', 'pdf to jpg 300 dpi', 'passport pdf to jpg'],
   },
   'pdf-to-png': {
     title: 'PDF to PNG Converter Free Online — Lossless Quality | PDFTools4U',
@@ -185,9 +185,9 @@ export const SEO_HEAD = {
   // ═══════════════════════════════════════════
   'unlock-pdf': {
     title: 'Unlock PDF — Remove Password Protection Free | PDFTools4U',
-    description: 'Remove passwords from encrypted PDF files like e-Aadhaar, bank statements & salary slips. Unlock locally in your browser. No file uploads needed.',
+    description: 'Remove passwords from encrypted PDF files like bank statements & salary slips. Unlock locally in your browser. No file uploads needed.',
     h1: 'Unlock PDF — Remove Password Protection Permanently',
-    keywords: ['unlock pdf online free', 'remove pdf password', 'remove e-aadhaar password', 'unlock encrypted pdf'],
+    keywords: ['unlock pdf online free', 'remove pdf password', 'unlock encrypted pdf'],
   },
   'protect-pdf': {
     title: 'Protect PDF with Password — Encrypt Free | PDFTools4U',
@@ -351,7 +351,7 @@ export const SEO_HEAD = {
   // ═══════════════════════════════════════════
   'blog': {
     title: 'Blog & Guides — PDF Tips, Tutorials & How-To Articles | PDFTools4U',
-    description: 'Expert guides on compressing PDFs for exam portals, converting Aadhaar to JPG, extracting bank statements to Excel & more. Actionable tutorials.',
+    description: 'Expert guides on compressing PDFs for exam portals, extracting bank statements to Excel & more. Actionable tutorials.',
     h1: 'Blog & Guides',
     keywords: ['pdf tips', 'pdf tutorials', 'how to compress pdf', 'pdf conversion guide'],
   },
