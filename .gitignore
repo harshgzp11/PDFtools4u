@@ -83,3 +83,10 @@ empty_slides_test.pdf
 /*.csv
 /*.txt
 /*.zip
+check_error.cjs
+*.cjs
+*.mjs
+playwright-report/
+test-results/
+.vercel/
+.netlify/
