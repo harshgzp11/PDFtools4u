@@ -225,12 +225,12 @@ Once your Aadhaar is unlocked, you can:
   },
   {
     id: "pan-card-pdf-to-jpg-converter",
-    title: "How to Convert PAN Card PDF to JPG for KYC Uploads",
+    title: "How to Convert PAN Card PDF to JPG for Bank & Demat KYC Uploads",
     cluster: "Government & ID",
     excerpt: "Convert your digital PAN card PDF into a high-quality JPG image for seamless KYC uploads across banks, mutual funds, and demat account portals.",
     date: "August 5, 2026",
     author: "PDFTools4U Team",
-    coverImage: "https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?auto=format&fit=crop&q=80&w=1000",
+    coverImage: "/images/pan-card-bloglogo.png",
     targetToolUrl: "pdf-to-jpg",
     published: true,
     customSchema: {
@@ -257,62 +257,93 @@ Once your Aadhaar is unlocked, you can:
       ]
     },
     content: `
-When opening a bank account, demat account, or mutual fund investment, you'll almost always need to upload your PAN card as a **JPG or PNG image** — not as a PDF. The problem? The Income Tax Department's e-PAN and digital PAN downloads are always delivered as PDF files.
+When opening a bank account, Zerodha/Groww Demat account, or mutual fund portfolio, financial portals always require you to upload your PAN card as a JPG or PNG image — not as a PDF file.
 
-Here's how to convert your PAN card PDF to a high-quality JPG in under 30 seconds.
+However, digital e-PAN copies downloaded from official government portals are strictly delivered as password-protected PDF files.
 
----
+Here is how to convert your e-PAN PDF to a high-resolution JPG image in under 30 seconds without compromising your private financial data.
 
-> **Quick Convert:** Drag your PAN card PDF into our **[PDF to JPG Converter](/pdf-to-jpg)**, select **300 DPI**, and download your KYC-ready image.
+### Where to Download Your Official e-PAN PDF
 
----
-
-### Where to Get Your Digital PAN Card PDF
-
-If you don't have your PAN card PDF, you can download it from:
+If you haven't downloaded your digital copy yet, obtain your official e-PAN PDF from these authorized portals:
 - **Income Tax e-Filing Portal** (incometax.gov.in) → Profile → PAN Details
-- **NSDL e-PAN Portal** (onlineservices.nsdl.com) → Download e-PAN
-- **UTIITSL Portal** → PAN Card Services
+- **NSDL / Protean e-PAN Portal** (onlineservices.nsdl.com) → Download e-PAN
+- **UTIITSL Portal** → PAN Card Services → Download e-PAN
 
-The downloaded file is typically a password-protected PDF. The password is usually your **date of birth in DDMMYYYY format** (e.g., 15071995).
+> **Note on Password Protection:** The downloaded file will be protected. The e-PAN PDF password format is always your Date of Birth in DDMMYYYY format (e.g., if born on July 15, 1995, your password is 15071995).
 
-### Conversion Steps
+### Step-by-Step: Convert e-PAN PDF to JPG (Client-Side & Private)
 
-1. **Open the Converter:** Navigate to our [PDF to JPG](/pdf-to-jpg) tool.
-2. **Upload the PAN PDF:** Drag your downloaded PAN card PDF into the upload area.
-3. **Enter Password (if prompted):** Type your date of birth in DDMMYYYY format.
-4. **Select Quality:** Choose **High Quality (300 DPI)** — this ensures the PAN number, photo, and signature are sharp enough for automated verification systems.
-5. **Download:** Save the JPG to your device.
+1. **Open the Tool:** Go to our [PDF to JPG Converter](/pdf-to-jpg) page.
+2. **Upload Your File:** Drag and drop your downloaded e-PAN PDF into the converter window.
+3. **Enter e-PAN Password:** Type your birth date in DDMMYYYY format when prompted.
+4. **Select High Quality (300 DPI):** Choose **300 DPI** resolution to ensure the PAN number, photograph, signature, and QR code remain sharp for automated OCR verification systems.
+5. **Download JPG:** Save the converted JPG image directly to your device.
 
-### KYC Portal Requirements
+### KYC Portal Image Requirements (Quick Reference)
 
-| Portal Type | Accepted Formats | Max Size | Min Resolution |
-|---|---|---|---|
-| Bank KYC | JPG, PNG | 500KB - 2MB | 200 DPI |
-| Demat Account | JPG, JPEG | 500KB | 200 DPI |
-| Mutual Fund KYC | JPG, PDF | 1MB | 150 DPI |
-| Insurance KYC | JPG, PNG, PDF | 2MB | Any |
+| Portal / Platform | Accepted Formats | File Size Limit | Recommended DPI | Required Security Action |
+|---|---|---|---|---|
+| Bank KYC (SBI, HDFC, ICICI) | JPG, PNG | 500KB – 2MB | 200 – 300 DPI | Cross-Sign Across Image |
+| Demat Accounts (Zerodha, Groww) | JPG, JPEG | Under 500KB | 300 DPI | Must be Self-Attested |
+| Mutual Fund KYC (CAMS, KFintech) | JPG, PDF | Under 1MB | 150 – 300 DPI | Clear Visible Signature |
+| Insurance Portals | JPG, PNG, PDF | Under 2MB | 200 DPI | Cross-Sign Date/Purpose |
 
-### If Your JPG Is Too Large
+### 🛡️ 3 Critical Security Tips for KYC Uploads
 
-After converting at 300 DPI, if the resulting JPG exceeds the portal's size limit, run it through our [Compress Image](/compress-image) tool to reduce the file size while keeping it sharp.
+1. **Enforce the "Self-Attestation" Rule:** For stock brokers like Zerodha, a plain photo of a PAN is often rejected. You should print the PAN card, sign it manually at the bottom with the text "For Zerodha KYC only", and then upload that clear photo.
+2. **"Zero-Log" Architecture:** Since our tool runs locally on your browser (WebAssembly environment), no upload server logs are created. Your critical financial PAN alphanumeric string never hits an external cloud database.
+3. **Warning Against Public Systems:** **Never** convert your PAN card or Aadhaar card PDFs using shared public computer terminals (like cyber cafes) where local download files can be stolen from browser cache records.
 
-### Privacy & Security
+### What to Do If Your Converted JPG Is Too Large
 
-Your PAN card contains your **Permanent Account Number** — one of the most sensitive pieces of financial identity in India. Our converter runs **100% in your browser**. The PDF never leaves your device, and zero data is logged or stored.
+If your converted 300 DPI JPG exceeds portal limits (e.g., Zerodha requiring an image **under 500KB**), use our [Compress Image Tool](/compress-image) to reduce the file size to exact KB targets without losing clarity on your PAN text and photo.
+
+### 100% Private & DPDP Act Compliant
+
+Your Permanent Account Number (PAN) is critical financial identity data. Unlike conventional online converters that upload files to external cloud servers, PDFTools4U processes everything locally inside your web browser.
+- Zero bytes uploaded to external servers.
+- No data retention, logging, or tracking.
+- 100% compliant with India's Digital Personal Data Protection (DPDP) standards.
 
 ---
 
-### Frequently Asked Questions
+### Frequently Asked Questions (FAQ)
 
-* **Is it safe to convert my PAN card online?**
-  Yes, PDFTools4U processes files locally in your browser. Your PAN card is never uploaded to any server.
+<details>
+  <summary>Is it safe to convert my PAN card PDF online?</summary>
+  <div className="pb-5 text-gray-600 leading-relaxed">
+    Yes. PDFTools4U executes file processing completely on your client-side browser using WebAssembly technology. Your e-PAN never leaves your phone or computer.
+  </div>
+</details>
 
-* **What DPI should I use for PAN card KYC?**
-  300 DPI ensures all text, the hologram area, and the photo remain crisp enough for automated KYC verification systems.
+<details>
+  <summary>What is the e-PAN PDF password format?</summary>
+  <div className="pb-5 text-gray-600 leading-relaxed">
+    The password to open an e-PAN PDF is your Date of Birth in DDMMYYYY format (for individuals) or Date of Incorporation (for companies/LLPs) without any dashes or spaces.
+  </div>
+</details>
 
-* **My PAN PDF is password-protected. What do I do?**
-  Use our [Unlock PDF](/unlock-pdf) tool first to remove the password, then convert to JPG. Or enter the password directly when prompted by the converter.
+<details>
+  <summary>What should I do if my PAN card upload fails on Zerodha or Groww?</summary>
+  <div className="pb-5 text-gray-600 leading-relaxed">
+    Upload failures usually happen because the file is still in PDF format, password-protected, or exceeds 500KB. Converting the PDF to a 300 DPI JPG and compressing it under 500KB will resolve the issue.
+  </div>
+</details>
+
+<details>
+  <summary>Why does my e-PAN PDF say "Password Incorrect" even when I type my real birthdate?</summary>
+  <div className="pb-5 text-gray-600 leading-relaxed">
+    If your individual birthday (DDMMYYYY) fails, check your PAN application status. For corporate accounts, Partnerships, or LLPs, the password format is the Date of Incorporation/Formation. Additionally, make sure you are not adding any spaces, hyphens, or slashes between the numbers.
+  </div>
+</details>
+
+<details>
+  <summary>How do I know if my converted PAN card JPG resolution is high enough for automated KYC scanners?</summary>
+  <div className="pb-5 text-gray-600 leading-relaxed">
+    Automated KYC portals use OCR (Optical Character Recognition) robots to instantly read your document data. To ensure approval, open your converted JPG image and zoom in on your PAN number, photograph, and signature box. If the text is sharp and readable without pixelation, your 300 DPI conversion is perfect for automated onboarding scanners.
+  </div>
+</details>
 `
   },
   {

@@ -37,6 +37,7 @@
     "react-markdown": "^10.1.0",
     "react-rnd": "^10.5.3",
     "react-signature-canvas": "^1.1.0-alpha.2",
+    "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
     "rtf.js": "^3.0.9",
     "sonner": "^2.0.7",
