@@ -4,6 +4,7 @@ import remarkGfm from 'remark-gfm';
 import { ArrowLeft, Calendar, User, Clock, ArrowRight, Zap, Folder, ShieldCheck, Share2 } from 'lucide-react';
 import { BLOG_POSTS } from '../lib/blogData';
 import { DOMAINS } from '../lib/toolConfig';
+import { trackEvent } from '../lib/analytics';
 
 export default function BlogPost({ id, onNavigate }) {
   const post = BLOG_POSTS.find(p => p.id === id);
@@ -139,7 +140,13 @@ export default function BlogPost({ id, onNavigate }) {
             </p>
           </div>
           <button 
-            onClick={() => onNavigate(targetTool.id)}
+            onClick={() => {
+              trackEvent('blog_cta_click', {
+                blog_slug: id,
+                target_tool: targetTool.id,
+              });
+              onNavigate(targetTool.id);
+            }}
             className="group flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-bold transition-all w-full md:w-auto shadow-md shadow-indigo-200"
           >
             Launch Tool <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

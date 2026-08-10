@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FileCode2 } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
+import { trackError } from '../lib/analytics';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
 import { convertPdfToDocx } from '../utils/pdfConversion';
@@ -142,6 +143,7 @@ export default function PdfToWord() {
       });
     } catch (err) {
       console.error("PDF to Word Error:", err);
+      trackError('PDF to Word', err?.message || 'unknown_error');
       alert(`Conversion error: ${err.message || 'Failed to process document'}`);
     } finally {
       setIsProcessing(false);

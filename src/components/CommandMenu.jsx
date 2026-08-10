@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, Zap, LayoutDashboard, ChevronRight, X, Sparkles } from 'lucide-react';
 import { searchToolsFuzzy } from '../lib/fuzzySearch';
+import { trackEvent } from '../lib/analytics';
 
 export default function CommandMenu({ onSelectTool }) {
   const [open, setOpen] = useState(false);
@@ -56,6 +57,10 @@ export default function CommandMenu({ onSelectTool }) {
       e.preventDefault();
       if (results.length > 0 && selectedIndex < results.length) {
         const selectedTool = results[selectedIndex];
+        trackEvent('search_executed', {
+          search_term: query,
+          selected_tool: selectedTool.id,
+        });
         onSelectTool(selectedTool.id);
         setOpen(false);
       }
@@ -133,6 +138,10 @@ export default function CommandMenu({ onSelectTool }) {
                   <div
                     key={tool.id}
                     onClick={() => {
+                      trackEvent('search_executed', {
+                        search_term: query,
+                        selected_tool: tool.id,
+                      });
                       onSelectTool(tool.id);
                       setOpen(false);
                     }}

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FileArchive, Minimize, Scissors, ListOrdered, RefreshCw, Loader2 } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import { compressPdfToTarget } from '../utils/pdfCompression';
+import { trackError } from '../lib/analytics';
 export default function CompressPdf() {
   const [file, setFile] = useState(null);
   
@@ -58,6 +59,7 @@ export default function CompressPdf() {
       setSuccessData({
         url,
         filename: `compressed_${file.name}`,
+        outputSize: blob.size,
         title: 'PDF Compressed Successfully!',
         subtitle: 'We significantly reduced your file size.',
         statsComponent: (
@@ -119,6 +121,7 @@ export default function CompressPdf() {
       });
     } catch (err) {
       console.error(err);
+      trackError('Compress PDF', err?.message || 'unknown_error');
       alert("Failed to compress document. It might be encrypted or corrupted.");
     } finally {
       setIsProcessing(false);
