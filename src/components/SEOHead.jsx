@@ -88,7 +88,7 @@ export default function SEOHead({ activeTool }) {
 
     // ─── Resolve metadata ────────────────────────────────────
 
-    let title, description, canonicalUrl, ogImage, ogType;
+    let title, description, canonicalUrl, ogImage, ogType, noindex;
 
     if (isBlogPost) {
       const slug = activeTool.split('/')[1];
@@ -98,6 +98,7 @@ export default function SEOHead({ activeTool }) {
       canonicalUrl = `${BASE_URL}/${activeTool}`;
       ogImage = post?.coverImage || OG_IMAGE;
       ogType = 'article';
+      noindex = post?.noindex || false;
     } else if (isBlogList) {
       const seoData = SEO_HEAD['blog'];
       title = seoData?.title || `Blog — ${SITE_NAME}`;
@@ -105,6 +106,7 @@ export default function SEOHead({ activeTool }) {
       canonicalUrl = `${BASE_URL}/blog`;
       ogImage = OG_IMAGE;
       ogType = 'website';
+      noindex = seoData?.noindex || false;
     } else if (activeTool) {
       const seoData = SEO_HEAD[activeTool] || HOMEPAGE_SEO;
       title = seoData.title;
@@ -112,12 +114,14 @@ export default function SEOHead({ activeTool }) {
       canonicalUrl = `${BASE_URL}/${activeTool}`;
       ogImage = OG_IMAGE;
       ogType = 'website';
+      noindex = seoData.noindex || false;
     } else {
       title = HOMEPAGE_SEO.title;
       description = HOMEPAGE_SEO.description;
       canonicalUrl = BASE_URL;
       ogImage = OG_IMAGE;
       ogType = 'website';
+      noindex = HOMEPAGE_SEO.noindex || false;
     }
 
     // ─── 1. Inject Meta Tags ─────────────────────────────────
@@ -125,6 +129,10 @@ export default function SEOHead({ activeTool }) {
     document.title = title;
     setMeta('name', 'description', description);
     setLink('canonical', canonicalUrl);
+    
+    if (noindex) {
+      setMeta('name', 'robots', 'noindex, nofollow');
+    }
 
     // Open Graph
     setMeta('property', 'og:title', title);

@@ -366,6 +366,7 @@ export const SEO_HEAD = {
     description: 'Get in touch with the PDFTools4U team. Report issues, suggest features or ask questions about our free, private browser-based PDF & image tools.',
     h1: 'Contact Us',
     keywords: ['contact pdftools4u', 'pdftools4u support'],
+    noindex: true,
   },
   'privacy': {
     title: 'Privacy Policy — PDFTools4U',

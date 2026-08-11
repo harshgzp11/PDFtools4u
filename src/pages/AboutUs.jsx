@@ -23,7 +23,15 @@ export default function AboutUs() {
   const handleNavigateContact = (e) => {
     e.preventDefault();
     window.history.pushState({}, "", "/contact");
-    window.dispatchEvent(new Event('popstate'));
+    const navEvent = new PopStateEvent('popstate');
+    window.dispatchEvent(navEvent);
+  };
+
+  const handleEmailClick = (e) => {
+    e.preventDefault();
+    const user = "pdftools4u.official";
+    const domain = "gmail.com";
+    window.location.href = `mailto:${user}@${domain}`;
   };
 
   return (
@@ -192,25 +200,24 @@ export default function AboutUs() {
             </p>
 
             <p className="text-gray-600 text-sm">
-              Have feedback or a tool suggestion? Reach out directly via our <a href="/contact" onClick={handleNavigateContact} className="text-blue-600 hover:underline font-semibold">Contact Us</a> page or email us at <a href="mailto:pdftools4u.official@gmail.com" className="text-blue-600 hover:underline font-semibold">pdftools4u.official@gmail.com</a>.
+              Have feedback or a tool suggestion? Reach out directly via our <a href="/contact" onClick={handleNavigateContact} className="text-blue-600 hover:underline font-semibold">Contact Us</a> page or email our support team directly.
             </p>
 
             <div className="pt-2 flex flex-wrap items-center justify-center md:justify-start gap-3">
-              <a
-                href="/contact"
+              <button
                 onClick={handleNavigateContact}
                 className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl shadow-sm transition-all"
               >
                 <span>Contact Us</span>
                 <ArrowRight className="w-4 h-4" />
-              </a>
-              <a
-                href="mailto:pdftools4u.official@gmail.com"
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 font-semibold text-sm rounded-xl shadow-xs transition-all"
+              </button>
+              <button
+                onClick={handleEmailClick}
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 font-semibold text-sm rounded-xl shadow-xs transition-all cursor-pointer"
               >
                 <Mail className="w-4 h-4 text-blue-600" />
-                <span>pdftools4u.official@gmail.com</span>
-              </a>
+                <span>Email Support</span>
+              </button>
             </div>
           </div>
         </section>

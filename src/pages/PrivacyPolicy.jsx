@@ -1,6 +1,13 @@
 import React from 'react';
 
 export default function PrivacyPolicy() {
+  const handleEmailClick = (e) => {
+    e.preventDefault();
+    const user = "pdftools4u.official";
+    const domain = "gmail.com";
+    window.location.href = `mailto:${user}@${domain}`;
+  };
+
   return (
     <div className="w-full h-full overflow-y-auto custom-scrollbar bg-gray-50/50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto bg-white border border-gray-200/80 rounded-2xl shadow-sm p-6 sm:p-10 text-gray-800 animate-in fade-in">
@@ -97,7 +104,7 @@ export default function PrivacyPolicy() {
               If you have any questions or concerns regarding this policy, you may contact us for privacy inquiries:
             </p>
             <ul className="space-y-2">
-              <li><strong>Email:</strong> <a href="mailto:pdftools4u.official@gmail.com" className="text-blue-600 hover:underline">pdftools4u.official@gmail.com</a></li>
+              <li><strong>Email:</strong> <button onClick={handleEmailClick} className="text-blue-600 hover:underline cursor-pointer">Email Support</button></li>
               <li>
                 <strong>Website Contact Page:</strong>{' '}
                 <a 

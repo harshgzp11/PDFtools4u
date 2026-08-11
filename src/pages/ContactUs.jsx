@@ -2,6 +2,13 @@ import React from 'react';
 import { Mail } from 'lucide-react';
 
 export default function ContactUs() {
+  const handleEmailClick = (e) => {
+    e.preventDefault();
+    const user = "pdftools4u.official";
+    const domain = "gmail.com";
+    window.location.href = `mailto:${user}@${domain}`;
+  };
+
   return (
     <div className="w-full h-full overflow-y-auto custom-scrollbar">
       <div className="max-w-3xl mx-auto py-16 px-4 sm:px-6 lg:px-8 text-gray-800 animate-in fade-in flex flex-col items-center">
@@ -19,13 +26,13 @@ export default function ContactUs() {
             Send us an email and our support team will get back to you within 24-48 hours.
           </p>
           
-          <a 
-            href="mailto:pdftools4u.official@gmail.com" 
+          <button 
+            onClick={handleEmailClick}
             className="inline-flex items-center justify-center px-8 py-4 bg-blue-600 text-white rounded-xl font-bold text-lg hover:bg-blue-700 transition-colors gap-3"
           >
             <Mail className="w-5 h-5" />
-            pdftools4u.official@gmail.com
-          </a>
+            Email Us
+          </button>
         </div>
       </div>
     </div>
