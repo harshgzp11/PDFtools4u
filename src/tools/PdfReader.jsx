@@ -2,12 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FileText, ZoomIn, ZoomOut, Maximize, ChevronLeft, ChevronRight, X, LayoutTemplate, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import DragDropZone from '../components/ui/DragDropZone';
-import * as pdfjsLib from 'pdfjs-dist';
-import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
+
+
 import { trackError } from '../lib/analytics';
 
 // Configure the worker for Vite
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+
 
 const Thumbnail = ({ pdfDocument, pageNum, isActive, onClick }) => {
   const canvasRef = useRef(null);
@@ -107,6 +107,10 @@ export default function PdfReader() {
     try {
       const buffer = await newFile.arrayBuffer();
       const typedArray = new Uint8Array(buffer);
+
+      const pdfjsLib = await import('pdfjs-dist');
+      pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mjs', import.meta.url).href;
+    
       const loadingTask = pdfjsLib.getDocument({ data: typedArray });
       const pdf = await loadingTask.promise;
       

@@ -520,13 +520,21 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
                     return (
                       <li key={tool.id}>
                         <button
-                          onClick={() => onSelectTool(tool.id)}
-                          className="w-full text-left flex items-center gap-2.5 py-2 px-2 -mx-2 rounded-lg hover:bg-gray-50 group transition-colors"
+                          onClick={(e) => {
+                            if (tool.comingSoon) { e.preventDefault(); return; }
+                            onSelectTool(tool.id);
+                          }}
+                          className={`w-full text-left flex items-center justify-between gap-2.5 py-2 px-2 -mx-2 rounded-lg transition-colors ${tool.comingSoon ? 'opacity-60 cursor-default' : 'hover:bg-gray-50 group'}`}
                         >
-                          <Icon className={`w-4 h-4 flex-shrink-0 ${tool.color} group-hover:scale-110 transition-transform`} />
-                          <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors whitespace-nowrap">
-                            {tool.name}
-                          </span>
+                          <div className="flex items-center gap-2.5">
+                            <Icon className={`w-4 h-4 flex-shrink-0 ${tool.color} transition-transform ${tool.comingSoon ? '' : 'group-hover:scale-110'}`} />
+                            <span className={`text-sm font-medium transition-colors whitespace-nowrap ${tool.comingSoon ? 'text-gray-500' : 'text-gray-700 group-hover:text-gray-900'}`}>
+                              {tool.name}
+                            </span>
+                          </div>
+                          {tool.comingSoon && (
+                            <span className="text-[9px] font-bold uppercase tracking-wider bg-gray-100 text-gray-400 px-1.5 py-0.5 rounded">Soon</span>
+                          )}
                         </button>
                       </li>
                     );

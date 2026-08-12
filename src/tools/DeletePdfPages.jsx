@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PDFDocument } from 'pdf-lib';
+
 import { Download, Trash2, FileText } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import { trackError } from '../lib/analytics';
@@ -18,6 +18,8 @@ export default function DeletePdfPages() {
       setSelectedPages(new Set());
       try {
         const arrayBuffer = await newFile.arrayBuffer();
+      const { PDFDocument } = await import('pdf-lib');
+
         const pdf = await PDFDocument.load(arrayBuffer);
         setPageCount(pdf.getPageCount());
       } catch (e) {

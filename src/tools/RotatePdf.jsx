@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PDFDocument, degrees } from 'pdf-lib';
+
 import { Download, RotateCw, RotateCcw, FileText, CheckCircle, ArrowLeft, Loader2, ListOrdered, Scissors, RefreshCw } from 'lucide-react';
 import { getPdfThumbnails } from '../lib/pdfRenderer';
 import { getDynamicGridClass } from '../lib/utils';
@@ -59,6 +59,8 @@ export default function RotatePdf() {
     
     try {
       const arrayBuffer = await file.arrayBuffer();
+      const { PDFDocument, degrees } = await import('pdf-lib');
+
       const pdfDoc = await PDFDocument.load(arrayBuffer);
       const pages = pdfDoc.getPages();
       

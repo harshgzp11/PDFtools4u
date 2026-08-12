@@ -1075,4 +1075,233 @@ export const SEO_CONTENT = {
       }
     ]
   }
+,
+
+  "pdf-compiler": {
+    "title": "Compile Text & Images to PDF Online",
+    "description": "Quickly compile text paragraphs and images into a single professional PDF document. Fast, free, and completely secure.",
+    "howTo": [
+      "Add Content: Enter text paragraphs or upload image files.",
+      "Reorder Elements: Drag and drop your content into the preferred sequence.",
+      "Customize: Adjust layout and styling as needed.",
+      "Download PDF: Click compile to instantly generate and download your PDF."
+    ],
+    "why": "When you need to quickly piece together notes, screenshots, and text snippets into a single document, opening a heavy word processor is overkill. Our Text & Image to PDF compiler lets you assemble content visually right in your browser.",
+    "features": [
+      "100% Secure & Private Processing: Your texts and images are compiled locally.",
+      "Data Protection: Nothing is uploaded to remote servers. All processing happens in your browser."
+    ],
+    "faq": [
+      {
+        "q": "Can I mix text paragraphs and images in the same document?",
+        "a": "Yes, you can add multiple text blocks and images, and reorder them before compiling."
+      },
+      {
+        "q": "Is the generated PDF watermarked?",
+        "a": "No, the output is completely clean and free of watermarks."
+      }
+    ]
+  },
+  "rtf-to-pdf": {
+    "title": "Convert RTF to PDF Online",
+    "description": "Convert Rich Text Format (RTF) files to PDF documents instantly.",
+    "howTo": [
+      "Upload RTF: Drag and drop your .rtf file.",
+      "Wait for Processing: Our tool will process the formatting.",
+      "Download PDF: Save the generated PDF file to your device."
+    ],
+    "why": "RTF files can display differently depending on the operating system. Converting them to PDF ensures that your document looks exactly the same for every viewer.",
+    "features": [
+      "100% Secure: Local processing in your browser.",
+      "Preserves Layout: Text formatting and structure are retained."
+    ],
+    "faq": [
+      {
+        "q": "Will my fonts and text colors be preserved?",
+        "a": "Yes, standard formatting is perfectly preserved in the final PDF."
+      }
+    ]
+  },
+  "pdf-to-jpg": {
+    "title": "Convert PDF to JPG Images Online",
+    "description": "Convert your PDF pages into high-quality JPG images instantly and for free.",
+    "howTo": [
+      "Upload PDF: Drag and drop your PDF document.",
+      "Select Quality: Choose your desired output resolution.",
+      "Download JPGs: Download individual page images or a complete ZIP file."
+    ],
+    "why": "If you need to share a document on social media, embed a page in a presentation, or send a preview without requiring a PDF reader, converting PDF pages to JPG images is the easiest solution.",
+    "features": [
+      "100% Secure: Local processing in your browser.",
+      "High Resolution: Output crisp, clean images."
+    ],
+    "faq": [
+      {
+        "q": "Will every page be converted to a separate JPG?",
+        "a": "Yes, our tool extracts each PDF page as an individual high-quality JPG image."
+      }
+    ]
+  },
+  "docx-to-text": {
+    "title": "Extract Text from DOCX Online",
+    "description": "Quickly extract plain text from Microsoft Word documents.",
+    "howTo": [
+      "Upload DOCX: Drag and drop your Word document.",
+      "Extract: The tool will instantly parse the document for text.",
+      "Copy or Download: Copy the plain text to your clipboard or download as a .txt file."
+    ],
+    "why": "When you need raw text data from a formatted Word document for programming, data entry, or plain text archiving, this tool strips away complex formatting to leave only the characters you need.",
+    "features": [
+      "100% Secure: Local processing in your browser.",
+      "Fast Extraction: Instant parsing without server uploads."
+    ],
+    "faq": [
+      {
+        "q": "Will this tool keep tables and images?",
+        "a": "No, it extracts only the raw text, ignoring images and flattening tables."
+      }
+    ]
+  },
+  "docx-to-html": {
+    "title": "Convert DOCX to HTML Online",
+    "description": "Convert Microsoft Word documents to clean, semantic HTML code.",
+    "howTo": [
+      "Upload DOCX: Drag and drop your Word document.",
+      "Convert: Click the convert button to generate HTML markup.",
+      "Copy Code: Copy the generated HTML code for use in your web projects."
+    ],
+    "why": "Publishing Word documents directly to a website can result in bloated, messy code. Our converter generates clean, web-ready HTML that maintains your basic formatting like bold, italics, and lists.",
+    "features": [
+      "100% Secure: Local processing in your browser.",
+      "Clean Code: Generates semantic HTML without unnecessary inline styles."
+    ],
+    "faq": [
+      {
+        "q": "Can I use the generated HTML in WordPress or other CMS platforms?",
+        "a": "Yes, the clean HTML output is perfect for pasting directly into the code editor of any CMS."
+      }
+    ]
+  },
+  "text-to-docx": {
+    "title": "Convert Text to DOCX Online",
+    "description": "Generate a Microsoft Word document from plain text instantly.",
+    "howTo": [
+      "Enter Text: Type or paste your plain text into the editor.",
+      "Format: Apply any basic formatting required.",
+      "Download DOCX: Click download to receive your properly formatted Word document."
+    ],
+    "why": "When you have raw text notes that need to be submitted as a formal Microsoft Word document, our tool instantly packages your text into a compliant .docx file ready for submission.",
+    "features": [
+      "100% Secure: Local processing in your browser.",
+      "Instant Generation: Creates valid .docx files instantly."
+    ],
+    "faq": [
+      {
+        "q": "Is the output file compatible with older versions of Word?",
+        "a": "The generated .docx file is compatible with all modern versions of Microsoft Word and most alternatives."
+      }
+    ]
+  },
+  "txt-to-pdf": {
+    "title": "Convert TXT to PDF Online",
+    "description": "Convert plain text files into properly formatted, paginated PDF documents.",
+    "howTo": [
+      "Upload TXT: Select or drag your plain text file.",
+      "Adjust Settings: Set margins and font sizes if necessary.",
+      "Convert to PDF: Generate the PDF document.",
+      "Download: Save the final PDF to your device."
+    ],
+    "why": "Plain text files lack pagination and proper margins when printed. Converting them to PDF ensures a clean, readable layout across all devices and printers.",
+    "features": [
+      "100% Secure: Local processing in your browser.",
+      "Auto-pagination: Handles page breaks and margins automatically."
+    ],
+    "faq": [
+      {
+        "q": "Can I choose the font for my PDF?",
+        "a": "The tool uses a standard, highly legible font to ensure readability and professional presentation."
+      }
+    ]
+  },
+  "html-to-image": {
+    "title": "Convert HTML to Image Online",
+    "description": "Render HTML and CSS code into downloadable JPG or PNG images.",
+    "howTo": [
+      "Enter Code: Paste your HTML and CSS into the editor.",
+      "Preview: View the live rendered output.",
+      "Download Image: Save the rendered view as an image file."
+    ],
+    "why": "Perfect for developers and designers who want to quickly snap a visual of a code snippet or UI component without deploying it. Turn code into shareable graphic assets instantly.",
+    "features": [
+      "100% Secure: Local processing in your browser.",
+      "Accurate Rendering: Renders standard CSS visually."
+    ],
+    "faq": [
+      {
+        "q": "Can I render external images or web fonts?",
+        "a": "Yes, as long as the URLs in your HTML/CSS are absolute and publicly accessible."
+      }
+    ]
+  },
+  "text-reformatter": {
+    "title": "Text Case & Reformatter Tools",
+    "description": "Change text case, remove duplicates, and clean up whitespace instantly.",
+    "howTo": [
+      "Enter Text: Paste the messy or unformatted text.",
+      "Select Operation: Choose UPPERCASE, lowercase, Title Case, or whitespace removal.",
+      "Copy Output: Copy the instantly reformatted text."
+    ],
+    "why": "Cleaning up badly formatted text manually is incredibly tedious. Whether you need to fix ALL CAPS emails, remove redundant spaces from data, or format titles, this utility saves you time.",
+    "features": [
+      "100% Secure: Local processing in your browser.",
+      "Instant Results: Operations happen immediately as you type."
+    ],
+    "faq": [
+      {
+        "q": "Is there a limit on how much text I can format?",
+        "a": "No, you can format large documents and blocks of text seamlessly in your browser."
+      }
+    ]
+  },
+  "data-converter": {
+    "title": "Data Converters (JSON to CSV, Base64)",
+    "description": "Easily convert CSV to JSON, JSON to CSV, and encode/decode Base64 data.",
+    "howTo": [
+      "Enter Data: Paste your JSON, CSV, or raw text.",
+      "Select Conversion: Choose your target output format.",
+      "Copy Result: Instantly copy the transformed data."
+    ],
+    "why": "Developers and data analysts constantly need to switch between data formats. Our local-only converters ensure that your sensitive API responses and database exports never leave your machine.",
+    "features": [
+      "100% Secure: Local processing in your browser.",
+      "Developer Friendly: Formats output cleanly for immediate use."
+    ],
+    "faq": [
+      {
+        "q": "Is my data sent to a server for processing?",
+        "a": "Absolutely not. All parsing and conversion algorithms run entirely inside your browser."
+      }
+    ]
+  },
+  "dev-tools": {
+    "title": "Developer Text Tools",
+    "description": "Handy utilities like Word counters, JSON formatters, and minifiers.",
+    "howTo": [
+      "Enter Input: Paste your code or text.",
+      "Select Tool: Choose beautify, minify, or analyze.",
+      "Get Output: View the formatted result or statistics instantly."
+    ],
+    "why": "Quick access to essential developer tools right in your browser without the risk of exposing proprietary code to external APIs or logging services.",
+    "features": [
+      "100% Secure: Local processing in your browser.",
+      "Multiple Tools: Includes formatters, minifiers, and counters."
+    ],
+    "faq": [
+      {
+        "q": "Can I beautify compressed JSON code?",
+        "a": "Yes, our JSON beautifier takes minified JSON and formats it with proper indentation for readability."
+      }
+    ]
+  }
+
 };

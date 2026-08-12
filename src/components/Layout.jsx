@@ -105,16 +105,22 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
                                   return (
                                     <li key={tool.id}>
                                       <button 
-                                        onClick={() => {
+                                        onClick={(e) => {
+                                          if (tool.comingSoon) { e.preventDefault(); return; }
                                           onSelectTool(tool.id);
                                           setActiveDropdown(null);
                                         }}
-                                        className="w-full text-left flex items-center gap-3 group transition-all p-2 -mx-2 rounded-lg hover:bg-gray-50"
+                                        className={`w-full text-left flex items-center justify-between gap-3 group transition-all p-2 -mx-2 rounded-lg ${tool.comingSoon ? 'opacity-60 cursor-default' : 'hover:bg-gray-50'}`}
                                       >
-                                        <Icon className={`w-5 h-5 shrink-0 ${tool.color} transition-transform group-hover:scale-110`} />
-                                        <span className="font-semibold text-gray-700 text-sm group-hover:text-black transition-colors whitespace-nowrap">
-                                          {tool.name}
-                                        </span>
+                                        <div className="flex items-center gap-3">
+                                          <Icon className={`w-5 h-5 shrink-0 ${tool.color} transition-transform ${tool.comingSoon ? '' : 'group-hover:scale-110'}`} />
+                                          <span className={`font-semibold text-sm transition-colors whitespace-nowrap ${tool.comingSoon ? 'text-gray-500' : 'text-gray-700 group-hover:text-black'}`}>
+                                            {tool.name}
+                                          </span>
+                                        </div>
+                                        {tool.comingSoon && (
+                                          <span className="text-[9px] font-bold uppercase tracking-wider bg-gray-100 text-gray-400 px-1.5 py-0.5 rounded ml-2">Soon</span>
+                                        )}
                                       </button>
                                     </li>
                                   );
@@ -217,10 +223,15 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
                     {domain.categories.flatMap(c => c.tools).slice(0, 6).map(tool => (
                       <button 
                         key={tool.id}
-                        onClick={() => { onSelectTool(tool.id); setIsMobileMenuOpen(false); }}
-                        className="text-left py-1.5 text-sm text-gray-600 hover:text-gray-900"
+                        onClick={() => { 
+                          if (tool.comingSoon) return;
+                          onSelectTool(tool.id); 
+                          setIsMobileMenuOpen(false); 
+                        }}
+                        className={`text-left py-1.5 text-sm flex items-center gap-2 ${tool.comingSoon ? 'text-gray-400 cursor-default' : 'text-gray-600 hover:text-gray-900'}`}
                       >
                         {tool.name}
+                        {tool.comingSoon && <span className="text-[9px] font-bold uppercase bg-gray-100 text-gray-400 px-1.5 py-0.5 rounded">Soon</span>}
                       </button>
                     ))}
                   </div>

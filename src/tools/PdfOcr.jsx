@@ -2,12 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ScanText, Download, AlertTriangle, Copy } from 'lucide-react';
 import { toast } from 'sonner';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
-import * as pdfjsLib from 'pdfjs-dist';
-import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
-import { createWorker } from 'tesseract.js';
+
+
+
 import { trackError } from '../lib/analytics';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+
 
 export default function PdfOcr() {
   const [file, setFile] = useState(null);
@@ -177,6 +177,8 @@ export default function PdfOcr() {
     let worker = null;
     
     try {
+      const { createWorker } = await import('tesseract.js');
+
       worker = await createWorker(language, 1, {
         logger: m => {
           if (m.status === 'recognizing text') {
@@ -198,6 +200,10 @@ export default function PdfOcr() {
 
       updateProgress('Reading PDF', 0, 0, 8);
       const arrayBuffer = await file.arrayBuffer();
+
+      const pdfjsLib = await import('pdfjs-dist');
+      pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mjs', import.meta.url).href;
+    
       const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
       const numPages = pdf.numPages;
       

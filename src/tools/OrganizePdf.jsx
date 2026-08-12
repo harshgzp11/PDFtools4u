@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { PDFDocument, degrees } from 'pdf-lib';
+
 import { Files, GripHorizontal, Trash2, RotateCw, Plus, FilePlus, RefreshCcw, FileText } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import { getPdfThumbnails } from '../lib/pdfRenderer';
@@ -149,6 +149,8 @@ export default function OrganizePdf() {
       const loadedPdfs = await Promise.all(
         files.map(async f => {
           const ab = await f.arrayBuffer();
+      const { PDFDocument, degrees } = await import('pdf-lib');
+
           return await PDFDocument.load(ab);
         })
       );

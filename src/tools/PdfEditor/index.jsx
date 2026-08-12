@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef, Suspense, lazy } from 'react';
 import { PenTool, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { PDFDocument, rgb, StandardFonts, degrees } from 'pdf-lib';
-import * as pdfjsLib from 'pdfjs-dist';
-import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
+
+
+
 import ToolPreviewLayout from '../../components/ui/ToolPreviewLayout';
 
 import Sidebar from './Sidebar';
@@ -19,7 +19,7 @@ const AiPanel = lazy(() => import('./Panels/AiPanel'));
 import { generateId } from './utils';
 import { trackError } from '../../lib/analytics';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+
 
 export default function PdfEditor({ 
   initialTool = 'select',
@@ -127,6 +127,10 @@ export default function PdfEditor({
     try {
       const arrayBuffer = await uploadedFile.arrayBuffer();
       
+
+      const pdfjsLib = await import('pdfjs-dist');
+      pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mjs', import.meta.url).href;
+    
       const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) });
       const pdf = await loadingTask.promise;
       setPdfJsDoc(pdf);
@@ -191,6 +195,8 @@ export default function PdfEditor({
     setIsProcessing(true);
     try {
       const pdfBytes = await file.arrayBuffer();
+      const { PDFDocument, rgb, StandardFonts, degrees } = await import('pdf-lib');
+
       const originalDoc = await PDFDocument.load(pdfBytes);
       const newDoc = await PDFDocument.create();
       const helveticaFont = await newDoc.embedFont(StandardFonts.Helvetica);

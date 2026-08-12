@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import * as pdfjsLib from 'pdfjs-dist';
-import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
+
+
 import DragDropZone from '../components/ui/DragDropZone';
 import { copyToClipboard, downloadTextAsFile } from '../lib/utils';
 import { Copy, Download, Loader2 } from 'lucide-react';
 import { trackError } from '../lib/analytics';
 
 // Initialize PDF.js worker using Vite's URL handling for static assets
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+
 
 export default function PdfTextExtractor() {
   const [output, setOutput] = useState('');
@@ -21,6 +21,10 @@ export default function PdfTextExtractor() {
 
     try {
       const arrayBuffer = await file.arrayBuffer();
+
+      const pdfjsLib = await import('pdfjs-dist');
+      pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mjs', import.meta.url).href;
+    
       const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
       let fullText = '';
 

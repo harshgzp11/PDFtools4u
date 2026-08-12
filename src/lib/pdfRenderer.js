@@ -1,8 +1,11 @@
-import * as pdfjsLib from 'pdfjs-dist';
-import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
-
-// Configure the worker for Vite
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+let pdfjsLib = null;
+async function initPdfJs() {
+  if (!pdfjsLib) {
+    pdfjsLib = await import('pdfjs-dist');
+    pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mjs', import.meta.url).href;
+  }
+  return pdfjsLib;
+}
 
 /**
  * Extracts rasterized thumbnails from a PDF file.
@@ -16,8 +19,9 @@ export async function getPdfThumbnails(file, scale = 1.0) {
     
     reader.onload = async function(e) {
       try {
+        const _pdfjsLib = await initPdfJs();
         const typedArray = new Uint8Array(e.target.result);
-        const loadingTask = pdfjsLib.getDocument({ data: typedArray });
+        const loadingTask = _pdfjsLib.getDocument({ data: typedArray });
         const pdf = await loadingTask.promise;
         
         const thumbnails = [];
@@ -76,8 +80,9 @@ export async function renderPdfForCompression(file, scale = 1.0, quality = 0.6, 
     
     reader.onload = async function(e) {
       try {
+        const _pdfjsLib = await initPdfJs();
         const typedArray = new Uint8Array(e.target.result);
-        const loadingTask = pdfjsLib.getDocument({ data: typedArray });
+        const loadingTask = _pdfjsLib.getDocument({ data: typedArray });
         const pdf = await loadingTask.promise;
         
         const pagesData = [];
@@ -137,8 +142,9 @@ export async function getPdfCanvases(file, scale = 2.0, onProgress = () => {}) {
     
     reader.onload = async function(e) {
       try {
+        const _pdfjsLib = await initPdfJs();
         const typedArray = new Uint8Array(e.target.result);
-        const loadingTask = pdfjsLib.getDocument({ data: typedArray });
+        const loadingTask = _pdfjsLib.getDocument({ data: typedArray });
         const pdf = await loadingTask.promise;
         
         const pagesData = [];

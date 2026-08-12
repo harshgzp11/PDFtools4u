@@ -1,5 +1,4 @@
-import { PDFDocument } from 'pdf-lib';
-import { getPdfCanvases } from '../lib/pdfRenderer';
+
 
 /**
  * Compresses a PDF file by converting pages to JPEGs and adjusting quality.
@@ -13,6 +12,9 @@ export const compressPdfToTarget = async (file, targetSizeMB, onProgress) => {
   
   onProgress(0);
   const targetBytes = Math.floor(targetSizeMB * 1024 * 1024);
+  
+  const { PDFDocument } = await import('pdf-lib');
+  const { getPdfCanvases } = await import('../lib/pdfRenderer');
   
   const canvases = await getPdfCanvases(file, 2.0, (pct) => {
     onProgress(Math.floor(pct * 0.4));

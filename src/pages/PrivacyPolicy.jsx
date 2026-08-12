@@ -11,7 +11,7 @@ export default function PrivacyPolicy() {
   return (
     <div className="w-full h-full overflow-y-auto custom-scrollbar bg-gray-50/50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto bg-white border border-gray-200/80 rounded-2xl shadow-sm p-6 sm:p-10 text-gray-800 animate-in fade-in">
-        
+
         <div className="border-b border-gray-100 pb-6 mb-8 text-center sm:text-left">
           <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">Privacy Policy</h1>
           <p className="text-sm font-medium text-gray-500 mt-2">
@@ -20,7 +20,7 @@ export default function PrivacyPolicy() {
         </div>
 
         <div className="prose prose-gray max-w-none space-y-8 text-sm sm:text-base leading-relaxed text-gray-600">
-          
+
           <section>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">1. Introduction</h2>
             <p>
@@ -107,13 +107,13 @@ export default function PrivacyPolicy() {
               <li><strong>Email:</strong> <button onClick={handleEmailClick} className="text-blue-600 hover:underline cursor-pointer">Email Support</button></li>
               <li>
                 <strong>Website Contact Page:</strong>{' '}
-                <a 
-                  href="/contact" 
+                <a
+                  href="/contact"
                   onClick={(e) => {
                     e.preventDefault();
                     window.history.pushState({}, "", "/contact");
                     window.dispatchEvent(new Event('popstate'));
-                  }} 
+                  }}
                   className="text-blue-600 hover:underline cursor-pointer"
                 >
                   https://pdftools4u.in/contact

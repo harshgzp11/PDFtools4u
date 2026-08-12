@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Hash, Download, Settings, RefreshCw, FileText, Loader2, ListOrdered, Scissors } from 'lucide-react';
-import { PDFDocument, rgb } from 'pdf-lib';
+
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import { trackError } from '../lib/analytics';
 
@@ -19,6 +19,8 @@ export default function NumberPages() {
 
     try {
       const arrayBuffer = await file.arrayBuffer();
+      const { PDFDocument, rgb } = await import('pdf-lib');
+
       const pdfDoc = await PDFDocument.load(arrayBuffer);
       const pages = pdfDoc.getPages();
 

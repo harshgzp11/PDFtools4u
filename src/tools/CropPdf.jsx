@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Crop, FileText, RefreshCw, CheckCircle, Download, Maximize2, Minimize, ListOrdered, Share2, ArrowLeft, Scissors, Layers } from 'lucide-react';
-import { PDFDocument } from 'pdf-lib';
+
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import DragDropZone from '../components/ui/DragDropZone';
@@ -55,6 +55,8 @@ export default function CropPdf() {
 
     try {
       const arrayBuffer = await file.arrayBuffer();
+      const { PDFDocument } = await import('pdf-lib');
+
       const pdfDoc = await PDFDocument.load(arrayBuffer);
       const pages = pdfDoc.getPages();
 

@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { FileCode2 } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import { trackError } from '../lib/analytics';
-import * as pdfjsLib from 'pdfjs-dist';
-import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
+
+
 import { convertPdfToDocx } from '../utils/pdfConversion';
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+
 
 export default function PdfToWord() {
   const [file, setFile] = useState(null);
@@ -46,6 +46,10 @@ export default function PdfToWord() {
           const bufferCopy = arrayBuffer.slice(0);
           let pdf;
           try {
+
+      const pdfjsLib = await import('pdfjs-dist');
+      pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mjs', import.meta.url).href;
+    
             pdf = await pdfjsLib.getDocument({
               data: new Uint8Array(bufferCopy),
               cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/cmaps/',

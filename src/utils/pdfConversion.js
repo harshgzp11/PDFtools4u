@@ -1,9 +1,11 @@
-import * as pdfjsLib from 'pdfjs-dist';
-import { Document, Packer, Paragraph, TextRun, AlignmentType, ImageRun, HeadingLevel } from 'docx';
-import * as XLSX from 'xlsx';
-import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
-
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+let pdfjsLib = null;
+async function initPdfJs() {
+  if (!pdfjsLib) {
+    pdfjsLib = await import('pdfjs-dist');
+    pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mjs', import.meta.url).href;
+  }
+  return pdfjsLib;
+}
 
 const yieldToMain = () => new Promise(resolve => setTimeout(resolve, 0));
 
@@ -37,7 +39,8 @@ const loadPdfDocument = async (fileObj) => {
 
   // Attempt 1: Standard load with Uint8Array copy and cMaps
   try {
-    const loadingTask = pdfjsLib.getDocument({
+    const _pdfjsLib = await initPdfJs();
+    const loadingTask = _pdfjsLib.getDocument({
       data: new Uint8Array(arrayBuffer.slice(0)),
       cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/cmaps/',
       cMapPacked: true,
@@ -49,7 +52,8 @@ const loadPdfDocument = async (fileObj) => {
 
   // Attempt 2: Basic load without cMap parameters
   try {
-    const loadingTask = pdfjsLib.getDocument({
+    const _pdfjsLib = await initPdfJs();
+    const loadingTask = _pdfjsLib.getDocument({
       data: new Uint8Array(arrayBuffer.slice(0)),
     });
     return await loadingTask.promise;
@@ -59,7 +63,8 @@ const loadPdfDocument = async (fileObj) => {
 
   // Attempt 3: FileReader fresh buffer load
   const freshBuffer = await readArrayBuffer(fileObj);
-  const loadingTaskFinal = pdfjsLib.getDocument({
+  const _pdfjsLib = await initPdfJs();
+  const loadingTaskFinal = _pdfjsLib.getDocument({
     data: new Uint8Array(freshBuffer),
   });
   return await loadingTaskFinal.promise;
@@ -76,6 +81,8 @@ export const convertPdfToDocx = async (file, mode = 'text', onProgress) => {
   if (!file) throw new Error("No file provided");
   if (onProgress) onProgress(0);
   
+  const { Document, Packer, Paragraph, TextRun, AlignmentType, ImageRun, HeadingLevel } = await import('docx');
+
   const pdfDoc = await loadPdfDocument(file);
   const numPages = pdfDoc.numPages;
   
@@ -283,7 +290,8 @@ export const convertPdfToImages = async (file, format = 'jpeg', onProgress) => {
 
   const JSZip = (await import('jszip')).default;
   const arrayBuffer = await file.arrayBuffer();
-  const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
+  const _pdfjsLib = await initPdfJs();
+  const pdf = await _pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
   const numPages = pdf.numPages;
   
   const zip = new JSZip();
@@ -340,7 +348,8 @@ export const convertPdfToPpt = async (file, onProgress) => {
 
   const pptxgen = (await import('pptxgenjs')).default;
   const arrayBuffer = await file.arrayBuffer();
-  const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
+  const _pdfjsLib = await initPdfJs();
+  const pdf = await _pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
   const numPages = pdf.numPages;
   
   const pres = new pptxgen();
@@ -519,6 +528,7 @@ export const convertPdfToExcel = async (file, onProgress) => {
   }
 
   // Create Excel workbook and worksheet using SheetJS (XLSX)
+  const XLSX = await import('xlsx');
   const worksheet = XLSX.utils.aoa_to_sheet(allTableRows);
 
   // Auto-size column widths based on maximum cell string length

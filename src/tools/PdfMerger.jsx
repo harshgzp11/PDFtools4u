@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { PDFDocument } from 'pdf-lib';
+
 import { Download, PlusCircle, Trash2, FileText, CheckCircle, ArrowLeft, RefreshCw, Loader2, GripVertical } from 'lucide-react';
 import DragDropZone from '../components/ui/DragDropZone';
 import { getPdfThumbnails } from '../lib/pdfRenderer';
@@ -57,6 +57,8 @@ export default function PdfMerger() {
     setLoading(true);
     
     try {
+      const { PDFDocument } = await import('pdf-lib');
+
       const mergedPdf = await PDFDocument.create();
       
       for (const item of files) {

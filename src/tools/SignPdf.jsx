@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { PDFDocument } from 'pdf-lib';
+
 import { Download, PenTool, FileText, CheckCircle, ArrowLeft, RefreshCw, Loader2, Plus, Check, X } from 'lucide-react';
 import DragDropZone from '../components/ui/DragDropZone';
 import SignatureModal from '../components/ui/SignatureModal';
@@ -100,6 +100,8 @@ export default function SignPdf() {
     
     try {
       const arrayBuffer = await file.arrayBuffer();
+      const { PDFDocument } = await import('pdf-lib');
+
       const pdfDoc = await PDFDocument.load(arrayBuffer);
       const pages = pdfDoc.getPages();
       

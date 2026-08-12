@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PDFDocument } from 'pdf-lib';
+
 import { Layers3 } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import { trackError } from '../lib/analytics';
@@ -29,6 +29,8 @@ export default function FlattenPdf() {
     
     try {
       const arrayBuffer = await file.arrayBuffer();
+      const { PDFDocument } = await import('pdf-lib');
+
       const pdfDoc = await PDFDocument.load(arrayBuffer);
       
       const form = pdfDoc.getForm();

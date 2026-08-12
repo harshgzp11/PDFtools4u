@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { PDFDocument } from 'pdf-lib';
+
 import { Download, SplitSquareVertical, CheckCircle, FileOutput, GripHorizontal, File } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import { trackError } from '../lib/analytics';
@@ -18,6 +18,8 @@ export default function PdfSplitter() {
     setSuccessData(null);
     try {
       const arrayBuffer = await selectedFile.arrayBuffer();
+      const { PDFDocument } = await import('pdf-lib');
+
       const pdf = await PDFDocument.load(arrayBuffer);
       const pages = pdf.getPageCount();
       setPdfInfo({ pages });

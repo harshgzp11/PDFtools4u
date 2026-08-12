@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FileText, Download, RefreshCw, Settings } from 'lucide-react';
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+
 import DragDropZone from '../components/ui/DragDropZone';
 import AdSlot from '../components/ui/AdSlot';
 import ExportActions from '../components/ui/ExportActions';
@@ -30,6 +30,8 @@ export default function TxtToPdf() {
 
     try {
       const text = await file.text();
+      const { PDFDocument, StandardFonts, rgb } = await import('pdf-lib');
+
       const pdfDoc = await PDFDocument.create();
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
       

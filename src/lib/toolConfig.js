@@ -38,6 +38,7 @@ export const DOMAINS = [
           { id: 'word-to-pdf', name: 'WORD to PDF', description: 'Convert Word document to PDF.', icon: FileCode2, color: 'text-blue-500', bg: 'bg-blue-50' },
           { id: 'ppt-to-pdf', name: 'POWERPOINT to PDF', description: 'Convert PowerPoint to PDF.', icon: Presentation, color: 'text-orange-500', bg: 'bg-orange-50' },
           { id: 'excel-to-pdf', name: 'EXCEL to PDF', description: 'Convert Excel to PDF document.', icon: FileSpreadsheet, color: 'text-green-500', bg: 'bg-green-50' },
+          { id: 'pdf-compiler', name: 'Text & Image to PDF', description: 'Compile text and images into PDF.', icon: Layers, color: 'text-indigo-500', bg: 'bg-indigo-50', comingSoon: true },
         ]
       },
       {
@@ -112,6 +113,7 @@ export const DOMAINS = [
           { id: 'docx-to-html', name: 'DOCX to HTML', description: 'Convert Word documents to clean HTML code.', icon: Code, color: 'text-green-500', bg: 'bg-green-50' },
           { id: 'text-to-docx', name: 'Text to DOCX', description: 'Generate a Word document from text.', icon: FileCode2, color: 'text-indigo-500', bg: 'bg-indigo-50' },
           { id: 'txt-to-pdf', name: 'TXT to PDF', description: 'Convert plain text files (.txt) into formatted PDF.', icon: FileText, color: 'text-purple-500', bg: 'bg-purple-50' },
+          { id: 'rtf-to-pdf', name: 'RTF to PDF', description: 'Convert Rich Text Format (.rtf) to PDF.', icon: FileText, color: 'text-pink-500', bg: 'bg-pink-50', comingSoon: true },
         ]
       },
       {

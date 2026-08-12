@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Image as ImageIcon } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
-import * as pdfjsLib from 'pdfjs-dist';
+
 import JSZip from 'jszip';
-import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
+
 import { trackError } from '../lib/analytics';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+
 
 export default function PdfToImage() {
   const [file, setFile] = useState(null);
@@ -41,6 +41,10 @@ export default function PdfToImage() {
     
     try {
       const arrayBuffer = await file.arrayBuffer();
+
+      const pdfjsLib = await import('pdfjs-dist');
+      pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mjs', import.meta.url).href;
+    
       const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
       const numPages = pdf.numPages;
       

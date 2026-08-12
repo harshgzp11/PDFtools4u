@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ArrowLeftRight, FileText, Image as ImageIcon, FileCode2, ChevronDown, ChevronUp, ChevronRight, ScanText, FileSpreadsheet, Presentation, Code } from 'lucide-react';
 import DragDropZone from '../components/ui/DragDropZone';
-import * as pdfjsLib from 'pdfjs-dist';
-import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
+
+
 import { trackError } from '../lib/analytics';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+
 
 export default function PdfConverterHub() {
   const [file, setFile] = useState(null);
@@ -47,6 +47,10 @@ export default function PdfConverterHub() {
     setIsGeneratingThumbnail(true);
     try {
       const arrayBuffer = await pdfFile.arrayBuffer();
+
+      const pdfjsLib = await import('pdfjs-dist');
+      pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mjs', import.meta.url).href;
+    
       const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
       const page = await pdf.getPage(1);
       

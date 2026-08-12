@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Presentation, Download, AlertTriangle } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
-import * as pdfjsLib from 'pdfjs-dist';
-import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
+
+
 import pptxgen from 'pptxgenjs';
 import { trackError } from '../lib/analytics';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+
 
 export default function PdfToPpt() {
   const [file, setFile] = useState(null);
@@ -40,6 +40,10 @@ export default function PdfToPpt() {
     
     try {
       const arrayBuffer = await file.arrayBuffer();
+
+      const pdfjsLib = await import('pdfjs-dist');
+      pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mjs', import.meta.url).href;
+    
       const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
       const numPages = pdf.numPages;
       

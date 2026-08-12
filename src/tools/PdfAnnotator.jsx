@@ -2,13 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import { PenTool, Download, ChevronLeft, ChevronRight, X, ShieldCheck, Eraser, Palette, Type, Highlighter } from 'lucide-react';
 import { toast } from 'sonner';
 import DragDropZone from '../components/ui/DragDropZone';
-import * as pdfjsLib from 'pdfjs-dist';
-import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.mjs?url';
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+
+
+
 import SignatureCanvas from 'react-signature-canvas';
 import { trackError } from '../lib/analytics';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+
 
 const COLORS = ['#000000', '#EF4444', '#3B82F6', '#10B981', '#F59E0B'];
 
@@ -50,6 +50,10 @@ export default function PdfAnnotator() {
     try {
       const buffer = await newFile.arrayBuffer();
       const typedArray = new Uint8Array(buffer);
+
+      const pdfjsLib = await import('pdfjs-dist');
+      pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mjs', import.meta.url).href;
+    
       const loadingTask = pdfjsLib.getDocument({ data: typedArray });
       const pdf = await loadingTask.promise;
       
@@ -184,6 +188,8 @@ export default function PdfAnnotator() {
     setTimeout(async () => {
       try {
         const buffer = await file.arrayBuffer();
+      const { PDFDocument, StandardFonts, rgb } = await import('pdf-lib');
+
         const pdfDoc = await PDFDocument.load(buffer);
         const pages = pdfDoc.getPages();
         const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
