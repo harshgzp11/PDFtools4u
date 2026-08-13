@@ -11,6 +11,15 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
   const [expandedMobileDomain, setExpandedMobileDomain] = useState(null);
 
   useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
     };
@@ -178,8 +187,8 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
               <button onClick={openSearch} className="p-2 text-gray-600 hover:text-blue-600">
                 <Search className="w-5 h-5" />
               </button>
-              <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-gray-900 z-50 relative">
-                {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 text-gray-900 z-50 relative">
+                <Menu className="w-5 h-5" />
               </button>
             </div>
           </div>
@@ -188,64 +197,87 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
 
       {/* Mobile Menu Drawer */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-white pt-16 px-4 animate-in slide-in-from-top-4 duration-300 md:hidden overflow-y-auto pb-20">
-          <div className="flex flex-col gap-4 mt-4">
-            <button onClick={() => { openSearch(); setIsMobileMenuOpen(false); }} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100 text-base font-medium text-gray-900">
-              <div className="flex items-center gap-2">
-                <Search className="w-4 h-4 text-gray-500" /> Search Tools
-              </div>
-              <kbd className="bg-white text-gray-500 px-2 py-0.5 rounded text-xs border border-gray-200 font-bold shadow-sm">⌘K</kbd>
-            </button>
-            <div className="h-px bg-gray-100 w-full" />
+        <div className="fixed inset-0 z-[200] lg:hidden flex">
+          {/* Backdrop Overlay */}
+          <div 
+            className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm animate-in fade-in duration-200"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+          
+          {/* Sidebar Drawer */}
+          <div className="relative ml-auto w-[85%] max-w-sm h-full bg-white shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
+            {/* Drawer Header with Close Button */}
+            <div className="flex items-center justify-between p-4 border-b border-gray-100 flex-shrink-0 bg-white gap-4">
+              <button onClick={() => { openSearch(); setIsMobileMenuOpen(false); }} className="flex-1 flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-200 text-sm font-bold text-gray-900 hover:bg-gray-100 transition-colors shadow-sm">
+                <div className="flex items-center gap-2">
+                  <Search className="w-4 h-4 text-gray-500" /> Search Tools
+                </div>
+                <kbd className="bg-white text-gray-500 px-1.5 py-0.5 rounded text-[10px] border border-gray-200 font-bold shadow-sm">⌘K</kbd>
+              </button>
+              <button 
+                onClick={() => setIsMobileMenuOpen(false)} 
+                className="p-1 text-gray-500 hover:text-gray-900 transition-colors flex-shrink-0"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
             
-            {/* Mobile Accordions */}
-            {DOMAINS.slice(0, 2).map((domain) => (
-              <div key={domain.title} className="flex flex-col gap-1">
-                <button 
-                  onClick={() => setExpandedMobileDomain(expandedMobileDomain === domain.title ? null : domain.title)} 
-                  className="flex items-center justify-between text-base font-medium text-gray-700 hover:text-blue-600 py-2 w-full text-left"
-                >
-                  <div className="flex items-center gap-2">
-                    {domain.title === 'PDF Tools' ? <FileText className="w-4 h-4" /> : <ImageIcon className="w-4 h-4" />}
-                    {domain.title}
-                  </div>
-                  <ChevronDown className={`w-4 h-4 transition-transform ${expandedMobileDomain === domain.title ? 'rotate-180' : ''}`} />
-                </button>
+            {/* Drawer Content */}
+            <div className="flex-1 overflow-y-auto custom-scrollbar p-6 pt-4">
+              <div className="flex flex-col gap-5">
                 
-                {expandedMobileDomain === domain.title && (
-                  <div className="flex flex-col gap-1 pl-6 py-2 border-l-2 border-gray-100 ml-2 animate-in slide-in-from-top-2">
+                {/* Mobile Accordions */}
+                {DOMAINS.slice(0, 2).map((domain) => (
+                  <div key={domain.title} className="flex flex-col gap-1">
                     <button 
-                      onClick={() => { onNavigateToDomain(domain.title); setIsMobileMenuOpen(false); }}
-                      className="text-left text-blue-600 font-bold py-1 mb-1 text-sm"
+                      onClick={() => setExpandedMobileDomain(expandedMobileDomain === domain.title ? null : domain.title)} 
+                      className="flex items-center justify-between text-base font-bold text-gray-800 hover:text-blue-600 py-3 w-full text-left rounded-lg transition-colors"
                     >
-                      View All {domain.title} &rarr;
+                      <div className="flex items-center gap-3">
+                        {domain.title === 'PDF Tools' ? <FileText className="w-5 h-5 text-blue-500" /> : <ImageIcon className="w-5 h-5 text-emerald-500" />}
+                        {domain.title}
+                      </div>
+                      <ChevronDown className={`w-5 h-5 transition-transform ${expandedMobileDomain === domain.title ? 'rotate-180 text-blue-600' : 'text-gray-400'}`} />
                     </button>
-                    {domain.categories.flatMap(c => c.tools).slice(0, 6).map(tool => (
-                      <button 
-                        key={tool.id}
-                        onClick={() => { 
-                          if (tool.comingSoon) return;
-                          onSelectTool(tool.id); 
-                          setIsMobileMenuOpen(false); 
-                        }}
-                        className={`text-left py-1.5 text-sm flex items-center gap-2 ${tool.comingSoon ? 'text-gray-400 cursor-default' : 'text-gray-600 hover:text-gray-900'}`}
-                      >
-                        {tool.name}
-                        {tool.comingSoon && <span className="text-[9px] font-bold uppercase bg-gray-100 text-gray-400 px-1.5 py-0.5 rounded">Soon</span>}
-                      </button>
-                    ))}
+                    
+                    {expandedMobileDomain === domain.title && (
+                      <div className="flex flex-col gap-1.5 pl-8 py-2 border-l-2 border-blue-100 ml-2 animate-in slide-in-from-top-2">
+                        <button 
+                          onClick={() => { onNavigateToDomain(domain.title); setIsMobileMenuOpen(false); }}
+                          className="text-left text-blue-600 font-bold py-2 mb-1 text-sm flex items-center gap-1 hover:underline"
+                        >
+                          View All {domain.title} &rarr;
+                        </button>
+                        {domain.categories.flatMap(c => c.tools).slice(0, 6).map(tool => (
+                          <button 
+                            key={tool.id}
+                            onClick={() => { 
+                              if (tool.comingSoon) return;
+                              onSelectTool(tool.id); 
+                              setIsMobileMenuOpen(false); 
+                            }}
+                            className={`text-left py-2 text-sm flex items-center gap-3 font-bold ${tool.comingSoon ? 'text-gray-400 cursor-default' : 'text-gray-600 hover:text-gray-900 hover:translate-x-1 transition-transform'}`}
+                          >
+                            {tool.name}
+                            {tool.comingSoon && <span className="text-[10px] font-bold uppercase bg-gray-100 text-gray-400 px-1.5 py-0.5 rounded">Soon</span>}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                )}
+                ))}
+                
+                <div className="h-px bg-gray-100 w-full" />
+                
+                <button 
+                  onClick={() => { onSelectTool('blog'); setIsMobileMenuOpen(false); }}
+                  className="flex items-center gap-3 text-base font-bold text-gray-800 hover:text-blue-600 py-3 w-full text-left transition-colors"
+                >
+                  <BookOpen className="w-5 h-5 text-purple-500" />
+                  Blog & Tips
+                </button>
               </div>
-            ))}
-            
-            <button 
-              onClick={() => { onSelectTool('blog'); setIsMobileMenuOpen(false); }}
-              className="flex items-center gap-2 text-base font-medium text-gray-700 hover:text-blue-600 py-2 w-full text-left"
-            >
-              <BookOpen className="w-4 h-4" />
-              Blog & Tips
-            </button>
+            </div>
           </div>
         </div>
       )}

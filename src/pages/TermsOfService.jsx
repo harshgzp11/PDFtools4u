@@ -3,8 +3,8 @@ import React from 'react';
 export default function TermsOfService() {
   const handleEmailClick = (e) => {
     e.preventDefault();
-    const user = "pdftools4u.official";
-    const domain = "gmail.com";
+    const user = "support";
+    const domain = "pdftools4u.in";
     window.location.href = `mailto:${user}@${domain}`;
   };
 

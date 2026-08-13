@@ -162,8 +162,8 @@ const TOOL_COMPONENTS = {
   'pdf-reader': PdfReader,
   'pdf-annotator': PdfAnnotator,
   'rtf-to-pdf': RtfToPdf,
-  'privacy': PrivacyPolicy,
-  'terms': TermsOfService,
+  'privacy-policy': PrivacyPolicy,
+  'terms-of-service': TermsOfService,
   'about': AboutUs,
   'contact': ContactUs,
 };
@@ -242,7 +242,7 @@ function App() {
         }} 
         onSelectTool={navigateTo}
         onSearch={(q) => { setSearchQuery(q); navigateTo(null); }}
-        isToolView={!!activeTool && activeTool !== 'blog' && !activeTool.startsWith('blog/') && !['privacy', 'terms', 'about', 'contact'].includes(activeTool)}
+        isToolView={!!activeTool && activeTool !== 'blog' && !activeTool.startsWith('blog/') && !['privacy-policy', 'terms-of-service', 'about', 'contact'].includes(activeTool)}
       >
         {activeTool ? (
           <div className="relative w-full h-full flex flex-col min-h-0">

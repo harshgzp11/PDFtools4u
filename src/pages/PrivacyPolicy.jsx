@@ -3,8 +3,8 @@ import React from 'react';
 export default function PrivacyPolicy() {
   const handleEmailClick = (e) => {
     e.preventDefault();
-    const user = "pdftools4u.official";
-    const domain = "gmail.com";
+    const user = "support";
+    const domain = "pdftools4u.in";
     window.location.href = `mailto:${user}@${domain}`;
   };
 
@@ -46,7 +46,7 @@ export default function PrivacyPolicy() {
             </p>
             <ul className="list-disc pl-6 space-y-2">
               <li>We may collect standard log information, including your IP address, browser type, device information, and operating system settings.</li>
-              <li>We collect usage data via analytics tools to understand how our services are used and to improve our platform.</li>
+              <li>We collect usage data via Google Analytics 4 and Microsoft Clarity to understand how our services are used and to improve our platform through aggregate performance and usage analytics.</li>
             </ul>
           </section>
 
@@ -71,13 +71,14 @@ export default function PrivacyPolicy() {
           </section>
 
           <section>
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">6. Your Privacy Rights (GDPR &amp; CCPA)</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">6. Your Privacy Rights (DPDP, GDPR &amp; CCPA)</h2>
             <p className="mb-3">
-              Depending on your location, data privacy laws grant you specific rights regarding your personal information:
+              Depending on your location, data privacy laws (such as India's Digital Personal Data Protection Act, GDPR, and CCPA) grant you specific rights regarding your personal information:
             </p>
             <ul className="list-disc pl-6 space-y-2">
               <li>You have the right to access, restrict processing, or request the deletion of your personal data.</li>
               <li>You have the right to opt out of the sale or sharing of your data for targeted advertising purposes.</li>
+              <li><strong>Zero-Data-Retention Policy:</strong> We maintain a strict zero-data-retention policy for your processed files.</li>
               <li>We provide an email address for you to contact us and exercise these rights.</li>
             </ul>
           </section>
