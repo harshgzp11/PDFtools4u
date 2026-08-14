@@ -285,12 +285,6 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
       {/* Main Layout Area */}
       <div className={`flex-1 flex w-full max-w-[1920px] mx-auto px-2 sm:px-4 py-4 gap-4 xl:gap-6 justify-center items-start`}>
         
-        {/* Left Sidebar Ad */}
-        <aside className="hidden 2xl:flex flex-col w-[160px] flex-shrink-0 h-full max-h-full rounded-2xl relative overflow-hidden">
-          <div className="flex-1 bg-gray-50 border border-gray-200/60 rounded-2xl flex items-center justify-center relative group">
-             <span className="text-gray-300 text-xs font-bold uppercase tracking-[0.2em] -rotate-90">Advertisement</span>
-          </div>
-        </aside>
 
         <main className={`flex-1 w-full min-w-0 flex flex-col`}>
           <div className={`flex-1 w-full rounded-2xl flex flex-col`}>
@@ -298,12 +292,6 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
           </div>
         </main>
 
-        {/* Right Sidebar Ad */}
-        <aside className="hidden xl:flex flex-col w-[160px] flex-shrink-0 h-full max-h-full rounded-2xl relative overflow-hidden">
-          <div className="flex-1 bg-gray-50 border border-gray-200/60 rounded-2xl flex items-center justify-center relative group">
-             <span className="text-gray-300 text-xs font-bold uppercase tracking-[0.2em] -rotate-90">Advertisement</span>
-          </div>
-        </aside>
 
       </div>
 
