@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { FileText, Download, RefreshCw, Settings } from 'lucide-react';
 
 import DragDropZone from '../components/ui/DragDropZone';
-import AdSlot from '../components/ui/AdSlot';
 import ExportActions from '../components/ui/ExportActions';
 import { trackError } from '../lib/analytics';
 
@@ -188,9 +187,6 @@ export default function TxtToPdf() {
         />
       )}
 
-      <div className="mt-12">
-        <AdSlot />
-      </div>
     </div>
   );
 }

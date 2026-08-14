@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { copyToClipboard, downloadTextAsFile } from '../lib/utils';
 import { Copy, Download, Trash2, ArrowDownAZ, ArrowUpZA, Hash, Search } from 'lucide-react';
 import { toast } from 'sonner';
-import AdSlot from '../components/ui/AdSlot';
 
 export default function TextReformatter() {
   const [input, setInput] = useState('');
@@ -139,11 +138,6 @@ export default function TextReformatter() {
             </button>
           </div>
         </div>
-      </div>
-
-      {/* Ad Slot - Safely separated from buttons by space-y-6 on parent and extra padding */}
-      <div className="pt-2">
-        <AdSlot orientation="horizontal" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

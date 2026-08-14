@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { RefreshCw, FileText, CheckCircle, Download, ArrowLeft, Share2, ShieldCheck, ThumbsUp, ThumbsDown, MessageSquareCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import DragDropZone from './DragDropZone';
-import AdSlot from './AdSlot';
 import { getPdfThumbnails } from '../../lib/pdfRenderer';
 import { getDynamicGridClass } from '../../lib/utils';
 import { trackEvent } from '../../lib/analytics';

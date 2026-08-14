@@ -4,7 +4,6 @@ import { Crop, FileText, RefreshCw, CheckCircle, Download, Maximize2, Minimize, 
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import DragDropZone from '../components/ui/DragDropZone';
-import AdSlot from '../components/ui/AdSlot';
 import { getPdfThumbnails } from '../lib/pdfRenderer';
 import { trackError } from '../lib/analytics';
 
@@ -327,9 +326,6 @@ export default function CropPdf() {
         </div>
       )}
 
-      <div className="mt-12">
-        <AdSlot />
-      </div>
     </div>
     </div>
   );
