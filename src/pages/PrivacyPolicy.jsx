@@ -15,7 +15,7 @@ export default function PrivacyPolicy() {
         <div className="border-b border-gray-100 pb-6 mb-8 text-center sm:text-left">
           <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">Privacy Policy</h1>
           <p className="text-sm font-medium text-gray-500 mt-2">
-            PDFTools4u &bull; Last Updated: August 7, 2026
+            PDFtools4u &bull; Last Updated: August 7, 2026
           </p>
         </div>
 
@@ -24,14 +24,14 @@ export default function PrivacyPolicy() {
           <section>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">1. Introduction</h2>
             <p>
-              This Privacy Policy explains how PDFTools4u (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) collects, uses, and discloses information when you use our website (<a href="https://pdftools4u.in" className="text-blue-600 hover:underline font-medium">pdftools4u.in</a>). Data privacy regulations require that we clearly communicate with website visitors about the data we collect and process, as well as inform you about your privacy rights.
+              This Privacy Policy explains how PDFtools4u (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) collects, uses, and discloses information when you use our website (<a href="https://pdftools4u.in" className="text-blue-600 hover:underline font-medium">pdftools4u.in</a>). Data privacy regulations require that we clearly communicate with website visitors about the data we collect and process, as well as inform you about your privacy rights.
             </p>
           </section>
 
           <section className="bg-blue-50/60 border border-blue-100 rounded-xl p-5">
             <h2 className="text-xl sm:text-2xl font-bold text-blue-950 mb-3">2. Client-Side Processing (Your Files Are Safe)</h2>
             <p className="mb-3 text-blue-900">
-              PDFTools4u operates strictly as a client-side web application. This means:
+              PDFtools4u operates strictly as a client-side web application. This means:
             </p>
             <ul className="list-disc pl-6 space-y-2 text-blue-900">
               <li>All document processing, merging, splitting, compressing, and editing happens locally within your web browser.</li>

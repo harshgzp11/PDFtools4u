@@ -13,7 +13,7 @@ export default function Footer({ onSelectTool }) {
             <div className="flex items-center">
               <img 
                 src="/images/pdftool4u-logo.png" 
-                alt="PDFTools4u Logo" 
+                alt="PDFtools4u Logo" 
                 className="h-10 md:h-12 w-auto max-w-[220px] object-contain brightness-0 invert"
                 onError={(e) => {
                   e.target.style.display = 'none';
@@ -24,7 +24,7 @@ export default function Footer({ onSelectTool }) {
                 <div className="p-1.5 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg mr-2.5 shadow-lg">
                   <Zap className="h-5 w-5 text-white" />
                 </div>
-                <span className="font-extrabold text-xl tracking-tight text-white">PDFTools4U</span>
+                <span className="font-extrabold text-xl tracking-tight text-white">PDFtools4u</span>
               </div>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed">
@@ -63,8 +63,8 @@ export default function Footer({ onSelectTool }) {
           <div className="flex flex-col gap-4">
             <h4 className="text-white font-bold mb-2">Company & Legal</h4>
             <button onClick={() => onSelectTool('about')} className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">About Us</button>
-            <button onClick={() => onSelectTool('privacy')} className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Privacy Policy</button>
-            <button onClick={() => onSelectTool('terms')} className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Terms of Service</button>
+            <button onClick={() => onSelectTool('privacy-policy')} className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Privacy Policy</button>
+            <button onClick={() => onSelectTool('terms-of-service')} className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Terms of Service</button>
             <button onClick={() => onSelectTool('blog')} className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Blog / Guides</button>
           </div>
         </div>
@@ -72,12 +72,14 @@ export default function Footer({ onSelectTool }) {
 
         {/* Bottom Legal Section */}
         <div className="border-t border-zinc-800/80 pt-8 flex flex-col lg:flex-row justify-between items-center gap-4 text-xs text-gray-500">
-          <p>&copy; {new Date().getFullYear()} PDFTools4U &mdash; Made with ❤️ for local-first users.</p>
+          <p>&copy; {new Date().getFullYear()} PDFtools4u &mdash; Made with ❤️ for local-first users.</p>
           
           <div className="flex flex-wrap items-center justify-center gap-6">
-            <button onClick={() => onSelectTool('privacy')} className="hover:text-white transition-colors cursor-pointer">Privacy Policy</button>
-            <button onClick={() => onSelectTool('terms')} className="hover:text-white transition-colors cursor-pointer">Terms of Service</button>
+            <button onClick={() => onSelectTool('privacy-policy')} className="hover:text-white transition-colors cursor-pointer">Privacy Policy</button>
+            <button onClick={() => onSelectTool('terms-of-service')} className="hover:text-white transition-colors cursor-pointer">Terms of Service</button>
+            <button onClick={() => onSelectTool('about')} className="hover:text-white transition-colors cursor-pointer">About Us</button>
             <button onClick={() => onSelectTool('contact')} className="hover:text-white transition-colors cursor-pointer">Contact Us</button>
+            <a href="mailto:support@pdftools4u.in" className="hover:text-white transition-colors cursor-pointer font-medium text-gray-400">support@pdftools4u.in</a>
             <div className="flex items-center gap-1.5 ml-4">
               <Globe className="w-4 h-4" />
               <span>English</span>

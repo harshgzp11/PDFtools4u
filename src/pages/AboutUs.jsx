@@ -38,7 +38,7 @@ export default function AboutUs() {
     <div className="w-full h-full overflow-y-auto custom-scrollbar">
       <div className="max-w-5xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-gray-800 animate-in fade-in space-y-16">
         
-        {/* Hero Section - PDFTools4U Theme */}
+        {/* Hero Section - PDFtools4u Theme */}
         <header className="relative text-center max-w-3xl mx-auto pt-4">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs sm:text-sm font-semibold shadow-xs mb-6">
             <ShieldCheck className="w-4 h-4 text-blue-600" />
@@ -46,11 +46,11 @@ export default function AboutUs() {
           </div>
 
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight mb-6">
-            About <span className="text-blue-600">PDFTools4U</span>: India’s Fast, Secure & Free Web Utility Hub
+            About <span className="text-blue-600">PDFtools4u</span>: India’s Fast, Secure & Free Web Utility Hub
           </h1>
 
           <p className="text-lg text-gray-600 leading-relaxed">
-            Welcome to <strong className="text-gray-900 font-bold">PDFTools4U</strong>, a single, unified web utility platform designed to simplify your digital workflow. Whether you are an Indian student navigating strict government exam upload portals, a freelancer formatting graphics, or a software engineer debugging code, our goal is to provide elite-level <strong className="text-gray-900 font-bold">Free online web utilities</strong> completely free of charge—with zero hidden costs, subscriptions, or watermarks.
+            Welcome to <strong className="text-gray-900 font-bold">PDFtools4u</strong>, a single, unified web utility platform designed to simplify your digital workflow. Whether you are an Indian student navigating strict government exam upload portals, a freelancer formatting graphics, or a software engineer debugging code, our goal is to provide elite-level <strong className="text-gray-900 font-bold">Free online web utilities</strong> completely free of charge—with zero hidden costs, subscriptions, or watermarks.
           </p>
 
           <p className="text-base text-gray-600 leading-relaxed mt-4">
@@ -142,7 +142,7 @@ export default function AboutUs() {
             </h2>
 
             <p className="text-gray-700 text-sm sm:text-base leading-relaxed max-w-4xl">
-              We understand that your files, data, and scripts are deeply private. Unlike traditional cloud platforms that store your data indefinitely, PDFTools4U is engineered with a strict <strong className="text-emerald-950 font-bold bg-emerald-100/70 px-2 py-0.5 rounded">Privacy-First Architecture</strong>:
+              We understand that your files, data, and scripts are deeply private. Unlike traditional cloud platforms that store your data indefinitely, PDFtools4u is engineered with a strict <strong className="text-emerald-950 font-bold bg-emerald-100/70 px-2 py-0.5 rounded">Privacy-First Architecture</strong>:
             </p>
 
             <div className="grid sm:grid-cols-3 gap-6 pt-2">
@@ -196,7 +196,7 @@ export default function AboutUs() {
             </h2>
 
             <p className="text-gray-700 text-sm sm:text-base leading-relaxed">
-              PDFTools4U was envisioned and developed by <strong className="text-gray-900 font-bold">Harsh Srivastava</strong>, an independent software developer based in India. Frustrated by online utility platforms that are slow, hidden behind expensive paywalls, or cluttered with malware-ridden pop-up ads, I built this web toolbox to offer a clean, blazing-fast, and premium user experience for everyone.
+              PDFtools4u was envisioned and developed by <strong className="text-gray-900 font-bold">Harsh Srivastava</strong>, an independent software developer based in India. Frustrated by online utility platforms that are slow, hidden behind expensive paywalls, or cluttered with malware-ridden pop-up ads, I built this web toolbox to offer a clean, blazing-fast, and premium user experience for everyone.
             </p>
 
             <p className="text-gray-600 text-sm">

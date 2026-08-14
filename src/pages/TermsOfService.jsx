@@ -15,29 +15,29 @@ export default function TermsOfService() {
         <div className="border-b border-gray-100 pb-6 mb-8 text-center sm:text-left">
           <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">Terms of Service</h1>
           <p className="text-sm font-medium text-gray-500 mt-2">
-            PDFTools4u &bull; Last Updated: August 7, 2026
+            PDFtools4u &bull; Last Updated: August 7, 2026
           </p>
         </div>
 
         <div className="prose prose-gray max-w-none space-y-8 text-sm sm:text-base leading-relaxed text-gray-600">
           <p>
-            Welcome to PDFTools4u (<a href="https://pdftools4u.in" className="text-blue-600 hover:underline font-medium">https://pdftools4u.in</a>). Please read these Terms of Service (&quot;Terms&quot;, &quot;Terms of Service&quot;) carefully before using our website and services.
+            Welcome to PDFtools4u (<a href="https://pdftools4u.in" className="text-blue-600 hover:underline font-medium">https://pdftools4u.in</a>). Please read these Terms of Service (&quot;Terms&quot;, &quot;Terms of Service&quot;) carefully before using our website and services.
           </p>
           <p>
-            By accessing or using PDFTools4u, you agree to be bound by these Terms. If you disagree with any part of these terms, you may not access or use our services.
+            By accessing or using PDFtools4u, you agree to be bound by these Terms. If you disagree with any part of these terms, you may not access or use our services.
           </p>
 
           <section>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">1. Acceptance of Terms</h2>
             <p>
-              By accessing or using PDFTools4u, you acknowledge that you have read, understood, and agreed to be bound by these Terms of Service, as well as our Privacy Policy. These Terms apply to all visitors, users, and others who access or use the website.
+              By accessing or using PDFtools4u, you acknowledge that you have read, understood, and agreed to be bound by these Terms of Service, as well as our Privacy Policy. These Terms apply to all visitors, users, and others who access or use the website.
             </p>
           </section>
 
           <section>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">2. Description of Service</h2>
             <p className="mb-3">
-              PDFTools4u provides a web-based suite of digital document utilities, including but not limited to PDF conversion, merging, splitting, compressing, editing, and optical character recognition (OCR) tools (&quot;Services&quot;).
+              PDFtools4u provides a web-based suite of digital document utilities, including but not limited to PDF conversion, merging, splitting, compressing, editing, and optical character recognition (OCR) tools (&quot;Services&quot;).
             </p>
             <ul className="list-disc pl-6 space-y-2">
               <li><strong>Free Availability:</strong> The Services are currently provided free of charge for personal and commercial use.</li>
@@ -48,16 +48,16 @@ export default function TermsOfService() {
           <section>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">3. Client-Side Processing &amp; Document Ownership</h2>
             <ul className="list-disc pl-6 space-y-3">
-              <li><strong>Local Processing:</strong> PDFTools4u operates primarily using client-side processing (JavaScript / WebAssembly execution directly within your web browser). Your files and document data are processed locally on your own device and are not uploaded to or stored on our servers.</li>
-              <li><strong>User Ownership:</strong> You retain full ownership, copyright, and all intellectual property rights to all files, documents, and data processed using PDFTools4u. PDFTools4u claims zero ownership over your content.</li>
-              <li><strong>User Responsibility:</strong> You are solely responsible for keeping backup copies of your original files before processing them through our tools. PDFTools4u is not responsible for any file corruption, data loss, or unintentional modifications occurring during processing.</li>
+              <li><strong>Local Processing:</strong> PDFtools4u operates primarily using client-side processing (JavaScript / WebAssembly execution directly within your web browser). Your files and document data are processed locally on your own device and are not uploaded to or stored on our servers.</li>
+              <li><strong>User Ownership:</strong> You retain full ownership, copyright, and all intellectual property rights to all files, documents, and data processed using PDFtools4u. PDFtools4u claims zero ownership over your content.</li>
+              <li><strong>User Responsibility:</strong> You are solely responsible for keeping backup copies of your original files before processing them through our tools. PDFtools4u is not responsible for any file corruption, data loss, or unintentional modifications occurring during processing.</li>
             </ul>
           </section>
 
           <section>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">4. Acceptable Use Policy</h2>
             <p className="mb-3">
-              You agree to use PDFTools4u only for lawful purposes. You are strictly prohibited from using the website or tools to:
+              You agree to use PDFtools4u only for lawful purposes. You are strictly prohibited from using the website or tools to:
             </p>
             <ul className="list-disc pl-6 space-y-2">
               <li>Process, convert, or distribute documents that contain illegal, fraudulent, harmful, defamatory, violent, or infringing material.</li>
@@ -71,18 +71,18 @@ export default function TermsOfService() {
           <section>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">5. Intellectual Property Rights</h2>
             <ul className="list-disc pl-6 space-y-2">
-              <li><strong>Our Property:</strong> The design, branding, logo, user interface, software code, domain name (pdftools4u.in), and content on this website are the exclusive property of PDFTools4u and are protected by applicable intellectual property, trademark, and copyright laws.</li>
-              <li><strong>Restrictions:</strong> You may not copy, reproduce, re-sell, frame, or redistribute the website&apos;s code, structure, design, or branding without prior written consent from PDFTools4u.</li>
+              <li><strong>Our Property:</strong> The design, branding, logo, user interface, software code, domain name (pdftools4u.in), and content on this website are the exclusive property of PDFtools4u and are protected by applicable intellectual property, trademark, and copyright laws.</li>
+              <li><strong>Restrictions:</strong> You may not copy, reproduce, re-sell, frame, or redistribute the website&apos;s code, structure, design, or branding without prior written consent from PDFtools4u.</li>
             </ul>
           </section>
 
           <section>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">6. Disclaimer of Warranties (&quot;AS IS&quot; &amp; &quot;AS AVAILABLE&quot;)</h2>
             <p className="mb-3">
-              PDFTools4u is provided strictly on an &quot;AS IS&quot; and &quot;AS AVAILABLE&quot; basis without warranties of any kind, whether express or implied.
+              PDFtools4u is provided strictly on an &quot;AS IS&quot; and &quot;AS AVAILABLE&quot; basis without warranties of any kind, whether express or implied.
             </p>
             <p className="mb-3">
-              To the maximum extent permitted by applicable law, PDFTools4u explicitly disclaims all warranties, including but not limited to:
+              To the maximum extent permitted by applicable law, PDFtools4u explicitly disclaims all warranties, including but not limited to:
             </p>
             <ul className="list-disc pl-6 space-y-2">
               <li>Implied warranties of merchantability, fitness for a particular purpose, non-infringement, or accuracy.</li>
@@ -94,7 +94,7 @@ export default function TermsOfService() {
           <section>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">7. Limitation of Liability</h2>
             <p className="mb-3">
-              To the fullest extent permitted by law, in no event shall PDFTools4u, its owner(s), developers, or affiliates be liable for any direct, indirect, incidental, special, consequential, or punitive damages, including without limitation:
+              To the fullest extent permitted by law, in no event shall PDFtools4u, its owner(s), developers, or affiliates be liable for any direct, indirect, incidental, special, consequential, or punitive damages, including without limitation:
             </p>
             <ul className="list-disc pl-6 space-y-2">
               <li>Loss of profits, revenue, data, or goodwill.</li>
@@ -107,20 +107,20 @@ export default function TermsOfService() {
           <section>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">8. Third-Party Services &amp; Links</h2>
             <p className="mb-3">
-              PDFTools4u may integrate with or link to third-party services, such as analytics providers, content delivery networks (CDNs), or advertising networks (e.g., Google AdSense).
+              PDFtools4u may integrate with or link to third-party services, such as analytics providers, content delivery networks (CDNs), or advertising networks (e.g., Google AdSense).
             </p>
             <p className="mb-3">
               We do not control or assume responsibility for the content, privacy policies, or practices of any third-party websites or services.
             </p>
             <p>
-              Your interactions with third-party services found on or through PDFTools4u are strictly between you and that third party.
+              Your interactions with third-party services found on or through PDFtools4u are strictly between you and that third party.
             </p>
           </section>
 
           <section>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">9. Indemnification</h2>
             <p className="mb-3">
-              You agree to defend, indemnify, and hold harmless PDFTools4u, its owner(s), and developers from and against any claims, liabilities, damages, judgments, losses, costs, or expenses (including reasonable attorney&apos;s fees) arising out of or relating to:
+              You agree to defend, indemnify, and hold harmless PDFtools4u, its owner(s), and developers from and against any claims, liabilities, damages, judgments, losses, costs, or expenses (including reasonable attorney&apos;s fees) arising out of or relating to:
             </p>
             <ul className="list-disc pl-6 space-y-2">
               <li>Your violation of these Terms of Service.</li>
@@ -132,14 +132,14 @@ export default function TermsOfService() {
           <section>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">10. Modifications to these Terms</h2>
             <p>
-              We reserve the right to revise and update these Terms of Service at any time. Any changes will become effective immediately upon being posted on this page with an updated &quot;Last Updated&quot; date. Your continued use of PDFTools4u following the posting of revised Terms constitutes your acceptance of those changes.
+              We reserve the right to revise and update these Terms of Service at any time. Any changes will become effective immediately upon being posted on this page with an updated &quot;Last Updated&quot; date. Your continued use of PDFtools4u following the posting of revised Terms constitutes your acceptance of those changes.
             </p>
           </section>
 
           <section>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">11. Governing Law &amp; Dispute Resolution</h2>
             <p>
-              These Terms shall be governed by and construed in accordance with the laws of India, without regard to its conflict of law principles. Any legal suit, action, or proceeding arising out of or related to these Terms or the use of PDFTools4u shall be instituted exclusively in the competent courts located in India.
+              These Terms shall be governed by and construed in accordance with the laws of India, without regard to its conflict of law principles. Any legal suit, action, or proceeding arising out of or related to these Terms or the use of PDFtools4u shall be instituted exclusively in the competent courts located in India.
             </p>
           </section>
 
