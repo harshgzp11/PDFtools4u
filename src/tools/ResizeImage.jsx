@@ -51,6 +51,7 @@ export default function ResizeImage() {
 
   const processImage = async () => {
     if (!file || !width || !height) return;
+    trackEvent('tool_executed', { tool_name: 'Resize Image' });
     setIsProcessing(true);
     
     try {

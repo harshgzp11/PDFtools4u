@@ -50,6 +50,7 @@ export default function CropPdf() {
 
   const handleProcess = async () => {
     if (!file || !crop.width || !crop.height) return;
+    trackEvent('tool_executed', { tool_name: 'Crop PDF' });
     setIsProcessing(true);
 
     try {
@@ -108,6 +109,7 @@ export default function CropPdf() {
   };
 
   const handleDownload = () => {
+    trackEvent('file_downloaded', { tool_name: 'Crop PDF' });
     if (!successData) return;
     const blob = new Blob([successData.pdfBytes], { type: 'application/pdf' });
     const url = URL.createObjectURL(blob);

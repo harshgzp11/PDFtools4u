@@ -158,6 +158,7 @@ export default function PdfOcr() {
 
   const processOcr = async () => {
     if (!file) return;
+    trackEvent('tool_executed', { tool_name: 'PDF OCR Extractor' });
     setIsProcessing(true);
     setActualProgress({
       action: 'Initializing',

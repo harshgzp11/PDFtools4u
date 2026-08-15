@@ -16,6 +16,7 @@ export default function TextToDocx() {
       return;
     }
     
+    trackEvent('tool_executed', { tool_name: 'Generating Word Document...' });
     setIsProcessing(true);
     
     try {

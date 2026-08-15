@@ -31,6 +31,7 @@ export default function PdfWatermark() {
 
   const addWatermark = async () => {
     if (!file || !watermarkText) return;
+    trackEvent('tool_executed', { tool_name: 'Watermark PDF' });
     setLoading(true);
     
     try {

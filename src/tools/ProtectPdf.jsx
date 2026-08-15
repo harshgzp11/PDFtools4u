@@ -49,6 +49,7 @@ export default function ProtectPdf() {
 
   const protectPdf = async () => {
     if (!file || !password || password !== repeatPassword) return;
+    trackEvent('tool_executed', { tool_name: 'Protect PDF file' });
     setLoading(true);
     
     try {

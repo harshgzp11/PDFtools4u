@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ArrowLeftRight, Download, Loader2, X, AlertCircle, FileCode2, Info } from 'lucide-react';
 import { convertPdfToDocx, convertPdfToExcel, convertPdfToImages, convertPdfToPpt } from '../../../utils/pdfConversion';
 import { trackError } from '../../../lib/analytics';
+import { trackEvent } from '../../lib/analytics';
 
 export default function ConvertPanel({ file, onClose }) {
   const [format, setFormat] = useState('docx');
@@ -14,6 +15,7 @@ export default function ConvertPanel({ file, onClose }) {
   const [error, setError] = useState(null);
 
   const handleConvert = async () => {
+    trackEvent('tool_executed', { tool_name: 'Convert Panel' });
     setIsProcessing(true);
     setProgress(0);
     setError(null);

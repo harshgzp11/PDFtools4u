@@ -50,6 +50,7 @@ export default function ConvertImage() {
 
   const convertImage = async () => {
     if (!file) return;
+    trackEvent('tool_executed', { tool_name: 'Convert Image' });
     setIsProcessing(true);
     
     try {

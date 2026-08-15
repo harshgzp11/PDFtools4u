@@ -15,6 +15,7 @@ export default function NumberPages() {
 
   const handleProcess = async () => {
     if (!file) return;
+    trackEvent('tool_executed', { tool_name: 'Number Pages' });
     setIsProcessing(true);
 
     try {

@@ -124,6 +124,7 @@ export default function PdfToWord() {
 
   const convertPdfToWord = async () => {
     if (!file) return;
+    trackEvent('tool_executed', { tool_name: 'PDF to Word' });
     setIsProcessing(true);
     setProgress(0);
     try {

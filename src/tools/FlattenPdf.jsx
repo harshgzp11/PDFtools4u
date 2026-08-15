@@ -25,6 +25,7 @@ export default function FlattenPdf() {
 
   const flattenPdf = async () => {
     if (!file) return;
+    trackEvent('tool_executed', { tool_name: 'Flatten PDF Forms' });
     setLoading(true);
     
     try {

@@ -125,6 +125,7 @@ export default function BackgroundRemover() {
   // ─── Full Pipeline ───────────────────────────────────────────────
   const removeBackground = async () => {
     if (!imageSrc) return;
+    trackEvent('tool_executed', { tool_name: 'AI Background Remover' });
     setLoading(true);
     setProgress(0);
     setResultSrc(null);

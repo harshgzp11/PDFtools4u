@@ -25,6 +25,7 @@ export default function TxtToPdf() {
 
   const handleProcess = async () => {
     if (!file) return;
+    trackEvent('tool_executed', { tool_name: 'TXT to PDF' });
     setIsProcessing(true);
 
     try {

@@ -34,6 +34,7 @@ export default function RtfToPdf() {
   const handleFileSelect = async (selectedFile) => {
     setFile(selectedFile);
     setSuccessData(null);
+    trackEvent('tool_executed', { tool_name: 'RTF to PDF' });
     setIsProcessing(true);
     
     try {

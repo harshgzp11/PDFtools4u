@@ -49,6 +49,7 @@ export default function CompressImage() {
 
   const compressImage = async () => {
     if (!file) return;
+    trackEvent('tool_executed', { tool_name: 'Compress Image' });
     setIsProcessing(true);
     
     try {

@@ -31,6 +31,7 @@ export default function PdfToExcel() {
 
   const handleConvert = async () => {
     if (!file) return;
+    trackEvent('tool_executed', { tool_name: 'PDF to Excel' });
     setIsProcessing(true);
     setProgress(0);
 

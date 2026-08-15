@@ -49,6 +49,7 @@ export default function JpgToPdf() {
 
   const generatePdf = () => {
     if (images.length === 0) return;
+    trackEvent('tool_executed', { tool_name: 'JPG to PDF' });
     setLoading(true);
     
     try {

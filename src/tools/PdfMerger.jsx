@@ -54,6 +54,7 @@ export default function PdfMerger() {
 
   const mergePdfs = async () => {
     if (files.length < 2) return;
+    trackEvent('tool_executed', { tool_name: 'Merge PDF' });
     setLoading(true);
     
     try {
@@ -92,6 +93,7 @@ export default function PdfMerger() {
   };
 
   const handleDownload = () => {
+    trackEvent('file_downloaded', { tool_name: 'Merge PDF' });
     if (!successData || !successData.url) return;
     const link = document.createElement('a');
     link.href = successData.url;

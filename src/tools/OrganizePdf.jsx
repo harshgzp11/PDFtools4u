@@ -24,6 +24,7 @@ export default function OrganizePdf() {
       return;
     }
     
+    trackEvent('tool_executed', { tool_name: 'Organize PDF' });
     setLoading(true);
     try {
       const fileIndex = files.length;

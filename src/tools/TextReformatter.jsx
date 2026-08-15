@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { copyToClipboard, downloadTextAsFile } from '../lib/utils';
 import { Copy, Download, Trash2, ArrowDownAZ, ArrowUpZA, Hash, Search } from 'lucide-react';
 import { toast } from 'sonner';
+import { trackEvent } from '../lib/analytics';
 
 export default function TextReformatter() {
   const [input, setInput] = useState('');
@@ -68,6 +69,7 @@ export default function TextReformatter() {
 
   // One-off actions update the base input directly so they persist across toggles
   const applyFindReplace = () => {
+    trackEvent('tool_executed', { tool_name: 'Text Case & Line Reformatter' });
     if (!input || !findText) return;
     const res = input.split(findText).join(replaceText);
     setInput(res);
@@ -82,6 +84,7 @@ export default function TextReformatter() {
   };
 
   const handleDownload = () => {
+    trackEvent('file_downloaded', { tool_name: 'Text Case & Line Reformatter' });
     downloadTextAsFile(output, 'reformatted_text.txt');
     toast.success('Downloaded as reformatted_text.txt');
   };

@@ -11,6 +11,7 @@ export default function HtmlToImage() {
 
   const generateImage = async () => {
     if (!renderRef.current) return;
+    trackEvent('tool_executed', { tool_name: 'HTML/CSS to Image' });
     setLoading(true);
     
     try {

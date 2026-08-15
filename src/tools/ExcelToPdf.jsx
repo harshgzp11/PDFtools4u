@@ -127,6 +127,7 @@ export default function ExcelToPdf() {
       return;
     }
     
+    trackEvent('tool_executed', { tool_name: 'Excel to PDF' });
     setIsProcessing(true);
     
     try {

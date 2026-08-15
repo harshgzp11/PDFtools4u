@@ -30,6 +30,7 @@ export default function UnlockPdf() {
 
   const unlockPdf = async () => {
     if (!file || !password) return;
+    trackEvent('tool_executed', { tool_name: 'Unlock PDF file' });
     setLoading(true);
     setErrorMsg('');
     

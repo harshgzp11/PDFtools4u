@@ -105,6 +105,7 @@ export default function PdfFormFiller() {
 
   const fillForm = async () => {
     if (!file) return;
+    trackEvent('tool_executed', { tool_name: 'PDF Form Filler' });
     setLoading(true);
     setErrorMsg('');
     

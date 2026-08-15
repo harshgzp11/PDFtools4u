@@ -15,6 +15,7 @@ export default function PdfTextExtractor() {
   const [error, setError] = useState('');
 
   const processPdf = async (file) => {
+    trackEvent('tool_executed', { tool_name: 'PDF Text Extractor' });
     setLoading(true);
     setError('');
     setOutput('');

@@ -169,6 +169,7 @@ export default function PptToPdf() {
 
   const convertPptToPdf = async () => {
     if (!file || slides.length === 0) return;
+    trackEvent('tool_executed', { tool_name: 'PowerPoint to PDF' });
     setIsProcessing(true);
     setProgress(0);
 

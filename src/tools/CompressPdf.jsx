@@ -29,7 +29,7 @@ export default function CompressPdf() {
       setSuccessData(null);
       setProgress(0);
       const sizeMB = newFile.size / (1024 * 1024);
-      setTargetSizeMB(Math.max(0.1, parseFloat((sizeMB * 0.5).toFixed(2)))); // default 50%
+      setTargetSizeMB(Math.max(0.01, parseFloat((sizeMB * 0.5).toFixed(2)))); // default 50%
     }
   };
 
@@ -42,6 +42,7 @@ export default function CompressPdf() {
 
   const compressPdf = async () => {
     if (!file) return;
+    trackEvent('tool_executed', { tool_name: 'Compress PDF' });
     setIsProcessing(true);
     setProgress(0);
     
@@ -176,8 +177,8 @@ export default function CompressPdf() {
         <div className="relative">
           <input 
             type="range"
-            min="0.10"
-            max={file ? (file.size / (1024 * 1024)).toFixed(2) : 10}
+            min="0.01"
+            max={file ? Math.max(0.01, (file.size / (1024 * 1024))).toFixed(2) : 10}
             step="0.01"
             value={targetSizeMB}
             onChange={(e) => setTargetSizeMB(parseFloat(e.target.value))}

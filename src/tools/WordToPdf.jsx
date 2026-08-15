@@ -155,6 +155,7 @@ export default function WordToPdf() {
 
   const convertWordToPdf = async () => {
     if (!file) return;
+    trackEvent('tool_executed', { tool_name: 'Word to PDF' });
     setIsProcessing(true);
 
     try {

@@ -18,6 +18,7 @@ const AiPanel = lazy(() => import('./Panels/AiPanel'));
 
 import { generateId } from './utils';
 import { trackError } from '../../lib/analytics';
+import { trackEvent } from '../../lib/analytics';
 
 
 
@@ -123,6 +124,7 @@ export default function PdfEditor({
     setFile(uploadedFile);
     // Strip .pdf for the editable filename state
     setFileName(uploadedFile.name.replace(/\.pdf$/i, ''));
+    trackEvent('tool_executed', { tool_name: 'Pdf Editor' });
     setIsProcessing(true);
     try {
       const arrayBuffer = await uploadedFile.arrayBuffer();

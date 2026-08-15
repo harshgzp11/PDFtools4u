@@ -63,11 +63,6 @@ export const compressPdfToTarget = async (file, targetSizeMB, onProgress) => {
   onProgress(95);
   
   let finalBytes = bestBytes;
-  if (finalBytes.length < targetBytes) {
-     const padded = new Uint8Array(targetBytes);
-     padded.set(finalBytes); 
-     finalBytes = padded;
-  }
   
   onProgress(100);
   

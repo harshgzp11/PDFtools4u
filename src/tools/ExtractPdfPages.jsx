@@ -53,6 +53,7 @@ export default function ExtractPdfPages() {
 
   const extractPages = async () => {
     if (!file || selectedPages.size === 0) return;
+    trackEvent('tool_executed', { tool_name: 'Extract PDF pages' });
     setLoading(true);
     
     try {

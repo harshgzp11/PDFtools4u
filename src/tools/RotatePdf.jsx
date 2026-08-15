@@ -55,6 +55,7 @@ export default function RotatePdf() {
 
   const rotatePdf = async () => {
     if (!file) return;
+    trackEvent('tool_executed', { tool_name: 'Rotate PDF pages' });
     setLoading(true);
     
     try {

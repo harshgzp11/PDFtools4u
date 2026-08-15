@@ -74,6 +74,7 @@ export default function PdfSplitter() {
 
   const splitPdf = async () => {
     if (!file || (splitMode === 'ranges' && parseRanges(pageRange).length === 0)) return;
+    trackEvent('tool_executed', { tool_name: 'Split PDF' });
     setLoading(true);
     
     try {

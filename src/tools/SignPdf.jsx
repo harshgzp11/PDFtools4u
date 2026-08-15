@@ -96,6 +96,7 @@ export default function SignPdf() {
 
   const exportPdf = async () => {
     if (!file) return;
+    trackEvent('tool_executed', { tool_name: 'Sign & Annotate' });
     setLoading(true);
     
     try {

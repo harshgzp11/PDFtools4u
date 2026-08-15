@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import DragDropZone from '../components/ui/DragDropZone';
 import { Download } from 'lucide-react';
+import { trackEvent } from '../lib/analytics';
 
 export default function ImageConverter() {
   const [imageSrc, setImageSrc] = useState(null);
@@ -20,6 +21,8 @@ export default function ImageConverter() {
   };
 
   const handleDownload = () => {
+    trackEvent('tool_executed', { tool_name: 'Image Converter & Resizer' });
+    trackEvent('file_downloaded', { tool_name: 'Image Converter & Resizer' });
     if (!imageSrc || !canvasRef.current) return;
     
     const canvas = canvasRef.current;

@@ -22,7 +22,8 @@ export default function DocxToText() {
   const handleFile = async (newFile) => {
     if (newFile && (newFile.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || newFile.name.endsWith('.docx'))) {
       setFile(newFile);
-      setIsProcessing(true);
+      trackEvent('tool_executed', { tool_name: 'DOCX to Text' });
+    setIsProcessing(true);
       
       try {
         const arrayBuffer = await newFile.arrayBuffer();

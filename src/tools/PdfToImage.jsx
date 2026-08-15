@@ -36,6 +36,7 @@ export default function PdfToImage() {
 
   const convertPdfToImages = async () => {
     if (!file) return;
+    trackEvent('tool_executed', { tool_name: 'PDF to Image' });
     setIsProcessing(true);
     setProgress(0);
     

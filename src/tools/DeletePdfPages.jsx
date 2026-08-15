@@ -53,6 +53,7 @@ export default function DeletePdfPages() {
 
   const deletePages = async () => {
     if (!file || selectedPages.size === 0) return;
+    trackEvent('tool_executed', { tool_name: 'Remove pages from PDF' });
     setLoading(true);
     
     try {

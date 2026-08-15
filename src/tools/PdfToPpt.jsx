@@ -35,6 +35,7 @@ export default function PdfToPpt() {
 
   const convertPdfToPpt = async () => {
     if (!file) return;
+    trackEvent('tool_executed', { tool_name: 'PDF to PowerPoint' });
     setIsProcessing(true);
     setProgress(0);
     
