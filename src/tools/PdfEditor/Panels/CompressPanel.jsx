@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FileArchive, Download, Loader2, X, AlertCircle } from 'lucide-react';
 import { compressPdfToTarget } from '../../../utils/pdfCompression';
 import { trackError } from "../../../lib/analytics";
-import { trackEvent } from '../../lib/analytics';
+import { trackEvent } from '../../../lib/analytics';
 
 export default function CompressPanel({ file, onClose }) {
   const [targetSizeMB, setTargetSizeMB] = useState(
