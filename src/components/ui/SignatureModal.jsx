@@ -14,6 +14,45 @@ const loadFont = () => {
   }
 };
 
+const trimCanvas = (canvas) => {
+  const ctx = canvas.getContext('2d');
+  const copy = document.createElement('canvas');
+  const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const l = pixels.data.length;
+  let bound = { top: null, left: null, right: null, bottom: null };
+  let x, y;
+
+  for (let i = 0; i < l; i += 4) {
+    if (pixels.data[i + 3] !== 0) {
+      x = (i / 4) % canvas.width;
+      y = ~~((i / 4) / canvas.width);
+
+      if (bound.top === null) bound.top = y;
+      if (bound.left === null) bound.left = x;
+      else if (x < bound.left) bound.left = x;
+      if (bound.right === null) bound.right = x;
+      else if (bound.right < x) bound.right = x;
+      if (bound.bottom === null) bound.bottom = y;
+      else if (bound.bottom < y) bound.bottom = y;
+    }
+  }
+  
+  if (bound.top === null) return canvas;
+
+  // Add 10px padding
+  const padding = 10;
+  const trimHeight = bound.bottom - bound.top + 1 + (padding * 2);
+  const trimWidth = bound.right - bound.left + 1 + (padding * 2);
+  
+  const trimmed = ctx.getImageData(bound.left, bound.top, bound.right - bound.left + 1, bound.bottom - bound.top + 1);
+
+  copy.width = trimWidth;
+  copy.height = trimHeight;
+  copy.getContext('2d').putImageData(trimmed, padding, padding);
+
+  return copy;
+};
+
 export default function SignatureModal({ isOpen, onClose, onSave }) {
   const [tab, setTab] = useState('draw'); // 'draw', 'type', 'upload'
   const [penColor, setPenColor] = useState('black');
@@ -117,7 +156,7 @@ export default function SignatureModal({ isOpen, onClose, onSave }) {
     
     if (tab === 'draw') {
       if (sigCanvas.current && !sigCanvas.current.isEmpty()) {
-        dataUrl = sigCanvas.current.getTrimmedCanvas().toDataURL('image/png');
+        dataUrl = trimCanvas(sigCanvas.current.getCanvas()).toDataURL('image/png');
       }
     } else if (tab === 'upload') {
       dataUrl = sigImage;
