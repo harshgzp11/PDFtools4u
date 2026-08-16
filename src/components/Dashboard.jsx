@@ -143,7 +143,7 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
                 <input
                   ref={heroSearchRef}
                   type="text"
-                  placeholder="Search 40+ tools (e.g. Merge, OCR, Convert...)"
+                  placeholder="Search tools (e.g. Merge, OCR...)"
                   value={localSearch}
                   onChange={(e) => setLocalSearch(e.target.value)}
                   className="w-full pl-11 pr-32 py-3.5 bg-white border border-gray-200 rounded-xl text-base text-gray-900 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
@@ -508,7 +508,7 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
 
         {/* Smallpdf-style categorized columns */}
         <div className="bg-white border border-gray-200 rounded-2xl p-6 md:p-10 shadow-sm" key={activeTab}>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-8 gap-y-10 animate-in fade-in duration-300">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-8 gap-y-10 animate-in fade-in duration-300">
             {activeDomain.categories.map((category, idx) => (
               <div key={idx} className="flex flex-col">
                 <h3 className="font-bold text-gray-400 text-xs tracking-wider uppercase mb-4 pb-2 border-b border-gray-100">
@@ -528,7 +528,7 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
                         >
                           <div className="flex items-center gap-2.5">
                             <Icon className={`w-4 h-4 flex-shrink-0 ${tool.color} transition-transform ${tool.comingSoon ? '' : 'group-hover:scale-110'}`} />
-                            <span className={`text-sm font-medium transition-colors whitespace-nowrap ${tool.comingSoon ? 'text-gray-500' : 'text-gray-700 group-hover:text-gray-900'}`}>
+                            <span className={`text-sm font-medium transition-colors truncate ${tool.comingSoon ? 'text-gray-500' : 'text-gray-700 group-hover:text-gray-900'}`}>
                               {tool.name}
                             </span>
                           </div>

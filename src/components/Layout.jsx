@@ -208,11 +208,10 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
           <div className="relative ml-auto w-[85%] max-w-sm h-full bg-white shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
             {/* Drawer Header with Close Button */}
             <div className="flex items-center justify-between p-4 border-b border-gray-100 flex-shrink-0 bg-white gap-4">
-              <button onClick={() => { openSearch(); setIsMobileMenuOpen(false); }} className="flex-1 flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-200 text-sm font-bold text-gray-900 hover:bg-gray-100 transition-colors shadow-sm">
+              <button onClick={() => { openSearch(); setIsMobileMenuOpen(false); }} className="flex-1 flex items-center p-3 bg-gray-50 rounded-xl border border-gray-200 text-sm font-bold text-gray-900 hover:bg-gray-100 transition-colors shadow-sm">
                 <div className="flex items-center gap-2">
                   <Search className="w-4 h-4 text-gray-500" /> Search Tools
                 </div>
-                <kbd className="bg-white text-gray-500 px-1.5 py-0.5 rounded text-[10px] border border-gray-200 font-bold shadow-sm">⌘K</kbd>
               </button>
               <button 
                 onClick={() => setIsMobileMenuOpen(false)} 
