@@ -1,3 +1,4 @@
+import { trackEvent } from '../lib/analytics';
 import React, { useState } from 'react';
 import { FileArchive, Minimize, Scissors, ListOrdered, RefreshCw, Loader2 } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';

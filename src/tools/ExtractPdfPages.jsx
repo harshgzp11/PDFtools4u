@@ -1,3 +1,4 @@
+import { trackEvent } from '../lib/analytics';
 import React, { useState } from 'react';
 
 import { Download, FileUp, CheckCircle } from 'lucide-react';

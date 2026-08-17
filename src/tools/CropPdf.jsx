@@ -1,3 +1,4 @@
+import { trackEvent } from '../lib/analytics';
 import React, { useState, useRef, useEffect } from 'react';
 import { Crop, FileText, RefreshCw, CheckCircle, Download, Maximize2, Minimize, ListOrdered, Share2, ArrowLeft, Scissors, Layers } from 'lucide-react';
 

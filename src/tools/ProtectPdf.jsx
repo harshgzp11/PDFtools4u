@@ -1,3 +1,4 @@
+import { trackEvent } from '../lib/analytics';
 import React, { useState } from 'react';
 import { PDFDocument } from '@cantoo/pdf-lib';
 import { Download, Lock, FileText, CheckCircle, ArrowLeft, RefreshCw, Eye, EyeOff, Loader2 } from 'lucide-react';

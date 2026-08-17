@@ -1,3 +1,4 @@
+import { trackEvent } from '../lib/analytics';
 import React, { useState } from 'react';
 
 import { Layers3 } from 'lucide-react';

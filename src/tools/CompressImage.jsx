@@ -1,3 +1,4 @@
+import { trackEvent } from '../lib/analytics';
 import React, { useState } from 'react';
 import { Minimize, CheckCircle, Download, RefreshCw, Image as ImageIcon, Loader2 } from 'lucide-react';
 import DragDropZone from '../components/ui/DragDropZone';

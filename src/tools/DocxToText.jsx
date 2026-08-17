@@ -1,3 +1,4 @@
+import { trackEvent } from '../lib/analytics';
 import React, { useState, useEffect } from 'react';
 import mammoth from 'mammoth';
 import { FileText, CheckCircle, Download, RefreshCw, Loader2, Copy } from 'lucide-react';

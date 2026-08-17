@@ -1,3 +1,4 @@
+import { trackEvent } from '../lib/analytics';
 import React, { useState, useEffect } from 'react';
 import jsPDF from 'jspdf';
 import { Download, PlusCircle, Trash2, Image as ImageIcon, CheckCircle, ArrowLeft, ImagePlus, FileUp } from 'lucide-react';

@@ -1,3 +1,4 @@
+import { trackEvent } from '../lib/analytics';
 import React, { useState, useEffect } from 'react';
 import { FileSpreadsheet, FileOutput, Columns, LayoutList, TableProperties } from 'lucide-react';
 import { toast } from 'sonner';

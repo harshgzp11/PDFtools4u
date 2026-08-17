@@ -1,3 +1,4 @@
+import { trackEvent } from '../lib/analytics';
 import React, { useState, useRef, useCallback } from 'react';
 import { removeBackground as imglyRemoveBackground } from '@imgly/background-removal';
 import { Download, Loader2, Sparkles, Zap, Gem, RotateCcw, Eye, Grid3X3, SlidersHorizontal } from 'lucide-react';

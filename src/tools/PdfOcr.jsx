@@ -1,3 +1,4 @@
+import { trackEvent } from '../lib/analytics';
 import React, { useState, useEffect, useRef } from 'react';
 import { ScanText, Download, AlertTriangle, Copy } from 'lucide-react';
 import { toast } from 'sonner';

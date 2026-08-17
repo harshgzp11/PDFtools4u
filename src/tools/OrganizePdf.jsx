@@ -1,3 +1,4 @@
+import { trackEvent } from '../lib/analytics';
 import React, { useState, useRef } from 'react';
 
 import { Files, GripHorizontal, Trash2, RotateCw, Plus, FilePlus, RefreshCcw, FileText } from 'lucide-react';

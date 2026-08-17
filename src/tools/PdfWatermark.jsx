@@ -1,3 +1,4 @@
+import { trackEvent } from '../lib/analytics';
 import React, { useState } from 'react';
 import { PDFDocument, rgb, degrees } from '@cantoo/pdf-lib';
 import { Stamp, Type } from 'lucide-react';

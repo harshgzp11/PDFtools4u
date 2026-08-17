@@ -1,3 +1,4 @@
+import { trackEvent } from '../lib/analytics';
 import React, { useState, useEffect } from 'react';
 import { FileText, Download, RefreshCw, Settings } from 'lucide-react';
 

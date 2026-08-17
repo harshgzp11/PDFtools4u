@@ -1,3 +1,4 @@
+import { trackEvent } from '../lib/analytics';
 import React, { useState, useRef } from 'react';
 import { safeHtml2Canvas } from '../utils/canvasUtils';
 import { Download, Play } from 'lucide-react';

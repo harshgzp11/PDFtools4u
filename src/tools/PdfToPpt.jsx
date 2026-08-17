@@ -1,3 +1,4 @@
+import { trackEvent } from '../lib/analytics';
 import React, { useState, useEffect } from 'react';
 import { Presentation, Download, AlertTriangle } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';

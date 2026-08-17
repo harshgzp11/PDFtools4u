@@ -1,3 +1,4 @@
+import { trackEvent } from '../lib/analytics';
 import React, { useState } from 'react';
 import { Maximize, Image as ImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
