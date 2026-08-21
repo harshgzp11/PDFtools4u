@@ -1,5 +1,4 @@
 {
-  "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
     { "source": "/merge-pdf", "destination": "/pdf-merge", "permanent": true },
@@ -12,6 +11,6 @@
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "/sitemap.xml" },
     { "source": "/robots.txt", "destination": "/robots.txt" },
-    { "source": "/(.*)", "destination": "/index" }
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
