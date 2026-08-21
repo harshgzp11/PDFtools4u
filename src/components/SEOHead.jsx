@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { SEO_HEAD, HOMEPAGE_SEO } from '../lib/seoHead';
-import { SEO_CONTENT } from '../lib/seoContent';
+import { SEO_CONTENT, CATEGORY_FALLBACKS } from '../lib/seoContent';
 import { DOMAINS, POPULAR_TOOL_IDS } from '../lib/toolConfig';
 import { BLOG_POSTS } from '../lib/blogData';
 
@@ -111,7 +111,7 @@ export default function SEOHead({ activeTool }) {
       const seoData = SEO_HEAD[activeTool] || HOMEPAGE_SEO;
       title = seoData.title;
       description = seoData.description;
-      canonicalUrl = `${BASE_URL}/${activeTool}`;
+      canonicalUrl = `${BASE_URL}/${activeTool.toLowerCase()}`;
       ogImage = OG_IMAGE;
       ogType = 'website';
       noindex = seoData.noindex || false;
@@ -233,6 +233,24 @@ export default function SEOHead({ activeTool }) {
         if (toolInfo) break;
       }
 
+      // Merge Fallback Content
+      let finalToolContent = toolContent;
+      const fallback = toolDomain ? CATEGORY_FALLBACKS[toolDomain] : CATEGORY_FALLBACKS['PDF Tools'];
+      
+      if (!finalToolContent && toolInfo && fallback) {
+        finalToolContent = {
+          title: `${toolInfo.name} Online Free`,
+          description: toolInfo.description,
+          howTo: fallback.getHowTo(toolInfo.name),
+          faq: fallback.faq
+        };
+      } else if (finalToolContent && fallback) {
+        finalToolContent = {
+          ...finalToolContent,
+          faq: finalToolContent.faq?.length >= 7 ? finalToolContent.faq : fallback.faq
+        };
+      }
+
       const schemas = [];
 
       // BreadcrumbList
@@ -287,11 +305,11 @@ export default function SEOHead({ activeTool }) {
         schemas.push(webApp);
       }
 
-      // FAQPage (from seoContent)
-      if (toolContent?.faq?.length) {
+      // FAQPage (from seoContent or fallback)
+      if (finalToolContent?.faq?.length) {
         schemas.push({
           '@type': 'FAQPage',
-          'mainEntity': toolContent.faq.map(item => ({
+          'mainEntity': finalToolContent.faq.map(item => ({
             '@type': 'Question',
             'name': item.q,
             'acceptedAnswer': {
@@ -302,13 +320,13 @@ export default function SEOHead({ activeTool }) {
         });
       }
 
-      // HowTo (from seoContent)
-      if (toolContent?.howTo?.length) {
+      // HowTo (from seoContent or fallback)
+      if (finalToolContent?.howTo?.length) {
         schemas.push({
           '@type': 'HowTo',
-          'name': seoData?.h1 || toolContent?.title || (toolInfo?.name || activeTool),
+          'name': seoData?.h1 || finalToolContent?.title || (toolInfo?.name || activeTool),
           'description': seoData?.description || toolInfo?.description || '',
-          'step': toolContent.howTo.map((step, i) => ({
+          'step': finalToolContent.howTo.map((step, i) => ({
             '@type': 'HowToStep',
             'position': i + 1,
             'text': step,

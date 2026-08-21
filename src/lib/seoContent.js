@@ -1303,5 +1303,187 @@ export const SEO_CONTENT = {
       }
     ]
   }
+};
 
+export const CATEGORY_FALLBACKS = {
+  "PDF Tools": {
+    getOverview: (toolName) => `Our ${toolName} tool provides a secure, efficient, and completely free solution for managing your PDF documents directly from your browser. Unlike traditional desktop software that requires expensive subscriptions or bulky installations, this tool leverages modern WebAssembly to deliver enterprise-grade performance instantly. Whether you are an academic submitting college applications, a professional organizing legal contracts, or a user preparing digital forms for government portals (such as UPSC, SSC, or banking exams), this utility is tailored for precise and reliable execution. You can easily process multiple files, adjust complex settings, and manage high-resolution documents without worrying about forced watermarks or daily usage limits. By executing entirely on the client-side, it guarantees that your sensitive personal information, financial data, and proprietary business documents remain under your control at all times, making it the safest choice for confidential processing.`,
+    getHowTo: (toolName) => [
+      `Select Document: Click the upload area or simply drag and drop your PDF file directly into the browser window.`,
+      `Configure Settings: Adjust the specific options, formatting preferences, or page selections required for your task.`,
+      `Process Instantly: Click the action button to let our local WebAssembly engine execute the ${toolName} operation securely.`,
+      `Download Output: Save the fully processed, high-quality document back to your device without leaving the page.`
+    ],
+    specs: [
+      { key: "Execution Environment", value: "Client-side WebAssembly" },
+      { key: "Max File Size", value: "Up to 100MB (Browser Dependent)" },
+      { key: "Data Privacy", value: "Zero Server Uploads / No Logging" },
+      { key: "Pricing & Limits", value: "100% Free / Unlimited Usage" }
+    ],
+    faq: [
+      {
+        q: "Are my files uploaded to a cloud server for processing?",
+        a: "No. Your privacy and security are our top priorities. All document processing utilizes advanced client-side WebAssembly technology. This means the engine runs locally inside your web browser's memory sandbox. Your sensitive files, such as bank statements or tax forms, are never uploaded, logged, or stored on external servers."
+      },
+      {
+        q: "What is the maximum file size limit for this tool?",
+        a: "Because our platform operates entirely within your browser, the only limit is your device's available RAM. Modern browsers easily handle files up to 100MB effortlessly. You can process extensive manuals, high-resolution scans, and multi-page books without encountering traditional server upload restrictions or timeouts."
+      },
+      {
+        q: "Is this tool completely free to use without hidden costs?",
+        a: "Yes. Our platform is 100% free forever. There are no daily usage caps, no paywalls blocking premium features, and absolutely no credit card requirements. You can process as many documents as you need without even creating a user account."
+      },
+      {
+        q: "Will using this tool cause any loss in document text quality?",
+        a: "Our PDF engine strictly preserves the original Document Object Model of your file. Vector text, font families, DPI resolution of embedded images, and precise layout coordinates remain mathematically identical to the original unless you explicitly select compression features."
+      },
+      {
+        q: "Which operating systems and devices are supported?",
+        a: "The tool is universally compatible across all modern platforms. Whether you are using Windows, macOS, Linux, ChromeOS, or mobile systems like iOS and Android, it runs seamlessly via Google Chrome, Safari, Firefox, or Edge without requiring any app installations."
+      },
+      {
+        q: "What should I do if my PDF is password-protected or encrypted?",
+        a: "If your document utilizes AES-256 or 128-bit encryption, you must first remove the security restrictions. You can use our dedicated 'Unlock PDF' utility to provide the authorized password, permanently decrypt the file, and then seamlessly import it into this tool for processing."
+      },
+      {
+        q: "Can I use this tool while offline or on a slow connection?",
+        a: "Yes. Once the web page and its lightweight scripts have fully loaded into your browser cache, the actual file processing does not consume external bandwidth. This allows you to work reliably even on unstable, slow, or disconnected networks."
+      }
+    ]
+  },
+  "Image Tools": {
+    getOverview: (toolName) => `The ${toolName} online utility is engineered for creators, students, and professionals who need rapid, high-fidelity image manipulation without relying on heavyweight editing software like Photoshop. By utilizing HTML5 Canvas rasterization and local GPU acceleration, this tool processes your photographs, digital signatures, and graphics instantly inside your browser. From resizing official passport photos for stringent government job applications (e.g., SSC, UPSC) to optimizing large marketing banners for web performance, it delivers pixel-perfect accuracy. Users benefit from a streamlined interface that supports all major formats including JPG, PNG, WebP, and GIF. The tool ensures lossless optimization wherever possible, preserving vital metadata, color profiles (sRGB), and sharpness. More importantly, it eliminates privacy concerns entirely by ensuring your personal photos are never transmitted to third-party cloud servers, maintaining complete confidentiality for sensitive personal scans and identity documents.`,
+    getHowTo: (toolName) => [
+      `Upload Image: Drag and drop your target image file (JPG, PNG, WebP) directly onto the canvas area.`,
+      `Adjust Parameters: Set your exact pixel dimensions, aspect ratio constraints, or target KB limits as required.`,
+      `Apply Modifications: Review the real-time visual preview and click to apply the ${toolName} processing.`,
+      `Save File: Download the optimized, high-resolution image directly to your local storage instantly.`
+    ],
+    specs: [
+      { key: "Rendering Engine", value: "HTML5 Canvas / Local GPU" },
+      { key: "Supported Formats", value: "JPG, PNG, WebP, GIF" },
+      { key: "Privacy Protocol", value: "Strictly Offline Processing" },
+      { key: "Quality Retention", value: "Lossless (Bicubic Resampling)" }
+    ],
+    faq: [
+      {
+        q: "Are my personal photos uploaded or saved on a remote server?",
+        a: "Absolutely not. We employ client-side JavaScript and HTML5 Canvas processing to ensure your images are manipulated locally on your device. Your personal photos, signatures, and ID scans remain 100% private and are never transferred across the network to our servers."
+      },
+      {
+        q: "What image formats and file sizes are supported by this tool?",
+        a: "We support a wide array of standard formats including JPG/JPEG, PNG, WebP, GIF, and standard BMP files. Since processing relies on your device's memory, you can comfortably handle high-resolution DSLR photos or large scans up to 50MB directly in the browser."
+      },
+      {
+        q: "Do I need to sign up or pay to process multiple images?",
+        a: "No registration, email, or payment is required. The platform operates on a completely unrestricted, free-to-use model. You can process an unlimited number of images daily without encountering paywalls or disruptive premium prompts."
+      },
+      {
+        q: "Will this tool degrade the resolution or sharpness of my images?",
+        a: "Unless you specifically choose aggressive compression settings to meet strict KB limits, our tool utilizes high-quality bicubic or Lanczos resampling algorithms. This guarantees crisp edges, accurate color retention, and high-fidelity output for professional use."
+      },
+      {
+        q: "Can I use this tool on my iPhone or Android smartphone?",
+        a: "Yes. The interface is fully responsive and optimized for mobile touchscreens. You can select photos directly from your smartphone's camera roll or gallery, apply edits, and download the finished file back to your device seamlessly."
+      },
+      {
+        q: "What if my uploaded image has a transparent background?",
+        a: "If you upload a PNG or WebP image containing an alpha channel (transparency), our canvas processing engine will preserve the transparency in the output file, provided you save it back into a format that supports it, such as PNG."
+      },
+      {
+        q: "Does this tool work without a fast internet connection?",
+        a: "Yes, it is highly resilient to slow internet speeds. Once the initial application scripts are loaded into your browser, all image rendering, cropping, and compression happen offline using your device's native computing power, saving your bandwidth."
+      }
+    ]
+  },
+  "Document Tools (DOCX, XLSX, PPTX, TXT)": {
+    getOverview: (toolName) => `Our ${toolName} converter provides a robust, seamless bridge between complex office documents and universally accessible formats. Handling proprietary files like Microsoft Word (.docx), Excel (.xlsx), and PowerPoint (.pptx) can often result in broken formatting, missing fonts, or alignment issues when shared across different devices. This tool utilizes advanced parsing algorithms to accurately interpret document structures, rich text styling, embedded graphics, and complex spreadsheet formulas, ensuring an exact visual translation. Ideal for professionals preparing client proposals, students submitting academic theses, and accountants sharing uneditable financial reports, it eliminates the need for expensive office suite subscriptions. The conversion is executed with strict adherence to privacy protocols, ensuring your corporate data, intellectual property, and academic research remain secure. Enjoy high-fidelity document transformation that guarantees your final file looks perfectly professional on any screen or printed page.`,
+    getHowTo: (toolName) => [
+      `Select File: Drag and drop your office document (e.g., DOCX, XLSX, PPTX) into the processing zone.`,
+      `Configure Output: Choose your preferred layout preservation settings or target format options.`,
+      `Execute Conversion: Click the ${toolName} action button to start the document parsing engine.`,
+      `Download Result: Retrieve your perfectly formatted, universally compatible document instantly.`
+    ],
+    specs: [
+      { key: "Format Support", value: "DOCX, XLSX, PPTX, TXT, CSV" },
+      { key: "Layout Engine", value: "Precision DOM Mapping" },
+      { key: "File Security", value: "Secure Ephemeral Processing" },
+      { key: "Dependencies", value: "Zero Installations Required" }
+    ],
+    faq: [
+      {
+        q: "Is my confidential business data secure during the conversion process?",
+        a: "Yes, security is intrinsic to our architecture. All document parsing and conversion is executed in a highly secure, sandboxed environment. We adhere to a strict zero-retention policy, meaning your business proposals and financial spreadsheets are permanently deleted from memory immediately after processing."
+      },
+      {
+        q: "Can this tool handle large presentations or multi-sheet workbooks?",
+        a: "Absolutely. Our optimized parsing engine is designed to handle robust, multi-page documents. You can confidently process lengthy corporate presentations or complex Excel workbooks containing multiple sheets and dense data arrays without experiencing arbitrary page limits."
+      },
+      {
+        q: "Will I be charged for converting multiple office documents?",
+        a: "No, our document conversion utilities are entirely free of charge. We provide unrestricted access without requiring subscriptions, premium upgrades, or account registrations, ensuring you can process as many files as your workflow demands."
+      },
+      {
+        q: "Will the original formatting, fonts, and layout be preserved exactly?",
+        a: "We utilize advanced layout-retention algorithms that precisely map original paragraphs, margins, embedded graphics, and table structures to the final output, ensuring the highest possible fidelity and preventing frustrating formatting shifts."
+      },
+      {
+        q: "Do I need to install Microsoft Office or plugins to use this tool?",
+        a: "No software installations or third-party plugins are required. The entire conversion environment is self-contained within your standard web browser, making it incredibly convenient for Chromebooks, mobile devices, or computers lacking dedicated office suites."
+      },
+      {
+        q: "What happens if my document contains password protection?",
+        a: "If your source document is encrypted with a password, the converter will not be able to read its contents. You must first disable the document's internal password protection using your native office application before uploading it for conversion."
+      },
+      {
+        q: "Does this tool work efficiently on slow internet connections?",
+        a: "Yes. Once the core conversion scripts are cached by your browser, the tool operates with minimal network overhead. You only use bandwidth for the initial file transfer, making it highly efficient even on restricted or mobile data networks."
+      }
+    ]
+  },
+  "Text & Developer Tools": {
+    getOverview: (toolName) => `The ${toolName} utility is an essential workbench tailored for developers, data analysts, and technical writers who require precise manipulation of text and raw data arrays. Working with JSON, CSV, Base64 strings, or unformatted code snippets often requires specialized local scripts or bulky IDEs. This tool brings powerful parsing, minification, and formatting capabilities directly into your browser interface. Built for speed and accuracy, it instantly handles large string payloads, syntax highlighting, and data sanitization without the latency of server round-trips. Whether you are debugging an API response, formatting a messy dataset for machine learning, or simply generating robust hashes, it provides immediate feedback. Furthermore, processing raw code and proprietary data locally guarantees that your intellectual property, API keys, and sensitive data structures are never exposed to external analytics or logging systems.`,
+    getHowTo: (toolName) => [
+      `Input Data: Paste your raw text, code snippet, or dataset directly into the input editor.`,
+      `Select Operation: Choose your desired formatting, encoding, or parsing parameters from the menu.`,
+      `Process Code: Click the action button to instantly apply the ${toolName} algorithm to your input.`,
+      `Copy/Export: Copy the sanitized output to your clipboard or download it as a standardized file.`
+    ],
+    specs: [
+      { key: "Data Types", value: "JSON, CSV, Base64, Raw Text" },
+      { key: "Processing Speed", value: "Instantaneous (No API Latency)" },
+      { key: "Validation", value: "Real-time Syntax Parsing" },
+      { key: "Privacy Standard", value: "Zero API Logging / Local Execution" }
+    ],
+    faq: [
+      {
+        q: "Are my proprietary code snippets or API keys logged on a server?",
+        a: "Never. We understand the critical nature of developer data. All text formatting, JSON parsing, and string manipulation execute 100% locally using client-side JavaScript. Your proprietary logic and sensitive API keys never leave your browser environment."
+      },
+      {
+        q: "Can this tool handle extremely large JSON files or text datasets?",
+        a: "Yes, our editor is optimized for high performance. Relying on your device's native CPU and RAM, it can quickly parse, format, and render massive text payloads or large JSON trees that would typically crash standard web forms."
+      },
+      {
+        q: "Is this developer tool completely free for commercial use?",
+        a: "Yes, our entire suite of developer utilities is free for both personal and commercial applications. There are no API limits, no subscription tiers, and no mandatory account creations required to access the full feature set."
+      },
+      {
+        q: "Does this tool support strict syntax validation and error highlighting?",
+        a: "When dealing with structured data like JSON or HTML, the parser will attempt to gracefully identify syntax errors and highlight malformed structures, helping you quickly debug issues like missing commas or unclosed brackets."
+      },
+      {
+        q: "Can I use this utility on restricted corporate networks?",
+        a: "Because all processing occurs strictly within the browser environment without requiring external API calls or database connections, it easily bypasses corporate firewall restrictions, making it perfect for secure enterprise environments."
+      },
+      {
+        q: "How does the tool handle complex character encodings like UTF-8?",
+        a: "Our parsing engine natively supports standard UTF-8 encoding, ensuring that special characters, international symbols, and complex emojis are preserved and correctly formatted during conversions or minification."
+      },
+      {
+        q: "Is it possible to automate this tool via an API endpoint?",
+        a: "Currently, our platform is designed as a secure, browser-based graphical interface for manual tasks. To maintain our strict zero-logging and local-processing security guarantees, we do not expose public API endpoints for automated server requests."
+      }
+    ]
+  }
 };

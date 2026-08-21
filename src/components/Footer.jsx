@@ -1,8 +1,11 @@
 import React from 'react';
 import { Zap, Globe } from 'lucide-react';
-
+import { DOMAINS, POPULAR_TOOL_IDS } from '../lib/toolConfig';
 
 export default function Footer({ onSelectTool }) {
+  // Use the first 3 domains + a legal column for a 4-column layout, or map them all
+  // For the grid, we will use the 4 domains from toolConfig.
+  
   return (
     <footer className="bg-black text-gray-300 pt-20 pb-8 px-4 md:px-8 mt-32 w-full border-t border-zinc-900">
       <div className="max-w-7xl mx-auto flex flex-col gap-12">
@@ -32,53 +35,44 @@ export default function Footer({ onSelectTool }) {
             </p>
           </div>
 
-          {/* Column 1: Popular Utilities */}
-          <div className="flex flex-col gap-4">
-            <h4 className="text-white font-bold mb-2">Popular Utilities</h4>
-            <button onClick={() => onSelectTool('pdf-merge')} title="Merge PDF Online - Combine PDF files free" className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Merge PDF</button>
-            <button onClick={() => onSelectTool('compress-pdf')} title="Compress PDF File Size - Reduce PDF size free" className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Compress PDF</button>
-            <button onClick={() => onSelectTool('pdf-split')} title="Split PDF Pages - Extract pages from PDF" className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Split PDF</button>
-            <button onClick={() => onSelectTool('pdf-ocr')} title="OCR PDF Online - Convert scanned PDF to text" className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">OCR PDF</button>
-          </div>
-
-          {/* Column 2: Convert & Edit */}
-          <div className="flex flex-col gap-4">
-            <h4 className="text-white font-bold mb-2">Convert & Edit</h4>
-            <button onClick={() => onSelectTool('pdf-to-word')} title="PDF to Word Converter Free" className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">PDF to Word</button>
-            <button onClick={() => onSelectTool('word-to-pdf')} title="Convert DOCX to PDF Online" className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Word to PDF</button>
-            <button onClick={() => onSelectTool('excel-to-pdf')} title="Convert Excel Sheet to PDF" className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Excel to PDF</button>
-            <button onClick={() => onSelectTool('pdf-to-jpg')} title="Convert PDF Pages to JPG PNG" className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">PDF to Image</button>
-          </div>
-
-          {/* Column 3: Security & Privacy */}
-          <div className="flex flex-col gap-4">
-            <h4 className="text-white font-bold mb-2">Security & Privacy</h4>
-            <button onClick={() => onSelectTool('about')} title="100% Client-Side Private Processing - Files Stay in Browser" className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Client-Side Security</button>
-            <button onClick={() => onSelectTool('unlock-pdf')} title="Remove PDF Password Online Free" className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Unlock PDF</button>
-            <button onClick={() => onSelectTool('protect-pdf')} title="Add Password to PDF Free" className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Protect PDF</button>
-            <button onClick={() => onSelectTool('sign-pdf')} title="Electronic Signature PDF Free" className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Sign PDF</button>
-          </div>
-
-          {/* Column 4: Company & Legal */}
-          <div className="flex flex-col gap-4">
-            <h4 className="text-white font-bold mb-2">Company & Legal</h4>
-            <button onClick={() => onSelectTool('about')} className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">About Us</button>
-            <button onClick={() => onSelectTool('privacy-policy')} className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Privacy Policy</button>
-            <button onClick={() => onSelectTool('terms-of-service')} className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Terms of Service</button>
-            <button onClick={() => onSelectTool('blog')} className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Blog / Guides</button>
-          </div>
+          {/* Dynamic Domain Columns */}
+          {DOMAINS.map((domain, idx) => (
+            <div key={idx} className="flex flex-col gap-4">
+              <h4 className="text-white font-bold mb-2">{domain.title.replace(' Tools', '')}</h4>
+              {domain.categories.flatMap(c => c.tools).slice(0, 5).map(tool => (
+                <a 
+                  key={tool.id} 
+                  href={`/${tool.id}`} 
+                  onClick={(e) => { e.preventDefault(); onSelectTool(tool.id); }}
+                  className="text-left text-sm text-gray-400 hover:text-white transition-colors cursor-pointer"
+                >
+                  {tool.name}
+                </a>
+              ))}
+              {/* If it's the first column, add All Tools link at the bottom */}
+              {idx === 0 && (
+                <a 
+                  href="/all-tools" 
+                  onClick={(e) => { e.preventDefault(); onSelectTool('all-tools'); }}
+                  className="text-left text-sm text-blue-400 hover:text-blue-300 transition-colors cursor-pointer font-semibold mt-2"
+                >
+                  View All Tools →
+                </a>
+              )}
+            </div>
+          ))}
         </div>
-
 
         {/* Bottom Legal Section */}
         <div className="border-t border-zinc-800/80 pt-8 flex flex-col lg:flex-row justify-between items-center gap-4 text-xs text-gray-500">
           <p>&copy; {new Date().getFullYear()} PDFtools4u &mdash; Made with ❤️ for local-first users.</p>
           
           <div className="flex flex-wrap items-center justify-center gap-6">
-            <button onClick={() => onSelectTool('privacy-policy')} className="hover:text-white transition-colors cursor-pointer">Privacy Policy</button>
-            <button onClick={() => onSelectTool('terms-of-service')} className="hover:text-white transition-colors cursor-pointer">Terms of Service</button>
-            <button onClick={() => onSelectTool('about')} className="hover:text-white transition-colors cursor-pointer">About Us</button>
-            <button onClick={() => onSelectTool('contact')} className="hover:text-white transition-colors cursor-pointer">Contact Us</button>
+            <a href="/privacy-policy" onClick={(e) => { e.preventDefault(); onSelectTool('privacy-policy'); }} className="hover:text-white transition-colors cursor-pointer">Privacy Policy</a>
+            <a href="/terms-of-service" onClick={(e) => { e.preventDefault(); onSelectTool('terms-of-service'); }} className="hover:text-white transition-colors cursor-pointer">Terms of Service</a>
+            <a href="/about" onClick={(e) => { e.preventDefault(); onSelectTool('about'); }} className="hover:text-white transition-colors cursor-pointer">About Us</a>
+            <a href="/contact" onClick={(e) => { e.preventDefault(); onSelectTool('contact'); }} className="hover:text-white transition-colors cursor-pointer">Contact Us</a>
+            <a href="/blog" onClick={(e) => { e.preventDefault(); onSelectTool('blog'); }} className="hover:text-white transition-colors cursor-pointer">Blog</a>
             <a href="mailto:support@pdftools4u.in" className="hover:text-white transition-colors cursor-pointer font-medium text-gray-400">support@pdftools4u.in</a>
             <div className="flex items-center gap-1.5 ml-4">
               <Globe className="w-4 h-4" />

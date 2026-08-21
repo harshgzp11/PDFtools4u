@@ -88,6 +88,9 @@ const TermsOfService = lazyWithRetry(() => import('./pages/TermsOfService'));
 const BlogList = lazyWithRetry(() => import('./pages/BlogList'));
 const BlogPost = lazyWithRetry(() => import('./pages/BlogPost'));
 
+// Sitemap / Hub
+const AllTools = lazyWithRetry(() => import('./pages/AllTools'));
+
 // Legal & Trust
 const AboutUs = lazyWithRetry(() => import('./pages/AboutUs'));
 const ContactUs = lazyWithRetry(() => import('./pages/ContactUs'));
@@ -166,6 +169,7 @@ const TOOL_COMPONENTS = {
   'terms-of-service': TermsOfService,
   'about': AboutUs,
   'contact': ContactUs,
+  'all-tools': AllTools,
 };
 
 const PLACEHOLDER_TOOLS = {};
@@ -177,17 +181,17 @@ function resolveSlug(slug) {
 
 function App() {
   const [activeTool, setActiveTool] = useState(() => {
-    const rawPath = window.location.pathname.replace('/', '');
+    const rawPath = window.location.pathname.replace('/', '').toLowerCase();
     const path = resolveSlug(rawPath);
-    // If the URL was an alias, silently replace it with the canonical URL
-    if (rawPath && path !== rawPath) {
+    // If the URL was an alias, or uppercase, silently replace it with the canonical URL
+    if (window.location.pathname !== '/' + path && path) {
       window.history.replaceState({}, '', '/' + path + window.location.search);
     }
     return path || null;
   });
   
   const [visitedTools, setVisitedTools] = useState(() => {
-    const rawPath = window.location.pathname.replace('/', '');
+    const rawPath = window.location.pathname.replace('/', '').toLowerCase();
     const path = resolveSlug(rawPath);
     return path ? [path] : [];
   });
@@ -198,10 +202,10 @@ function App() {
   // Sync state when browser back/forward buttons are pressed
   useEffect(() => {
     const handlePopState = () => {
-      const rawPath = window.location.pathname.replace('/', '');
+      const rawPath = window.location.pathname.replace('/', '').toLowerCase();
       const path = resolveSlug(rawPath);
       // Redirect alias URLs on back/forward navigation too
-      if (rawPath && path !== rawPath) {
+      if (window.location.pathname !== '/' + path && path) {
         window.history.replaceState({}, '', '/' + path + window.location.search);
       }
       setActiveTool(path || null);

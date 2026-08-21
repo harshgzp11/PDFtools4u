@@ -1,28 +1,64 @@
 import React, { useState } from 'react';
-import { ChevronDown, CheckCircle2, FileText, HelpCircle, Lightbulb, ArrowRight, ShieldCheck } from 'lucide-react';
-import { SEO_CONTENT } from '../../lib/seoContent';
+import { ChevronDown, CheckCircle2, FileText, HelpCircle, Lightbulb, ArrowRight, ShieldCheck, Server, BookOpen } from 'lucide-react';
+import { SEO_CONTENT, CATEGORY_FALLBACKS } from '../../lib/seoContent';
 import { RELATED_TOOLS } from '../../lib/relatedTools';
 import { SEO_HEAD } from '../../lib/seoHead';
 import { DOMAINS } from '../../lib/toolConfig';
+import { BLOG_POSTS } from '../../lib/blogData';
 import { trackEvent } from '../../lib/analytics';
 
-// Find tool info from DOMAINS config
+// Find tool info and domain from DOMAINS config
 function findToolInfo(toolId) {
   for (const domain of DOMAINS) {
     for (const cat of domain.categories) {
       const tool = cat.tools.find(t => t.id === toolId);
-      if (tool) return tool;
+      if (tool) return { tool, domainTitle: domain.title };
     }
   }
-  return null;
+  return { tool: null, domainTitle: null };
 }
 
 export default function ToolSEOContent({ toolId, onSelectTool }) {
-  const content = SEO_CONTENT[toolId];
+  const { tool: toolInfo, domainTitle } = findToolInfo(toolId);
   const headMeta = SEO_HEAD[toolId];
   const relatedToolIds = RELATED_TOOLS[toolId] || [];
   
+  // Build fallback content if specific content is missing
+  let content = SEO_CONTENT[toolId];
+  const fallback = domainTitle ? CATEGORY_FALLBACKS[domainTitle] : CATEGORY_FALLBACKS['PDF Tools'];
+
+  if (!content && toolInfo && fallback) {
+    content = {
+      title: `${toolInfo.name} Online Free`,
+      description: toolInfo.description,
+      why: fallback.getOverview(toolInfo.name),
+      howTo: fallback.getHowTo(toolInfo.name),
+      specs: fallback.specs,
+      features: [
+        "100% Secure & Private Processing: Document privacy is guaranteed. All file conversions are protected with end-to-end encryption and client-side processing.",
+        "Data Protection: Uploaded files are automatically deleted from server caches immediately after conversion."
+      ],
+      faq: fallback.faq
+    };
+  } else if (content && fallback) {
+    // Merge missing fields (like specs) into existing content
+    content = {
+      ...content,
+      specs: content.specs || fallback.specs,
+      why: content.why || fallback.getOverview(toolInfo?.name || "Tool"),
+      faq: content.faq?.length >= 7 ? content.faq : fallback.faq
+    };
+  }
+
   if (!content) return null;
+
+  // Find related blog guides (naively matching by words in toolId)
+  const relatedBlogs = BLOG_POSTS.filter(post => 
+    post.published && 
+    toolId.split('-').some(keyword => 
+      keyword.length > 2 && post.id.includes(keyword)
+    )
+  ).slice(0, 3);
 
   return (
     <div className="w-full mx-auto mt-16 px-4 pb-24 space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -32,17 +68,17 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
         <h1 className="sr-only">{headMeta.h1}</h1>
       )}
 
-      {/* Introduction */}
+      {/* Introduction & Overview */}
       <div className="text-center space-y-4">
         <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">{content.title}</h2>
-        <p className="text-lg text-gray-600 mx-auto leading-relaxed">
+        <p className="text-lg text-gray-600 mx-auto leading-relaxed max-w-3xl">
           {content.description}
         </p>
       </div>
 
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
         {/* How to use */}
-        <div className="py-8">
+        <div className="py-4">
           <div className="flex items-center gap-3 mb-6">
             <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl">
               <FileText className="w-6 h-6" />
@@ -61,42 +97,39 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
           </ol>
         </div>
 
-        {/* Features */}
-        <div className="py-8">
+        {/* Technical Specs Table */}
+        <div className="py-4">
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-2.5 bg-green-50 text-green-600 rounded-xl">
-              <Lightbulb className="w-6 h-6" />
+            <div className="p-2.5 bg-slate-50 text-slate-600 rounded-xl">
+              <Server className="w-6 h-6" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900">Features</h3>
+            <h3 className="text-xl font-bold text-gray-900">Technical Specifications</h3>
           </div>
-          <ul className="space-y-4">
-            {content.features.map((feature, idx) => {
-              const [title, desc] = feature.split(':');
-              return (
-                <li key={idx} className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <div className="text-gray-700">
-                    <strong className="text-gray-900">{title}:</strong>
-                    {desc}
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
+          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+            <table className="w-full text-sm text-left text-gray-600">
+              <tbody>
+                {content.specs?.map((spec, idx) => (
+                  <tr key={idx} className={idx % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                    <th className="px-4 py-3 font-semibold text-gray-900 border-b border-gray-100 w-1/3">{spec.key}</th>
+                    <td className="px-4 py-3 border-b border-gray-100">{spec.value}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
-      {/* Why Section */}
-      <div className="py-8 md:py-10">
+      {/* Overview & Why Section */}
+      <div className="py-8 md:py-10 max-w-4xl mx-auto">
         <h3 className="text-2xl font-bold text-gray-900 mb-4 text-center">Why use our {content.title.split(' ')[0]} tool?</h3>
-        <p className="text-gray-700 leading-relaxed text-lg">
+        <p className="text-gray-700 leading-relaxed text-lg text-justify">
           {content.why}
         </p>
       </div>
 
       {/* Global Privacy Trust Banner for all tools */}
       <div className="my-8 md:my-12 max-w-4xl mx-auto bg-gradient-to-br from-indigo-900 via-indigo-800 to-blue-900 rounded-[2rem] p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl relative overflow-hidden border border-indigo-700/50">
-        {/* Decorative background elements */}
         <div className="absolute top-0 right-0 -mr-20 -mt-20 w-72 h-72 bg-indigo-500 rounded-full mix-blend-overlay filter blur-[64px] opacity-60 animate-pulse"></div>
         <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-72 h-72 bg-blue-400 rounded-full mix-blend-overlay filter blur-[64px] opacity-60"></div>
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
@@ -115,7 +148,7 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
       </div>
 
       {/* FAQ Section */}
-      <div className="pt-8">
+      <div className="pt-8 max-w-4xl mx-auto">
         <div className="flex items-center gap-3 mb-8 justify-center">
           <div className="p-2.5 bg-purple-50 text-purple-600 rounded-xl">
             <HelpCircle className="w-6 h-6" />
@@ -129,6 +162,41 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
           ))}
         </div>
       </div>
+      
+      {/* Related Guides / Blogs Section */}
+      {relatedBlogs.length > 0 && (
+        <div className="pt-12 border-t border-gray-100 max-w-4xl mx-auto">
+          <div className="flex items-center gap-3 mb-8 justify-center">
+            <div className="p-2.5 bg-rose-50 text-rose-600 rounded-xl">
+              <BookOpen className="w-6 h-6" />
+            </div>
+            <h3 className="text-2xl font-bold text-gray-900 text-center">Related Guides & Tutorials</h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {relatedBlogs.map(blog => (
+              <a 
+                key={blog.id} 
+                href={`/blog/${blog.id}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (onSelectTool) onSelectTool(`blog/${blog.id}`);
+                }}
+                className="group block border border-gray-200 rounded-xl overflow-hidden hover:border-blue-300 hover:shadow-lg transition-all"
+              >
+                {blog.coverImage && (
+                  <div className="h-32 w-full overflow-hidden bg-gray-100">
+                    <img src={blog.coverImage} alt={blog.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                  </div>
+                )}
+                <div className="p-4">
+                  <h4 className="font-bold text-gray-900 text-sm mb-2 group-hover:text-blue-600 line-clamp-2">{blog.title}</h4>
+                  <p className="text-xs text-gray-500 line-clamp-2">{blog.excerpt}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Related Tools Section */}
       {relatedToolIds.length > 0 && (
@@ -136,13 +204,15 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
           <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">Related Tools You May Need</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {relatedToolIds.slice(0, 4).map(relatedId => {
-              const toolInfo = findToolInfo(relatedId);
+              const { tool: toolInfo } = findToolInfo(relatedId);
               if (!toolInfo) return null;
               const Icon = toolInfo.icon;
               return (
-                <button
+                <a
+                  href={`/${relatedId}`}
                   key={relatedId}
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.preventDefault();
                     trackEvent('related_tool_click', {
                       source_tool: toolId,
                       destination_tool: relatedId,
@@ -167,7 +237,7 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
                     </div>
                     <p className="text-xs text-gray-500 mt-1 leading-relaxed">{toolInfo.description}</p>
                   </div>
-                </button>
+                </a>
               );
             })}
           </div>
