@@ -7,7 +7,7 @@ import { BLOG_POSTS } from '../lib/blogData';
 const BASE_URL = 'https://www.pdftools4u.in';
 const OG_IMAGE = `${BASE_URL}/images/og-card.png`;
 const SITE_NAME = 'PDFTools4U';
-const SITE_LOGO = `${BASE_URL}/images/pdftool4u-logo.png`;
+const SITE_LOGO = `${BASE_URL}/favicon.png`;
 const CONTACT_EMAIL = 'pdftools4u.official@gmail.com';
 
 // Publisher object reused across BlogPosting and Article schemas
