@@ -4,7 +4,7 @@
 
 **PDFTools4U** is a comprehensive, privacy-first web application offering a suite of 40+ advanced PDF, image, and document manipulation tools. Built entirely on client-side web technologies, it ensures that your files never leave your device. All processing happens locally in your browser, guaranteeing 100% data privacy and security.
 
-🔗 **Live Application:** [pdftools4u.in](https://pdftools4u.in/)
+🔗 **Live Application:** [pdftools4u.in](https://www.pdftools4u.in/)
 
 ---
 

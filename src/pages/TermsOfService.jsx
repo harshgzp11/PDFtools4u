@@ -21,7 +21,7 @@ export default function TermsOfService() {
 
         <div className="prose prose-gray max-w-none space-y-8 text-sm sm:text-base leading-relaxed text-gray-600">
           <p>
-            Welcome to PDFtools4u (<a href="https://pdftools4u.in" className="text-blue-600 hover:underline font-medium">https://pdftools4u.in</a>). Please read these Terms of Service (&quot;Terms&quot;, &quot;Terms of Service&quot;) carefully before using our website and services.
+            Welcome to PDFtools4u (<a href="https://www.pdftools4u.in" className="text-blue-600 hover:underline font-medium">https://www.pdftools4u.in</a>). Please read these Terms of Service (&quot;Terms&quot;, &quot;Terms of Service&quot;) carefully before using our website and services.
           </p>
           <p>
             By accessing or using PDFtools4u, you agree to be bound by these Terms. If you disagree with any part of these terms, you may not access or use our services.

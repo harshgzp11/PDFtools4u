@@ -24,7 +24,7 @@ export default function PrivacyPolicy() {
           <section>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">1. Introduction</h2>
             <p>
-              This Privacy Policy explains how PDFtools4u (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) collects, uses, and discloses information when you use our website (<a href="https://pdftools4u.in" className="text-blue-600 hover:underline font-medium">pdftools4u.in</a>). Data privacy regulations require that we clearly communicate with website visitors about the data we collect and process, as well as inform you about your privacy rights.
+              This Privacy Policy explains how PDFtools4u (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) collects, uses, and discloses information when you use our website (<a href="https://www.pdftools4u.in" className="text-blue-600 hover:underline font-medium">pdftools4u.in</a>). Data privacy regulations require that we clearly communicate with website visitors about the data we collect and process, as well as inform you about your privacy rights.
             </p>
           </section>
 
@@ -117,7 +117,7 @@ export default function PrivacyPolicy() {
                   }}
                   className="text-blue-600 hover:underline cursor-pointer"
                 >
-                  https://pdftools4u.in/contact
+                  https://www.pdftools4u.in/contact
                 </a>
               </li>
             </ul>
