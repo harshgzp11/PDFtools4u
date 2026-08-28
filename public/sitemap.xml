@@ -28,14 +28,20 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.pdftools4u.in/privacy</loc>
+    <loc>https://www.pdftools4u.in/privacy-policy</loc>
     <lastmod>2026-08-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.pdftools4u.in/terms</loc>
+    <loc>https://www.pdftools4u.in/terms-of-service</loc>
     <lastmod>2026-08-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pdftools4u.in/all-tools</loc>
+    <lastmod>2026-08-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
