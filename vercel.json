@@ -7,7 +7,9 @@
     { "source": "/pdf-protect", "destination": "/protect-pdf", "permanent": true },
     { "source": "/pdf-unlock", "destination": "/unlock-pdf", "permanent": true },
     { "source": "/pdf-compress", "destination": "/compress-pdf", "permanent": true },
-    { "source": "/ocr-pdf", "destination": "/pdf-ocr", "permanent": true }
+    { "source": "/ocr-pdf", "destination": "/pdf-ocr", "permanent": true },
+    { "source": "/privacy", "destination": "/privacy-policy", "permanent": true },
+    { "source": "/terms", "destination": "/terms-of-service", "permanent": true }
   ],
   "headers": [
     {

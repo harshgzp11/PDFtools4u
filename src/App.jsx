@@ -107,6 +107,9 @@ const URL_REDIRECTS = {
   'pdf-unlock': 'unlock-pdf',
   'pdf-compress': 'compress-pdf',
   'ocr-pdf': 'pdf-ocr',
+  // Short aliases for legal pages (footer links use these)
+  'privacy': 'privacy-policy',
+  'terms': 'terms-of-service',
 };
 
 const TOOL_COMPONENTS = {
