@@ -120,7 +120,7 @@ export default function PdfToPpt() {
       >
         {isProcessing && (
           <div 
-            className="absolute left-0 top-0 bottom-0 bg-orange-500/30 transition-all duration-300"
+            className="absolute left-0 top-0 bottom-0 bg-orange-600/30 transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         )}

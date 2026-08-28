@@ -15,12 +15,12 @@ export const DOMAINS = [
       {
         name: "ORGANIZE PDF",
         tools: [
-          { id: 'pdf-merge', name: 'Merge PDF', description: 'Combine multiple PDFs into one.', icon: Layers, color: 'text-orange-500', bg: 'bg-orange-50' },
-          { id: 'pdf-split', name: 'Split PDF', description: 'Separate pages or extract sections.', icon: Scissors, color: 'text-orange-500', bg: 'bg-orange-50' },
-          { id: 'delete-pdf-pages', name: 'Remove pages', description: 'Remove pages from your PDF.', icon: Trash2, color: 'text-orange-500', bg: 'bg-orange-50' },
-          { id: 'extract-pdf-pages', name: 'Extract pages', description: 'Extract specific pages into a new PDF.', icon: FileUp, color: 'text-orange-500', bg: 'bg-orange-50' },
-          { id: 'organize-pdf', name: 'Organize PDF', description: 'Sort, add and delete PDF pages.', icon: Files, color: 'text-orange-500', bg: 'bg-orange-50' },
-          { id: 'number-pages', name: 'Number Pages', description: 'Add page numbers to PDFs.', icon: Hash, color: 'text-orange-500', bg: 'bg-orange-50' },
+          { id: 'pdf-merge', name: 'Merge PDF', description: 'Combine multiple PDFs into one.', icon: Layers, color: 'text-orange-700', bg: 'bg-orange-50' },
+          { id: 'pdf-split', name: 'Split PDF', description: 'Separate pages or extract sections.', icon: Scissors, color: 'text-orange-700', bg: 'bg-orange-50' },
+          { id: 'delete-pdf-pages', name: 'Remove pages', description: 'Remove pages from your PDF.', icon: Trash2, color: 'text-orange-700', bg: 'bg-orange-50' },
+          { id: 'extract-pdf-pages', name: 'Extract pages', description: 'Extract specific pages into a new PDF.', icon: FileUp, color: 'text-orange-700', bg: 'bg-orange-50' },
+          { id: 'organize-pdf', name: 'Organize PDF', description: 'Sort, add and delete PDF pages.', icon: Files, color: 'text-orange-700', bg: 'bg-orange-50' },
+          { id: 'number-pages', name: 'Number Pages', description: 'Add page numbers to PDFs.', icon: Hash, color: 'text-orange-700', bg: 'bg-orange-50' },
         ]
       },
       {
@@ -36,7 +36,7 @@ export const DOMAINS = [
         tools: [
           { id: 'jpg-to-pdf', name: 'JPG to PDF', description: 'Convert JPG images to PDF.', icon: ImagePlus, color: 'text-yellow-500', bg: 'bg-yellow-50' },
           { id: 'word-to-pdf', name: 'WORD to PDF', description: 'Convert Word document to PDF.', icon: FileCode2, color: 'text-blue-500', bg: 'bg-blue-50' },
-          { id: 'ppt-to-pdf', name: 'POWERPOINT to PDF', description: 'Convert PowerPoint to PDF.', icon: Presentation, color: 'text-orange-500', bg: 'bg-orange-50' },
+          { id: 'ppt-to-pdf', name: 'POWERPOINT to PDF', description: 'Convert PowerPoint to PDF.', icon: Presentation, color: 'text-orange-700', bg: 'bg-orange-50' },
           { id: 'excel-to-pdf', name: 'EXCEL to PDF', description: 'Convert Excel to PDF document.', icon: FileSpreadsheet, color: 'text-green-500', bg: 'bg-green-50' },
           { id: 'pdf-compiler', name: 'Text & Image to PDF', description: 'Compile text and images into PDF.', icon: Layers, color: 'text-indigo-500', bg: 'bg-indigo-50', comingSoon: true },
         ]
@@ -46,7 +46,7 @@ export const DOMAINS = [
         tools: [
           { id: 'pdf-to-jpg', name: 'PDF to JPG', description: 'Convert PDF to JPG images.', icon: ImageIcon, color: 'text-yellow-500', bg: 'bg-yellow-50' },
           { id: 'pdf-to-word', name: 'PDF to WORD', description: 'Convert PDF to editable Word document.', icon: FileCode2, color: 'text-blue-500', bg: 'bg-blue-50' },
-          { id: 'pdf-to-ppt', name: 'PDF to POWERPOINT', description: 'Convert PDF to PowerPoint presentation.', icon: Presentation, color: 'text-orange-500', bg: 'bg-orange-50' },
+          { id: 'pdf-to-ppt', name: 'PDF to POWERPOINT', description: 'Convert PDF to PowerPoint presentation.', icon: Presentation, color: 'text-orange-700', bg: 'bg-orange-50' },
           { id: 'pdf-to-excel', name: 'PDF to EXCEL', description: 'Convert PDF to Excel spreadsheet.', icon: FileSpreadsheet, color: 'text-green-500', bg: 'bg-green-50' },
           { id: 'pdf-converter', name: 'Universal Converter', description: 'Convert documents to and from PDF.', icon: ArrowLeftRight, color: 'text-blue-600', bg: 'bg-blue-50' },
         ]
@@ -93,7 +93,7 @@ export const DOMAINS = [
         name: "OPTIMIZE & CONVERT",
         tools: [
           { id: 'compress-image', name: 'Compress Image', description: 'Reduce image file size instantly.', icon: Minimize, color: 'text-emerald-500', bg: 'bg-emerald-50' },
-          { id: 'convert-image', name: 'Convert Image', description: 'Convert PNG, JPG, WebP, GIF.', icon: ArrowLeftRight, color: 'text-orange-500', bg: 'bg-orange-50' },
+          { id: 'convert-image', name: 'Convert Image', description: 'Convert PNG, JPG, WebP, GIF.', icon: ArrowLeftRight, color: 'text-orange-700', bg: 'bg-orange-50' },
         ]
       }
     ]
@@ -121,7 +121,7 @@ export const DOMAINS = [
         tools: [
           { id: 'excel-to-pdf', name: 'EXCEL to PDF', description: 'Convert Excel spreadsheets (.xlsx, .xls, .csv) to PDF.', icon: FileSpreadsheet, color: 'text-emerald-500', bg: 'bg-emerald-50' },
           { id: 'pdf-to-excel', name: 'PDF to EXCEL', description: 'Convert PDF tables into Excel spreadsheet (.xlsx).', icon: FileSpreadsheet, color: 'text-green-500', bg: 'bg-green-50' },
-          { id: 'ppt-to-pdf', name: 'POWERPOINT to PDF', description: 'Convert PowerPoint (.pptx, .ppt) to PDF.', icon: Presentation, color: 'text-orange-500', bg: 'bg-orange-50' },
+          { id: 'ppt-to-pdf', name: 'POWERPOINT to PDF', description: 'Convert PowerPoint (.pptx, .ppt) to PDF.', icon: Presentation, color: 'text-orange-700', bg: 'bg-orange-50' },
           { id: 'pdf-to-ppt', name: 'PDF to POWERPOINT', description: 'Convert PDF to PowerPoint presentation (.pptx).', icon: Presentation, color: 'text-amber-500', bg: 'bg-amber-50' },
         ]
       }

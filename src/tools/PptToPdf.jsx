@@ -290,7 +290,7 @@ export default function PptToPdf() {
       >
         {isProcessing && (
           <div 
-            className="absolute left-0 top-0 bottom-0 bg-orange-500/30 transition-all duration-300"
+            className="absolute left-0 top-0 bottom-0 bg-orange-600/30 transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         )}
@@ -312,7 +312,7 @@ export default function PptToPdf() {
   const customPreview = isAnalyzing ? (
     <div className="w-full h-full min-h-[400px] bg-orange-50/50 flex flex-col items-center justify-center rounded-2xl p-8 text-center border-2 border-dashed border-orange-100">
       <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-sm mb-6 border border-orange-100">
-        <Presentation className="w-10 h-10 text-orange-500 animate-pulse" />
+        <Presentation className="w-10 h-10 text-orange-700 animate-pulse" />
       </div>
       <h3 className="text-xl font-bold text-gray-900 mb-2">Analyzing Presentation...</h3>
       <p className="text-gray-500 max-w-sm text-sm">
@@ -343,7 +343,7 @@ export default function PptToPdf() {
                 <div className="w-full bg-white p-6 rounded-lg border border-gray-200 shadow-sm space-y-3">
                   {slide.paragraphs.map((para, pIdx) => (
                     <div key={pIdx} className="flex items-start gap-2 text-sm text-gray-800">
-                      <span className="text-orange-500 font-bold">•</span>
+                      <span className="text-orange-700 font-bold">•</span>
                       <p className="leading-relaxed">{para}</p>
                     </div>
                   ))}
@@ -358,7 +358,7 @@ export default function PptToPdf() {
   ) : (
     <div className="w-full h-full min-h-[400px] bg-orange-50/50 flex flex-col items-center justify-center rounded-2xl p-8 text-center border-2 border-dashed border-orange-100">
       <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-sm mb-6 border border-orange-100">
-        <Presentation className="w-10 h-10 text-orange-500" />
+        <Presentation className="w-10 h-10 text-orange-700" />
       </div>
       <h3 className="text-xl font-bold text-gray-900 mb-2">No Presentation Uploaded</h3>
       <p className="text-gray-500 max-w-sm text-sm">

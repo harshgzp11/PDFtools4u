@@ -77,16 +77,10 @@
         })(window, document, "clarity", "script", "y12xfabti3");
       };
       
-      // Load analytics on first user interaction or when idle
-      ['scroll', 'mousemove', 'touchstart', 'click', 'keydown'].forEach(e => 
+      // Load analytics strictly on first user interaction
+      ['touchstart', 'pointerdown', 'scroll', 'click', 'keydown'].forEach(e => 
         window.addEventListener(e, loadAnalytics, { once: true, passive: true })
       );
-      
-      if ('requestIdleCallback' in window) {
-        window.requestIdleCallback(loadAnalytics, { timeout: 5000 });
-      } else {
-        setTimeout(loadAnalytics, 5000);
-      }
     </script>
   </body>
 </html>

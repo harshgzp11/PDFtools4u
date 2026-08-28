@@ -7,13 +7,16 @@ export default function Footer({ onSelectTool }) {
   // For the grid, we will use the 4 domains from toolConfig.
   
   return (
-    <footer className="bg-black text-gray-300 pt-20 pb-8 px-4 md:px-8 mt-32 w-full border-t border-zinc-900">
+    <footer 
+      className="bg-black text-gray-300 pt-20 pb-8 px-4 md:px-8 mt-32 w-full border-t border-zinc-900"
+      style={{ contentVisibility: 'auto', containIntrinsicSize: '1px 500px' }}
+    >
       <div className="max-w-7xl mx-auto flex flex-col gap-12">
         {/* Top Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Brand & Keyword-Rich Tagline */}
           <div className="col-span-1 sm:col-span-2 lg:col-span-1 flex flex-col gap-4">
-            <div className="flex items-center">
+            <div className="flex items-center cursor-pointer" role="button" aria-label="Home" tabIndex={0} onClick={() => onSelectTool(null)}>
               <img 
                 src="/images/pdftool4u-logo.webp" 
                 alt="PDFtools4u Logo" 
@@ -27,7 +30,7 @@ export default function Footer({ onSelectTool }) {
               />
               <div className="hidden items-center">
                 <div className="p-1.5 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg mr-2.5 shadow-lg">
-                  <Zap className="h-5 w-5 text-white" />
+                  <Zap className="h-5 w-5 text-white" aria-hidden="true" />
                 </div>
                 <span className="font-extrabold text-xl tracking-tight text-white">PDFtools4u</span>
               </div>
@@ -77,7 +80,7 @@ export default function Footer({ onSelectTool }) {
             <a href="/blog" onClick={(e) => { e.preventDefault(); onSelectTool('blog'); }} className="hover:text-white transition-colors cursor-pointer">Blog</a>
             <a href="mailto:support@pdftools4u.in" className="hover:text-white transition-colors cursor-pointer font-medium text-gray-400">support@pdftools4u.in</a>
             <div className="flex items-center gap-1.5 ml-4">
-              <Globe className="w-4 h-4" />
+              <Globe className="w-4 h-4" aria-hidden="true" />
               <span>English</span>
             </div>
           </div>

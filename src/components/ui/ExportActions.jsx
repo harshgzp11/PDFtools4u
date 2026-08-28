@@ -130,7 +130,7 @@ export default function ExportActions({ pdfBytes, fileName, onReset }) {
           <div className="space-y-3 bg-gray-50 p-4 rounded-xl border border-gray-100 opacity-60">
             <div className="flex justify-between items-center">
               <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                <Lock className="w-4 h-4 text-orange-500" /> Password Protect
+                <Lock className="w-4 h-4 text-orange-700" /> Password Protect
               </label>
               <span className="text-[10px] uppercase font-bold bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full">Coming Soon</span>
             </div>

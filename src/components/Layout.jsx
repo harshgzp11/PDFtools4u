@@ -54,7 +54,7 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
-            <div className="flex items-center cursor-pointer group" onClick={() => { onNavigateToDomain(null); setIsMobileMenuOpen(false); }}>
+            <div className="flex items-center cursor-pointer group" role="button" aria-label="Home" tabIndex={0} onClick={() => { onNavigateToDomain(null); setIsMobileMenuOpen(false); }}>
               <img 
                 src="/images/pdftool4u-logo.webp" 
                 alt="PDFtools4u Logo" 
@@ -68,7 +68,7 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
               />
               <div className="hidden items-center">
                 <div className="p-1.5 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg mr-2.5 shadow-lg shadow-blue-500/30">
-                  <Zap className="h-5 w-5 text-white" />
+                  <Zap className="h-5 w-5 text-white" aria-hidden="true" />
                 </div>
                 <span className="font-extrabold text-xl tracking-tight text-gray-900">PDFtools4u</span>
               </div>
@@ -92,9 +92,9 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
                       activeDropdown === domain.title ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                     }`}
                   >
-                     {domain.title === 'PDF Tools' ? <FileText className="w-4 h-4" /> : <ImageIcon className="w-4 h-4" />}
+                     {domain.title === 'PDF Tools' ? <FileText className="w-4 h-4" aria-hidden="true" /> : <ImageIcon className="w-4 h-4" aria-hidden="true" />}
                      {domain.title}
-                     <ChevronDown className={`w-3.5 h-3.5 transition-transform ${activeDropdown === domain.title ? 'rotate-180' : ''}`} />
+                     <ChevronDown className={`w-3.5 h-3.5 transition-transform ${activeDropdown === domain.title ? 'rotate-180' : ''}`} aria-hidden="true" />
                   </button>
 
                   {/* Mega Dropdown */}
@@ -124,7 +124,7 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
                                         className={`w-full text-left flex items-center justify-between gap-3 group transition-all p-2 -mx-2 rounded-lg ${tool.comingSoon ? 'opacity-60 cursor-default' : 'hover:bg-gray-50'}`}
                                       >
                                         <div className="flex items-center gap-3">
-                                          <Icon className={`w-5 h-5 shrink-0 ${tool.color} transition-transform ${tool.comingSoon ? '' : 'group-hover:scale-110'}`} />
+                                          <Icon className={`w-5 h-5 shrink-0 ${tool.color} transition-transform ${tool.comingSoon ? '' : 'group-hover:scale-110'}`} aria-hidden="true" />
                                           <span className={`font-semibold text-sm transition-colors whitespace-nowrap ${tool.comingSoon ? 'text-gray-500' : 'text-gray-700 group-hover:text-black'}`}>
                                             {tool.name}
                                           </span>
@@ -162,7 +162,7 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
                 onClick={() => onSelectTool('blog')}
                 className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors flex items-center gap-1.5 ml-2"
               >
-                 <BookOpen className="w-4 h-4" />
+                 <BookOpen className="w-4 h-4" aria-hidden="true" />
                  Blog
               </button>
 
@@ -173,7 +173,7 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
                   className="flex items-center justify-between w-64 px-3 py-1.5 border border-gray-200 rounded-lg bg-gray-50 hover:bg-white hover:border-blue-400 hover:shadow-md hover:shadow-blue-500/10 transition-all text-gray-600 group"
                 >
                   <div className="flex items-center gap-2">
-                    <Search className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors" />
+                    <Search className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors" aria-hidden="true" />
                     <span className="font-medium text-sm">Search tools...</span>
                   </div>
                   <div className="flex items-center gap-1 text-[10px]">
@@ -186,11 +186,11 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
 
             {/* Mobile Menu Button */}
             <div className="flex lg:hidden items-center gap-2">
-              <button onClick={openSearch} className="p-2 text-gray-600 hover:text-blue-600">
-                <Search className="w-5 h-5" />
+              <button onClick={openSearch} className="p-2 text-gray-600 hover:text-blue-600" aria-label="Search tools">
+                <Search className="w-5 h-5" aria-hidden="true" />
               </button>
-              <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 text-gray-900 z-50 relative">
-                <Menu className="w-5 h-5" />
+              <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 text-gray-900 z-50 relative" aria-label="Open mobile menu">
+                <Menu className="w-5 h-5" aria-hidden="true" />
               </button>
             </div>
           </div>

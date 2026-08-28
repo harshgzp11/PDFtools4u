@@ -143,7 +143,7 @@ export default function PdfConverterHub() {
             <div className="w-[300px] h-[400px] flex items-center justify-center bg-gray-50 text-gray-400">
               {['word', 'docx'].includes(fileType) ? <FileText className="w-32 h-32 text-blue-500" /> :
                ['excel'].includes(fileType) ? <FileSpreadsheet className="w-32 h-32 text-emerald-500" /> :
-               ['ppt'].includes(fileType) ? <Presentation className="w-32 h-32 text-orange-500" /> :
+               ['ppt'].includes(fileType) ? <Presentation className="w-32 h-32 text-orange-700" /> :
                <FileText className="w-32 h-32" />}
             </div>
           )}
@@ -199,7 +199,7 @@ export default function PdfConverterHub() {
                   onClick={() => handleConversionSelect('pdf-to-excel')}
                 />
                 <ConversionOption 
-                  icon={Presentation} color="text-orange-500" bg="bg-orange-50"
+                  icon={Presentation} color="text-orange-700" bg="bg-orange-50"
                   title="PowerPoint" subtitle="(.pptx)" 
                   onClick={() => handleConversionSelect('pdf-to-ppt')}
                 />
@@ -230,7 +230,7 @@ export default function PdfConverterHub() {
                   onClick={() => handleConversionSelect('jpg-to-pdf')}
                 />
                 <ConversionOption 
-                  icon={ArrowLeftRight} color="text-orange-500" bg="bg-orange-50"
+                  icon={ArrowLeftRight} color="text-orange-700" bg="bg-orange-50"
                   title="Other Image Formats" subtitle="(.png, .webp, .jpg)" 
                   onClick={() => handleConversionSelect('convert-image')}
                 />

@@ -115,14 +115,14 @@ export default function ConvertImage() {
   if (success) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] animate-in fade-in zoom-in-95 duration-500">
-        <CheckCircle className="w-24 h-24 text-orange-500 mb-8" />
+        <CheckCircle className="w-24 h-24 text-orange-700 mb-8" />
         <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-4">Image Converted Successfully!</h2>
         
         <div className="flex flex-col sm:flex-row gap-4 items-center mt-8">
           <a 
             href={outputUrl} 
             download={`converted_${file.name.split('.')[0]}.${outputExtension}`}
-            className="px-10 py-5 bg-orange-500 text-white rounded-xl font-bold text-xl hover:bg-orange-600 shadow-lg hover:shadow-xl transition-all flex items-center gap-3"
+            className="px-10 py-5 bg-orange-600 text-white rounded-xl font-bold text-xl hover:bg-orange-600 shadow-lg hover:shadow-xl transition-all flex items-center gap-3"
           >
             <Download className="w-8 h-8" /> Download {outputExtension.toUpperCase()}
           </a>
@@ -141,7 +141,7 @@ export default function ConvertImage() {
   if (isProcessing) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] animate-in fade-in duration-500">
-        <Loader2 className="w-20 h-20 text-orange-500 animate-spin mb-8" />
+        <Loader2 className="w-20 h-20 text-orange-700 animate-spin mb-8" />
         <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-4">Converting Image...</h2>
       </div>
     );
@@ -184,7 +184,7 @@ export default function ConvertImage() {
           <div className="flex gap-4">
             <button 
               onClick={convertImage}
-              className="flex-1 py-4 bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg rounded-xl shadow-md hover:shadow-xl transition-all"
+              className="flex-1 py-4 bg-orange-600 hover:bg-orange-600 text-white font-bold text-lg rounded-xl shadow-md hover:shadow-xl transition-all"
             >
               Convert Image
             </button>
