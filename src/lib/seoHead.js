@@ -379,6 +379,12 @@ export const SEO_HEAD = {
     h1: 'Terms of Service',
     keywords: ['pdftools4u terms of service'],
   },
+  'all-tools': {
+    title: 'All PDF & Image Tools – PDFtools4u',
+    description: 'Explore the complete collection of free, fast, and secure browser-based PDF and image utilities by PDFtools4u.',
+    h1: 'All PDF & Image Tools',
+    keywords: ['all pdf tools', 'pdftools4u all tools', 'free web utilities'],
+  },
 };
 
 // Homepage metadata (used when no tool is active)
