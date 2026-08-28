@@ -69,8 +69,6 @@ Desktop.ini
 /*.csv
 /*.txt
 /*.zip
-*.cjs
-*.mjs
 playwright-report/
 test-results/
 .vercel/
