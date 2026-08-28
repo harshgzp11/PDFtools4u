@@ -27,13 +27,6 @@ export default function AboutUs() {
     window.dispatchEvent(navEvent);
   };
 
-  const handleEmailClick = (e) => {
-    e.preventDefault();
-    const user = "support";
-    const domain = "pdftools4u.in";
-    window.location.href = `mailto:${user}@${domain}`;
-  };
-
   return (
     <div className="w-full h-full overflow-y-auto custom-scrollbar">
       <div className="max-w-5xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-gray-800 animate-in fade-in space-y-16">
@@ -200,7 +193,7 @@ export default function AboutUs() {
             </p>
 
             <p className="text-gray-600 text-sm">
-              Have feedback or a tool suggestion? Reach out directly via our <a href="/contact" onClick={handleNavigateContact} className="text-blue-600 hover:underline font-semibold">Contact Us</a> page or email our support team directly.
+              Have feedback or a tool suggestion? Reach out directly via our <a href="/contact" onClick={handleNavigateContact} className="text-blue-600 hover:underline font-semibold">Contact Us</a> page.
             </p>
 
             <div className="pt-2 flex flex-wrap items-center justify-center md:justify-start gap-3">
@@ -210,13 +203,6 @@ export default function AboutUs() {
               >
                 <span>Contact Us</span>
                 <ArrowRight className="w-4 h-4" />
-              </button>
-              <button
-                onClick={handleEmailClick}
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 font-semibold text-sm rounded-xl shadow-xs transition-all cursor-pointer"
-              >
-                <Mail className="w-4 h-4 text-blue-600" />
-                <span>Email Support</span>
               </button>
             </div>
           </div>

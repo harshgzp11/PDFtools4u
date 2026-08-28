@@ -21,8 +21,24 @@ function findToolInfo(toolId) {
 export default function ToolSEOContent({ toolId, onSelectTool }) {
   const { tool: toolInfo, domainTitle } = findToolInfo(toolId);
   const headMeta = SEO_HEAD[toolId];
-  const relatedToolIds = RELATED_TOOLS[toolId] || [];
+  let relatedToolIds = RELATED_TOOLS[toolId] || [];
   
+  // Dynamic fallback: If no explicit related tools exist, find others in the same category
+  if (relatedToolIds.length === 0 && toolInfo) {
+    for (const domain of DOMAINS) {
+      for (const cat of domain.categories) {
+        if (cat.tools.some(t => t.id === toolId)) {
+          relatedToolIds = cat.tools
+            .filter(t => t.id !== toolId && !t.comingSoon)
+            .map(t => t.id)
+            .slice(0, 4);
+          break;
+        }
+      }
+      if (relatedToolIds.length > 0) break;
+    }
+  }
+
   // Build fallback content if specific content is missing
   let content = SEO_CONTENT[toolId];
   const fallback = domainTitle ? CATEGORY_FALLBACKS[domainTitle] : CATEGORY_FALLBACKS['PDF Tools'];

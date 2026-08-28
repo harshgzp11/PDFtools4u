@@ -96,7 +96,7 @@ export const BLOG_POSTS = [
       ]
     },
     content: `
-Whether you are applying for an international visa (US, Schengen, UK, Canada), renewing a passport, or completing online government verification, submission portals require photos and signatures in exact pixel dimensions (W×H).
+Whether you are applying for an international visa (US, Schengen, UK, Canada), renewing a passport, or completing online government verification, submission portals require photos and signatures in exact pixel dimensions. You can [securely resize your passport photo online](/resize-image) directly in your browser (W×H).
 
 If you force an arbitrary resolution without matching the correct aspect ratio, portals either reject the file or stretch your facial features, rendering the biometric photo invalid.
 
@@ -241,7 +241,7 @@ Pixel dimensions define the total number of pixels along the width and height on
       ]
     },
     content: `
-Digital Driving Licenses downloaded from official portals like Parivahan Sarathi or DigiLocker come as electronic PDF documents.
+Digital Driving Licenses downloaded from official portals like Parivahan Sarathi or DigiLocker come as electronic PDF documents. If you need to [convert your Driving License PDF to high-quality JPG](/pdf-to-jpg) for KYC, you can do so locally without any cloud uploads.
 
 However, automated KYC verification systems used by banks, demat brokers (Groww, Zerodha), vehicle rental platforms, and insurance providers routinely reject PDF files, demanding a high-resolution JPG or JPEG image of the license instead.
 
