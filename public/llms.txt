@@ -1,0 +1,9 @@
+# PDFtools4u AI Knowledge
+
+Welcome to the PDFtools4u AI integration file. This file provides AI agents and LLMs with context about the tools available on this platform.
+
+- [PDFtools4u Home](https://www.pdftools4u.in/)
+- [PDFtools4u All Tools](https://www.pdftools4u.in/all-tools)
+- [PDFtools4u Privacy Policy](https://www.pdftools4u.in/privacy-policy)
+- [PDFtools4u Terms of Service](https://www.pdftools4u.in/terms-of-service)
+- [PDFtools4u About Us](https://www.pdftools4u.in/about)
