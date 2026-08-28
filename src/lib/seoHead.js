@@ -367,15 +367,15 @@ export const SEO_HEAD = {
     h1: 'Contact Us',
     keywords: ['contact pdftools4u', 'pdftools4u support'],
   },
-  'privacy': {
-    title: 'Privacy Policy — PDFtools4u',
-    description: 'Read our privacy policy. PDFtools4u processes all files locally in your browser — no data is uploaded to servers, no files are stored, ever.',
+  'privacy-policy': {
+    title: 'Privacy Policy – PDFtools4u',
+    description: 'Read our privacy policy. PDFtools4u processes all files locally in your browser – no data is uploaded to servers, no files are stored, ever.',
     h1: 'Privacy Policy',
     keywords: ['pdftools4u privacy policy'],
   },
-  'terms': {
-    title: 'Terms of Service — PDFtools4u',
-    description: 'Read the terms of service for PDFtools4u, a free browser-based document processing platform with zero server-side file storage.',
+  'terms-of-service': {
+    title: 'Terms of Service – PDFtools4u',
+    description: 'Read the terms of service and conditions for using PDFtools4u. Free online utilities with no hidden fees.',
     h1: 'Terms of Service',
     keywords: ['pdftools4u terms of service'],
   },

@@ -42,7 +42,7 @@ const HELP_TOPICS = [
 
 export default function ContactUs() {
   return (
-    <div className="w-full h-full overflow-y-auto custom-scrollbar">
+    <div className="w-full h-full overflow-y-auto custom-scrollbar animate-in fade-in slide-in-from-bottom-4 duration-700">
 
       {/* Schema.org JSON-LD */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
@@ -80,10 +80,10 @@ export default function ContactUs() {
             <Mail className="w-10 h-10" aria-hidden="true" />
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight mb-4">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">
             Contact PDFTools4U Support
           </h1>
-          <p className="text-lg text-gray-600 leading-relaxed mb-8 max-w-xl">
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed mb-8">
             Need help with a PDF or image tool, want to report a bug, or have a feature request?
             Just send us an email — we read and reply to every message.
           </p>
@@ -116,8 +116,8 @@ export default function ContactUs() {
 
         {/* ── How we can help ── */}
         <div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 text-center">What Can We Help You With?</h2>
-          <p className="text-sm sm:text-base text-gray-600 text-center mb-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4 text-center">What Can We Help You With?</h2>
+          <p className="text-lg text-gray-600 text-center mb-10">
             Mention the topic below in your email so we can route it to the right team faster.
           </p>
 
