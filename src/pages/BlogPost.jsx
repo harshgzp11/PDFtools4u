@@ -85,7 +85,10 @@ export default function BlogPost({ id, onNavigate }) {
         </h1>
         
         <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-500 font-medium">
-          <span className="flex items-center gap-1.5"><Calendar className="w-4 h-4" /> {post.date}</span>
+          <span className="flex items-center gap-1.5"><Calendar className="w-4 h-4" /> Published {post.date}</span>
+          {post.lastUpdated && (
+            <span className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-orange-500" /> Updated {post.lastUpdated}</span>
+          )}
           <span className="flex items-center gap-1.5"><User className="w-4 h-4" /> {post.author}</span>
           <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" /> {readTime} min read</span>
         </div>

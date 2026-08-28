@@ -402,7 +402,7 @@ export default function SEOHead({ activeTool }) {
           'description': post.excerpt,
           'image': [post.coverImage || OG_IMAGE],
           'datePublished': isoDate,
-          'dateModified': post.lastModified ? new Date(post.lastModified).toISOString() : isoDate,
+          'dateModified': post.lastUpdated ? new Date(post.lastUpdated).toISOString() : isoDate,
           'author': {
             '@type': 'Organization',
             'name': post.author || SITE_NAME,

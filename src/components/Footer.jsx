@@ -73,8 +73,8 @@ export default function Footer({ onSelectTool }) {
           <p>&copy; {new Date().getFullYear()} PDFtools4u &mdash; Made with ❤️ for local-first users.</p>
           
           <div className="flex flex-wrap items-center justify-center gap-6">
-            <a href="/privacy-policy" onClick={(e) => { e.preventDefault(); onSelectTool('privacy-policy'); }} className="hover:text-white transition-colors cursor-pointer">Privacy Policy</a>
-            <a href="/terms-of-service" onClick={(e) => { e.preventDefault(); onSelectTool('terms-of-service'); }} className="hover:text-white transition-colors cursor-pointer">Terms of Service</a>
+            <a href="/privacy" onClick={(e) => { e.preventDefault(); onSelectTool('privacy'); }} className="hover:text-white transition-colors cursor-pointer">Privacy Policy</a>
+            <a href="/terms" onClick={(e) => { e.preventDefault(); onSelectTool('terms'); }} className="hover:text-white transition-colors cursor-pointer">Terms of Service</a>
             <a href="/about" onClick={(e) => { e.preventDefault(); onSelectTool('about'); }} className="hover:text-white transition-colors cursor-pointer">About Us</a>
             <a href="/contact" onClick={(e) => { e.preventDefault(); onSelectTool('contact'); }} className="hover:text-white transition-colors cursor-pointer">Contact Us</a>
             <a href="/blog" onClick={(e) => { e.preventDefault(); onSelectTool('blog'); }} className="hover:text-white transition-colors cursor-pointer">Blog</a>
