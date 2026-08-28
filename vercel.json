@@ -1,5 +1,6 @@
 {
   "trailingSlash": false,
+  "cleanUrls": true,
   "redirects": [
     { "source": "/merge-pdf", "destination": "/pdf-merge", "permanent": true },
     { "source": "/split-pdf", "destination": "/pdf-split", "permanent": true },
