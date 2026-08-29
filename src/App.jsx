@@ -285,7 +285,7 @@ function App() {
                         {isPlaceholder ? (
                           <PlaceholderTool toolName={PLACEHOLDER_TOOLS[toolId]} />
                         ) : (
-                          <ToolComponent />
+                          <ToolComponent onSelectTool={navigateTo} />
                         )}
                         
                         {/* SEO Content Injection */}
