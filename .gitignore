@@ -78,3 +78,7 @@ scratch/
 scratch.js
 scratch.cjs
 inject_blog.cjs
+
+repair.cjs
+blog_payload.json
+inject_json.cjs
