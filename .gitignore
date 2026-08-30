@@ -74,3 +74,7 @@ test-results/
 .vercel/
 .netlify/
 scratch/
+# Temporary Scratch Scripts
+scratch.js
+scratch.cjs
+inject_blog.cjs
