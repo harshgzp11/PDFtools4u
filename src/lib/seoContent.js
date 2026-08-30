@@ -1,7 +1,7 @@
 export const SEO_CONTENT = {
   "compress-pdf": {
     "title": "Compress PDF Files Online for Free",
-    "description": "Reduce PDF file size without losing quality. The ultimate sarkari exam pdf compressor to quickly compress PDF to 100kb, 200kb, or compress form 16 pdf under 500kb.",
+    "description": "Easily reduce PDF file sizes without losing quality. Optimize documents to 100kb or 200kb, making it perfect for strict form uploads.",
     "howTo": [
       "Upload or drag and drop your PDF file into the compressor.",
       "Select your preferred compression level (High, Recommended, or Low).",
@@ -207,7 +207,7 @@ export const SEO_CONTENT = {
   },
   "resize-image": {
     "title": "Image Resizer & Signature Crop",
-    "description": "Resize signature to 20kb online, sarkari exam photo resizer, compress photo to 50kb, ssc cgl photo resizer online.",
+    "description": "Quickly resize signatures and photos to exact specifications like 20kb or 50kb, ideal for official exam portals and application forms.",
     "howTo": [
       "Upload File: Select or drag and drop your photo or signature image into the browser resizer.",
       "Set Dimensions & KB Limit: Enter your required pixel width, height, or target file size limit (e.g., 20KB or 50KB).",
@@ -236,7 +236,7 @@ export const SEO_CONTENT = {
   },
   "jpg-to-pdf": {
     "title": "Convert JPG to PDF Online",
-    "description": "Convert jpg to pdf online free, combine images into one pdf, sarkari exam photo to pdf, convert photos to pdf online.",
+    "description": "Convert and combine your JPG or PNG images into a single, high-quality PDF online for free. Perfect for compiling documents and exam photos.",
     "howTo": [
       "Upload Images: Select or drag and drop one or multiple JPG/PNG image files.",
       "Arrange Sequence: Drag thumbnail images to reorder them in your desired page sequence.",
@@ -265,7 +265,7 @@ export const SEO_CONTENT = {
   },
   "word-to-pdf": {
     "title": "Convert Word to PDF Online",
-    "description": "Convert word to pdf online, docx to pdf free, convert docx to pdf without changing layout, word file to pdf converter.",
+    "description": "Instantly convert Microsoft Word (DOCX) files to PDF while strictly preserving your original formatting and layout.",
     "howTo": [
       "Upload Word Document: Drag and drop your .doc or .docx file into the upload box.",
       "Select Conversion Mode: Choose standard layout preservation for optimal document fidelity.",
@@ -294,7 +294,7 @@ export const SEO_CONTENT = {
   },
   "protect-pdf": {
     "title": "Password Protect PDF Files Online",
-    "description": "Password protect pdf online, encrypt pdf file free, add password to pdf, secure pdf document.",
+    "description": "Secure your confidential PDF documents by adding strong password protection and encryption for free.",
     "howTo": [
       "Upload PDF: Drag and drop the PDF document you want to encrypt.",
       "Set Password: Enter and confirm a strong, custom password for your file.",
@@ -323,7 +323,7 @@ export const SEO_CONTENT = {
   },
   "rotate-pdf": {
     "title": "Rotate PDF Pages Online",
-    "description": "Rotate pdf pages online, turn sideways pdf right side up, rotate pdf and save, fix upside down pdf scan.",
+    "description": "Easily fix upside-down or sideways PDF scans by rotating pages to the correct orientation and saving instantly.",
     "howTo": [
       "Upload PDF Document: Select or drag and drop your sideways or upside-down PDF file.",
       "Choose Pages: Select individual pages or choose to rotate all pages at once.",
@@ -352,7 +352,7 @@ export const SEO_CONTENT = {
   },
   "sign-pdf": {
     "title": "Sign PDF Documents Online",
-    "description": "Sign pdf online free, add electronic signature to pdf, digital signature on pdf, e-sign pdf document.",
+    "description": "Add your electronic signature to any PDF document quickly and securely directly within your browser.",
     "howTo": [
       "Upload PDF: Select or drag and drop the document requiring a signature.",
       "Create Signature: Draw your signature with a mouse/touchscreen, type your name, or upload an image scan.",
@@ -381,7 +381,7 @@ export const SEO_CONTENT = {
   },
   "pdf-watermark": {
     "title": "Add Watermarks to PDF Online",
-    "description": "Add watermark to pdf online, add confidential watermark to pdf, watermark pdf generator, custom logo watermark on pdf.",
+    "description": "Protect your intellectual property by applying custom text or logo watermarks to your PDF documents.",
     "howTo": [
       "Upload PDF: Select or drop the document you want to mark and protect.",
       "Customize Watermark: Enter custom text (e.g., CONFIDENTIAL, DRAFT, or company name) or upload a logo image.",
@@ -410,7 +410,7 @@ export const SEO_CONTENT = {
   },
   "crop-pdf": {
     "title": "Crop PDF Pages Online",
-    "description": "Crop pdf pages online, trim pdf margins free, crop pdf for printing, remove white borders from pdf.",
+    "description": "Trim unwanted margins, remove white borders, and crop your PDF pages for a cleaner, print-ready layout.",
     "howTo": [
       "Upload PDF: Select or drag the PDF document containing pages you wish to crop.",
       "Adjust Crop Area: Drag the visual bounding box over the exact area you wish to keep.",
@@ -439,7 +439,7 @@ export const SEO_CONTENT = {
   },
   "delete-pdf-pages": {
     "title": "Remove Pages from PDF Online",
-    "description": "Remove pages from pdf online, delete pdf pages free, remove extra page from pdf, extract and delete pdf pages.",
+    "description": "Easily remove unnecessary or blank pages from your PDF document for a cleaner, more concise file.",
     "howTo": [
       "Upload PDF: Drag and drop the multi-page PDF document into the page manager.",
       "Select Pages to Delete: Click on the page thumbnails or type exact page numbers to remove.",
@@ -468,7 +468,7 @@ export const SEO_CONTENT = {
   },
   "extract-pdf-pages": {
     "title": "Extract Pages from PDF Online",
-    "description": "Extract pages from pdf online, pull pages out of pdf free, save specific pages from pdf, extract single page from pdf.",
+    "description": "Pull out specific pages from a large PDF document and save them independently with perfect quality.",
     "howTo": [
       "Upload PDF Document: Select or drag and drop your multi-page PDF into the upload box.",
       "Select Target Pages: Click on individual page thumbnails or enter exact page numbers (e.g., 2, 5-8).",
@@ -497,7 +497,7 @@ export const SEO_CONTENT = {
   },
   "organize-pdf": {
     "title": "Organize PDF Pages Online",
-    "description": "Organize pdf pages online, reorder pages in pdf free, rearrange pdf pages, pdf page manager.",
+    "description": "Rearrange and reorder pages within your PDF document using a simple, visual drag-and-drop interface.",
     "howTo": [
       "Upload PDF: Select or drag and drop the PDF file you wish to rearrange.",
       "Reorder & Rotate: Drag page thumbnails into your preferred sequence or rotate individual misaligned pages.",
@@ -526,7 +526,7 @@ export const SEO_CONTENT = {
   },
   "number-pages": {
     "title": "Add Page Numbers to PDF Online",
-    "description": "Add page numbers to pdf online, number pdf pages free, bates numbering pdf, add header footer page numbers pdf.",
+    "description": "Automatically insert page numbers into your PDF documents for better organization and referencing.",
     "howTo": [
       "Upload PDF Document: Drag and drop your PDF file into the page numbering tool.",
       "Choose Positioning: Select where page numbers should appear (top/bottom, left/center/right).",
@@ -555,7 +555,7 @@ export const SEO_CONTENT = {
   },
   "flatten-pdf": {
     "title": "Flatten PDF Files Online",
-    "description": "Flatten pdf online free, flatten interactive pdf forms, convert fillable pdf to flat pdf, flatten layers in pdf.",
+    "description": "Lock interactive form fields and annotations into a flat PDF document to prevent further editing.",
     "howTo": [
       "Upload PDF: Drag and drop your fillable, interactive, or layered PDF document.",
       "Select Flatten Options: Choose to flatten form fields, annotations, or layered vector elements.",
@@ -584,7 +584,7 @@ export const SEO_CONTENT = {
   },
   "ppt-to-pdf": {
     "title": "Convert PowerPoint to PDF Online",
-    "description": "Convert powerpoint to pdf online, pptx to pdf free, convert ppt slides to pdf, presentation to pdf converter.",
+    "description": "Convert PowerPoint presentations into clean, static PDF documents perfect for sharing and printing.",
     "howTo": [
       "Upload Presentation: Drag and drop your .ppt or .pptx presentation file.",
       "Select Conversion Mode: Choose slide alignment and layout settings.",
@@ -613,7 +613,7 @@ export const SEO_CONTENT = {
   },
   "excel-to-pdf": {
     "title": "Convert Excel to PDF Online",
-    "description": "Convert excel to pdf online, xlsx to pdf free, fit excel sheet to pdf page, spreadsheet to pdf converter.",
+    "description": "Transform Excel spreadsheets into neat, paginated PDF documents while keeping your tables intact.",
     "howTo": [
       "Upload Spreadsheet: Drag and drop your .xls or .xlsx file into the upload area.",
       "Configure Page Fitting: Choose orientation (landscape/portrait) and 'Fit to Single Page' settings.",
@@ -642,7 +642,7 @@ export const SEO_CONTENT = {
   },
   "pdf-to-ppt": {
     "title": "Convert PDF to PowerPoint Online",
-    "description": "Convert pdf to powerpoint online, pdf to pptx free, convert pdf slides to editable ppt, pdf to presentation converter.",
+    "description": "Convert PDF files back into editable PowerPoint slides for quick and easy presentations.",
     "howTo": [
       "Upload PDF File: Drag and drop the PDF document or slide deck you want to convert.",
       "Select Output Format: Choose PPTX for modern Microsoft PowerPoint compatibility.",
@@ -671,7 +671,7 @@ export const SEO_CONTENT = {
   },
   "edit-pdf": {
     "title": "Edit PDF Files Online",
-    "description": "Edit pdf online free, free pdf editor online, add text and images to pdf, draw and highlight on pdf.",
+    "description": "Edit your PDFs directly in the browser by freely adding text, images, drawings, and highlights.",
     "howTo": [
       "Upload PDF: Select or drag and drop the PDF document you want to edit.",
       "Add Content: Use the toolbar to insert new text, upload images, add shapes, or draw freehand.",
@@ -700,7 +700,7 @@ export const SEO_CONTENT = {
   },
   "pdf-form-filler": {
     "title": "Fill Out PDF Forms Online",
-    "description": "Fill out pdf forms online, interactive pdf form filler, fill pdf forms free, online form filler for pdf.",
+    "description": "Fill out interactive PDF forms directly from your browser without downloading heavy software.",
     "howTo": [
       "Upload PDF Form: Select or drag and drop your fillable or standard PDF form.",
       "Fill Interactive Fields: Click on text fields, checkboxes, and radio buttons to enter information.",
@@ -729,7 +729,7 @@ export const SEO_CONTENT = {
   },
   "redact-pdf": {
     "title": "Redact PDF Files Online",
-    "description": "Redact pdf online free, black out text in pdf, permanently redact sensitive information pdf, hide confidential info pdf.",
+    "description": "Permanently black out and remove sensitive text from your PDF documents to ensure total privacy.",
     "howTo": [
       "Upload PDF: Drag and drop the document containing sensitive or private information.",
       "Select Text to Redact: Highlight or draw black redaction boxes over text, numbers, or images to hide.",
@@ -758,7 +758,7 @@ export const SEO_CONTENT = {
   },
   "pdf-reader": {
     "title": "Read & Annotate PDF Files Online",
-    "description": "Free online pdf reader, view pdf in browser, annotate pdf online, pdf viewer and markup tool.",
+    "description": "View, read, and navigate PDF documents directly in your browser with our fast and secure viewer.",
     "howTo": [
       "Upload PDF Document: Select or drag and drop any PDF file to open it instantly.",
       "Navigate Pages: Scroll through pages, zoom in/out, or jump to specific page numbers.",
@@ -787,7 +787,7 @@ export const SEO_CONTENT = {
   },
   "pdf-converter": {
     "title": "Universal Document Converter Online",
-    "description": "Universal document converter online, convert any file to pdf, all in one file converter, free online format converter.",
+    "description": "A universal file converter to seamlessly transform any document format into a standard PDF.",
     "howTo": [
       "Upload Any File: Select or drag and drop your document, spreadsheet, presentation, or image file.",
       "Choose Target Format: Select your desired output file type (PDF, JPG, PNG, DOCX, XLSX, PPTX).",
@@ -816,7 +816,7 @@ export const SEO_CONTENT = {
   },
   "pdf-annotator": {
     "title": "Annotate PDF Files Online",
-    "description": "Annotate pdf online free, pdf annotation tool, add notes to pdf online, markup pdf online free.",
+    "description": "Markup your PDF documents by adding notes, highlights, and annotations entirely for free.",
     "howTo": [
       "Upload PDF: Drag and drop the PDF document requiring notes or markups into the editor.",
       "Select Annotation Tool: Choose text callouts, sticky notes, highlighters, drawing pens, or underline tools.",
@@ -845,7 +845,7 @@ export const SEO_CONTENT = {
   },
   "pdf-to-png": {
     "title": "Convert PDF to PNG Online",
-    "description": "Convert pdf to png online free, pdf to transparent png, high quality pdf to png converter, extract png from pdf.",
+    "description": "Extract pages from your PDF and convert them into high-quality, transparent PNG images.",
     "howTo": [
       "Upload PDF: Drag and drop your PDF document into the converter upload area.",
       "Select Image Quality: Choose standard resolution or high-DPI output for ultra-clear graphics.",
@@ -874,7 +874,7 @@ export const SEO_CONTENT = {
   },
   "png-to-pdf": {
     "title": "Convert PNG to PDF Online",
-    "description": "Convert png to pdf online free, png image to pdf converter, combine png images into one pdf, transparent png to pdf.",
+    "description": "Combine multiple transparent PNG images into a single, cohesive PDF document with ease.",
     "howTo": [
       "Upload PNG Images: Select or drag and drop one or multiple PNG graphics into the converter.",
       "Arrange Sequence: Drag image thumbnails to organize pages in your preferred sequence.",
@@ -903,7 +903,7 @@ export const SEO_CONTENT = {
   },
   "compress-image": {
     "title": "Compress Images Online",
-    "description": "Compress image online free, reduce image file size in kb, compress photo to 20kb 50kb, sarkari exam image compressor.",
+    "description": "Compress large photos and images down to specific file sizes like 20kb or 50kb without visible quality loss.",
     "howTo": [
       "Upload Image: Select or drag and drop your JPG, PNG, or WebP photo into the compressor.",
       "Set File Size Limit: Use the KB slider to set target size caps (e.g., under 20KB, 50KB, or 100KB).",
@@ -932,7 +932,7 @@ export const SEO_CONTENT = {
   },
   "pdf-to-text": {
     "title": "Extract Text from PDF Online",
-    "description": "Convert pdf to text online free, extract text from pdf, pdf to txt converter, copy text from pdf online.",
+    "description": "Extract raw text from your PDF documents quickly and accurately for easy copying and editing.",
     "howTo": [
       "Upload PDF Document: Select or drag and drop your PDF file into the text extractor.",
       "Select Extraction Mode: Choose plain text extraction for digital PDFs or OCR for scanned documents.",
@@ -961,7 +961,7 @@ export const SEO_CONTENT = {
   },
   "image-crop": {
     "title": "Crop & Rotate Images Online",
-    "description": "Crop image online free, rotate photo online, sarkari exam signature cropper, image crop and rotate tool.",
+    "description": "Crop, rotate, and align your photos perfectly, designed with application and exam portals in mind.",
     "howTo": [
       "Upload Image: Select or drag and drop your photo, passport scan, or signature image.",
       "Set Crop Area: Drag the selection handles or choose preset aspect ratios (e.g., 1:1, 4:3, or custom dimensions).",
@@ -990,7 +990,7 @@ export const SEO_CONTENT = {
   },
   "photo-editor": {
     "title": "Edit Photos Online",
-    "description": "Free online photo editor, edit pictures online no download, adjust photo brightness contrast online, sarkari exam photo editor.",
+    "description": "Adjust brightness, contrast, and apply basic filters to your photos using our free online editor.",
     "howTo": [
       "Upload Photo: Drag and drop any JPG, PNG, or WebP image into the editor workspace.",
       "Adjust Controls: Tweak sliders for brightness, contrast, sharpness, saturation, and exposure.",
@@ -1019,7 +1019,7 @@ export const SEO_CONTENT = {
   },
   "bg-remover": {
     "title": "Remove Image Backgrounds Online",
-    "description": "Remove background from image free, transparent background maker, make image background white for portal, ai background remover online.",
+    "description": "Instantly remove backgrounds from your photos and create clean, transparent or white backgrounds using AI.",
     "howTo": [
       "Upload Photo: Drag and drop the photo containing the subject you want to isolate.",
       "Automatic Detection: Our smart algorithm automatically detects and separates the subject from the background.",
@@ -1048,7 +1048,7 @@ export const SEO_CONTENT = {
   },
   "convert-image": {
     "title": "Convert Image Formats Online",
-    "description": "Image format converter online, convert image to jpg png webp, change photo extension free, bulk image converter.",
+    "description": "Easily convert images between formats like JPG, PNG, and WEBP directly in your browser.",
     "howTo": [
       "Upload Images: Select or drag and drop one or multiple images (JPG, PNG, WebP, GIF, SVG, BMP).",
       "Select Target Format: Choose your preferred output file extension (e.g., JPG, PNG, or WebP).",
