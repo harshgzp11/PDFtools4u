@@ -105,13 +105,27 @@ function extractUrls() {
 
   // Parse blogData.js
   const blogDataContent = fs.readFileSync(blogDataPath, 'utf-8');
-  const blogMatches = [...blogDataContent.matchAll(/id:\s*['"]([^'"]+)['"]/g)];
-  blogMatches.forEach(m => {
+  const blogBlocks = blogDataContent.split(/id:\s*['"]/);
+  
+  for (let i = 1; i < blogBlocks.length; i++) {
+    const block = blogBlocks[i];
+    const idMatch = block.match(/^([^'"]+)['"]/);
+    if (!idMatch) continue;
+    
+    const slug = idMatch[1];
+    let overrideDate = null;
+    
+    const dateMatch = block.match(/"datePublished"\s*:\s*['"]([0-9-]+)['"]/);
+    if (dateMatch) {
+      overrideDate = dateMatch[1];
+    }
+
     urls.push({ 
-      route: '/blog/' + m[1], 
-      filePath: blogDataPath // Any edit to a blog implies blogData.js was touched
+      route: '/blog/' + slug, 
+      filePath: blogDataPath,
+      lastmodOverride: overrideDate
     });
-  });
+  }
 
   // Remove duplicates based on route
   const uniqueUrls = [];
@@ -135,7 +149,7 @@ function generateSitemap() {
   xml += `        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9\n`;
   xml += `        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">\n`;
 
-  urlsData.forEach(({ route, filePath }) => {
+  urlsData.forEach(({ route, filePath, lastmodOverride }) => {
     let priority = '0.8';
     let changefreq = 'weekly';
     
@@ -147,7 +161,7 @@ function generateSitemap() {
       changefreq = 'monthly';
     }
 
-    const lastmod = getFileLastMod(filePath);
+    const lastmod = lastmodOverride || getFileLastMod(filePath);
 
     xml += `  <url>\n`;
     xml += `    <loc>${BASE_URL}${route === '/' ? '' : route}</loc>\n`;
