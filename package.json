@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/inject-seo.cjs",
+    "build": "vite build && node scripts/inject-seo.cjs && node scripts/generate-sitemap.cjs",
     "lint": "oxlint",
     "preview": "vite preview"
   },
