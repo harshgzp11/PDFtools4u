@@ -3,7 +3,7 @@ import { FileCode, Upload, FileText, Settings2, Download, AlertCircle, FileDigit
 import { toast } from 'sonner';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
-import ToolLayout from '../components/ui/ToolLayout';
+
 
 export default function HtmlToPdf() {
   const [htmlContent, setHtmlContent] = useState('');
@@ -221,11 +221,15 @@ export default function HtmlToPdf() {
   };
 
   return (
-    <ToolLayout
-      title="HTML to PDF Converter"
-      description="Convert HTML code or files to high-quality PDF documents securely."
-      icon={<FileCode className="w-8 h-8 text-blue-500" />}
-    >
+    <div className="py-8">
+      <div className="max-w-5xl mx-auto mb-8 text-center">
+        <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-4 flex justify-center items-center gap-3">
+          <FileCode className="w-10 h-10 text-blue-500" /> HTML to PDF Converter
+        </h1>
+        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          Convert HTML code or files to high-quality PDF documents securely.
+        </p>
+      </div>
       <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in zoom-in-95 duration-500">
         
         <div className="bg-white/80 backdrop-blur-xl border border-white/20 shadow-2xl rounded-3xl overflow-hidden relative">
@@ -428,6 +432,6 @@ export default function HtmlToPdf() {
           </div>
         </div>
       </div>
-    </ToolLayout>
+    </div>
   );
 }
