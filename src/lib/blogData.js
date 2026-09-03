@@ -144,14 +144,20 @@ PDFTools4U runs entirely via client-side WebAssembly:
 
 ### Frequently Asked Questions
 
-**How do I resize a passport photo to 600×600 pixels on my phone?**
+<details>
+<summary>How do I resize a passport photo to 600×600 pixels on my phone?</summary>
 Open the PDFTools4U Image Resizer on your mobile browser, select your photo, choose the 1:1 crop preset, set Width and Height to 600, and tap Download.
+</details>
 
-**Why did the visa portal reject my photo despite having the right pixel size?**
+<details>
+<summary>Why did the visa portal reject my photo despite having the right pixel size?</summary>
 Portals often check face composition in addition to pixel count. Ensure your head covers 50% to 70% of the total frame height and that the background is solid white or off-white.
+</details>
 
-**What is the difference between image DPI and pixel dimensions?**
+<details>
+<summary>What is the difference between image DPI and pixel dimensions?</summary>
 Pixel dimensions define the total number of pixels along the width and height on digital screens. DPI (dots per inch) only determines physical print density when the image is printed on paper.
+</details>
 `
   },
   {
@@ -281,14 +287,20 @@ PDFTools4U processes files locally on your machine:
 
 ### Frequently Asked Questions
 
-**Why did the KYC portal fail to read my Driving License JPG?**
-Automated KYC tools rely on OCR algorithms. Rejections usually happen if the image is blurry (< 150 DPI), cropped too close to text boundaries, or distorted during file compression.
+<details>
+<summary>Why did the KYC portal fail to read my Driving License JPG?</summary>
+Automated KYC tools rely on OCR algorithms. Rejections usually happen if the image is blurry (
+</details>< 150 DPI), cropped too close to text boundaries, or distorted during file compression.
 
-**How do I get both the front and back of my DL as separate images?**
+<details>
+<summary>How do I get both the front and back of my DL as separate images?</summary>
 If your Parivahan DL PDF has multiple pages, the converter automatically creates distinct JPG files for each page. If both sides are on one page, convert to JPG first and use the built-in Crop tool to separate them.
+</details>
 
-**Can I convert a DigiLocker Driving License PDF to JPG?**
+<details>
+<summary>Can I convert a DigiLocker Driving License PDF to JPG?</summary>
 Yes. Download the official PDF from DigiLocker, upload it to the converter, and export it as a high-definition JPG.
+</details>
 `
   },
 
@@ -415,14 +427,20 @@ Form 16 contains your PAN number, salary details, and tax deduction information 
 
 ### Frequently Asked Questions
 
-* **What is the maximum file size for Form 16 upload on the income tax portal?**
+* <details>
+<summary>What is the maximum file size for Form 16 upload on the income tax portal?</summary>
   Most Indian income tax filing portals (including the official e-filing portal) accept Form 16 uploads up to 500KB in PDF format.
+</details>
 
-* **Will compressing Form 16 affect the digital signature?**
+* <details>
+<summary>Will compressing Form 16 affect the digital signature?</summary>
   Our compression preserves the visual appearance of all text and signatures. However, cryptographic digital signatures may need to be re-applied after compression. For most ITR filing purposes, the visual signature is sufficient.
+</details>
 
-* **Can I compress Form 16 on my phone?**
+* <details>
+<summary>Can I compress Form 16 on my phone?</summary>
   Yes. Our tool works in any modern mobile browser (Chrome, Safari) — no app download needed.
+</details>
 `
   },
   {
@@ -572,14 +590,20 @@ PDFTools4U operates with zero backend communication:
 
 ### Frequently Asked Questions
 
-**What is the difference between converting a PDF page to JPG and extracting embedded images?**
+<details>
+<summary>What is the difference between converting a PDF page to JPG and extracting embedded images?</summary>
 Converting a page renders the entire visual layout (text, tables, and images) into a single picture. Extracting embedded images pulls only the raw image files (such as a attached photo of a paper receipt) out of the document without the surrounding PDF text.
+</details>
 
-**Will extracted receipt images pass automated SmartScan / OCR auditing?**
+<details>
+<summary>Will extracted receipt images pass automated SmartScan / OCR auditing?</summary>
 Yes. Extracting the original image preserves its native resolution, ensuring optical character recognition engines can parse vendor names, invoice numbers, and totals accurately.
+</details>
 
-**Can I extract multiple receipts from a combined 20-page PDF report?**
+<details>
+<summary>Can I extract multiple receipts from a combined 20-page PDF report?</summary>
 Yes. The tool processes multi-page documents simultaneously and lets you download all extracted receipt images together.
+</details>
 `
   },
 
@@ -698,14 +722,20 @@ Your academic records contain personal information including your roll number, d
 
 ### Frequently Asked Questions
 
-* **How many marksheets can I merge at once?**
+* <details>
+<summary>How many marksheets can I merge at once?</summary>
   There is no fixed limit. You can merge as many marksheet PDFs as your browser memory supports — typically dozens of files without any issues.
+</details>
 
-* **Will merging change the quality of my marksheet scans?**
+* <details>
+<summary>Will merging change the quality of my marksheet scans?</summary>
   No. The merge process preserves the original resolution, text clarity, and image quality of every individual marksheet page.
+</details>
 
-* **Can I change the order after uploading?**
+* <details>
+<summary>Can I change the order after uploading?</summary>
   Yes, simply drag the thumbnails to rearrange them before clicking Merge.
+</details>
 `
   },
   {
@@ -792,14 +822,20 @@ Once you have your transparent signature PNG:
 
 ### Frequently Asked Questions
 
-* **Why does my signature look bad on PDF forms?**
+* <details>
+<summary>Why does my signature look bad on PDF forms?</summary>
   When you insert a signature photo with a white or grey background onto a PDF, the rectangular block covers the underlying text and lines. A transparent PNG signature overlays cleanly without hiding any content.
+</details>
 
-* **What format should my transparent signature be?**
+* <details>
+<summary>What format should my transparent signature be?</summary>
   Always save transparent signatures as PNG files. JPG format does not support transparency — it fills transparent areas with white.
+</details>
 
-* **Can I reuse the same transparent signature on multiple PDFs?**
+* <details>
+<summary>Can I reuse the same transparent signature on multiple PDFs?</summary>
   Yes. Save your transparent PNG signature file and reuse it on any number of documents.
+</details>
 `
   },
   {
@@ -935,14 +971,20 @@ PDFTools4U uses a local-first security model:
 
 ### Frequently Asked Questions
 
-**Why do admission portals require JPG instead of original PDF marksheets?**
+<details>
+<summary>Why do admission portals require JPG instead of original PDF marksheets?</summary>
 Many verification portals use image-based preview widgets and automated OCR pipelines designed to process standardized raster formats (JPG/JPEG) faster than multi-layer PDFs.
+</details>
 
-**Can I convert a DigiLocker marksheet PDF to JPG using this method?**
+<details>
+<summary>Can I convert a DigiLocker marksheet PDF to JPG using this method?</summary>
 Yes. Download the issued PDF from your DigiLocker dashboard, run it through the converter, and download the 300 DPI JPG image.
+</details>
 
-**How do I ensure my marksheet image is under 200 KB for form submission?**
+<details>
+<summary>How do I ensure my marksheet image is under 200 KB for form submission?</summary>
 After converting the PDF to JPG, adjust the quality setting or use the Compress Image tool to set your maximum ceiling (e.g., Under 200 KB).
+</details>
 `
   },
   {
@@ -1136,14 +1178,20 @@ PDFTools4U runs entirely on your local machine:
 
 ### Frequently Asked Questions
 
-**Can I split non-consecutive pages into a single new PDF?**
+<details>
+<summary>Can I split non-consecutive pages into a single new PDF?</summary>
 Yes. You can enter comma-separated numbers and ranges (e.g., 1, 3, 5-8) to merge disparate sections into one new document.
+</details>
 
-**Will splitting a PDF reduce font sharpness or image resolution?**
+<details>
+<summary>Will splitting a PDF reduce font sharpness or image resolution?</summary>
 No. Client-side extraction preserves the original PDF streams, fonts, vectors, and embedded image resolutions without quality degradation.
+</details>
 
-**Can I split a password-protected PDF?**
+<details>
+<summary>Can I split a password-protected PDF?</summary>
 You must unlock the document first using the [Unlock PDF](/unlock-pdf) tool by providing the authorized password, after which you can split any page range freely.
+</details>
 `
   },
   {
@@ -1274,14 +1322,20 @@ PDFTools4U runs entirely on your local machine:
 
 ## Frequently Asked Questions
 
-**Can I merge PDFs that have different page sizes (e.g., A4 and US Letter)?**
+<details>
+<summary>Can I merge PDFs that have different page sizes (e.g., A4 and US Letter)?</summary>
 Yes. The merging engine preserves each page's native dimensions and layout without distorting content or forcing arbitrary scaling.
+</details>
 
-**Is there a limit on how many PDF files I can merge at once?**
+<details>
+<summary>Is there a limit on how many PDF files I can merge at once?</summary>
 Because processing runs locally using your device's memory, you can merge dozens of files simultaneously without artificial platform caps.
+</details>
 
-**Will merging multiple PDFs reduce the quality of text or embedded images?**
+<details>
+<summary>Will merging multiple PDFs reduce the quality of text or embedded images?</summary>
 No. Client-side merging connects the raw document streams without re-compressing images or rasterizing vector fonts, keeping text crisp and selectable.
+</details>
 `
   },
   {
@@ -1594,11 +1648,15 @@ PDFTools4U runs 100% locally on your computer or phone:
 
 ### Frequently Asked Questions
 
-**What should I do if my resized signature is under 10 KB?**
+<details>
+<summary>What should I do if my resized signature is under 10 KB?</summary>
 If your compressed image falls below the 10 KB minimum floor, set the target size to 15 KB or reduce the compression intensity in the tool to increase image quality slightly.
+</details>
 
-**Can I upload PNG format for SSC or UPSC forms?**
+<details>
+<summary>Can I upload PNG format for SSC or UPSC forms?</summary>
 No. Most Indian government exam portals strictly mandate JPG / JPEG extensions. Make sure to export as .jpg or .jpeg.
+</details>
 `
   },
   {
@@ -1722,11 +1780,15 @@ PDFTools4U runs 100% locally in your browser memory:
 
 ### Frequently Asked Questions
 
-**Why is my compressed PDF rejected by the portal?**
+<details>
+<summary>Why is my compressed PDF rejected by the portal?</summary>
 Most rejections happen if the file is below the minimum limit (e.g., smaller than 20 KB) or above the maximum ceiling (e.g., larger than 300 KB). Check both the minimum and maximum KB rules of the notification.
+</details>
 
-**Can I combine both sides of my Aadhaar card into a single PDF?**
+<details>
+<summary>Can I combine both sides of my Aadhaar card into a single PDF?</summary>
 Yes. Use the [Merge PDF](/pdf-merge) tool to combine front and back scans into a single page or multi-page PDF, then compress it under 300 KB.
+</details>
 `
   },
   {
@@ -1845,11 +1907,15 @@ PDFTools4U processes documents with a local-first security model:
 
 ### Frequently Asked Questions
 
-**Why did the KYC portal reject my PDF-to-JPG conversion?**
-Most KYC verification failures occur when image resolution is too low (< 150 DPI) or when file sizes exceed the portal ceiling (usually 2 MB). Use 300 DPI resolution and compress to under 1 MB if necessary.
+<details>
+<summary>Why did the KYC portal reject my PDF-to-JPG conversion?</summary>
+Most KYC verification failures occur when image resolution is too low (
+</details>< 150 DPI) or when file sizes exceed the portal ceiling (usually 2 MB). Use 300 DPI resolution and compress to under 1 MB if necessary.
 
-**Can I convert only the front card portion of my e-Aadhaar?**
+<details>
+<summary>Can I convert only the front card portion of my e-Aadhaar?</summary>
 Yes. Convert the PDF to JPG first, then open [Crop Image](/crop-image) to snip the exact front or back card section.
+</details>
 `
   },
   {
@@ -1970,11 +2036,15 @@ PDFTools4U runs entirely via client-side WebAssembly:
 
 ### Frequently Asked Questions
 
-**Is it legal to remove a password from my own bank statement?**
+<details>
+<summary>Is it legal to remove a password from my own bank statement?</summary>
 Yes. As the authorized account holder, removing password protection to fulfill loan or visa documentation requirements is completely standard and legal.
+</details>
 
-**Can I remove a password if I don't know it?**
+<details>
+<summary>Can I remove a password if I don't know it?</summary>
 No. For security and privacy reasons, client-side unlock tools require you to provide the original authorization password once to decrypt the file.
+</details>
 `
   },
   {
@@ -2100,11 +2170,15 @@ PDFTools4U runs 100% locally on your phone or laptop:
 
 ### Frequently Asked Questions
 
-**Why is a 5-page PDF of phone photos over 25 MB?**
+<details>
+<summary>Why is a 5-page PDF of phone photos over 25 MB?</summary>
 Smartphone cameras record extensive color detail and high-resolution pixel grids meant for wall printing, not document reading. Converting to grayscale and standard 150 DPI document resolution shrinks the file to under 2 MB without sacrificing text sharpness.
+</details>
 
-**Will compressing my assignment make my professor reject it for blurriness?**
+<details>
+<summary>Will compressing my assignment make my professor reject it for blurriness?</summary>
 No. Document-focused compression prioritizes sharp edge contrast for handwriting while stripping unnecessary color gradients and background paper textures.
+</details>
 `
   },
   {
@@ -2249,14 +2323,20 @@ PDFTools4U runs on a local-first security architecture:
 
 ### Frequently Asked Questions
 
-**What is the difference between pretty-printing and minifying JSON?**
+<details>
+<summary>What is the difference between pretty-printing and minifying JSON?</summary>
 Pretty-printing adds human-readable indentation, spaces, and line breaks to structured data. Minifying removes all extra whitespace and newlines to produce the smallest possible byte size for fast API transmission.
+</details>
 
-**Can I format JSON containing sensitive API keys and tokens?**
+<details>
+<summary>Can I format JSON containing sensitive API keys and tokens?</summary>
 Yes, as long as you use a strictly client-side tool like PDFTools4U, where data never leaves your device's memory.
+</details>
 
-**Why does JSON require double quotes instead of single quotes?**
+<details>
+<summary>Why does JSON require double quotes instead of single quotes?</summary>
 The official JSON specification (RFC 8259) explicitly requires double quotation marks for portability and universal parsing across all programming languages.
+</details>
 `
   },
   {
@@ -2414,17 +2494,25 @@ If your financial records span multiple pages, keep your top headers visible thr
 
 ## Frequently Asked Questions (FAQs)
 
-**Why does my Excel file split columns into two pages when converting to PDF?**
+<details>
+<summary>Why does my Excel file split columns into two pages when converting to PDF?</summary>
 This occurs when the combined width of your spreadsheet columns exceeds standard page margins. Switching the orientation to Landscape and selecting the "Fit all columns on one page" scaling option recalculates table boundaries so every column fits horizontally across the page.
+</details>
 
-**Is it safe to convert confidential financial spreadsheets online?**
+<details>
+<summary>Is it safe to convert confidential financial spreadsheets online?</summary>
 Yes, provided you use client-side tools like PDFTools4U. Because all processing takes place locally inside your browser's temporary memory, your files are never transmitted to external cloud servers or stored in any database.
+</details>
 
-**How do I export multiple tabs or sheets from one Excel file into a single PDF?**
+<details>
+<summary>How do I export multiple tabs or sheets from one Excel file into a single PDF?</summary>
 In desktop Excel, navigate to File > Export > Create PDF/XPS. In the save dialog box, click the Options button, select Entire Workbook instead of Active Sheet, and click Publish.
+</details>
 
-**Will converting Excel to PDF break my formulas?**
+<details>
+<summary>Will converting Excel to PDF break my formulas?</summary>
 No. The conversion creates a visual snapshot of your calculated values, formatting, numbers, and charts. Underlying formulas remain intact in your original .xlsx file while the output PDF is locked against accidental edits.
+</details>
 `
   },
   {
@@ -2661,17 +2749,25 @@ Once your styled HTML has been converted into a PDF, you can optimize, secure, o
 
 ## Frequently Asked Questions
 
-**Can I convert HTML to PDF with CSS styles without uploading my files to a server?**
+<details>
+<summary>Can I convert HTML to PDF with CSS styles without uploading my files to a server?</summary>
 Yes. PDFTools4U operates 100% on a client-side architecture using HTML5 APIs and WebAssembly. Your HTML code, stylesheets, images, and rendered document remain entirely inside your browser's temporary memory and are never uploaded to any remote server.
+</details>
 
-**Why does standard browser printing cut off background colors?**
+<details>
+<summary>Why does standard browser printing cut off background colors?</summary>
 Browsers default to ink-saving print modes that intentionally strip background colors and gradients. To ensure backgrounds are preserved, apply the CSS property \`-webkit-print-color-adjust: exact;\` and \`print-color-adjust: exact;\` across all parent elements.
+</details>
 
-**How do I convert an HTML invoice to PDF while keeping external Google Fonts?**
+<details>
+<summary>How do I convert an HTML invoice to PDF while keeping external Google Fonts?</summary>
 Include the standard Google Fonts \`<link>\` stylesheet inside your HTML \`<head>\` tag using an \`https://\` secure URL. The browser will fetch the necessary font weights before the converter captures the document canvas.
+</details>
 
-**Can I convert an entire webpage just by pasting a URL?**
+<details>
+<summary>Can I convert an entire webpage just by pasting a URL?</summary>
 Because our tool runs 100% locally in your browser for privacy, third-party URLs cannot be fetched directly due to browser CORS security restrictions. To convert a webpage, save the page locally as an \`.html\` file (or copy the HTML source code) and paste or upload it directly into the tool.
+</details>
 `
   }
 ]

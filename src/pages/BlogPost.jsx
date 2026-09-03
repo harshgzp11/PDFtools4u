@@ -98,15 +98,15 @@ export default function BlogPost({ id, onNavigate }) {
         <img src={post.coverImage} alt={post.title} className="w-full h-auto object-cover" />
       </div>
 
-      <article className="prose prose-lg md:prose-xl prose-indigo mx-auto max-w-3xl prose-headings:font-bold prose-a:text-blue-600 hover:prose-a:text-blue-800 prose-img:rounded-xl">
+      <article className="prose prose-slate lg:prose-lg mx-auto max-w-3xl prose-headings:font-bold prose-a:text-blue-600 hover:prose-a:text-blue-800 prose-img:rounded-xl">
         <ReactMarkdown 
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[rehypeRaw]}
           components={{
-            details: ({node, ...props}) => <details className="group border-b border-gray-200 overflow-hidden transition-all hover:border-gray-300 [&_summary::-webkit-details-marker]:hidden" {...props} />,
+            details: ({node, ...props}) => <details className="group border-b border-gray-200 overflow-hidden transition-all hover:border-gray-300 [&_summary::-webkit-details-marker]:hidden my-6" {...props} />,
             summary: ({node, children, ...props}) => (
               <summary className="w-full flex items-center justify-between py-5 text-left focus:outline-none cursor-pointer bg-transparent" {...props}>
-                <span className="font-bold text-gray-900 pr-4">{children}</span>
+                <span className="font-bold text-gray-900 pr-4 text-[inherit]">{children}</span>
                 <ChevronDown className="w-5 h-5 text-gray-400 transition-transform duration-300 flex-shrink-0 group-open:rotate-180" />
               </summary>
             ),
