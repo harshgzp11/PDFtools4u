@@ -2435,6 +2435,8 @@ No. The conversion creates a visual snapshot of your calculated values, formatti
     date: "September 3, 2026",
     lastUpdated: "September 3, 2026",
     author: "PDFTools4U",
+    published: true,
+    targetToolUrl: "html-to-pdf",
     coverImage: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&q=80&w=1000",
     customSchema: {
       "@context": "https://schema.org",
