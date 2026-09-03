@@ -115,9 +115,25 @@ function extractUrls() {
     const slug = idMatch[1];
     let overrideDate = null;
     
+    // First try JSON-LD datePublished
     const dateMatch = block.match(/"datePublished"\s*:\s*['"]([0-9-]+)['"]/);
     if (dateMatch) {
       overrideDate = dateMatch[1];
+    } else {
+      // Fallback: extract lastUpdated or date field from the JS block
+      const updatedMatch = block.match(/lastUpdated:\s*['"]([^'"]+)['"]/);
+      const publishMatch = block.match(/date:\s*['"]([^'"]+)['"]/);
+      const dateStr = (updatedMatch && updatedMatch[1]) || (publishMatch && publishMatch[1]);
+      if (dateStr) {
+        try {
+          const parsed = new Date(dateStr);
+          if (!isNaN(parsed)) {
+            // Adjust to local date string to prevent timezone shifts
+            const pad = (n) => (n < 10 ? '0' + n : n);
+            overrideDate = `${parsed.getFullYear()}-${pad(parsed.getMonth() + 1)}-${pad(parsed.getDate())}`;
+          }
+        } catch(e) {}
+      }
     }
 
     urls.push({ 

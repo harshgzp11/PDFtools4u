@@ -335,7 +335,9 @@ export default function SEOHead({ activeTool }) {
       }
 
       // Wrap all tool schemas in @graph
-      if (schemas.length) {
+      if (finalToolContent?.customSchema) {
+        addJsonLd(finalToolContent.customSchema);
+      } else if (schemas.length) {
         addJsonLd({ '@context': 'https://schema.org', '@graph': schemas });
       }
     }

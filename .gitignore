@@ -68,6 +68,7 @@ Desktop.ini
 /*.xlsx
 /*.csv
 /*.txt
+/*.html
 /*.zip
 playwright-report/
 test-results/

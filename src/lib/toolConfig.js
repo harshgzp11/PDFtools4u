@@ -38,6 +38,7 @@ export const DOMAINS = [
           { id: 'word-to-pdf', name: 'WORD to PDF', description: 'Convert Word document to PDF.', icon: FileCode2, color: 'text-blue-500', bg: 'bg-blue-50' },
           { id: 'ppt-to-pdf', name: 'POWERPOINT to PDF', description: 'Convert PowerPoint to PDF.', icon: Presentation, color: 'text-orange-700', bg: 'bg-orange-50' },
           { id: 'excel-to-pdf', name: 'EXCEL to PDF', description: 'Convert Excel to PDF document.', icon: FileSpreadsheet, color: 'text-green-500', bg: 'bg-green-50' },
+          { id: 'html-to-pdf', name: 'HTML to PDF', description: 'Convert HTML code/files to PDF.', icon: FileCode2, color: 'text-blue-500', bg: 'bg-blue-50' },
           { id: 'pdf-compiler', name: 'Text & Image to PDF', description: 'Compile text and images into PDF.', icon: Layers, color: 'text-indigo-500', bg: 'bg-indigo-50', comingSoon: true },
         ]
       },

@@ -46,6 +46,7 @@ const BackgroundRemover = lazyWithRetry(() => import('./tools/BackgroundRemover'
 const HtmlToImage = lazyWithRetry(() => import('./tools/HtmlToImage'));
 const ImageCropRotate = lazyWithRetry(() => import('./tools/ImageCropRotate'));
 const PhotoEditor = lazyWithRetry(() => import('./tools/PhotoEditor/index'));
+const HtmlToPdf = lazyWithRetry(() => import('./tools/HtmlToPdf'));
 
 const DeletePdfPages = lazyWithRetry(() => import('./tools/DeletePdfPages'));
 const ExtractPdfPages = lazyWithRetry(() => import('./tools/ExtractPdfPages'));
@@ -131,6 +132,7 @@ const TOOL_COMPONENTS = {
   'png-to-pdf': JpgToPdf,
   'bg-remover': BackgroundRemover,
   'html-to-image': HtmlToImage,
+  'html-to-pdf': HtmlToPdf,
   'image-crop': ImageCropRotate,
   'photo-editor': PhotoEditor,
   

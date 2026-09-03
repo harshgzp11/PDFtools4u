@@ -69,6 +69,12 @@ export const SEO_HEAD = {
   // ═══════════════════════════════════════════
   // CONVERT TO PDF
   // ═══════════════════════════════════════════
+  'html-to-pdf': {
+    title: 'Convert HTML to PDF Online Free (100% Private & Fast) | PDFtools4u',
+    description: 'Convert HTML code and .html files to high-quality PDF documents online. 100% private, client-side rendering with full CSS support and zero server uploads.',
+    h1: 'Convert HTML Code & Files to High-Quality PDF (100% Private)',
+    keywords: ['convert html to pdf online', 'html code to pdf', 'convert html file to pdf', 'html to pdf converter free', 'save html as pdf', 'html to pdf with css', 'html to pdf page breaks', 'html to pdf landscape a4', 'client side html to pdf', 'convert html to pdf without server upload', 'developer html to pdf tool'],
+  },
   'jpg-to-pdf': {
     title: 'JPG to PDF Converter Free Online — Images to PDF | PDFtools4u',
     description: 'Convert JPG, JPEG & PNG images to PDF documents instantly. Combine multiple photos into one PDF. Free converter with custom page sizes & margins.',

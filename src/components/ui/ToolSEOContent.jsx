@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { ChevronDown, CheckCircle2, FileText, HelpCircle, Lightbulb, ArrowRight, ShieldCheck, Server, BookOpen } from 'lucide-react';
 import { SEO_CONTENT, CATEGORY_FALLBACKS } from '../../lib/seoContent';
 import { RELATED_TOOLS } from '../../lib/relatedTools';
@@ -139,9 +140,18 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
       {/* Overview & Why Section */}
       <div className="py-8 md:py-10 max-w-4xl mx-auto">
         <h3 className="text-2xl font-bold text-gray-900 mb-4 text-center">Why use our {content.title.split(' ')[0]} tool?</h3>
-        <p className="text-gray-700 leading-relaxed text-lg text-justify">
-          {content.why}
-        </p>
+        <div className="text-gray-700 leading-relaxed text-lg text-justify whitespace-pre-wrap">
+          <ReactMarkdown
+            components={{
+              a: ({ node, ...props }) => <a className="text-blue-600 hover:underline font-medium" {...props} />,
+              p: ({ node, ...props }) => <p className="mb-4 last:mb-0" {...props} />,
+              ul: ({ node, ...props }) => <ul className="list-disc pl-5 mb-4" {...props} />,
+              li: ({ node, ...props }) => <li className="mb-1" {...props} />
+            }}
+          >
+            {content.why}
+          </ReactMarkdown>
+        </div>
       </div>
 
       {/* Global Privacy Trust Banner for all tools */}
