@@ -68,20 +68,8 @@ export default function HtmlToPdf() {
     const toastId = toast.loading('Generating PDF via Canvas...');
 
     try {
-      const iframe = document.createElement('iframe');
-      // Fix #5: JavaScript execution toggle
-      iframe.sandbox = allowJS ? "allow-same-origin allow-scripts" : "allow-same-origin"; 
-      iframe.style.position = 'absolute';
-      iframe.style.width = format === 'a4' ? '794px' : '816px'; 
-      iframe.style.height = '1000px'; // Will expand dynamically
-      iframe.style.left = '-9999px';
-      iframe.style.top = '0';
-      iframe.style.border = 'none';
-      document.body.appendChild(iframe);
-
       const marginMM = getMarginMM();
 
-      // Fix #2 partial: Add page break CSS to avoid splitting elements mid-way
       const pageBreakCSS = `
         p, h1, h2, h3, h4, h5, h6, tr, img, div, table, ul, ol, li {
           page-break-inside: avoid !important;
@@ -94,43 +82,27 @@ export default function HtmlToPdf() {
         }
       `;
 
-      const completeHTML = `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <style>
-              ${pageBreakCSS}
-              ${cssContent}
-            </style>
-          </head>
-          <body>
-            ${htmlContent}
-          </body>
-        </html>
-      `;
+      // Render into an off-screen div (html2canvas cannot capture iframe content)
+      const renderDiv = document.createElement('div');
+      renderDiv.style.position = 'fixed';
+      renderDiv.style.top = '0';
+      renderDiv.style.left = '-9999px';
+      renderDiv.style.width = format === 'a4' ? '794px' : '816px';
+      renderDiv.style.zIndex = '-1';
+      renderDiv.style.background = 'white';
+      renderDiv.innerHTML = `<style>${pageBreakCSS}${cssContent}</style>${htmlContent}`;
+      document.body.appendChild(renderDiv);
 
-      const doc = iframe.contentWindow.document;
-      doc.open();
-      doc.write(completeHTML);
-      doc.close();
+      // Give external resources (fonts, images) a moment to load
+      await new Promise(resolve => setTimeout(resolve, 800));
 
-      await new Promise(resolve => {
-        iframe.onload = () => resolve();
-        setTimeout(resolve, 1500); 
-      });
-
-      const element = doc.body;
-      iframe.style.height = element.scrollHeight + 'px';
-
-      // Fix #1 partial workaround: using html2canvas. 
-      // (The true fix is the Native Print button below)
-      const canvas = await html2canvas(element, {
+      const canvas = await html2canvas(renderDiv, {
         scale: scale,
         useCORS: true,
         logging: false,
-        windowWidth: element.scrollWidth,
-        windowHeight: element.scrollHeight
+        windowWidth: renderDiv.scrollWidth,
+        windowHeight: renderDiv.scrollHeight,
+        scrollY: 0,
       });
 
       const imgData = canvas.toDataURL('image/png');
@@ -155,14 +127,14 @@ export default function HtmlToPdf() {
 
       // Slice the image into multiple pages
       while (heightLeft > 0) {
-        position = heightLeft - imgHeight; 
+        position = -(imgHeight - heightLeft); // offset image upward by already-rendered portion
         pdf.addPage();
         pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
         heightLeft -= pdfHeight;
       }
 
-      pdf.save('html-converted-image.pdf');
-      document.body.removeChild(iframe);
+      pdf.save('html-converted.pdf');
+      document.body.removeChild(renderDiv);
       toast.success('Canvas PDF generated successfully!', { id: toastId });
     } catch (error) {
       console.error(error);
