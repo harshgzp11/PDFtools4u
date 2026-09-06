@@ -5,7 +5,7 @@
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
   <url>
     <loc>https://www.pdftools4u.in</loc>
-    <lastmod>2026-08-16</lastmod>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -17,7 +17,7 @@
   </url>
   <url>
     <loc>https://www.pdftools4u.in/about</loc>
-    <lastmod>2026-08-28</lastmod>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -46,8 +46,14 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.pdftools4u.in/security</loc>
+    <lastmod>2026-09-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.pdftools4u.in/pdf-merge</loc>
-    <lastmod>2026-08-17</lastmod>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -83,7 +89,7 @@
   </url>
   <url>
     <loc>https://www.pdftools4u.in/compress-pdf</loc>
-    <lastmod>2026-08-17</lastmod>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -95,13 +101,13 @@
   </url>
   <url>
     <loc>https://www.pdftools4u.in/pdf-ocr</loc>
-    <lastmod>2026-08-17</lastmod>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.pdftools4u.in/jpg-to-pdf</loc>
-    <lastmod>2026-08-17</lastmod>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -322,6 +328,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.pdftools4u.in/blog/server-side-vs-client-side-processing</loc>
+    <lastmod>2026-09-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.pdftools4u.in/blog/resize-passport-photo-signature-online</loc>
     <lastmod>2026-08-17</lastmod>
     <changefreq>monthly</changefreq>
@@ -528,6 +540,12 @@
   <url>
     <loc>https://www.pdftools4u.in/blog/html-to-pdf-with-css</loc>
     <lastmod>2026-09-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.pdftools4u.in/blog/convert-html-to-multi-page-pdf-page-breaks</loc>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

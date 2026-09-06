@@ -391,6 +391,12 @@ export const SEO_HEAD = {
     h1: 'All PDF & Image Tools',
     keywords: ['all pdf tools', 'pdftools4u all tools', 'free web utilities'],
   },
+  'security': {
+    title: 'Security & Privacy Architecture — 100% Client-Side Processing | PDFtools4u',
+    description: 'Understand how PDFtools4u executes all PDF & image processing locally in your browser memory via WebAssembly. Zero file uploads, zero servers, 100% private.',
+    h1: 'Security & Architecture — Zero Uploads, 100% Client-Side',
+    keywords: ['client-side pdf processing', 'zero upload pdf tools', 'browser wasm privacy', 'pdftools4u security', 'secure pdf converter without upload'],
+  },
 };
 
 // Homepage metadata (used when no tool is active)

@@ -61,7 +61,7 @@ Desktop.ini
 .env.*.local
 !.env.example
 
-# Ignore single test documents dropped in root directory
+# Ignore single test documents dropped in root directory (keep index.html safe)
 /*.pdf
 /*.docx
 /*.pptx
@@ -69,17 +69,39 @@ Desktop.ini
 /*.csv
 /*.txt
 /*.html
+!index.html
 /*.zip
+
+# Test & Deployment Artifacts
 playwright-report/
 test-results/
 .vercel/
+.vercel_build_output/
 .netlify/
-scratch/
-# Temporary Scratch Scripts
-scratch.js
-scratch.cjs
-inject_blog.cjs
 
+# AI Assistants & IDE Tools
+.gemini/
+.agents/
+.cursor/
+.claude/
+
+# Temporary Scratch Scripts & Data Payloads
+scratch/
+scratch*
+tmp/
+temp/
+*.tmp
+*.temp
+*.bak
+*.dmp
+inject_*.cjs
+inject_*.js
+repair_*.cjs
+repair_*.js
 repair.cjs
-blog_payload.json
+inject_blog.cjs
 inject_json.cjs
+blog_payload*.json
+*payload*.json
+test_*.js
+test_*.cjs

@@ -435,11 +435,17 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
           <div className="flex-shrink-0 p-3 bg-emerald-100 rounded-xl">
             <Shield className="w-8 h-8 text-emerald-600" />
           </div>
-          <div className="text-center sm:text-left">
+          <div className="text-center sm:text-left flex-1">
             <h4 className="font-bold text-emerald-900 text-lg">Client-Side Data Privacy Guarantee</h4>
-            <p className="text-emerald-700 text-sm mt-1">
+            <p className="text-emerald-700 text-sm mt-1 mb-3">
               All PDF, image, and document processing occurs 100% locally in your browser memory. No file data is ever transmitted to external servers. Your documents remain strictly on your machine at all times.
             </p>
+            <div className="bg-emerald-100/50 rounded-lg p-3 border border-emerald-200">
+              <p className="text-emerald-800 text-sm font-semibold flex items-center gap-2">
+                <span className="bg-emerald-600 text-white px-2 py-0.5 rounded text-xs">The F12 Challenge</span>
+                Don't trust us? Press F12, open your Network tab, and process a file. You will see zero document data leaving your machine.
+              </p>
+            </div>
           </div>
         </div>
       </section>

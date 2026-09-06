@@ -150,7 +150,7 @@ export default function JpgToPdf() {
 
   // State 2: Workspace View
   return (
-    <div className="flex flex-col lg:flex-row h-full min-h-[70vh] gap-6 animate-in slide-in-from-right-8 duration-500 -mx-6 sm:-mx-8 lg:-mx-8">
+    <div className="flex flex-col lg:flex-row flex-1 min-h-[70vh] gap-6 animate-in slide-in-from-right-8 duration-500 -mx-6 sm:-mx-8 lg:-mx-8">
       {/* Main Workspace Area (Left) */}
       <div className="flex-1 bg-gray-100 rounded-xl lg:rounded-l-none lg:rounded-r-2xl border-y border-r border-gray-200 p-8 relative shadow-inner overflow-y-auto">
         <button 

@@ -95,6 +95,7 @@ const AllTools = lazyWithRetry(() => import('./pages/AllTools'));
 // Legal & Trust
 const AboutUs = lazyWithRetry(() => import('./pages/AboutUs'));
 const ContactUs = lazyWithRetry(() => import('./pages/ContactUs'));
+const SecurityArchitecture = lazyWithRetry(() => import('./pages/SecurityArchitecture'));
 
 // 404 Page
 const NotFound = lazyWithRetry(() => import('./pages/NotFound'));
@@ -175,6 +176,7 @@ const TOOL_COMPONENTS = {
   'about': AboutUs,
   'contact': ContactUs,
   'all-tools': AllTools,
+  'security': SecurityArchitecture,
 };
 
 const PLACEHOLDER_TOOLS = {};
@@ -251,10 +253,10 @@ function App() {
         }} 
         onSelectTool={navigateTo}
         onSearch={(q) => { setSearchQuery(q); navigateTo(null); }}
-        isToolView={!!activeTool && activeTool !== 'blog' && !activeTool.startsWith('blog/') && !['privacy-policy', 'terms-of-service', 'about', 'contact'].includes(activeTool)}
+        isToolView={!!activeTool && activeTool !== 'blog' && !activeTool.startsWith('blog/') && !['privacy-policy', 'terms-of-service', 'about', 'contact', 'security'].includes(activeTool)}
       >
         {activeTool ? (
-          <div className="relative w-full h-full flex flex-col min-h-0">
+          <div className="relative flex-1 w-full flex flex-col">
             <Suspense fallback={<ToolSkeleton />}>
               {activeTool === 'blog' ? (
                 <BlogList onNavigate={navigateTo} />
@@ -281,9 +283,9 @@ function App() {
                     <div 
                       key={toolId}
                       style={{ display: isActive ? 'flex' : 'none' }}
-                      className={isActive ? "flex-1 flex flex-col w-full h-full min-h-0 animate-in fade-in zoom-in-[0.98] duration-300" : ""}
+                      className={isActive ? "flex-1 flex flex-col w-full animate-in fade-in zoom-in-[0.98] duration-300" : ""}
                     >
-                      <div className="flex-shrink-0 min-h-full flex flex-col">
+                      <div className="flex flex-col w-full">
                         {isPlaceholder ? (
                           <PlaceholderTool toolName={PLACEHOLDER_TOOLS[toolId]} />
                         ) : (

@@ -15,14 +15,7 @@ export default function CompressPdf() {
   // Success State
   const [successData, setSuccessData] = useState(null);
 
-  const formatBytes = (bytes, decimals = 2) => {
-    if (!+bytes) return '0 Bytes';
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
-  };
+  const toMB = (bytes, decimals = 2) => `${(bytes / (1024 * 1024)).toFixed(decimals)} MB`;
 
   const handleFile = (newFile) => {
     if (newFile && newFile.type === 'application/pdf') {
@@ -33,6 +26,7 @@ export default function CompressPdf() {
       setTargetSizeMB(Math.max(0.01, parseFloat((sizeMB * 0.5).toFixed(2)))); // default 50%
     }
   };
+
 
   const resetTool = () => {
     setFile(null);
@@ -64,16 +58,16 @@ export default function CompressPdf() {
         originalSize: file.size,
         outputSize: blob.size,
         title: 'PDF Compressed Successfully!',
-        subtitle: 'We significantly reduced your file size.',
+        subtitle: `Compressed to ${toMB(blob.size)} (target: ${targetSizeMB.toFixed(2)} MB).`,
         statsComponent: (
           <div className="flex gap-4 sm:gap-8 text-center">
             <div className="bg-gray-50 px-6 py-4 rounded-xl border border-gray-200 shadow-sm">
               <p className="text-sm font-bold text-gray-500 uppercase tracking-wide">Original</p>
-              <p className="text-2xl font-bold text-gray-800">{formatBytes(file.size)}</p>
+              <p className="text-2xl font-bold text-gray-800">{toMB(file.size)}</p>
             </div>
             <div className="bg-green-50 px-6 py-4 rounded-xl border border-green-200 shadow-sm">
               <p className="text-sm font-bold text-green-600 uppercase tracking-wide">Compressed</p>
-              <p className="text-2xl font-bold text-green-800">{formatBytes(blob.size)}</p>
+              <p className="text-2xl font-bold text-green-800">{toMB(blob.size)}</p>
             </div>
             <div className="bg-indigo-50 px-6 py-4 rounded-xl border border-indigo-200 shadow-sm">
               <p className="text-sm font-bold text-indigo-600 uppercase tracking-wide">Saved</p>

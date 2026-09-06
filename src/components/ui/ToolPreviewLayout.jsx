@@ -1,5 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { RefreshCw, FileText, CheckCircle, Download, ArrowLeft, Share2, ShieldCheck, ThumbsUp, ThumbsDown, MessageSquareCheck } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { 
+  RefreshCw, FileText, CheckCircle, Download, ArrowLeft, Share2, ShieldCheck, 
+  ThumbsUp, ThumbsDown, MessageSquareCheck, ZoomIn, ZoomOut, RotateCcw, 
+  PanelLeft, PanelLeftClose, ChevronUp, ChevronDown, Layers 
+} from 'lucide-react';
 import { toast } from 'sonner';
 import DragDropZone from './DragDropZone';
 import { getPdfThumbnails } from '../../lib/pdfRenderer';
@@ -32,6 +36,13 @@ export default function ToolPreviewLayout({
   const [feedbackText, setFeedbackText] = useState('');
   const [feedbackReason, setFeedbackReason] = useState(null); // 'other_issue' or null
   const [submittedRating, setSubmittedRating] = useState(null); // 'thumbs_up' or 'thumbs_down'
+
+  // Viewer controls & sidebar state
+  const [activePage, setActivePage] = useState(1);
+  const [zoom, setZoom] = useState(1.0);
+  const [showSidebar, setShowSidebar] = useState(true);
+  const pageRefs = useRef([]);
+  const canvasContainerRef = useRef(null);
 
   // Track tool_start
   useEffect(() => {
@@ -120,6 +131,9 @@ export default function ToolPreviewLayout({
 
     const loadPreview = async () => {
       setIsLoadingPreview(true);
+      setActivePage(1);
+      setZoom(1.0);
+      pageRefs.current = [];
       try {
         if (file.type === 'application/pdf') {
           if (gridMode) {
@@ -164,6 +178,55 @@ export default function ToolPreviewLayout({
       }, 50);
     }
   }, []);
+
+  const thumbnailRefs = useRef([]);
+
+  const scrollToPage = (pageNum) => {
+    setActivePage(pageNum);
+    const container = canvasContainerRef.current;
+    const target = pageRefs.current[pageNum - 1];
+    if (container && target) {
+      const containerRect = container.getBoundingClientRect();
+      const targetRect = target.getBoundingClientRect();
+      const scrollOffset = targetRect.top - containerRect.top + container.scrollTop - 24;
+      container.scrollTo({ top: Math.max(0, scrollOffset), behavior: 'smooth' });
+    }
+  };
+
+  // Scroll spy: highlight active page based on scroll position in canvas container
+  useEffect(() => {
+    const container = canvasContainerRef.current;
+    if (!container || (!thumbnails.length && !previewImage)) return;
+
+    const handleScroll = () => {
+      const containerRect = container.getBoundingClientRect();
+      let closestPage = 1;
+      let minDistance = Infinity;
+
+      pageRefs.current.forEach((el, index) => {
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const distance = Math.abs(rect.top - (containerRect.top + 60));
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestPage = index + 1;
+        }
+      });
+
+      setActivePage(closestPage);
+    };
+
+    container.addEventListener('scroll', handleScroll, { passive: true });
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, [thumbnails, previewImage]);
+
+  // Keep active thumbnail in view in the sidebar
+  useEffect(() => {
+    const thumbEl = thumbnailRefs.current[activePage - 1];
+    if (thumbEl && showSidebar) {
+      thumbEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }, [activePage, showSidebar]);
 
   const handleShare = async () => {
     if (successData && successData.url && navigator.canShare) {
@@ -220,6 +283,8 @@ export default function ToolPreviewLayout({
     document.body.removeChild(link);
   };
 
+  const totalPages = thumbnails.length > 0 ? thumbnails.length : (previewImage ? 1 : 0);
+
   const renderPreviewContent = () => {
     if (customPreviewNode) {
       return typeof customPreviewNode === 'function' ? customPreviewNode({ thumbnails, previewImage }) : customPreviewNode;
@@ -227,7 +292,7 @@ export default function ToolPreviewLayout({
 
     if (gridMode && renderGridItem) {
       return (
-        <div className="w-full flex flex-col p-4 pb-8">
+        <div className="w-full h-full overflow-y-auto custom-scrollbar flex flex-col p-4 pb-8">
           <div className={getDynamicGridClass(thumbnails.length) + " w-full"}>
             {thumbnails.map((thumb, idx, arr) => renderGridItem(thumb, idx, arr))}
           </div>
@@ -235,51 +300,196 @@ export default function ToolPreviewLayout({
       );
     }
 
-    if (thumbnails && thumbnails.length > 0) {
-      return (
-        <div className="w-full flex flex-col gap-6 items-center p-4 pb-8">
-          {thumbnails.map((thumb, idx) => (
-            <div key={idx} className="relative shadow-sm bg-white p-2 rounded-xl border border-gray-200 shrink-0 w-full">
-              {previewOverlay && thumbnails.length === 1 ? previewOverlay(thumb.dataUrl) : (
-                <img 
-                  src={thumb.dataUrl} 
-                  alt={`Page ${idx + 1}`} 
-                  className="w-full object-contain block"
-                />
-              )}
-              {thumbnails.length > 1 && (
-                <div className="absolute bottom-4 right-4 bg-gray-900/70 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-lg font-bold shadow-sm">
-                  {idx + 1}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      );
-    }
+    // Standard document / image viewer with sidebar and toolbar
+    const pageItems = thumbnails.length > 0 
+      ? thumbnails 
+      : (previewImage ? [{ id: 'page-0', dataUrl: previewImage }] : []);
 
     return (
-      <div className="relative shadow-sm bg-white w-full flex justify-center items-start p-4">
-        {previewOverlay ? previewOverlay(previewImage) : (
-          <img 
-            src={previewImage} 
-            alt="Preview" 
-            className="w-full object-contain block"
-          />
-        )}
+      <div className="w-full h-full flex flex-col min-h-0 bg-white select-none">
+        {/* Document Viewer Top Toolbar */}
+        <div className="h-12 bg-white border-b border-gray-200 px-3 sm:px-4 flex items-center justify-between shrink-0 z-20">
+          {/* Left: Sidebar toggle & Page count */}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setShowSidebar(s => !s)}
+              className={`p-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm ${
+                showSidebar 
+                  ? 'bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100' 
+                  : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
+              }`}
+              title={showSidebar ? "Hide thumbnails sidebar" : "Show thumbnails sidebar"}
+            >
+              {showSidebar ? <PanelLeftClose className="w-4 h-4 text-blue-600" /> : <PanelLeft className="w-4 h-4 text-gray-600" />}
+              <span className="hidden sm:inline">{showSidebar ? "Hide Sidebar" : "Sidebar"}</span>
+            </button>
+
+            <div className="h-4 w-px bg-gray-200 mx-1 hidden sm:block" />
+
+            <span className="text-xs font-bold text-gray-700 bg-gray-100/90 border border-gray-200/80 px-2.5 py-1 rounded-md">
+              Page {activePage} of {totalPages || 1}
+            </span>
+          </div>
+
+          {/* Right: Page Navigation & Zoom controls */}
+          <div className="flex items-center gap-1 sm:gap-2">
+            {/* Prev / Next Page buttons */}
+            {totalPages > 1 && (
+              <div className="flex items-center bg-gray-100 rounded-lg p-0.5 border border-gray-200/60">
+                <button
+                  type="button"
+                  onClick={() => scrollToPage(Math.max(1, activePage - 1))}
+                  disabled={activePage <= 1}
+                  className="p-1 text-gray-600 hover:text-gray-900 disabled:opacity-30 disabled:hover:text-gray-600 rounded transition-colors"
+                  title="Previous page"
+                >
+                  <ChevronUp className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => scrollToPage(Math.min(totalPages, activePage + 1))}
+                  disabled={activePage >= totalPages}
+                  className="p-1 text-gray-600 hover:text-gray-900 disabled:opacity-30 disabled:hover:text-gray-600 rounded transition-colors"
+                  title="Next page"
+                >
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+
+            {/* Zoom Controls */}
+            <div className="flex items-center bg-gray-100 rounded-lg p-0.5 border border-gray-200/60">
+              <button
+                type="button"
+                onClick={() => setZoom(z => Math.max(0.5, +(z - 0.2).toFixed(1)))}
+                disabled={zoom <= 0.5}
+                className="p-1 hover:bg-white text-gray-600 hover:text-gray-900 rounded disabled:opacity-30 transition-all shadow-none hover:shadow-sm"
+                title="Zoom out"
+              >
+                <ZoomOut className="w-4 h-4" />
+              </button>
+              <span className="px-1.5 text-xs font-bold text-gray-700 min-w-[42px] text-center">
+                {Math.round(zoom * 100)}%
+              </span>
+              <button
+                type="button"
+                onClick={() => setZoom(z => Math.min(2.5, +(z + 0.2).toFixed(1)))}
+                disabled={zoom >= 2.5}
+                className="p-1 hover:bg-white text-gray-600 hover:text-gray-900 rounded disabled:opacity-30 transition-all shadow-none hover:shadow-sm"
+                title="Zoom in"
+              >
+                <ZoomIn className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setZoom(1.0)}
+                className="p-1 hover:bg-white text-gray-500 hover:text-gray-900 rounded transition-all ml-0.5"
+                title="Reset zoom to 100%"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Viewer Body: Left Sidebar + Main Canvas */}
+        <div className="flex flex-1 min-h-0 overflow-hidden relative">
+          {/* Left Thumbnail Sidebar */}
+          {showSidebar && (
+            <div className="w-40 sm:w-48 bg-gray-50 border-r border-gray-200 flex flex-col h-full shrink-0 animate-in slide-in-from-left duration-200 shadow-[inset_-2px_0_8px_rgba(0,0,0,0.02)] z-10">
+              <div className="p-3 border-b border-gray-200 flex items-center justify-between bg-white shrink-0">
+                <div className="flex items-center gap-1.5">
+                  <Layers className="w-3.5 h-3.5 text-blue-600" />
+                  <span className="text-xs font-bold text-gray-700 tracking-wider uppercase">Pages</span>
+                </div>
+                <span className="text-[11px] font-extrabold bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
+                  {totalPages || 1}
+                </span>
+              </div>
+
+              <div className="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-3">
+                {pageItems.map((item, idx) => {
+                  const isCurrent = activePage === idx + 1;
+                  return (
+                    <button
+                      key={item.id || idx}
+                      ref={el => (thumbnailRefs.current[idx] = el)}
+                      type="button"
+                      onClick={() => scrollToPage(idx + 1)}
+                      className={`w-full group text-left rounded-xl transition-all p-1.5 flex flex-col items-center gap-1.5 cursor-pointer ${
+                        isCurrent 
+                          ? 'bg-blue-50/90 border-2 border-blue-500 shadow-md ring-2 ring-blue-400/20' 
+                          : 'bg-white border border-gray-200 hover:border-blue-300 hover:bg-blue-50/30 shadow-sm'
+                      }`}
+                    >
+                      <div className="w-full aspect-[1/1.35] bg-white rounded-lg overflow-hidden border border-gray-100 flex items-center justify-center p-1 relative shadow-inner">
+                        <img 
+                          src={item.dataUrl} 
+                          alt={`Thumbnail ${idx + 1}`} 
+                          className="w-full h-full object-contain pointer-events-none"
+                          loading="lazy"
+                        />
+                      </div>
+                      <span className={`text-[11px] font-bold ${isCurrent ? 'text-blue-600' : 'text-gray-500 group-hover:text-gray-700'}`}>
+                        Page {idx + 1}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Main Visual Canvas Area */}
+          <div 
+            ref={canvasContainerRef}
+            className="flex-1 h-full min-h-0 overflow-y-auto custom-scrollbar p-4 md:p-8 bg-slate-100/75 flex flex-col items-center gap-6"
+          >
+            <div 
+              className="flex flex-col items-center gap-6 transition-transform duration-200 origin-top w-full"
+              style={{ 
+                transform: `scale(${zoom})`,
+                transformOrigin: 'top center',
+              }}
+            >
+              {pageItems.map((item, idx) => (
+                <div 
+                  key={item.id || idx}
+                  ref={el => (pageRefs.current[idx] = el)}
+                  data-page={idx + 1}
+                  className="relative bg-white p-2 sm:p-3 rounded-xl border border-gray-200 shadow-md hover:shadow-lg transition-shadow shrink-0 w-full max-w-2xl mx-auto"
+                >
+                  {previewOverlay && pageItems.length === 1 ? previewOverlay(item.dataUrl) : (
+                    <img 
+                      src={item.dataUrl} 
+                      alt={`Page ${idx + 1}`} 
+                      className="w-full object-contain block rounded-lg pointer-events-none"
+                    />
+                  )}
+                  {pageItems.length > 1 && (
+                    <div className="absolute bottom-4 right-4 bg-gray-900/75 backdrop-blur-md text-white text-xs px-2.5 py-1 rounded-lg font-bold shadow-md">
+                      {idx + 1} / {pageItems.length}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     );
   };
 
   return (
-    <div className="flex-1 w-full mx-auto animate-in fade-in flex flex-col h-full min-h-0">
+    <div className="w-full mx-auto animate-in fade-in flex flex-col">
       <div className="text-center space-y-1.5 flex-shrink-0 mb-4">
         <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">{title}</h2>
         <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">{description}</p>
       </div>
 
       {!file && (
-        <div className="flex-1 flex flex-col items-center justify-center min-h-0">
+        <div className="flex flex-col items-center justify-center min-h-[60vh]">
           <DragDropZone 
             accept={accept}
             onFileSelect={onFileSelect}
@@ -291,7 +501,7 @@ export default function ToolPreviewLayout({
       )}
 
       {file && isLoadingPreview && !successData && (
-        <div className="flex-1 flex flex-col items-center justify-center p-10 bg-gray-50 rounded-2xl border border-gray-100 min-h-0">
+        <div className="flex flex-col items-center justify-center p-10 bg-gray-50 rounded-2xl border border-gray-100 min-h-[60vh]">
           <RefreshCw className="w-8 h-8 text-blue-500 animate-spin mb-3" />
           <p className="text-gray-600 font-medium text-sm">
             {gridMode ? "Rendering PDF pages..." : "Loading visual preview..."}
@@ -300,9 +510,9 @@ export default function ToolPreviewLayout({
       )}
 
       {file && (previewImage || gridMode || customPreviewNode) && !successData && !isLoadingPreview && (
-        <div className="flex flex-col lg:flex-row gap-4 flex-1 min-h-0 overflow-hidden w-full h-full">
-          {/* Interactive Preview Canvas - scrollable container */}
-          <div className="w-full lg:w-2/3 bg-slate-100/70 rounded-2xl border border-gray-200 h-full min-h-0 overflow-y-auto custom-scrollbar">
+        <div className="flex flex-col lg:flex-row gap-4 w-full" style={{minHeight: '620px', maxHeight: '880px', height: 'min(880px, calc(100vh - 180px))'}}>
+          {/* Interactive Preview Canvas with Sidebar */}
+          <div className="w-full lg:w-2/3 bg-white rounded-2xl border border-gray-200 h-full min-h-0 overflow-hidden flex flex-col shadow-sm">
             {renderPreviewContent()}
           </div>
 
@@ -344,7 +554,7 @@ export default function ToolPreviewLayout({
 
       {/* Success State Overlay */}
       {successData && (
-        <div className="flex-1 flex flex-col items-center justify-center min-h-0 bg-white border border-gray-200 rounded-2xl p-8 shadow-sm text-center animate-in zoom-in-95 duration-300">
+        <div className="flex flex-col items-center justify-center min-h-[60vh] bg-white border border-gray-200 rounded-2xl p-8 shadow-sm text-center animate-in zoom-in-95 duration-300">
           <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
             <CheckCircle className="w-8 h-8 text-green-600" />
           </div>

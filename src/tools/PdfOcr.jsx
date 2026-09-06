@@ -401,8 +401,11 @@ export default function PdfOcr() {
             <AlertTriangle className="w-5 h-5 shrink-0" />
             <h4 className="font-bold text-sm">Important Notice</h4>
           </div>
+          <p className="text-yellow-800 text-xs font-medium leading-relaxed mb-2">
+            First-time use: Downloading OCR engine (approx. 25MB) which will be cached locally for future use.
+          </p>
           <p className="text-yellow-800 text-xs font-medium leading-relaxed">
-            First-time use: Downloading OCR engine (approx. 25MB) which will be cached locally for future use. Processing may be slow on older devices or very large documents.
+            <strong className="font-bold">Privacy Note:</strong> Because this processes locally for your privacy (zero uploads), performance depends entirely on your device's memory. Large files may process slower than server-side alternatives.
           </p>
         </div>
       </div>

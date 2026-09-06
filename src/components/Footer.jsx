@@ -78,6 +78,7 @@ export default function Footer({ onSelectTool }) {
             <a href="/about" onClick={(e) => { e.preventDefault(); onSelectTool('about'); }} className="hover:text-white transition-colors cursor-pointer">About Us</a>
             <a href="/contact" onClick={(e) => { e.preventDefault(); onSelectTool('contact'); }} className="hover:text-white transition-colors cursor-pointer">Contact Us</a>
             <a href="/blog" onClick={(e) => { e.preventDefault(); onSelectTool('blog'); }} className="hover:text-white transition-colors cursor-pointer">Blog</a>
+            <a href="/security" onClick={(e) => { e.preventDefault(); onSelectTool('security'); }} className="hover:text-white transition-colors cursor-pointer text-emerald-400">Security & Architecture</a>
             <a href="mailto:support@pdftools4u.in" className="hover:text-white transition-colors cursor-pointer font-medium text-gray-400">support@pdftools4u.in</a>
             <div className="flex items-center gap-1.5 ml-4">
               <Globe className="w-4 h-4" aria-hidden="true" />

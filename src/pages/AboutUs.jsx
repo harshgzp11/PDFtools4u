@@ -39,16 +39,23 @@ export default function AboutUs() {
           </div>
 
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight mb-6">
-            About <span className="text-blue-600">PDFtools4u</span>: India’s Fast, Secure & Free Web Utility Hub
+            The Story Behind <span className="text-blue-600">PDFtools4u</span>
           </h1>
 
-          <p className="text-lg text-gray-600 leading-relaxed">
-            Welcome to <strong className="text-gray-900 font-bold">PDFtools4u</strong>, a single, unified web utility platform designed to simplify your digital workflow. Whether you are an Indian student navigating strict government exam upload portals, a freelancer formatting graphics, or a software engineer debugging code, our goal is to provide elite-level <strong className="text-gray-900 font-bold">Free online web utilities</strong> completely free of charge—with zero hidden costs, subscriptions, or watermarks.
-          </p>
-
-          <p className="text-base text-gray-600 leading-relaxed mt-4">
-            We bridge the gap between complex file processing and casual daily web usage, giving you premium-grade features completely accessible from any mobile device or desktop browser.
-          </p>
+          <div className="text-left bg-gray-50 p-6 sm:p-8 rounded-2xl border border-gray-200">
+            <p className="text-lg text-gray-700 leading-relaxed mb-4">
+              Hi, I'm the creator of <strong className="text-gray-900 font-bold">PDFtools4u</strong>. 
+            </p>
+            <p className="text-base text-gray-600 leading-relaxed mb-4">
+              I built this platform out of sheer frustration. I was tired of PDF tools demanding a $9 monthly subscription just to compress a simple file. I was tired of websites forcing me to upload my sensitive documents—like my tax forms and ID cards—to unknown, remote servers just to merge two pages together.
+            </p>
+            <p className="text-base text-gray-600 leading-relaxed mb-4">
+              I realized that with modern web technologies, we don't need servers for this anymore. I engineered PDFtools4u so that every single tool runs <strong className="text-gray-900 font-bold">100% locally in your browser's memory</strong>. It’s faster, completely private, and it will always be free.
+            </p>
+            <p className="text-base text-gray-600 leading-relaxed font-semibold">
+              No hidden costs, no subscriptions, no watermarks, and zero file uploads.
+            </p>
+          </div>
         </header>
 
         {/* 3 Core Categories Grid - Matching Dashboard Tool Cards Style */}

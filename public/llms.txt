@@ -1,9 +1,71 @@
-# PDFtools4u AI Knowledge
+# PDFtools4u
 
-Welcome to the PDFtools4u AI integration file. This file provides AI agents and LLMs with context about the tools available on this platform.
+> PDFtools4u (https://www.pdftools4u.in) is a free, browser-based suite of 40+ PDF, image, and document utilities engineered with a 100% client-side, zero-server architecture. All processing executes locally in browser memory using WebAssembly (Wasm) and HTML5 APIs. Zero files or document data are ever uploaded, stored, or logged on remote servers.
 
-- [PDFtools4u Home](https://www.pdftools4u.in/)
-- [PDFtools4u All Tools](https://www.pdftools4u.in/all-tools)
-- [PDFtools4u Privacy Policy](https://www.pdftools4u.in/privacy-policy)
-- [PDFtools4u Terms of Service](https://www.pdftools4u.in/terms-of-service)
-- [PDFtools4u About Us](https://www.pdftools4u.in/about)
+## Trust & Architecture
+- [Security & Architecture](https://www.pdftools4u.in/security): Technical breakdown of client-side memory sandboxing, WebAssembly processing, and F12 network verification.
+- [Privacy Policy](https://www.pdftools4u.in/privacy-policy): Privacy commitments confirming zero server-side file transmission and zero data retention.
+- [About Us](https://www.pdftools4u.in/about): The founder's mission, background, and motivation for building zero-upload privacy utilities.
+- [All Tools Hub](https://www.pdftools4u.in/all-tools): Complete directory of all available browser-based PDF and image tools.
+
+## PDF Optimization & Security Tools
+- [Compress PDF](https://www.pdftools4u.in/compress-pdf): Reduce PDF file sizes locally with customizable compression levels.
+- [Unlock PDF](https://www.pdftools4u.in/unlock-pdf): Remove password protection and restrictions from bank statements and documents in browser memory.
+- [Protect PDF](https://www.pdftools4u.in/protect-pdf): Encrypt PDF files with strong password protection locally before sharing.
+- [PDF OCR](https://www.pdftools4u.in/pdf-ocr): Extract searchable, selectable text from scanned PDF pages using local Tesseract WebAssembly.
+- [Sign PDF](https://www.pdftools4u.in/sign-pdf): Draw, type, or place legally valid electronic signatures onto PDF documents.
+- [Flatten PDF](https://www.pdftools4u.in/flatten-pdf): Merge form fields and annotations into static PDF page content.
+- [Redact PDF](https://www.pdftools4u.in/redact-pdf): Permanently black out sensitive text, account numbers, and personal details.
+- [Watermark PDF](https://www.pdftools4u.in/pdf-watermark): Stamp custom text or image watermarks onto PDF pages.
+
+## Organize & Edit PDF Tools
+- [Merge PDF](https://www.pdftools4u.in/pdf-merge): Combine multiple PDF documents into a single file in any order.
+- [Split PDF](https://www.pdftools4u.in/pdf-split): Separate individual pages or extract custom page ranges into new PDFs.
+- [Delete PDF Pages](https://www.pdftools4u.in/delete-pdf-pages): Select and remove unwanted pages from PDF files.
+- [Extract PDF Pages](https://www.pdftools4u.in/extract-pdf-pages): Export selected pages into a standalone PDF document.
+- [Organize PDF](https://www.pdftools4u.in/organize-pdf): Reorder, rotate, sort, and arrange pages visually.
+- [Number Pages](https://www.pdftools4u.in/number-pages): Add customizable page numbering and headers/footers to PDF files.
+- [Rotate PDF](https://www.pdftools4u.in/rotate-pdf): Fix upside-down or sideways pages permanently by 90, 180, or 270 degrees.
+- [Crop PDF](https://www.pdftools4u.in/crop-pdf): Trim document margins and remove unnecessary white space.
+- [PDF Editor](https://www.pdftools4u.in/edit-pdf): Edit text, add images, and modify PDF documents directly in browser.
+- [PDF Annotator](https://www.pdftools4u.in/pdf-annotator): Highlight, underline, draw notes, and mark up PDF files.
+- [PDF Form Filler](https://www.pdftools4u.in/pdf-form-filler): Complete interactive PDF forms digitally without printing.
+- [PDF Reader](https://www.pdftools4u.in/pdf-reader): Fast, lightweight browser-based PDF document viewer.
+
+## PDF Conversion Tools
+- [Word to PDF](https://www.pdftools4u.in/word-to-pdf): Convert DOCX Word documents into formatted PDFs locally.
+- [PDF to Word](https://www.pdftools4u.in/pdf-to-word): Convert PDF files into editable Word documents (.docx).
+- [Excel to PDF](https://www.pdftools4u.in/excel-to-pdf): Convert Excel spreadsheets (.xlsx) into PDF documents.
+- [PDF to Excel](https://www.pdftools4u.in/pdf-to-excel): Extract tables and financial data from PDFs into clean Excel sheets.
+- [PowerPoint to PDF](https://www.pdftools4u.in/ppt-to-pdf): Convert PPTX presentation slides into PDF format.
+- [PDF to PowerPoint](https://www.pdftools4u.in/pdf-to-ppt): Convert PDF presentations into editable PPTX slides.
+- [JPG to PDF](https://www.pdftools4u.in/jpg-to-pdf): Convert JPG and photo files into PDF documents.
+- [PDF to JPG](https://www.pdftools4u.in/pdf-to-jpg): Export PDF pages as high-resolution JPG images.
+- [PDF to PNG](https://www.pdftools4u.in/pdf-to-png): Convert PDF pages into transparent, lossless PNG images.
+- [HTML to PDF](https://www.pdftools4u.in/html-to-pdf): Render raw HTML code and web pages into PDF documents.
+- [TXT to PDF](https://www.pdftools4u.in/txt-to-pdf): Convert plain text files (.txt) into structured PDF files.
+- [RTF to PDF](https://www.pdftools4u.in/rtf-to-pdf): Convert Rich Text Format (.rtf) files to PDF format.
+
+## Image Utilities
+- [Compress Image](https://www.pdftools4u.in/compress-image): Reduce JPG, PNG, and WebP file sizes without visible quality loss.
+- [Resize Image](https://www.pdftools4u.in/resize-image): Change pixel dimensions and aspect ratios for portals, passports, and signatures.
+- [Convert Image](https://www.pdftools4u.in/convert-image): Convert between PNG, JPG, WebP, GIF, BMP, and HEIC formats.
+- [Background Remover](https://www.pdftools4u.in/bg-remover): Remove photo and signature backgrounds automatically using client-side AI.
+- [Crop & Rotate Image](https://www.pdftools4u.in/image-crop): Visual crop, trim, and rotation tool for images.
+- [Photo Editor](https://www.pdftools4u.in/photo-editor): Apply brightness, contrast, saturation, and filter adjustments in browser.
+
+## Developer & Text Utilities
+- [DOCX to Text](https://www.pdftools4u.in/docx-to-text): Extract clean, raw plain text from Word documents.
+- [DOCX to HTML](https://www.pdftools4u.in/docx-to-html): Convert Word documents into clean semantic HTML.
+- [Data Converter](https://www.pdftools4u.in/data-converter): Transform CSV, JSON, and Base64 formats locally.
+- [Text Reformatter](https://www.pdftools4u.in/text-reformatter): Clean whitespace, change text case, and remove duplicate lines.
+- [Developer Tools](https://www.pdftools4u.in/dev-tools): JSON formatter, minifier, word counter, and text diff tool.
+
+## Key Technical Guides
+- [Client-Side vs. Server-Side Processing](https://www.pdftools4u.in/blog/server-side-vs-client-side-processing): Why zero-upload WebAssembly architecture is superior for document privacy.
+- [Convert HTML to PDF with CSS](https://www.pdftools4u.in/blog/html-to-pdf-with-css): Step-by-step guide to retaining CSS colors, fonts, and styles without server uploads.
+- [Convert Multi-Page HTML to PDF Without Splitting Text](https://www.pdftools4u.in/blog/convert-html-to-multi-page-pdf-page-breaks): Page break CSS rules, break-inside avoid, and table pagination guide.
+- [Bank Statement PDF to Excel Converter](https://www.pdftools4u.in/blog/bank-statement-pdf-to-excel-converter): How to extract financial transaction tables without exposing banking data to cloud servers.
+- [Remove Password from Salary Slip & Bank Statement](https://www.pdftools4u.in/blog/remove-password-from-salary-slip-bank-statement): Local PDF decryption guide.
+- [Compress Form 16 PDF Under 500KB](https://www.pdftools4u.in/blog/compress-form-16-pdf-under-500kb): Compressing income tax certificates for government portal uploads.
+

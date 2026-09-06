@@ -102,6 +102,50 @@ function generateStaticRoutes() {
       html = html.replace('</head>', `  ${canonicalTag}\n  </head>`);
     }
 
+    // Inject FAQ Schema for /security route
+    if (route === '/security') {
+      const securityFaqSchema = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How does pdftools4u.in process documents without uploading them to a remote server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Our platform utilizes a client-side architecture powered by WebAssembly (Wasm) and modern JavaScript engines. When you select a document, it is loaded directly into your browser's local sandbox memory using the HTML5 File API. All conversions, compression, and edits execute directly on your device's CPU—zero document data or metadata is ever transmitted to an external server."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is pdftools4u.in compliant with corporate data regulations like GDPR and HIPAA?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Because PDFtools4u operates entirely on your local machine with zero server uploads, we never receive, store, or transmit your documents or Personally Identifiable Information (PII). By eliminating third-party data processing and cloud storage, using our tools avoids data processor liabilities and supports GDPR, HIPAA, and CCPA privacy standards by design (Privacy by Architecture)."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does using a browser-based PDF converter reduce file conversion speeds or output quality?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. Local WebAssembly processing eliminates slow network upload and download bottlenecks. Conversions begin instantly without waiting in remote server queues, delivering full-fidelity output while utilizing your device's native computing performance."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Are my password-protected and encrypted PDFs safe from interception here?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Decryption and encryption occur completely inside your browser's private memory sandbox. Your master passwords and document contents are never transmitted across the network, eliminating the transit security liabilities inherent in traditional server-side conversion services."
+            }
+          }
+        ]
+      };
+      const schemaTag = `  <script type="application/ld+json">\n${JSON.stringify(securityFaqSchema, null, 2)}\n  </script>`;
+      html = html.replace('</head>', `${schemaTag}\n  </head>`);
+    }
+
     // Handle saving the file
     // Instead of creating a folder with index.html, we create a direct .html file
     // e.g., /resize-image -> resize-image.html

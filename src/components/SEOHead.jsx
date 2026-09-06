@@ -82,7 +82,7 @@ export default function SEOHead({ activeTool }) {
     const isBlogList = activeTool === 'blog';
     const isBlogPost = activeTool && activeTool.startsWith('blog/');
     const isBlogRoute = isBlogList || isBlogPost;
-    const isStaticPage = ['privacy', 'terms', 'about', 'contact'].includes(activeTool);
+    const isStaticPage = ['privacy', 'terms', 'about', 'contact', 'security'].includes(activeTool);
     const isToolPage = activeTool && !isBlogRoute && !isStaticPage;
     const isHomepage = !activeTool;
 
@@ -452,6 +452,7 @@ export default function SEOHead({ activeTool }) {
         'contact': 'Contact Us',
         'privacy': 'Privacy Policy',
         'terms': 'Terms of Service',
+        'security': 'Security & Architecture',
       };
 
       addJsonLd({
