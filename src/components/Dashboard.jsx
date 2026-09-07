@@ -22,6 +22,12 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
     }
   }, [defaultTab]);
 
+  const handleLinkClick = (e, route) => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+    e.preventDefault();
+    onSelectTool(route);
+  };
+
   // Maintain focus on search input when switching views
   useEffect(() => {
     const wasTyping = previousSearchRef.current.length > 0;
@@ -84,17 +90,18 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
             {filteredTools.map(tool => {
               const Icon = tool.icon;
               return (
-                <div 
+                <a 
                   key={tool.id} 
-                  onClick={() => onSelectTool(tool.id)}
+                  href={`/${tool.id}`}
+                  onClick={(e) => handleLinkClick(e, tool.id)}
                   className="group bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 hover:shadow-xl hover:border-blue-200 hover:-translate-y-1.5 transition-all duration-300 cursor-pointer flex flex-col items-center text-center h-full"
                 >
                   <div className={`p-4 rounded-2xl mb-5 ${tool.bg} ${tool.color} group-hover:scale-110 transition-transform duration-300`}>
-                    {Icon ? <Icon className="w-10 h-10 stroke-[1.5]" /> : <div className="w-10 h-10 bg-red-500 rounded-full animate-pulse" />}
+                    {Icon ? <Icon className="w-10 h-10 stroke-[1.5]" aria-hidden="true" /> : <div className="w-10 h-10 bg-red-500 rounded-full animate-pulse" />}
                   </div>
                   <h3 className="font-bold text-xl text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">{tool.name}</h3>
                   <p className="text-gray-500 text-sm leading-relaxed mt-auto">{tool.description}</p>
-                </div>
+                </a>
               );
             })}
           </div>
@@ -165,12 +172,13 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
               >
                 Explore All Tools <ArrowRight className="w-5 h-5" />
               </button>
-              <button
-                onClick={() => onSelectTool('pdf-converter')}
+              <a
+                href="/pdf-converter"
+                onClick={(e) => handleLinkClick(e, 'pdf-converter')}
                 className="px-6 py-3.5 bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 rounded-xl font-semibold text-base shadow-xs transition-all flex items-center gap-2"
               >
-                Universal Converter <Zap className="w-4 h-4 text-amber-500" />
-              </button>
+                Universal Converter <Zap className="w-4 h-4 text-amber-500" aria-hidden="true" />
+              </a>
             </div>
 
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-6 gap-y-2 text-xs font-medium text-gray-500 pt-1">
@@ -186,106 +194,112 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               
               {/* Tool Card 1: PDF Converter */}
-              <div 
-                onClick={() => onSelectTool('pdf-converter')}
+              <a 
+                href="/pdf-converter"
+                onClick={(e) => handleLinkClick(e, 'pdf-converter')}
                 className="group bg-blue-50/70 hover:bg-blue-50 border border-blue-100/80 rounded-2xl p-5 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer flex flex-col justify-between h-40"
               >
                 <div className="w-11 h-11 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
-                  <ArrowLeftRight className="w-5 h-5" />
+                  <ArrowLeftRight className="w-5 h-5" aria-hidden="true" />
                 </div>
                 <div>
                   <h3 className="font-bold text-gray-900 text-base group-hover:text-blue-600 transition-colors flex items-center justify-between">
                     PDF Converter
-                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all" />
+                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all" aria-hidden="true" />
                   </h3>
                   <p className="text-gray-500 text-xs mt-1 line-clamp-2">Convert PDF to Word, Excel, PPT & Images</p>
                 </div>
-              </div>
+              </a>
 
               {/* Tool Card 2: Compress PDF */}
-              <div 
-                onClick={() => onSelectTool('compress-pdf')}
+              <a 
+                href="/compress-pdf"
+                onClick={(e) => handleLinkClick(e, 'compress-pdf')}
                 className="group bg-rose-50/70 hover:bg-rose-50 border border-rose-100/80 rounded-2xl p-5 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer flex flex-col justify-between h-40"
               >
                 <div className="w-11 h-11 rounded-xl bg-rose-600 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
-                  <Minimize className="w-5 h-5" />
+                  <Minimize className="w-5 h-5" aria-hidden="true" />
                 </div>
                 <div>
                   <h3 className="font-bold text-gray-900 text-base group-hover:text-rose-600 transition-colors flex items-center justify-between">
                     Compress PDF
-                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-rose-600 group-hover:translate-x-0.5 transition-all" />
+                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-rose-600 group-hover:translate-x-0.5 transition-all" aria-hidden="true" />
                   </h3>
                   <p className="text-gray-500 text-xs mt-1 line-clamp-2">Reduce document size while maintaining quality</p>
                 </div>
-              </div>
+              </a>
 
               {/* Tool Card 3: Edit PDF & Sign */}
-              <div 
-                onClick={() => onSelectTool('edit-pdf')}
+              <a 
+                href="/edit-pdf"
+                onClick={(e) => handleLinkClick(e, 'edit-pdf')}
                 className="group bg-amber-50/70 hover:bg-amber-50 border border-amber-100/80 rounded-2xl p-5 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer flex flex-col justify-between h-40"
               >
                 <div className="w-11 h-11 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
-                  <PenTool className="w-5 h-5" />
+                  <PenTool className="w-5 h-5" aria-hidden="true" />
                 </div>
                 <div>
                   <h3 className="font-bold text-gray-900 text-base group-hover:text-amber-600 transition-colors flex items-center justify-between">
                     Edit & Sign PDF
-                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-amber-600 group-hover:translate-x-0.5 transition-all" />
+                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-amber-600 group-hover:translate-x-0.5 transition-all" aria-hidden="true" />
                   </h3>
                   <p className="text-gray-500 text-xs mt-1 line-clamp-2">Add text, annotations, signatures & forms</p>
                 </div>
-              </div>
+              </a>
 
               {/* Tool Card 4: OCR Text Extractor */}
-              <div 
-                onClick={() => onSelectTool('pdf-ocr')}
+              <a 
+                href="/pdf-ocr"
+                onClick={(e) => handleLinkClick(e, 'pdf-ocr')}
                 className="group bg-purple-50/70 hover:bg-purple-50 border border-purple-100/80 rounded-2xl p-5 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer flex flex-col justify-between h-40"
               >
                 <div className="w-11 h-11 rounded-xl bg-purple-600 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
-                  <ScanText className="w-5 h-5" />
+                  <ScanText className="w-5 h-5" aria-hidden="true" />
                 </div>
                 <div>
                   <h3 className="font-bold text-gray-900 text-base group-hover:text-purple-600 transition-colors flex items-center justify-between">
                     OCR Text Extractor
-                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-purple-600 group-hover:translate-x-0.5 transition-all" />
+                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-purple-600 group-hover:translate-x-0.5 transition-all" aria-hidden="true" />
                   </h3>
                   <p className="text-gray-500 text-xs mt-1 line-clamp-2">Extract editable text from scanned documents</p>
                 </div>
-              </div>
+              </a>
 
               {/* Tool Card 5: Merge PDF */}
-              <div 
-                onClick={() => onSelectTool('pdf-merge')}
+              <a 
+                href="/pdf-merge"
+                onClick={(e) => handleLinkClick(e, 'pdf-merge')}
                 className="group bg-indigo-50/70 hover:bg-indigo-50 border border-indigo-100/80 rounded-2xl p-5 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer flex flex-col justify-between h-40"
               >
                 <div className="w-11 h-11 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
-                  <Files className="w-5 h-5" />
+                  <Files className="w-5 h-5" aria-hidden="true" />
                 </div>
                 <div>
                   <h3 className="font-bold text-gray-900 text-base group-hover:text-indigo-600 transition-colors flex items-center justify-between">
                     Merge PDF
-                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-indigo-600 group-hover:translate-x-0.5 transition-all" />
+                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-indigo-600 group-hover:translate-x-0.5 transition-all" aria-hidden="true" />
                   </h3>
                   <p className="text-gray-500 text-xs mt-1 line-clamp-2">Combine multiple files into a single document</p>
                 </div>
-              </div>
+              </a>
 
               {/* Tool Card 6: Protect PDF */}
-              <div 
-                onClick={() => onSelectTool('protect-pdf')}
+              <a 
+                href="/protect-pdf"
+                onClick={(e) => handleLinkClick(e, 'protect-pdf')}
                 className="group bg-emerald-50/70 hover:bg-emerald-50 border border-emerald-100/80 rounded-2xl p-5 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer flex flex-col justify-between h-40"
               >
                 <div className="w-11 h-11 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
-                  <Lock className="w-5 h-5" />
+                  <Lock className="w-5 h-5" aria-hidden="true" />
                 </div>
                 <div>
                   <h3 className="font-bold text-gray-900 text-base group-hover:text-emerald-600 transition-colors flex items-center justify-between">
                     Protect & Unlock
-                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all" />
+                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all" aria-hidden="true" />
                   </h3>
                   <p className="text-gray-500 text-xs mt-1 line-clamp-2">Encrypt PDFs or remove password restrictions</p>
                 </div>
-              </div>
+              </a>
 
             </div>
           </div>
@@ -295,9 +309,10 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
 
       {/* Universal Document Converter Banner - Premium Dark Style */}
       <div className="w-full flex justify-center items-center px-4 md:px-8 mb-16">
-        <div 
-          onClick={() => onSelectTool('pdf-converter')}
-          className="group relative w-full max-w-7xl bg-gradient-to-br from-indigo-900 via-indigo-800 to-blue-900 rounded-[2rem] p-8 sm:p-12 shadow-2xl hover:shadow-[0_20px_40px_-15px_rgba(79,70,229,0.5)] transition-all duration-300 cursor-pointer overflow-hidden border border-indigo-700/50"
+        <a 
+          href="/pdf-converter"
+          onClick={(e) => handleLinkClick(e, 'pdf-converter')}
+          className="group relative w-full max-w-7xl bg-gradient-to-br from-indigo-900 via-indigo-800 to-blue-900 rounded-[2rem] p-8 sm:p-12 shadow-2xl hover:shadow-[0_20px_40px_-15px_rgba(79,70,229,0.5)] transition-all duration-300 cursor-pointer overflow-hidden border border-indigo-700/50 block"
         >
           {/* Decorative background elements */}
           <div className="absolute top-0 right-0 -mr-20 -mt-20 w-72 h-72 bg-indigo-500 rounded-full mix-blend-overlay filter blur-[64px] opacity-60 animate-pulse"></div>
@@ -307,7 +322,7 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
           <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="flex-1 text-center md:text-left flex flex-col gap-3">
               <div className="inline-flex items-center justify-center md:justify-start gap-2 text-indigo-200 text-sm mb-1">
-                <Sparkles className="w-4 h-4 text-amber-300" /> All-In-One Document Suite
+                <Sparkles className="w-4 h-4 text-amber-300" aria-hidden="true" /> All-In-One Document Suite
               </div>
               
               <h2 className="text-3xl sm:text-4xl font-semibold text-white leading-tight">
@@ -319,27 +334,27 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
               
               <div className="flex items-center justify-center md:justify-start gap-4">
                 <span className="bg-white hover:bg-gray-50 text-indigo-900 px-8 py-3.5 rounded-2xl font-semibold transition-all duration-300 shadow-lg flex items-center gap-3 group-hover:scale-105 active:scale-95">
-                  Open Converter <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  Open Converter <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
                 </span>
               </div>
             </div>
 
             <div className="flex-shrink-0 flex items-center justify-center relative mt-4 md:mt-0">
               <div className="relative bg-white/10 p-8 rounded-3xl backdrop-blur-md border border-white/20 shadow-xl group-hover:scale-105 transition-transform duration-300">
-                <ArrowLeftRight className="w-16 h-16 text-white" />
+                <ArrowLeftRight className="w-16 h-16 text-white" aria-hidden="true" />
                 <div className="absolute -bottom-3 -left-3 w-10 h-10 rounded-full border-2 border-white bg-rose-500 flex items-center justify-center text-white shadow-lg">
-                  <FileText className="w-4 h-4" />
+                  <FileText className="w-4 h-4" aria-hidden="true" />
                 </div>
                 <div className="absolute -top-3 -right-3 w-10 h-10 rounded-full border-2 border-white bg-emerald-500 flex items-center justify-center text-white shadow-lg">
-                  <FileSpreadsheet className="w-4 h-4" />
+                  <FileSpreadsheet className="w-4 h-4" aria-hidden="true" />
                 </div>
                 <div className="absolute -bottom-3 -right-3 w-10 h-10 rounded-full border-2 border-white bg-amber-500 flex items-center justify-center text-white shadow-lg">
-                  <ImageIcon className="w-4 h-4" />
+                  <ImageIcon className="w-4 h-4" aria-hidden="true" />
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </a>
       </div>
 
       {/* Most Popular Tools */}
@@ -353,20 +368,21 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
           {popularTools.map(tool => {
             const Icon = tool.icon;
             return (
-              <div 
+              <a 
                 key={tool.id} 
-                onClick={() => onSelectTool(tool.id)}
+                href={`/${tool.id}`}
+                onClick={(e) => handleLinkClick(e, tool.id)}
                 className="group bg-white border border-gray-200 rounded-2xl p-4 hover:shadow-lg hover:border-blue-300 transition-all cursor-pointer flex items-center gap-5"
               >
               <div className={`p-4 rounded-xl ${tool.bg} ${tool.color} group-hover:scale-110 transition-transform duration-300`}>
-                <Icon className="w-8 h-8 stroke-[1.5]" />
+                <Icon className="w-8 h-8 stroke-[1.5]" aria-hidden="true" />
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="font-bold text-gray-900 text-lg group-hover:text-blue-600 transition-colors truncate">{tool.name}</h3>
                 <p className="text-gray-500 text-sm truncate">{tool.description}</p>
               </div>
-              <ChevronRight className="w-6 h-6 text-gray-300 group-hover:text-blue-500 transition-colors flex-shrink-0" />
-              </div>
+              <ChevronRight className="w-6 h-6 text-gray-300 group-hover:text-blue-500 transition-colors flex-shrink-0" aria-hidden="true" />
+              </a>
             );
           })}
         </div>

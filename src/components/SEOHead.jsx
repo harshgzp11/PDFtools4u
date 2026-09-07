@@ -118,7 +118,7 @@ export default function SEOHead({ activeTool }) {
     } else {
       title = HOMEPAGE_SEO.title;
       description = HOMEPAGE_SEO.description;
-      canonicalUrl = BASE_URL;
+      canonicalUrl = BASE_URL + '/';
       ogImage = OG_IMAGE;
       ogType = 'website';
       noindex = HOMEPAGE_SEO.noindex || false;
@@ -132,6 +132,8 @@ export default function SEOHead({ activeTool }) {
     
     if (noindex) {
       setMeta('name', 'robots', 'noindex, nofollow');
+    } else {
+      setMeta('name', 'robots', 'index, follow');
     }
 
     // Open Graph

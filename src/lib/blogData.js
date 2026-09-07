@@ -2757,8 +2757,8 @@ No. The conversion creates a visual snapshot of your calculated values, formatti
       "@graph": [
         {
           "@type": "Article",
-          "@id": "https://pdftools4u.in",
-          "mainEntityOfPage": "https://pdftools4u.in",
+          "@id": "https://www.pdftools4u.in",
+          "mainEntityOfPage": "https://www.pdftools4u.in",
           "headline": "Convert HTML to PDF with CSS: Keep Styles Free & Private",
           "description": "Learn how to convert HTML code and templates to PDF without losing CSS styling, fonts, or background colors with 100% browser privacy.",
           "datePublished": "2026-09-03",
@@ -2766,20 +2766,20 @@ No. The conversion creates a visual snapshot of your calculated values, formatti
           "author": {
             "@type": "Organization",
             "name": "PDFTools4U",
-            "url": "https://pdftools4u.in"
+            "url": "https://www.pdftools4u.in"
           },
           "publisher": {
             "@type": "Organization",
             "name": "PDFTools4U",
             "logo": {
               "@type": "ImageObject",
-              "url": "https://pdftools4u.in/logo.png"
+              "url": "https://www.pdftools4u.in/logo.png"
             }
           }
         },
         {
           "@type": "HowTo",
-          "@id": "https://pdftools4u.in#howto",
+          "@id": "https://www.pdftools4u.in#howto",
           "name": "How to Convert HTML to PDF with CSS Online Free (In-Browser)",
           "description": "Step-by-step instructions for converting styled HTML templates into vector-sharp PDFs without server uploads.",
           "step": [
@@ -2807,7 +2807,7 @@ No. The conversion creates a visual snapshot of your calculated values, formatti
         },
         {
           "@type": "FAQPage",
-          "@id": "https://pdftools4u.in#faq",
+          "@id": "https://www.pdftools4u.in#faq",
           "mainEntity": [
             {
               "@type": "Question",

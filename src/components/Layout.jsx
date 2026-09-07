@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Search, Shield, Zap, Menu, X, FileText, Image as ImageIcon, ChevronDown, BookOpen } from 'lucide-react';
 import { DOMAINS } from '../lib/toolConfig';
 import Footer from './Footer';
+import SiteDirectory from './SiteDirectory';
 
 export default function Layout({ children, onNavigateToDomain, onSearch, onSelectTool, isToolView = false }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -296,6 +297,7 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
 
       </div>
 
+      <SiteDirectory onSelectTool={onSelectTool} />
       <Footer onSelectTool={onSelectTool} />
     </div>
   );
