@@ -58,6 +58,7 @@ export default function ExtractPdfPages() {
     setLoading(true);
     
     try {
+      const { PDFDocument } = await import('pdf-lib');
       const arrayBuffer = await file.arrayBuffer();
       const pdfDoc = await PDFDocument.load(arrayBuffer);
       const newPdfDoc = await PDFDocument.create();

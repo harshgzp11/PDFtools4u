@@ -85,6 +85,7 @@ export default function PdfSplitter() {
       const folder = zip.folder(folderName);
 
       const arrayBuffer = await file.arrayBuffer();
+      const { PDFDocument } = await import('pdf-lib');
       const pdf = await PDFDocument.load(arrayBuffer);
       const numPages = pdf.getPageCount();
 
