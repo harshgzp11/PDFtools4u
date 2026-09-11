@@ -208,6 +208,8 @@ export default function PdfEditor({
         const p = pages[i];
         const pageOverlays = overlays[p.id] || [];
         const redactions = pageOverlays.filter(overlay => overlay.type === 'redact');
+        let outputPage;
+        let pageHeight;
 
         if (redactions.length > 0) {
           const pdfPage = await pdfJsDoc.getPage(p.originalIndex + 1);
@@ -230,77 +232,89 @@ export default function PdfEditor({
           }
 
           const flattenedImage = await newDoc.embedPng(canvas.toDataURL('image/png'));
-          const flattenedPage = newDoc.addPage([p.width, p.height]);
-          flattenedPage.drawImage(flattenedImage, {
+          outputPage = newDoc.addPage([p.width, p.height]);
+          outputPage.drawImage(flattenedImage, {
             x: 0,
             y: 0,
             width: p.width,
             height: p.height,
           });
-
-          if (p.rotation !== 0) {
-            flattenedPage.setRotation(degrees(p.rotation));
-          }
-          continue;
+          pageHeight = p.height;
+        } else {
+          const [copiedPage] = await newDoc.copyPages(originalDoc, [p.originalIndex]);
+          if (p.rotation !== 0) copiedPage.setRotation(degrees(p.rotation));
+          outputPage = copiedPage;
+          pageHeight = copiedPage.getSize().height;
         }
-
-        const [copiedPage] = await newDoc.copyPages(originalDoc, [p.originalIndex]);
-        
-        if (p.rotation !== 0) {
-           copiedPage.setRotation(degrees(p.rotation));
-        }
-
-        const { height } = copiedPage.getSize();
 
         for (const overlay of pageOverlays) {
-          const [r, g, b] = hexToRgb(overlay.color);
+          const [r, g, b] = hexToRgb(overlay.color || '#000000');
 
           if (overlay.type === 'text') {
-            copiedPage.drawText(overlay.text || 'Text', {
+            outputPage.drawText(overlay.text || 'Text', {
               x: overlay.x,
-              y: height - overlay.y - (overlay.fontSize || 24), 
+              y: pageHeight - overlay.y - (overlay.fontSize || 24),
               size: overlay.fontSize || 24,
               font: helveticaFont,
               color: rgb(r, g, b),
             });
           } else if (overlay.type === 'rect') {
-            copiedPage.drawRectangle({
+            outputPage.drawRectangle({
               x: overlay.x,
-              y: height - overlay.y - overlay.h,
+              y: pageHeight - overlay.y - overlay.h,
               width: overlay.w,
               height: overlay.h,
               borderColor: rgb(r, g, b),
               borderWidth: overlay.strokeWidth,
             });
           } else if (overlay.type === 'circle') {
-            copiedPage.drawEllipse({
+            outputPage.drawEllipse({
               x: overlay.x + overlay.w / 2,
-              y: height - overlay.y - overlay.h / 2,
+              y: pageHeight - overlay.y - overlay.h / 2,
               xScale: overlay.w / 2,
               yScale: overlay.h / 2,
               borderColor: rgb(r, g, b),
               borderWidth: overlay.strokeWidth,
             });
           } else if (overlay.type === 'redact') {
-             copiedPage.drawRectangle({
+             outputPage.drawRectangle({
                x: overlay.x,
-               y: height - overlay.y - overlay.h,
+               y: pageHeight - overlay.y - overlay.h,
                width: overlay.w,
                height: overlay.h,
                color: rgb(0,0,0),
              });
           } else if (['path', 'highlight_path'].includes(overlay.type)) {
-             copiedPage.drawSvgPath(overlay.svgPath, {
+             outputPage.drawSvgPath(overlay.svgPath, {
                x: overlay.x,
-               y: height - overlay.y,
+               y: pageHeight - overlay.y,
                borderColor: rgb(r, g, b),
                borderWidth: overlay.strokeWidth,
                opacity: overlay.opacity || 1
              });
+          } else if ((overlay.type === 'image' || overlay.type === 'signature') && overlay.src) {
+            const image = overlay.src.startsWith('data:image/jpeg')
+              ? await newDoc.embedJpg(overlay.src)
+              : await newDoc.embedPng(overlay.src);
+            outputPage.drawImage(image, {
+              x: overlay.x,
+              y: pageHeight - overlay.y - overlay.h,
+              width: overlay.w,
+              height: overlay.h,
+            });
+          } else if (overlay.type === 'signature' && overlay.text) {
+            outputPage.drawText(overlay.text, {
+              x: overlay.x,
+              y: pageHeight - overlay.y - (overlay.fontSize || 24),
+              size: overlay.fontSize || 24,
+              font: helveticaFont,
+              color: rgb(r, g, b),
+            });
           }
-          // Note: Image and Signature export logic not implemented here for brevity
         }
-        newDoc.addPage(copiedPage);
+
+        if (redactions.length === 0) newDoc.addPage(outputPage);
+        if (redactions.length > 0 && p.rotation !== 0) outputPage.setRotation(degrees(p.rotation));
       }
 
       const finalPdfBytes = await newDoc.save();

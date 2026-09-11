@@ -85,8 +85,8 @@ export default function CropPdf() {
 
       const newPdfBytes = await pdfDoc.save();
       setSuccessData({
-        originalSize: (typeof file !== 'undefined' && file?.size) || (typeof selectedFile !== 'undefined' && selectedFile?.size) || (typeof currentFile !== 'undefined' && currentFile?.size) || 0,
-        outputSize: (typeof newPdfBytes !== 'undefined' && newPdfBytes?.length) || (typeof pdfBytes !== 'undefined' && pdfBytes?.length) || (typeof blob !== 'undefined' && blob?.size) || (typeof outputBlob !== 'undefined' && outputBlob?.size) || 0,
+        originalSize: file.size,
+        outputSize: newPdfBytes.length,
         pdfBytes: newPdfBytes,
         fileName: `cropped_${file.name}`
       });

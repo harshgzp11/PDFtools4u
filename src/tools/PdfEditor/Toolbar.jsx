@@ -249,7 +249,7 @@ export default function Toolbar({
           </>
         )}
 
-        {(!allowedTools || allowedTools.some(t => ['rect', 'image', 'signature', 'crop', 'redact'].includes(t))) && (
+        {(!allowedTools || allowedTools.some(t => ['rect', 'image', 'signature', 'redact'].includes(t))) && (
           <>
             <div className="w-px h-6 bg-gray-200"></div>
             <div className="flex items-center gap-1">
@@ -267,11 +267,6 @@ export default function Toolbar({
                {(!allowedTools || allowedTools.includes('signature')) && (
                  <button onClick={() => toggleTool('signature')} className={`p-2 rounded-md transition-all ${activeTool === 'signature' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-100'}`} title="Signature / Stamp">
                    <Stamp className="w-4 h-4" />
-                 </button>
-               )}
-               {(!allowedTools || allowedTools.includes('crop')) && (
-                 <button onClick={() => toggleTool('crop')} className={`p-2 rounded-md transition-all ${activeTool === 'crop' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:bg-gray-100'}`} title="Crop">
-                   <div className="w-4 h-4 border-2 border-dashed border-gray-600 rounded-[2px]" />
                  </button>
                )}
                {(!allowedTools || allowedTools.includes('redact')) && (

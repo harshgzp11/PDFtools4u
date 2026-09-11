@@ -59,7 +59,10 @@ export default function ConvertImage() {
       const img = new Image();
       img.src = url;
       
-      await new Promise(resolve => img.onload = resolve);
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = reject;
+      });
       
       const canvas = document.createElement('canvas');
       canvas.width = img.width;
@@ -77,6 +80,7 @@ export default function ConvertImage() {
       
       setOutputUrl(URL.createObjectURL(blob));
       setSuccess(true);
+      URL.revokeObjectURL(url);
     } catch (err) {
       trackError('Convert Image', 'processing_error');
       console.error(err);

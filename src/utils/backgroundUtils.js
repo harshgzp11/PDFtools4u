@@ -69,7 +69,7 @@ export function fillInteriorHoles(imageData, threshold = 10) {
   // Seed the BFS queue with all border pixels that are transparent
   for (let x = 0; x < width; x++) {
     // Top row
-    if (data[(0 * width + x) * 4 + 3] < threshold) {
+    if (data[x * 4 + 3] < threshold) {
       queue.push(x);
       visited[x] = 1;
     }
@@ -144,7 +144,7 @@ export function softEdgeFeather(imageData, radius) {
   const { width, height, data } = imageData;
 
   // Build 1D Gaussian kernel
-  const size = Math.ceil(radius * 2.5) | 0;
+  const size = Math.ceil(radius * 2.5);
   const kernel = new Float32Array(size * 2 + 1);
   let sum = 0;
   const sigma = radius / 2;

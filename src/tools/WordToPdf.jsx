@@ -16,12 +16,17 @@ export default function WordToPdf() {
 
   useEffect(() => {
     if (window.__sharedFile) {
-      if (window.__sharedFile.name.endsWith('.doc') || window.__sharedFile.name.endsWith('.docx') || window.__sharedFile.type.includes('word')) {
+      if (isDocxFile(window.__sharedFile)) {
         handleFile(window.__sharedFile);
       }
       window.__sharedFile = null;
     }
   }, []);
+
+  const isDocxFile = (candidate) => {
+    const name = candidate?.name?.toLowerCase() || '';
+    return name.endsWith('.docx') || candidate?.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+  };
 
   const sanitizeWordHtml = (htmlString) => {
     if (!htmlString) return '<p>No content found in document.</p>';
@@ -99,9 +104,22 @@ export default function WordToPdf() {
     `;
   };
 
+  const mammothOptions = {
+    styleMap: [
+      "p[style-name='List Bullet'] => ul > li:fresh",
+      "p[style-name='List Bullet 2'] => ul > li:fresh",
+      "p[style-name='List Bullet 3'] => ul > li:fresh"
+    ],
+    convertImage: mammoth.images.imgElement((image) =>
+      image.read('base64').then((imageBuffer) => ({
+        src: `data:${image.contentType};base64,${imageBuffer}`
+      }))
+    )
+  };
+
   const handleFile = async (newFile) => {
-    if (!newFile || (!newFile.name.endsWith('.doc') && !newFile.name.endsWith('.docx') && !newFile.type.includes('word'))) {
-      alert("Please upload a valid Word document (.doc or .docx).");
+    if (!isDocxFile(newFile)) {
+      alert("Please upload a modern Word document (.docx). Legacy .doc files are not supported in the browser.");
       return;
     }
 
@@ -136,11 +154,7 @@ export default function WordToPdf() {
         if (!usedDocxPreview) {
           const result = await mammoth.convertToHtml({
             arrayBuffer,
-            styleMap: [
-              "p[style-name='List Bullet'] => ul > li:fresh",
-              "p[style-name='List Bullet 2'] => ul > li:fresh",
-              "p[style-name='List Bullet 3'] => ul > li:fresh"
-            ]
+            ...mammothOptions
           });
           const cleaned = sanitizeWordHtml(result.value);
           container.innerHTML = wrapWithWordTheme(cleaned);
@@ -165,11 +179,7 @@ export default function WordToPdf() {
       // 1. Initial Word Conversion
       const result = await mammoth.convertToHtml({
         arrayBuffer,
-        styleMap: [
-          "p[style-name='List Bullet'] => ul > li:fresh",
-          "p[style-name='List Bullet 2'] => ul > li:fresh",
-          "p[style-name='List Bullet 3'] => ul > li:fresh"
-        ]
+        ...mammothOptions
       });
 
       let rawHtml = result.value || '<p>No content found.</p>';
@@ -265,8 +275,17 @@ export default function WordToPdf() {
       iframeDoc.write(finalPayload);
       iframeDoc.close();
 
-      // 4. Print directly
-      setTimeout(() => {
+      // Wait for embedded images and fonts before opening the print dialog.
+      const printWhenReady = async () => {
+        if (iframeDoc.fonts?.ready) await iframeDoc.fonts.ready;
+        await Promise.all(Array.from(iframeDoc.images).map((image) => {
+          if (image.complete) return Promise.resolve();
+          return new Promise((resolve) => {
+            image.addEventListener('load', resolve, { once: true });
+            image.addEventListener('error', resolve, { once: true });
+          });
+        }));
+
         iframe.contentWindow.focus();
         iframe.contentWindow.print();
 
@@ -277,8 +296,8 @@ export default function WordToPdf() {
           }
 
           setSuccessData({
-        originalSize: (typeof file !== 'undefined' && file?.size) || (typeof selectedFile !== 'undefined' && selectedFile?.size) || (typeof currentFile !== 'undefined' && currentFile?.size) || 0,
-        outputSize: (typeof newPdfBytes !== 'undefined' && newPdfBytes?.length) || (typeof pdfBytes !== 'undefined' && pdfBytes?.length) || (typeof blob !== 'undefined' && blob?.size) || (typeof outputBlob !== 'undefined' && outputBlob?.size) || 0,
+            originalSize: file.size,
+            outputSize: 0,
             url: null, // No blob URL needed since browser handled local save
             filename: file.name.replace(/\.docx?$/i, '') + '.pdf',
             title: 'Document Ready',
@@ -287,7 +306,11 @@ export default function WordToPdf() {
 
           setIsProcessing(false);
         }, 1000);
-      }, 500);
+      };
+
+      printWhenReady().catch((printError) => {
+        throw printError;
+      });
 
     } catch (err) {
       trackError('Word To Pdf', 'processing_error');
@@ -346,7 +369,7 @@ export default function WordToPdf() {
       title="Word to PDF"
       description="Convert your Microsoft Word documents (.docx) into standard PDF format instantly with high fidelity."
       icon={FileText}
-      accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
       file={file}
       onFileSelect={handleFile}
       onReset={resetTool}
