@@ -4,7 +4,7 @@ const path = require('path');
 const SRC_DIR = path.resolve(__dirname, '../src');
 
 // 1. Get all valid routes
-const validRoutes = new Set(['/', '/blog', '/about', '/contact', '/privacy', '/terms', '/all-tools']);
+const validRoutes = new Set(['/', '/blog', '/about', '/contact', '/privacy', '/terms', '/all-tools', '/security']);
 
 try {
   const toolConfigContent = fs.readFileSync(path.resolve(__dirname, '../src/lib/toolConfig.js'), 'utf-8');

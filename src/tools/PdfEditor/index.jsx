@@ -202,9 +202,48 @@ export default function PdfEditor({
       const originalDoc = await PDFDocument.load(pdfBytes);
       const newDoc = await PDFDocument.create();
       const helveticaFont = await newDoc.embedFont(StandardFonts.Helvetica);
+      const renderScale = 2;
 
       for (let i = 0; i < pages.length; i++) {
         const p = pages[i];
+        const pageOverlays = overlays[p.id] || [];
+        const redactions = pageOverlays.filter(overlay => overlay.type === 'redact');
+
+        if (redactions.length > 0) {
+          const pdfPage = await pdfJsDoc.getPage(p.originalIndex + 1);
+          const viewport = pdfPage.getViewport({ scale: renderScale });
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+
+          canvas.width = Math.ceil(viewport.width);
+          canvas.height = Math.ceil(viewport.height);
+          await pdfPage.render({ canvasContext: context, viewport }).promise;
+
+          context.fillStyle = '#000000';
+          for (const redaction of redactions) {
+            context.fillRect(
+              redaction.x * renderScale,
+              redaction.y * renderScale,
+              redaction.w * renderScale,
+              redaction.h * renderScale
+            );
+          }
+
+          const flattenedImage = await newDoc.embedPng(canvas.toDataURL('image/png'));
+          const flattenedPage = newDoc.addPage([p.width, p.height]);
+          flattenedPage.drawImage(flattenedImage, {
+            x: 0,
+            y: 0,
+            width: p.width,
+            height: p.height,
+          });
+
+          if (p.rotation !== 0) {
+            flattenedPage.setRotation(degrees(p.rotation));
+          }
+          continue;
+        }
+
         const [copiedPage] = await newDoc.copyPages(originalDoc, [p.originalIndex]);
         
         if (p.rotation !== 0) {
@@ -212,7 +251,6 @@ export default function PdfEditor({
         }
 
         const { height } = copiedPage.getSize();
-        const pageOverlays = overlays[p.id] || [];
 
         for (const overlay of pageOverlays) {
           const [r, g, b] = hexToRgb(overlay.color);

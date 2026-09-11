@@ -59,19 +59,19 @@
   </url>
   <url>
     <loc>https://www.pdftools4u.in/pdf-split</loc>
-    <lastmod>2026-08-17</lastmod>
+    <lastmod>2026-08-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.pdftools4u.in/delete-pdf-pages</loc>
-    <lastmod>2026-08-17</lastmod>
+    <lastmod>2026-08-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.pdftools4u.in/extract-pdf-pages</loc>
-    <lastmod>2026-08-17</lastmod>
+    <lastmod>2026-08-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -131,7 +131,7 @@
   </url>
   <url>
     <loc>https://www.pdftools4u.in/html-to-pdf</loc>
-    <lastmod>2026-09-06</lastmod>
+    <lastmod>2026-09-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -179,7 +179,7 @@
   </url>
   <url>
     <loc>https://www.pdftools4u.in/edit-pdf</loc>
-    <lastmod>2026-08-15</lastmod>
+    <lastmod>2026-09-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -546,6 +546,12 @@
   <url>
     <loc>https://www.pdftools4u.in/blog/convert-html-to-multi-page-pdf-page-breaks</loc>
     <lastmod>2026-09-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.pdftools4u.in/blog/permanently-redact-text-in-pdf-online</loc>
+    <lastmod>2026-09-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

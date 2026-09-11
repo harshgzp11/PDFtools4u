@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^npx oxlint src/tools/PdfEditor/index\\.jsx$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}
