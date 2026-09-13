@@ -34,11 +34,24 @@ function extractSeoData() {
 
   // 2. Parse blogData.js
   const blogDataContent = fs.readFileSync(path.resolve(__dirname, '../src/lib/blogData.js'), 'utf-8');
-  const blogMatches = [...blogDataContent.matchAll(/id:\s*['"]([^'"]+)['"][^}]*?title:\s*['"]([^'"]+)['"][^}]*?excerpt:\s*['"]([^'"]+)['"]/g)];
-  
-  blogMatches.forEach(m => {
-    const route = '/blog/' + m[1];
-    seoData[route] = { title: m[2] + ' — PDFtools4u Blog', description: m[3] };
+  const blogIds = [...blogDataContent.matchAll(/^\s*id:\s*['"]([^'"]+)['"]/gm)];
+
+  blogIds.forEach((idMatch) => {
+    const blockStart = idMatch.index;
+    const nextBlock = blogDataContent.indexOf('\n  },\n  {', blockStart);
+    const blockEnd = nextBlock >= 0 ? nextBlock : blogDataContent.indexOf('\n  }\n]', blockStart);
+    const block = blogDataContent.slice(blockStart, blockEnd >= 0 ? blockEnd : undefined);
+    const title = block.match(/title:\s*['"]([^'"]+)['"]/);
+    const excerpt = block.match(/excerpt:\s*['"]([^'"]+)['"]/);
+    const metaTitle = block.match(/metaTitle:\s*['"]([^'"]+)['"]/);
+    const metaDescription = block.match(/metaDescription:\s*['"]([^'"]+)['"]/);
+    if (!title || !excerpt) return;
+
+    const route = '/blog/' + idMatch[1];
+    seoData[route] = {
+      title: metaTitle?.[1] || title[1] + ' — PDFtools4u Blog',
+      description: metaDescription?.[1] || excerpt[1],
+    };
   });
 
   return { seoData, defaultTitle, defaultDesc };

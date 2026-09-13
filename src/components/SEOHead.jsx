@@ -93,8 +93,8 @@ export default function SEOHead({ activeTool }) {
     if (isBlogPost) {
       const slug = activeTool.split('/')[1];
       const post = BLOG_POSTS.find(p => p.id === slug && p.published);
-      title = post ? `${post.title} — ${SITE_NAME} Blog` : `Article Not Found — ${SITE_NAME}`;
-      description = post ? post.excerpt : 'This article is currently being written or does not exist.';
+      title = post ? (post.metaTitle || `${post.title} — ${SITE_NAME} Blog`) : `Article Not Found — ${SITE_NAME}`;
+      description = post ? (post.metaDescription || post.excerpt) : 'This article is currently being written or does not exist.';
       canonicalUrl = `${BASE_URL}/${activeTool}`;
       ogImage = post?.coverImage || OG_IMAGE;
       ogType = 'article';
