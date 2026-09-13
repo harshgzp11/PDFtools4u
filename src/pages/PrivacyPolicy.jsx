@@ -53,21 +53,18 @@ export default function PrivacyPolicy() {
           <section>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">4. Cookies and Tracking Technologies</h2>
             <p className="mb-3">
-              We use cookies to personalize content, serve advertisements, and analyze our traffic.
+              We may use cookies or similar technologies for analytics and essential site functionality. We do not currently serve advertisements or use Google AdSense.
             </p>
             <p>
-              This includes the use of both first-party cookies and third-party cookies.
+              If advertising or additional third-party tracking is introduced in the future, we will update this policy before those services are used.
             </p>
           </section>
 
           <section>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">5. Advertising and Third-Party Data Sharing</h2>
-            <ul className="list-disc pl-6 space-y-2">
-              <li>We use third-party vendors, including Google AdSense, to serve advertisements on our site.</li>
-              <li>We share necessary data with third-party vendors and ad networks that serve these advertisements.</li>
-              <li>Google uses cookies to serve personalized ads based on your prior visits to this website or other websites on the internet.</li>
-              <li>Users can opt out of personalized advertisements at any time by visiting Google&apos;s Ads Settings.</li>
-            </ul>
+            <p>
+              PDFtools4u does not currently display third-party advertisements and does not currently use Google AdSense. We do not share personal information with advertising networks for targeted advertising. This section will be updated if our advertising practices change.
+            </p>
           </section>
 
           <section>
