@@ -5,6 +5,26 @@ const PUBLIC_DIR = path.resolve(__dirname, '../public');
 const SITEMAP_PATH = path.join(PUBLIC_DIR, 'sitemap.xml');
 const BASE_URL = 'https://www.pdftools4u.in';
 const SRC_DIR = path.resolve(__dirname, '../src');
+const ROUTE_LASTMOD_OVERRIDES = {
+  '/word-to-pdf': '2026-09-16'
+};
+
+function readExistingLastModMap() {
+  try {
+    if (!fs.existsSync(SITEMAP_PATH)) return {};
+    const xml = fs.readFileSync(SITEMAP_PATH, 'utf-8');
+    const entries = {};
+    const regex = /<loc>https?:\/\/[^<]+([^<]*)<\/loc>\s*<lastmod>([^<]+)<\/lastmod>/g;
+    let match;
+    while ((match = regex.exec(xml)) !== null) {
+      const route = match[1];
+      entries[route] = match[2];
+    }
+    return entries;
+  } catch (error) {
+    return {};
+  }
+}
 
 // Helper to get file modification date
 function getFileLastMod(filePath) {
@@ -159,6 +179,7 @@ function extractUrls() {
 
 function generateSitemap() {
   const urlsData = extractUrls();
+  const existingLastMods = readExistingLastModMap();
 
   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
   xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\n`;
@@ -178,10 +199,11 @@ function generateSitemap() {
       changefreq = 'monthly';
     }
 
-    const lastmod = lastmodOverride || getFileLastMod(filePath);
+    const normalizedRoute = route === '/' ? '' : route;
+    const lastmod = lastmodOverride || ROUTE_LASTMOD_OVERRIDES[normalizedRoute] || existingLastMods[normalizedRoute] || getFileLastMod(filePath);
 
     xml += `  <url>\n`;
-    xml += `    <loc>${BASE_URL}${route === '/' ? '' : route}</loc>\n`;
+    xml += `    <loc>${BASE_URL}${normalizedRoute}</loc>\n`;
     xml += `    <lastmod>${lastmod}</lastmod>\n`;
     xml += `    <changefreq>${changefreq}</changefreq>\n`;
     xml += `    <priority>${priority}</priority>\n`;

@@ -4,6 +4,8 @@ import { FileText } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import * as docx from 'docx-preview';
 import mammoth from 'mammoth';
+import { jsPDF } from 'jspdf';
+import { safeHtml2Canvas } from '../utils/canvasUtils';
 import { trackError } from '../lib/analytics';
 
 export default function WordToPdf() {
@@ -176,24 +178,19 @@ export default function WordToPdf() {
     try {
       const arrayBuffer = await file.arrayBuffer();
 
-      // 1. Initial Word Conversion
       const result = await mammoth.convertToHtml({
         arrayBuffer,
         ...mammothOptions
       });
 
       let rawHtml = result.value || '<p>No content found.</p>';
-      
-      // Clean math artifacts
       rawHtml = rawHtml.replace(/\$|&#36;|&dollar;/gi, '').replace(/~|&#126;/gi, ' ');
 
-      // 2. In-Memory DOM Parsing for Perfect Hanging Indents & Bullet Removal
       const domParserDiv = document.createElement('div');
       domParserDiv.innerHTML = rawHtml;
 
       const BULLET_PATTERN = /^(\s|&nbsp;)*[•oO·◦▪◆▫■□–—\u2022\u25aa\u25cf\u25cb\u25a0\u25a1\u2013\u2014](\s|&nbsp;)+/;
 
-      // Fix Native Lists (Strip literal dots so we don't get double-bullets)
       domParserDiv.querySelectorAll('li').forEach(li => {
         const walker = document.createTreeWalker(li, NodeFilter.SHOW_TEXT, null, false);
         let node;
@@ -205,7 +202,6 @@ export default function WordToPdf() {
         }
       });
 
-      // Fix Fake Lists (Convert manual paragraph bullets into real CSS lists)
       domParserDiv.querySelectorAll('p').forEach(p => {
         if (!p.closest('li')) {
           const walker = document.createTreeWalker(p, NodeFilter.SHOW_TEXT, null, false);
@@ -225,102 +221,157 @@ export default function WordToPdf() {
       });
 
       const perfectedHtml = domParserDiv.innerHTML;
+      const pdfFilename = file.name.replace(/\.docx?$/i, '') + '.pdf';
 
-      // 3. Assemble Final Print Payload
       const printCss = `
         <style>
-          @media print {
-            /* Restores 20mm standard margins on the physical paper and forces A4 */
-            @page { margin: 20mm; size: A4 portrait; }
-            body { margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          * { box-sizing: border-box; }
+          body {
+            margin: 0;
+            background: #ffffff;
+            color: #000;
+            font-family: 'Calibri', 'Arial', sans-serif;
           }
-          .docx-pdf-wrapper { font-family: 'Calibri', 'Arial', sans-serif; font-size: 11pt; line-height: 1.5; color: #000; }
-          .docx-pdf-wrapper h1, .docx-pdf-wrapper h2, .docx-pdf-wrapper h3 { color: #2F5496; font-weight: bold; margin-top: 18pt; margin-bottom: 6pt; page-break-after: avoid; }
-          .docx-pdf-wrapper table { table-layout: fixed; width: 100%; border-collapse: collapse; margin-bottom: 12pt; }
-          .docx-pdf-wrapper th, .docx-pdf-wrapper td { border: 1px solid #000; padding: 6px; text-align: left; }
-          
-          /* Pagination Safeguards: Prevent tables and bullets from slicing across pages */
+          .docx-pdf-wrapper {
+            width: 100%;
+            max-width: 100%;
+            padding: 18mm 16mm;
+            font-size: 11pt;
+            line-height: 1.5;
+            color: #000;
+            background: #fff;
+          }
+          .docx-pdf-wrapper h1, .docx-pdf-wrapper h2, .docx-pdf-wrapper h3,
+          .docx-pdf-wrapper h4, .docx-pdf-wrapper h5, .docx-pdf-wrapper h6 {
+            color: #2F5496;
+            font-weight: bold;
+            margin-top: 18pt;
+            margin-bottom: 6pt;
+            page-break-after: avoid;
+          }
+          .docx-pdf-wrapper table {
+            table-layout: fixed;
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 12pt;
+          }
+          .docx-pdf-wrapper th, .docx-pdf-wrapper td {
+            border: 1px solid #000;
+            padding: 6px;
+            text-align: left;
+          }
           .docx-pdf-wrapper tr { page-break-inside: avoid; }
           .docx-pdf-wrapper li { page-break-inside: avoid; list-style-position: outside !important; margin-bottom: 4px; }
-          
-          /* Native List Styles */
           .docx-pdf-wrapper ul, .docx-pdf-wrapper ol { padding-left: 24px; margin-top: 0; margin-bottom: 12pt; }
-          
-          /* Visual Nesting Hierarchy */
           .docx-pdf-wrapper ul { list-style-type: disc; }
           .docx-pdf-wrapper ul ul { list-style-type: circle; }
           .docx-pdf-wrapper ul ul ul { list-style-type: square; }
+          .docx-pdf-wrapper p { margin-top: 0; margin-bottom: 6pt; }
         </style>
       `;
 
-      const finalPayload = `
-        ${printCss}
-        <div class="docx-pdf-wrapper">
-          ${perfectedHtml}
-        </div>
-      `;
+      const renderTarget = document.createElement('div');
+      renderTarget.style.position = 'fixed';
+      renderTarget.style.left = '-99999px';
+      renderTarget.style.top = '0';
+      renderTarget.style.width = '794px';
+      renderTarget.style.background = '#ffffff';
+      renderTarget.style.zIndex = '0';
+      renderTarget.innerHTML = `${printCss}<div class="docx-pdf-wrapper">${perfectedHtml}</div>`;
+      document.body.appendChild(renderTarget);
 
-      // 4. Print via Iframe
-      const iframe = document.createElement('iframe');
-      iframe.style.position = 'fixed';
-      iframe.style.right = '0';
-      iframe.style.bottom = '0';
-      iframe.style.width = '0';
-      iframe.style.height = '0';
-      iframe.style.border = '0';
-      document.body.appendChild(iframe);
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 300));
 
-      const iframeDoc = iframe.contentWindow.document;
-      iframeDoc.open();
-      iframeDoc.write(finalPayload);
-      iframeDoc.close();
+        const canvas = await safeHtml2Canvas(renderTarget, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: '#ffffff',
+          logging: false,
+          windowWidth: 794,
+          windowHeight: Math.max(renderTarget.scrollHeight, 1123),
+          scrollX: 0,
+          scrollY: 0,
+        });
 
-      // Wait for embedded images and fonts before opening the print dialog.
-      const printWhenReady = async () => {
-        if (iframeDoc.fonts?.ready) await iframeDoc.fonts.ready;
-        await Promise.all(Array.from(iframeDoc.images).map((image) => {
-          if (image.complete) return Promise.resolve();
-          return new Promise((resolve) => {
-            image.addEventListener('load', resolve, { once: true });
-            image.addEventListener('error', resolve, { once: true });
-          });
-        }));
+        const pdf = new jsPDF({
+          orientation: 'portrait',
+          unit: 'mm',
+          format: 'a4',
+        });
 
-        iframe.contentWindow.focus();
-        iframe.contentWindow.print();
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const margin = 10;
+        const contentWidth = pageWidth - margin * 2;
+        const contentHeight = (canvas.height * contentWidth) / canvas.width;
+        const pageContentHeight = pageHeight - margin * 2;
+        const totalPages = Math.max(1, Math.ceil(contentHeight / pageContentHeight));
 
-        // Cleanup and show success UI after print dialog interaction
-        setTimeout(() => {
-          if (iframe && iframe.parentNode) {
-            document.body.removeChild(iframe);
-          }
+        const addCanvasPage = (sourceCanvas, yOffset, pageNumber) => {
+          const pageCanvas = document.createElement('canvas');
+          pageCanvas.width = sourceCanvas.width;
+          const sliceHeight = Math.min(pageContentHeight * (sourceCanvas.width / contentWidth), sourceCanvas.height - yOffset);
+          pageCanvas.height = sliceHeight;
 
-          setSuccessData({
-            originalSize: file.size,
-            outputSize: 0,
-            url: null, // No blob URL needed since browser handled local save
-            filename: file.name.replace(/\.docx?$/i, '') + '.pdf',
-            title: 'Document Ready',
-            subtitle: 'Your true-text PDF was successfully generated via the browser print dialog.',
-          });
+          const ctx = pageCanvas.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+          ctx.drawImage(
+            sourceCanvas,
+            0,
+            yOffset,
+            sourceCanvas.width,
+            sliceHeight,
+            0,
+            0,
+            sourceCanvas.width,
+            sliceHeight
+          );
 
-          setIsProcessing(false);
-        }, 1000);
-      };
+          const imgData = pageCanvas.toDataURL('image/jpeg', 0.98);
+          const renderedSliceHeight = (sliceHeight * contentWidth) / sourceCanvas.width;
 
-      printWhenReady().catch((printError) => {
-        throw printError;
-      });
+          if (pageNumber > 1) pdf.addPage();
+          pdf.addImage(imgData, 'JPEG', margin, margin, contentWidth, renderedSliceHeight, undefined, 'FAST');
+        };
 
+        for (let pageNumber = 1; pageNumber <= totalPages; pageNumber += 1) {
+          const sourceY = (pageNumber - 1) * pageContentHeight * (canvas.width / contentWidth);
+          addCanvasPage(canvas, sourceY, pageNumber);
+        }
+
+        const pdfBlob = pdf.output('blob');
+        const objectUrl = URL.createObjectURL(pdfBlob);
+
+        setSuccessData({
+          originalSize: file.size,
+          outputSize: pdfBlob.size,
+          url: objectUrl,
+          filename: pdfFilename,
+          title: 'PDF Ready',
+          subtitle: 'Your Word document was converted into a downloadable PDF file.',
+        });
+      } finally {
+        if (renderTarget && renderTarget.parentNode) {
+          renderTarget.parentNode.removeChild(renderTarget);
+        }
+      }
+
+      setIsProcessing(false);
     } catch (err) {
       trackError('Word To Pdf', 'processing_error');
-      console.error("Word to PDF Error:", err);
+      console.error('Word to PDF Error:', err);
       alert(`Conversion error: ${err.message || 'Failed to process document'}`);
       setIsProcessing(false);
     }
   };
 
   const resetTool = () => {
+    if (successData?.url) {
+      URL.revokeObjectURL(successData.url);
+    }
     setFile(null);
     setSuccessData(null);
     setIsProcessing(false);

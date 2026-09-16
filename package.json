@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/inject-seo.cjs && node scripts/generate-sitemap.cjs",
+    "build": "vite build && node scripts/inject-seo.cjs",
     "lint": "oxlint",
     "preview": "vite preview"
   },
@@ -56,3 +56,4 @@
     "vite": "^8.1.1"
   }
 }
+
