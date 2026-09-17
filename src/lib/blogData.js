@@ -1635,13 +1635,13 @@ No. Client-side merging connects the raw document streams without re-compressing
       ]
     },
     content: `
-### How to Rotate PDF Pages Permanently Online for Free (Step-by-Step)
+## How to Rotate PDF Pages Permanently Online for Free (Step-by-Step)
 
 Have you ever opened a scanned document, a contract, or a presentation only to find that some pages are upside down or sideways? It is a frustrating but common issue. Fortunately, you do not need expensive software like Adobe Acrobat to fix it.
 
 In this guide, you will learn **how to rotate PDF pages permanently online for free** using [PDFTools4U](/rotate-pdf). Whether you need to fix a single upside-down page or rotate an entire multi-page document, the browser-based PDF tool keeps the process private and simple.
 
-### Why Do PDF Pages Need Rotation?
+## Why Do PDF Pages Need Rotation?
 
 - **Improper scanning:** Document feeders can pull pages sideways or upside down.
 - **Smartphone photos:** Capturing documents on a phone can create unexpected orientation metadata.
@@ -1649,71 +1649,71 @@ In this guide, you will learn **how to rotate PDF pages permanently online for f
 
 Using an online PDF page rotator ensures your files look professional, readable, and ready for sharing.
 
-### How to Rotate PDF Pages Permanently Online for Free
+## How to Rotate PDF Pages Permanently Online for Free
 
-#### Step 1: Upload Your PDF File
+### Step 1: Upload Your PDF File
 
 Open the [Rotate PDF tool](/rotate-pdf). Choose a file or drag and drop your PDF into the upload area.
 
-#### Step 2: Select the Pages to Rotate
+### Step 2: Select the Pages to Rotate
 
 Review the page thumbnails and choose whether to rotate all pages or only specific pages that are sideways or upside down.
 
-#### Step 3: Choose Your Rotation Angle
+### Step 3: Choose Your Rotation Angle
 
 Rotate pages **90 degrees clockwise**, **90 degrees counter-clockwise**, or **180 degrees**. Continue until the preview shows the correct layout.
 
-#### Step 4: Apply Changes Permanently
+### Step 4: Apply Changes Permanently
 
 Click the rotation action to apply the new orientation to the selected pages. This updates the generated PDF rather than changing only the temporary viewer display.
 
-#### Step 5: Download Your Corrected PDF
+### Step 5: Download Your Corrected PDF
 
 Download the corrected file directly to your device. No registration is required.
 
-### Why Choose PDFTools4U for Modifying PDFs?
+## Why Choose PDFTools4U for Modifying PDFs?
 
-#### 1. Private, Local Processing
+### 1. Private, Local Processing
 
 The tool processes documents in your browser. Your source PDF is not uploaded to a remote processing queue, which helps keep contracts, IDs, and business documents on your device.
 
-#### 2. Free and Without Visual Watermarks
+### 2. Free and Without Visual Watermarks
 
 Rotate PDFs without adding visual watermarks or requiring a subscription.
 
-#### 3. No Installation or Registration
+### 3. No Installation or Registration
 
 The tool works in modern desktop and mobile browsers on Windows, Mac, Linux, Android, and iOS.
 
-#### 4. Permanent Page Orientation
+### 4. Permanent Page Orientation
 
 Unlike a temporary viewer rotation, the downloaded PDF stores the corrected page orientation so it displays correctly in other readers and print workflows.
 
-### Frequently Asked Questions
+## Frequently Asked Questions
 
-#### Can I rotate only one page in a PDF online?
+### Can I rotate only one page in a PDF online?
 
 Yes. Select an individual page thumbnail, rotate it, and leave the rest of the document untouched.
 
-#### Is it safe to rotate confidential documents with PDFTools4U?
+### Is it safe to rotate confidential documents with PDFTools4U?
 
 Yes. Processing takes place locally in your browser, so the source PDF is not uploaded to a remote processing queue.
 
-#### How do I save a rotated PDF so it stays that way?
+### How do I save a rotated PDF so it stays that way?
 
 Apply the rotation and download the result. The corrected page orientation is saved in the generated PDF and remains in place across viewers and devices.
 
-#### Can I rotate PDFs on my smartphone?
+### Can I rotate PDFs on my smartphone?
 
 Yes. The browser-based tool works on modern mobile browsers, so you can correct document orientation from an iPhone, iPad, or Android device.
 
-#### What other tools are available on PDFTools4U?
+### What other tools are available on PDFTools4U?
 
 - [Compress PDF](/compress-pdf) to reduce file size.
 - [PDF Converter](/pdf-converter) to convert between common document formats.
 - [PDF Merger](/pdf-merge) and [PDF Splitter](/pdf-split) to combine or extract pages.
 
-### Fix Your PDF Orientation Instantly
+## Fix Your PDF Orientation Instantly
 
 Do not let upside-down pages slow down your workflow. Open the [Rotate PDF tool](/rotate-pdf) to correct your file, save the new orientation, and download a clean PDF.
   `
