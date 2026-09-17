@@ -1574,8 +1574,59 @@ No. Client-side merging connects the raw document streams without re-compressing
     author: "PDFTools4U Team",
     coverImage: "https://images.unsplash.com/photo-1542626991-cbc4e32524cc?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "rotate-pdf",
-    published: false,
-    content: ``
+    published: true,
+    content: `
+  Rotating a PDF page is useful when a scanned document opens sideways or an individual page has the wrong orientation. You can permanently rotate selected pages in your browser and download a corrected copy without uploading the original document to a server.
+
+  ## Why PDF Pages Have the Wrong Orientation
+
+  Pages may be stored sideways after scanning, photographing a document, combining files from different sources, or exporting a presentation. A viewer can sometimes rotate a page temporarily, but that display setting does not change the PDF itself. Permanent rotation updates the page orientation so it opens correctly in other readers, browsers, and print workflows.
+
+  ## How to Rotate PDF Pages Permanently
+
+  1. **Open the [Rotate PDF tool](/rotate-pdf).** The tool runs locally in your browser.
+  2. **Select your PDF.** Drag the file into the upload area or choose it from your device.
+  3. **Choose the pages to rotate.** Rotate one page, a range of pages, or the complete document.
+  4. **Set the direction.** Choose clockwise or counterclockwise rotation and review the page previews.
+  5. **Apply and download.** Create the corrected PDF and save it to your device.
+
+  ## Rotate Only the Pages That Need It
+
+  You do not need to rotate an entire document when only a few scans are sideways. Select the affected page numbers and leave the remaining pages unchanged. This is especially useful for forms where a signature page or an ID scan was added in a different orientation.
+
+  ## Keep Your Documents Private
+
+  PDFTools4U processes the file inside your browser. The source PDF is not uploaded to a remote processing queue, and the corrected file is generated locally before download. This is useful for identity documents, invoices, contracts, and other files that should remain on your device.
+
+  ## Common PDF Rotation Problems
+
+  - **The page looks rotated but prints sideways:** Use permanent page rotation instead of only changing the viewer display.
+  - **Only some pages are wrong:** Select individual pages or a page range rather than rotating the whole document.
+  - **The download does not open correctly:** Reopen the generated PDF in a second viewer and confirm the page orientation before sharing it.
+  - **Text appears upside down:** Try the opposite rotation direction and check the preview before exporting.
+
+  ## Frequently Asked Questions
+
+  <details>
+  <summary>Can I rotate just one PDF page?</summary>
+  Yes. Select the individual page, choose the rotation direction, and export the document with the other pages unchanged.
+  </details>
+
+  <details>
+  <summary>Will rotating a PDF reduce its quality?</summary>
+  No. Rotating a page changes its orientation and does not require re-encoding the text or images.
+  </details>
+
+  <details>
+  <summary>Can I rotate a PDF on my phone?</summary>
+  Yes. The browser-based tool works on modern mobile browsers without installing a separate application.
+  </details>
+
+  <details>
+  <summary>Are my PDF files uploaded?</summary>
+  No. Processing takes place locally in your browser, so the source file remains on your device.
+  </details>
+  `
   },
 
   // Cluster 5: Image Formats & Mobile Compatibility

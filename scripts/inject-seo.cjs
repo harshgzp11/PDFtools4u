@@ -38,9 +38,10 @@ function extractSeoData() {
 
   blogIds.forEach((idMatch) => {
     const blockStart = idMatch.index;
-    const nextBlock = blogDataContent.indexOf('\n  },\n  {', blockStart);
+    const nextBlock = blogDataContent.indexOf('\n  },', blockStart);
     const blockEnd = nextBlock >= 0 ? nextBlock : blogDataContent.indexOf('\n  }\n]', blockStart);
     const block = blogDataContent.slice(blockStart, blockEnd >= 0 ? blockEnd : undefined);
+    if (!/published:\s*true/.test(block)) return;
     const title = block.match(/title:\s*['"]([^'"]+)['"]/);
     const excerpt = block.match(/excerpt:\s*['"]([^'"]+)['"]/);
     const metaTitle = block.match(/metaTitle:\s*['"]([^'"]+)['"]/);
