@@ -1571,7 +1571,7 @@ No. Client-side merging connects the raw document streams without re-compressing
     excerpt: "Fix upside-down scans by permanently rotating specific PDF pages and saving the new orientation.",
     date: "September 17, 2026",
     lastUpdated: "September 17, 2026",
-    author: "PDFTools4U Team",
+    author: "PDFtools4u Team",
     coverImage: "https://images.unsplash.com/photo-1542626991-cbc4e32524cc?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "rotate-pdf",
     published: true,
@@ -1582,16 +1582,16 @@ No. Client-side merging connects the raw document streams without re-compressing
           "@type": "BlogPosting",
           "mainEntityOfPage": "https://www.pdftools4u.in/blog/rotate-pdf-pages-online-free",
           "headline": "How to Rotate PDF Pages Permanently Online for Free (Step-by-Step)",
-          "description": "Learn how to rotate PDF pages permanently online for free using PDFTools4U. Fix sideways or upside-down scanned documents without server uploads.",
+          "description": "Learn how to rotate PDF pages permanently online for free using PDFtools4u. Fix sideways or upside-down scanned documents without server uploads.",
           "image": "https://images.unsplash.com/photo-1542626991-cbc4e32524cc?auto=format&fit=crop&q=80&w=1000",
           "author": {
             "@type": "Organization",
-            "name": "PDFTools4U",
+            "name": "PDFtools4u",
             "url": "https://www.pdftools4u.in"
           },
           "publisher": {
             "@type": "Organization",
-            "name": "PDFTools4U",
+            "name": "PDFtools4u",
             "url": "https://www.pdftools4u.in",
             "logo": {
               "@type": "ImageObject",
@@ -1622,7 +1622,7 @@ No. Client-side merging connects the raw document streams without re-compressing
             },
             {
               "@type": "Question",
-              "name": "Is it safe to rotate confidential documents with PDFTools4U?",
+              "name": "Is it safe to rotate confidential documents with PDFtools4u?",
               "acceptedAnswer": { "@type": "Answer", "text": "Yes. Processing takes place locally in your browser, so the source PDF is not uploaded to a remote processing queue." }
             },
             {
@@ -1639,7 +1639,7 @@ No. Client-side merging connects the raw document streams without re-compressing
 
 Have you ever opened a scanned document, a contract, or a presentation only to find that some pages are upside down or sideways? It is a frustrating but common issue. Fortunately, you do not need expensive software like Adobe Acrobat to fix it.
 
-In this guide, you will learn **how to rotate PDF pages permanently online for free** using [PDFTools4U](/rotate-pdf). Whether you need to fix a single upside-down page or rotate an entire multi-page document, the browser-based PDF tool keeps the process private and simple.
+In this guide, you will learn **how to rotate PDF pages permanently online for free** using [PDFtools4u](/rotate-pdf). Whether you need to fix a single upside-down page or rotate an entire multi-page document, the browser-based PDF tool keeps the process private and simple.
 
 ## Why Do PDF Pages Need Rotation?
 
@@ -1671,7 +1671,7 @@ Click the rotation action to apply the new orientation to the selected pages. Th
 
 Download the corrected file directly to your device. No registration is required.
 
-## Why Choose PDFTools4U for Modifying PDFs?
+## Why Choose PDFtools4u for Modifying PDFs?
 
 ### 1. Private, Local Processing
 
@@ -1691,23 +1691,27 @@ Unlike a temporary viewer rotation, the downloaded PDF stores the corrected page
 
 ## Frequently Asked Questions
 
-### Can I rotate only one page in a PDF online?
-
+<details>
+<summary>Can I rotate only one page in a PDF online?</summary>
 Yes. Select an individual page thumbnail, rotate it, and leave the rest of the document untouched.
+</details>
 
-### Is it safe to rotate confidential documents with PDFTools4U?
-
+<details>
+<summary>Is it safe to rotate confidential documents with PDFtools4u?</summary>
 Yes. Processing takes place locally in your browser, so the source PDF is not uploaded to a remote processing queue.
+</details>
 
-### How do I save a rotated PDF so it stays that way?
-
+<details>
+<summary>How do I save a rotated PDF so it stays that way?</summary>
 Apply the rotation and download the result. The corrected page orientation is saved in the generated PDF and remains in place across viewers and devices.
+</details>
 
-### Can I rotate PDFs on my smartphone?
-
+<details>
+<summary>Can I rotate PDFs on my smartphone?</summary>
 Yes. The browser-based tool works on modern mobile browsers, so you can correct document orientation from an iPhone, iPad, or Android device.
+</details>
 
-### What other tools are available on PDFTools4U?
+### What other tools are available on PDFtools4u?
 
 - [Compress PDF](/compress-pdf) to reduce file size.
 - [PDF Converter](/pdf-converter) to convert between common document formats.
