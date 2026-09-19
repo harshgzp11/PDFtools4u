@@ -88,6 +88,7 @@ const TermsOfService = lazyWithRetry(() => import('./pages/TermsOfService'));
 // Blog System
 const BlogList = lazyWithRetry(() => import('./pages/BlogList'));
 const BlogPost = lazyWithRetry(() => import('./pages/BlogPost'));
+const BlogCluster = lazyWithRetry(() => import('./pages/BlogCluster'));
 
 // Sitemap / Hub
 const AllTools = lazyWithRetry(() => import('./pages/AllTools'));
@@ -260,6 +261,8 @@ function App() {
             <Suspense fallback={<ToolSkeleton />}>
               {activeTool === 'blog' ? (
                 <BlogList onNavigate={navigateTo} />
+              ) : activeTool.startsWith('blog/topic/') ? (
+                <BlogCluster slug={activeTool.split('/')[2]} onNavigate={navigateTo} />
               ) : activeTool.startsWith('blog/') ? (
                 <BlogPost id={activeTool.split('/')[1]} onNavigate={navigateTo} />
               ) : (() => {

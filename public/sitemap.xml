@@ -5,13 +5,13 @@
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
   <url>
     <loc>https://www.pdftools4u.in</loc>
-    <lastmod>2026-09-07</lastmod>
+    <lastmod>2026-09-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://www.pdftools4u.in/blog</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-09-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -125,7 +125,7 @@
   </url>
   <url>
     <loc>https://www.pdftools4u.in/excel-to-pdf</loc>
-    <lastmod>2026-08-17</lastmod>
+    <lastmod>2026-09-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -197,7 +197,7 @@
   </url>
   <url>
     <loc>https://www.pdftools4u.in/crop-pdf</loc>
-    <lastmod>2026-08-17</lastmod>
+    <lastmod>2026-09-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -269,7 +269,7 @@
   </url>
   <url>
     <loc>https://www.pdftools4u.in/convert-image</loc>
-    <lastmod>2026-08-28</lastmod>
+    <lastmod>2026-09-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -346,25 +346,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.pdftools4u.in/blog/bank-statement-pdf-to-excel-converter</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.pdftools4u.in/blog/convert-salary-slip-pdf-to-editable-word</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://www.pdftools4u.in/blog/compress-form-16-pdf-under-500kb</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.pdftools4u.in/blog/pdf-invoice-to-excel-spreadsheet</loc>
     <lastmod>2026-08-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -388,32 +370,8 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.pdftools4u.in/blog/make-signature-background-transparent</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://www.pdftools4u.in/blog/marksheet-pdf-to-jpg-converter</loc>
     <lastmod>2026-08-17</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.pdftools4u.in/blog/degree-certificate-scanned-pdf-to-ocr</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.pdftools4u.in/blog/convert-pdf-to-editable-word-without-losing-layout</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.pdftools4u.in/blog/scanned-pdf-to-text-ocr-online-free</loc>
-    <lastmod>2026-08-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -437,60 +395,6 @@
   </url>
   <url>
     <loc>https://www.pdftools4u.in/blog/iphone-heic-to-pdf-jpg-converter</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.pdftools4u.in/blog/webp-to-png-pdf-converter</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.pdftools4u.in/blog/combine-mobile-camera-photos-into-one-pdf</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.pdftools4u.in/blog/pdf-pages-to-high-dpi-png-images</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.pdftools4u.in/blog/top-5-free-apps-scan-documents-india</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.pdftools4u.in/blog/compress-pdf-mac-preview-alternative</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.pdftools4u.in/blog/how-to-sign-pdf-document-online-free</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.pdftools4u.in/blog/extract-text-from-image-online</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.pdftools4u.in/blog/protect-pdf-with-password-encryption</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.pdftools4u.in/blog/convert-json-to-csv-excel</loc>
     <lastmod>2026-08-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -560,5 +464,53 @@
     <lastmod>2026-09-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.pdftools4u.in/blog/topic/developer-tools</loc>
+    <lastmod>2026-09-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pdftools4u.in/blog/topic/government-exams-academics</loc>
+    <lastmod>2026-09-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pdftools4u.in/blog/topic/identity-kyc-corporate</loc>
+    <lastmod>2026-09-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pdftools4u.in/blog/topic/financial-parsing-developer</loc>
+    <lastmod>2026-09-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pdftools4u.in/blog/topic/file-optimization-image-conversion</loc>
+    <lastmod>2026-09-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pdftools4u.in/blog/topic/financial-tax</loc>
+    <lastmod>2026-09-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pdftools4u.in/blog/topic/government-id</loc>
+    <lastmod>2026-09-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pdftools4u.in/blog/topic/productivity</loc>
+    <lastmod>2026-09-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
 </urlset>

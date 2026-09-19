@@ -46,7 +46,6 @@ function getSlugToFileMap() {
     const appContent = fs.readFileSync(path.join(SRC_DIR, 'App.jsx'), 'utf-8');
     
     // 1. Map Component Name -> File Path
-    // Example: const PdfMerger = lazyWithRetry(() => import('./tools/PdfMerger'));
     const importRegex = /const\s+([A-Za-z0-9_]+)\s*=\s*lazyWithRetry\(\(\)\s*=>\s*import\(['"](\.\/[^'"]+)['"]\)\)/g;
     const componentToFile = {};
     
@@ -102,6 +101,7 @@ function extractUrls() {
   // Fallback files
   const appJsxPath = path.join(SRC_DIR, 'App.jsx');
   const blogDataPath = path.join(SRC_DIR, 'lib/blogData.js');
+  const blogClustersPath = path.join(SRC_DIR, 'lib/blogClusters.js');
 
   // Static root URLs
   urls.push({ route: '/', filePath: path.join(SRC_DIR, 'components/Dashboard.jsx') });
@@ -132,6 +132,7 @@ function extractUrls() {
     const block = blogBlocks[i];
     const idMatch = block.match(/^([^'"]+)['"]/);
     if (!idMatch) continue;
+    if (!/published:\s*true/.test(block)) continue;
     
     const slug = idMatch[1];
     let overrideDate = null;
@@ -164,6 +165,16 @@ function extractUrls() {
     });
   }
 
+  // Add canonical topic hub URLs
+  const clusterContent = fs.readFileSync(blogClustersPath, 'utf-8');
+  const clusterMatches = [...clusterContent.matchAll(/\{\s*slug:\s*'([^']+)',\s*label:\s*'[^']+',\s*title:\s*'[^']+',\s*description:\s*'[^']+'/g)];
+  clusterMatches.forEach(match => {
+    urls.push({
+      route: '/blog/topic/' + match[1],
+      filePath: blogClustersPath,
+    });
+  });
+
   // Remove duplicates based on route
   const uniqueUrls = [];
   const seen = new Set();
@@ -194,6 +205,9 @@ function generateSitemap() {
     if (route === '/') {
       priority = '1.0';
       changefreq = 'daily';
+    } else if (route.startsWith('/blog/topic/')) {
+      priority = '0.8';
+      changefreq = 'weekly';
     } else if (route.startsWith('/blog/')) {
       priority = '0.7';
       changefreq = 'monthly';

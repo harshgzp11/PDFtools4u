@@ -3,6 +3,7 @@ import { SEO_HEAD, HOMEPAGE_SEO } from '../lib/seoHead';
 import { SEO_CONTENT, CATEGORY_FALLBACKS } from '../lib/seoContent';
 import { DOMAINS, POPULAR_TOOL_IDS } from '../lib/toolConfig';
 import { BLOG_POSTS } from '../lib/blogData';
+import { getBlogCluster } from '../lib/blogClusters';
 
 const BASE_URL = 'https://www.pdftools4u.in';
 const OG_IMAGE = `${BASE_URL}/images/og-card.png`;
@@ -80,8 +81,9 @@ export default function SEOHead({ activeTool }) {
     // ─── Route Classification ────────────────────────────────
 
     const isBlogList = activeTool === 'blog';
-    const isBlogPost = activeTool && activeTool.startsWith('blog/');
-    const isBlogRoute = isBlogList || isBlogPost;
+    const isBlogTopic = activeTool && activeTool.startsWith('blog/topic/');
+    const isBlogPost = activeTool && activeTool.startsWith('blog/') && !isBlogTopic;
+    const isBlogRoute = isBlogList || isBlogTopic || isBlogPost;
     const isStaticPage = ['privacy', 'terms', 'about', 'contact', 'security'].includes(activeTool);
     const isToolPage = activeTool && !isBlogRoute && !isStaticPage;
     const isHomepage = !activeTool;
@@ -90,7 +92,16 @@ export default function SEOHead({ activeTool }) {
 
     let title, description, canonicalUrl, ogImage, ogType, noindex;
 
-    if (isBlogPost) {
+    if (isBlogTopic) {
+      const topicSlug = activeTool.split('/')[2];
+      const cluster = getBlogCluster(topicSlug);
+      title = cluster ? `${cluster.title} | ${SITE_NAME}` : `Topic Not Found — ${SITE_NAME}`;
+      description = cluster?.description || 'This blog topic does not exist.';
+      canonicalUrl = `${BASE_URL}/${activeTool}`;
+      ogImage = OG_IMAGE;
+      ogType = 'website';
+      noindex = !cluster;
+    } else if (isBlogPost) {
       const slug = activeTool.split('/')[1];
       const post = BLOG_POSTS.find(p => p.id === slug && p.published);
       title = post ? (post.metaTitle || `${post.title} — ${SITE_NAME} Blog`) : `Article Not Found — ${SITE_NAME}`;
@@ -372,6 +383,39 @@ export default function SEOHead({ activeTool }) {
     }
 
     // ────────────────────────────────────────────────────────
+    // BLOG TOPIC HUB SCHEMAS
+    // ────────────────────────────────────────────────────────
+    if (isBlogTopic) {
+      const topicSlug = activeTool.split('/')[2];
+      const cluster = getBlogCluster(topicSlug);
+
+      if (cluster) {
+        const topicUrl = `${BASE_URL}/${activeTool}`;
+        addJsonLd({
+          '@context': 'https://schema.org',
+          '@graph': [
+            {
+              '@type': 'BreadcrumbList',
+              'itemListElement': [
+                { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': BASE_URL },
+                { '@type': 'ListItem', 'position': 2, 'name': 'Blog', 'item': `${BASE_URL}/blog` },
+                { '@type': 'ListItem', 'position': 3, 'name': cluster.label, 'item': topicUrl },
+              ],
+            },
+            {
+              '@type': 'CollectionPage',
+              '@id': `${topicUrl}#collection`,
+              'name': cluster.title,
+              'description': cluster.description,
+              'url': topicUrl,
+              'isPartOf': { '@type': 'WebPage', 'name': `Blog — ${SITE_NAME}`, 'url': `${BASE_URL}/blog` },
+            },
+          ],
+        });
+      }
+    }
+
+    // ────────────────────────────────────────────────────────
     // BLOG POST SCHEMAS
     // ────────────────────────────────────────────────────────
     if (isBlogPost) {
@@ -399,14 +443,19 @@ export default function SEOHead({ activeTool }) {
           isoDate = new Date().toISOString();
         }
 
-        // BlogPosting schema
-        schemas.push({
+        // Build one complete canonical article entity per blog URL.
+        const articleSchema = {
           '@type': 'BlogPosting',
+          '@id': `${canonicalUrl}#article`,
           'headline': post.title,
-          'description': post.excerpt,
+          'description': post.metaDescription || post.excerpt,
           'image': [post.coverImage || OG_IMAGE],
           'datePublished': isoDate,
-          'dateModified': post.lastUpdated ? new Date(post.lastUpdated).toISOString() : isoDate,
+          'dateModified': post.reviewedDate
+            ? new Date(post.reviewedDate).toISOString()
+            : post.lastUpdated
+              ? new Date(post.lastUpdated).toISOString()
+              : isoDate,
           'author': {
             '@type': 'Organization',
             'name': post.author || SITE_NAME,
@@ -418,18 +467,61 @@ export default function SEOHead({ activeTool }) {
             '@id': canonicalUrl,
           },
           'url': canonicalUrl,
-        });
+        };
+        schemas.push(articleSchema);
 
         // Inject custom schemas from post (HowTo, FAQPage, etc.) if present
         if (post.customSchema) {
           const customData = post.customSchema;
           // If customSchema has @graph, merge its entries into our schemas array
           if (customData['@graph'] && Array.isArray(customData['@graph'])) {
-            customData['@graph'].forEach(schema => schemas.push(schema));
+            customData['@graph'].forEach(schema => {
+              if (schema['@type'] === 'Article' || schema['@type'] === 'BlogPosting') {
+                Object.assign(articleSchema, schema);
+                articleSchema['@type'] = 'BlogPosting';
+                articleSchema['@id'] = `${canonicalUrl}#article`;
+                articleSchema['headline'] = post.title;
+                articleSchema['description'] = post.metaDescription || post.excerpt;
+                articleSchema['datePublished'] = isoDate;
+                articleSchema['dateModified'] = post.reviewedDate
+                  ? new Date(post.reviewedDate).toISOString()
+                  : post.lastUpdated
+                    ? new Date(post.lastUpdated).toISOString()
+                    : isoDate;
+                articleSchema['mainEntityOfPage'] = {
+                  '@type': 'WebPage',
+                  '@id': canonicalUrl,
+                };
+                articleSchema['url'] = canonicalUrl;
+                articleSchema['image'] = [post.coverImage || OG_IMAGE];
+              } else {
+                schemas.push(schema);
+              }
+            });
           } else {
             // Single schema object — strip @context (will be at wrapper level)
             const { '@context': _, ...schemaBody } = customData;
-            schemas.push(schemaBody);
+            if (schemaBody['@type'] === 'Article' || schemaBody['@type'] === 'BlogPosting') {
+              Object.assign(articleSchema, schemaBody);
+              articleSchema['@type'] = 'BlogPosting';
+              articleSchema['@id'] = `${canonicalUrl}#article`;
+              articleSchema['headline'] = post.title;
+              articleSchema['description'] = post.metaDescription || post.excerpt;
+              articleSchema['datePublished'] = isoDate;
+              articleSchema['dateModified'] = post.reviewedDate
+                ? new Date(post.reviewedDate).toISOString()
+                : post.lastUpdated
+                  ? new Date(post.lastUpdated).toISOString()
+                  : isoDate;
+              articleSchema['mainEntityOfPage'] = {
+                '@type': 'WebPage',
+                '@id': canonicalUrl,
+              };
+              articleSchema['url'] = canonicalUrl;
+              articleSchema['image'] = [post.coverImage || OG_IMAGE];
+            } else {
+              schemas.push(schemaBody);
+            }
           }
         }
 

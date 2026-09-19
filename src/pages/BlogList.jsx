@@ -1,34 +1,12 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { ArrowRight, BookOpen, Calendar, User, Clock } from 'lucide-react';
-import { BLOG_POSTS, BLOG_CATEGORIES } from '../lib/blogData';
+import { BLOG_POSTS } from '../lib/blogData';
+import { BLOG_CLUSTERS } from '../lib/blogClusters';
 
 export default function BlogList({ onNavigate }) {
-  const [activeCategory, setActiveCategory] = useState(() => {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('category') || 'All';
-  });
-
-  useEffect(() => {
-    const handlePopState = () => {
-      const params = new URLSearchParams(window.location.search);
-      setActiveCategory(params.get('category') || 'All');
-    };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
-
-  const handleCategoryChange = (category) => {
-    setActiveCategory(category);
-    const newUrl = category === 'All' 
-      ? window.location.pathname 
-      : `${window.location.pathname}?category=${encodeURIComponent(category)}`;
-    window.history.pushState({}, '', newUrl);
-  };
-
   const filteredPosts = useMemo(() => {
-    if (activeCategory === 'All') return BLOG_POSTS;
-    return BLOG_POSTS.filter(post => post.cluster === activeCategory);
-  }, [activeCategory]);
+    return BLOG_POSTS.filter(post => post.published);
+  }, []);
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 py-12 md:py-20 animate-in fade-in">
@@ -48,27 +26,23 @@ export default function BlogList({ onNavigate }) {
       {/* Category Filter Navbar */}
       <div className="sticky top-16 z-20 bg-white/90 backdrop-blur-md py-4 mb-8 border-y border-gray-100 flex items-center justify-start sm:justify-center overflow-x-auto gap-2 custom-scrollbar">
         <button
-          onClick={() => handleCategoryChange('All')}
-          className={`px-4 py-2 rounded-full whitespace-nowrap font-bold text-sm transition-colors ${
-            activeCategory === 'All' 
-              ? 'bg-gray-900 text-white' 
-              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-          }`}
+          onClick={() => onNavigate('blog')}
+          className="px-4 py-2 rounded-full whitespace-nowrap bg-gray-900 text-sm font-bold text-white transition-colors"
         >
           All
         </button>
-        {BLOG_CATEGORIES.map(category => (
-          <button
-            key={category}
-            onClick={() => handleCategoryChange(category)}
-            className={`px-4 py-2 rounded-full whitespace-nowrap font-bold text-sm transition-colors ${
-              activeCategory === category 
-                ? 'bg-indigo-600 text-white' 
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
+        {BLOG_CLUSTERS.map(cluster => (
+          <a
+            key={cluster.slug}
+            href={`/blog/topic/${cluster.slug}`}
+            onClick={(event) => {
+              event.preventDefault();
+              onNavigate(`blog/topic/${cluster.slug}`);
+            }}
+            className="whitespace-nowrap rounded-full bg-gray-100 px-4 py-2 text-sm font-bold text-gray-600 transition-colors hover:bg-indigo-100 hover:text-indigo-700"
           >
-            {category}
-          </button>
+            {cluster.label}
+          </a>
         ))}
       </div>
 
@@ -120,7 +94,15 @@ export default function BlogList({ onNavigate }) {
               </div>
               
               <h3 className={`text-2xl font-bold text-gray-900 mb-3 transition-colors ${post.published ? 'group-hover:text-indigo-600' : ''}`}>
-                {post.title}
+                <a
+                  href={`/blog/${post.id}`}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    onNavigate(`blog/${post.id}`);
+                  }}
+                >
+                  {post.title}
+                </a>
               </h3>
               
               <p className="text-gray-600 leading-relaxed mb-6">

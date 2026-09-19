@@ -61,6 +61,15 @@ Desktop.ini
 .env.*
 !.env.example
 
+# Private Search Console exports
+Chart.csv
+Countries.csv
+Devices.csv
+Filters.csv
+Pages.csv
+Queries.csv
+Search appearance.csv
+
 # Root-level generated test artifacts
 sample-*.pdf
 sample-*.docx
@@ -91,3 +100,6 @@ scratch*
 .agents/
 .cursor/
 .claude/
+
+
+BLOG_SEO_AUDIT.md

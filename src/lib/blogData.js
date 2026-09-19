@@ -1,16 +1,20 @@
 export const BLOG_CATEGORIES = [
-  "Government & ID",
+  "Developer Tools",
+  "Govt Exams & Academics",
+  "Indian Taxes, KYC & Corporate Identity",
+  "Financial Parsing & Developer Utilities",
+  "General File Optimization & Image Conversions",
   "Financial & Tax",
-  "Academic",
-  "Productivity",
-  "Mobile & Media",
-  "Developer Tools"
+  "Government & ID",
+  "Productivity"
 ];
 
 export const BLOG_POSTS = [
   {
     id: "server-side-vs-client-side-processing",
     title: "Server-Side vs Client-Side Processing: Architecture Guide",
+    metaTitle: "Client-Side vs Server-Side Processing Guide",
+    metaDescription: "Compare client-side and server-side document processing, including privacy, speed, WebAssembly, costs, browser limits, and the best architecture for each use case.",
     cluster: "Developer Tools",
     excerpt: "Explore server-side vs client-side processing in modern web apps. Discover how browser-based architecture uses WebAssembly to process documents 100% privately.",
     date: "September 6, 2026",
@@ -238,10 +242,17 @@ Yes. Once the web application's static assets, scripts, and WebAssembly modules 
   {
     id: "resize-passport-photo-signature-online",
     title: "How to Resize Passport Photo and Signature to Exact Pixels (Online & 100% Private)",
+    metaTitle: "Resize Passport Photos and Signatures to Exact Pixels",
+    metaDescription: "Resize passport photos and signatures to exact pixel sizes for visa, passport, and exam forms. Crop correctly and process files privately in your browser.",
     cluster: "Govt Exams & Academics",
     excerpt: "Crop, resize, and convert passport photos and signatures to exact pixel dimensions (600x600, 200x230, 350x350, 140x60) for visa applications, passport portals, and exam forms without image distortion or server uploads.",
     date: "August 6, 2026",
     lastUpdated: "August 28, 2026",
+    reviewedDate: "September 19, 2026",
+    sources: [
+      { label: "Passport Seva", url: "https://passportindia.gov.in/" },
+      { label: "U.S. Department of State visa photo requirements", url: "https://travel.state.gov/content/travel/en/us-visas/visa-information-resources/photos.html" }
+    ],
     author: "PDFTools4U Team",
     coverImage: "https://images.unsplash.com/photo-1544813545-4827b64fcacb?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "resize-image",
@@ -389,10 +400,17 @@ Pixel dimensions define the total number of pixels along the width and height on
   {
     id: "driving-license-pdf-to-high-quality-jpg",
     title: "How to Convert Driving License PDF to High-Res JPG for KYC (100% Private)",
+    metaTitle: "Convert Driving Licence PDF to JPG for KYC",
+    metaDescription: "Convert a digital driving licence PDF to a clear JPG for KYC, banking, and car rentals. Export high-resolution images without uploading the document.",
     cluster: "Indian Taxes, KYC & Corporate Identity",
     excerpt: "Convert digital Driving License PDFs (Parivahan Sarathi / DigiLocker) to high-resolution 300 DPI JPG/JPEG images for instant online KYC, banking verification, and car rentals without cloud server uploads.",
     date: "August 7, 2026",
     lastUpdated: "August 28, 2026",
+    reviewedDate: "September 19, 2026",
+    sources: [
+      { label: "Parivahan Sewa", url: "https://parivahan.gov.in/" },
+      { label: "DigiLocker", url: "https://www.digilocker.gov.in/" }
+    ],
     author: "PDFTools4U Team",
     coverImage: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "pdf-to-jpg",
@@ -579,10 +597,16 @@ If your bank statement is a physical piece of paper that you scanned, standard c
   {
     id: "compress-form-16-pdf-under-500kb",
     title: "How to Compress Form 16 PDF Under 500KB for ITR (100% Private)",
+    metaTitle: "Compress Form 16 PDF Under 500KB for ITR",
+    metaDescription: "Compress Form 16 below 500KB for income tax portal uploads while keeping text readable. Use browser-based processing without cloud uploads.",
     cluster: "Indian Taxes, KYC & Corporate Identity",
     excerpt: "Your Form 16 PDF is too large for the income tax portal? Learn how to compress it under 500KB without losing quality or breaking digital signatures.",
     date: "August 10, 2026",
     lastUpdated: "August 28, 2026",
+    reviewedDate: "September 19, 2026",
+    sources: [
+      { label: "Income Tax Department e-Filing portal", url: "https://www.incometax.gov.in/iec/foportal/" }
+    ],
     author: "PDFTools4U Team",
     coverImage: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "compress-pdf",
@@ -667,6 +691,12 @@ Form 16 contains your PAN number, salary details, and tax deduction information 
 <summary>Can I compress Form 16 on my phone?</summary>
   Yes. Our tool works in any modern mobile browser (Chrome, Safari) — no app download needed.
 </details>
+
+### Form 16 Compression Checklist
+
+Before uploading, compare the final file with the current portal notice. Confirm that the PDF is below the maximum size, opens without an error, contains every page, and still shows the PAN, assessment year, employer details, and tax figures clearly. Keep the original Form 16 unchanged so you can return to it if the portal rejects the compressed copy.
+
+If the PDF contains a cryptographic signature, treat the compressed file as a new copy and verify whether the receiving portal requires the original signed file. A visual signature can remain visible while the underlying digital signature becomes invalid after a PDF rewrite.
 `
   },
   {
@@ -685,6 +715,8 @@ Form 16 contains your PAN number, salary details, and tax deduction information 
   {
     id: "extract-images-from-pdf-receipt",
     title: "How to Extract and Save Images from PDF Receipts (For Expense Claims & Tax Filing)",
+    metaTitle: "Extract Images from PDF Receipts for Expense Claims",
+    metaDescription: "Extract receipt photos, stamps, and payment images from PDF files for expense claims and tax records. Save high-quality images locally in your browser.",
     cluster: "Financial Parsing & Developer Utilities",
     excerpt: "Extract embedded receipt photos, merchant stamps, and payment slips from digital PDF invoices and bills in original high resolution for expense management apps (Expensify, Zoho Expense, Concur) without cloud uploads.",
     date: "August 12, 2026",
@@ -837,10 +869,17 @@ Yes. The tool processes multi-page documents simultaneously and lets you downloa
   {
     id: "compress-pdf-to-100kb-200kb",
     title: "How to Compress PDF to 100KB/200KB for Govt Exam Portals",
+    metaTitle: "Compress PDF to 100KB or 200KB for Exams",
+    metaDescription: "Compress certificates, signatures, and exam documents to 100KB or 200KB for UPSC, SSC, and Indian application portals without losing readability.",
     cluster: "Govt Exams & Academics",
     excerpt: "Learn the easiest ways to compress your documents under 100KB or 200KB to meet strict portal requirements in India like UPSC and SSC.",
     date: "August 13, 2026",
     lastUpdated: "August 28, 2026",
+    reviewedDate: "September 19, 2026",
+    sources: [
+      { label: "Union Public Service Commission", url: "https://upsc.gov.in/" },
+      { label: "Staff Selection Commission", url: "https://ssc.gov.in/" }
+    ],
     author: "PDFTools4U Team",
     coverImage: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "compress-pdf",
@@ -868,15 +907,38 @@ Here is the step-by-step guide to reducing your file size without losing readabi
 4. **Verify the Size:** Once compressed, check the file size. If it's under the portal's limit (e.g., 95KB), you're good to go!
 
 Using these simple steps, you can bypass the "File too large" error and submit your applications stress-free!
+
+### How to Check a 100KB or 200KB PDF Before Uploading
+
+Do not stop after the compressor reports success. Open the downloaded file in a PDF reader, zoom into small text and seals, and check every page in the correct order. Then inspect the file properties to confirm that it is actually below the portal limit. If the result is unreadable, start with a higher-quality source scan and remove blank pages before applying stronger compression.
+
+Portal limits can change between notifications, departments, and application stages. Always use the current official instructions as the final authority, including any minimum file-size, page-count, password, or filename rules.
+
+### Why a PDF May Still Be Too Large
+
+Scanned PDFs are usually collections of high-resolution images rather than selectable text. A single color page photographed in poor lighting can be larger than several pages of native text. Blank borders, duplicate pages, embedded thumbnails, and unnecessary metadata can also increase the final size.
+
+For the best result, remove blank pages first, crop large empty borders, and start with a clear scan. If the portal accepts JPG instead of PDF, converting a simple image document may produce a smaller upload. If the portal requires PDF, compare the compressed output against the original page by page and do not sacrifice the readability of names, roll numbers, seals, or signatures just to reach an arbitrary target.
+
+### Troubleshooting Portal Rejections
+
+If the upload fails after compression, confirm the file extension, exact KB range, page count, password protection, and filename rules. Some portals reject files below a minimum size as well as files above a maximum size. Re-download the output instead of renaming a partially downloaded file, and test the PDF in a second reader before submitting it again.
     `
   },
   {
     id: "combine-multiple-marksheets-into-one-pdf",
     title: "How to Merge Multiple Marksheets Into One PDF Safely",
+    metaTitle: "Merge Semester Marksheets into One PDF",
+    metaDescription: "Merge semester marksheets into one ordered PDF for exams, admissions, and job applications. Check page order, size limits, and document quality.",
     cluster: "Govt Exams & Academics",
     excerpt: "Need to submit all your semester marksheets as a single file? Learn how to merge them in the correct chronological order for UPSC, SSC & university portals.",
     date: "August 14, 2026",
     lastUpdated: "August 28, 2026",
+    reviewedDate: "September 19, 2026",
+    sources: [
+      { label: "Union Public Service Commission", url: "https://upsc.gov.in/" },
+      { label: "Staff Selection Commission", url: "https://ssc.gov.in/" }
+    ],
     author: "PDFTools4U Team",
     coverImage: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "pdf-merge",
@@ -962,6 +1024,12 @@ Your academic records contain personal information including your roll number, d
 <summary>Can I change the order after uploading?</summary>
   Yes, simply drag the thumbnails to rearrange them before clicking Merge.
 </details>
+
+### Recommended Marksheet Order
+
+Use the order requested by the receiving institution. If no order is specified, place the earliest semester first, followed by later semesters, then the consolidated marksheet, provisional certificate, and supporting documents. Rename files before uploading them so names such as 01-semester-1.pdf and 02-semester-2.pdf make the intended order easy to verify.
+
+After merging, check that no page is upside down, cropped, duplicated, or missing. A merged PDF can be technically valid while still failing a manual verification review if the certificate header, roll number, seal, or signature is cut off.
 `
   },
   {
@@ -1067,10 +1135,17 @@ Once you have your transparent signature PNG:
   {
     id: "marksheet-pdf-to-jpg-converter",
     title: "How to Convert Marksheet PDF to JPG Online Free (100% Private & High-Res)",
+    metaTitle: "Convert Marksheet PDF to High-Resolution JPG",
+    metaDescription: "Convert 10th, 12th, and college marksheet PDFs to clear JPG images for admissions, scholarships, and job forms with private browser processing.",
     cluster: "Govt Exams & Academics",
     excerpt: "Convert 10th, 12th, and college degree marksheet PDFs (DigiLocker, CBSE, State Board) to high-resolution 300 DPI JPG images for college admissions, scholarship forms, and job applications without cloud uploads.",
     date: "August 16, 2026",
     lastUpdated: "August 28, 2026",
+    reviewedDate: "September 19, 2026",
+    sources: [
+      { label: "DigiLocker", url: "https://www.digilocker.gov.in/" },
+      { label: "National Testing Agency", url: "https://nta.ac.in/" }
+    ],
     author: "PDFTools4U Team",
     coverImage: "https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "pdf-to-jpg",
@@ -1276,6 +1351,8 @@ By using high-quality conversion algorithms and understanding the limitations of
   {
     id: "split-pdf-pages-online-free",
     title: "How to Split PDF Pages Online Separately for Free",
+    metaTitle: "Split PDF Pages Online and Extract Pages",
+    metaDescription: "Split a PDF into separate pages or extract selected page ranges for free. Process confidential documents locally in your browser.",
     cluster: "General File Optimization & Image Conversions",
     excerpt: "Easily separate a large PDF document into individual pages or extract only the specific sections you need.",
     date: "August 18, 2026",
@@ -1423,6 +1500,8 @@ You must unlock the document first using the [Unlock PDF](/unlock-pdf) tool by p
   {
     id: "merge-pdf-files-into-one-master-document",
     title: "How to Merge Multiple PDF Files Online Free",
+    metaTitle: "Merge Multiple PDF Files Online Free",
+    metaDescription: "Combine multiple PDF files into one organized document for applications, reports, and records. Merge pages privately with no watermark.",
     cluster: "General File Optimization & Image Conversions",
     excerpt: "Organize your workflow by combining dozens of related PDF documents into a single, cohesive file.",
     date: "August 18, 2026",
@@ -1567,6 +1646,8 @@ No. Client-side merging connects the raw document streams without re-compressing
   {
     id: "rotate-pdf-pages-online-free",
     title: "How to Rotate PDF Pages Permanently Online for Free (Step-by-Step)",
+    metaTitle: "Rotate PDF Pages Permanently Online",
+    metaDescription: "Rotate sideways or upside-down PDF pages permanently online. Fix selected pages, save the corrected document, and keep files on your device.",
     cluster: "General File Optimization & Image Conversions",
     excerpt: "Fix upside-down scans by permanently rotating specific PDF pages and saving the new orientation.",
     date: "September 17, 2026",
@@ -1727,6 +1808,8 @@ Do not let upside-down pages slow down your workflow. Open the [Rotate PDF tool]
   {
     id: "iphone-heic-to-pdf-jpg-converter",
     title: "How to Convert iPhone HEIC Photos to JPG or PDF Free",
+    metaTitle: "Convert iPhone HEIC Photos to JPG or PDF",
+    metaDescription: "Convert iPhone HEIC photos to JPG or PDF for websites, Windows, and government portals. Change formats privately without uploading your images.",
     cluster: "General File Optimization & Image Conversions",
     excerpt: "Resolve compatibility issues by converting Apple's proprietary HEIC image format into universally accepted PDF or JPG files.",
     date: "August 23, 2026",
@@ -1760,6 +1843,24 @@ If you are constantly annoyed by HEIC files and don't mind sacrificing a little 
 4. Change the selection from *High Efficiency* to **Most Compatible**.
 
 Now, every photo you take will be a standard JPG, ready to be uploaded anywhere without conversion!
+
+### HEIC Conversion Tips
+
+Keep the original HEIC file until you confirm that the JPG or PDF opens correctly on the destination device. JPG is usually the better choice for a single image upload, while PDF is more useful when several photos need to be submitted as one document. If a portal rejects the output, check its maximum dimensions, file-size limit, color requirements, and accepted extension before converting again.
+
+HEIC files can contain wide-gamut or high-efficiency image data that changes slightly when exported to JPG. For forms and document uploads, inspect small text, signatures, and faces at 100% zoom before submitting the converted file.
+
+### HEIC, JPG, and PDF: Which Format Should You Choose?
+
+Choose JPG when a website asks for one image and specifies a maximum width, height, or file size. Choose PDF when you need to submit several pages together or preserve a document-style sequence. PNG is useful for graphics that require lossless edges or transparency, but it is often larger than JPG for photographs.
+
+If the converted file is too large, reduce dimensions before lowering quality aggressively. A smaller, sharp image is usually more useful for a form than a larger image with compression artifacts. Keep the filename simple, use the extension requested by the portal, and open the final file on the device where it will be uploaded.
+
+### Common HEIC Conversion Problems
+
+If the converter cannot open the file, confirm that the upload is the original .heic image and not a damaged email attachment or a thumbnail. Try the latest version of Chrome, Edge, Safari, or Firefox, and make sure the browser has enough free memory for large camera photos. For multiple images, convert them in smaller batches so the browser does not run out of memory.
+
+If colors look different after conversion, compare the result in another image viewer before deciding that the file is damaged. If a website still rejects the image, check whether it requires a specific color mode, maximum pixel dimensions, or a file size below a stated limit. Those portal rules matter more than the format conversion itself.
     `
   },
   {
@@ -1884,10 +1985,18 @@ Now, every photo you take will be a standard JPG, ready to be uploaded anywhere 
   {
     id: "resize-photo-signature-ssc-upsc",
     title: "How to Resize Photo and Signature for SSC, UPSC, and Govt Exam Forms (20KB – 50KB)",
+    metaTitle: "Resize SSC and UPSC Photo and Signature",
+    metaDescription: "Resize SSC and UPSC photos and signatures to the required pixels and KB limits. Prepare clear uploads for IBPS and PSC forms without cloud processing.",
     cluster: "Govt Exams & Academics",
     excerpt: "Learn the latest guidelines to crop, resize, and compress passport photos (20KB–50KB) and signatures (10KB–20KB) to exact pixel dimensions for SSC, UPSC, IBPS, and State PSC application forms without blurriness or cloud uploads.",
     date: "August 17, 2026",
     lastUpdated: "August 28, 2026",
+    reviewedDate: "September 19, 2026",
+    sources: [
+      { label: "Staff Selection Commission", url: "https://ssc.gov.in/" },
+      { label: "Union Public Service Commission", url: "https://upsc.gov.in/" },
+      { label: "Institute of Banking Personnel Selection", url: "https://www.ibps.in/" }
+    ],
     author: "PDFTools4U Team",
     coverImage: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "resize-image",
@@ -2033,10 +2142,18 @@ No. Most Indian government exam portals strictly mandate JPG / JPEG extensions. 
   {
     id: "compress-marksheet-certificate-pdf-100kb",
     title: "How to Compress and Resize PDF Documents for Government Exam Forms (UPSC, SSC, IBPS, NTA)",
+    metaTitle: "Compress Marksheet PDF to 100KB or 200KB",
+    metaDescription: "Compress marksheet and certificate PDFs to 50KB, 100KB, or 200KB for UPSC, SSC, IBPS, and NTA forms while keeping seals and text readable.",
     cluster: "Govt Exams & Academics",
     excerpt: "Learn how to compress and resize PDF certificates, caste certificates, and marksheets to exact KB limits (50KB, 100KB, 200KB) for UPSC, SSC, IBPS, and State PSC application forms without losing clarity.",
     date: "August 17, 2026",
     lastUpdated: "August 28, 2026",
+    reviewedDate: "September 19, 2026",
+    sources: [
+      { label: "Staff Selection Commission", url: "https://ssc.gov.in/" },
+      { label: "Union Public Service Commission", url: "https://upsc.gov.in/" },
+      { label: "National Testing Agency", url: "https://nta.ac.in/" }
+    ],
     author: "PDFTools4U Team",
     coverImage: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "compress-pdf",
@@ -2160,15 +2277,28 @@ Most rejections happen if the file is below the minimum limit (e.g., smaller tha
 <summary>Can I combine both sides of my Aadhaar card into a single PDF?</summary>
 Yes. Use the [Merge PDF](/pdf-merge) tool to combine front and back scans into a single page or multi-page PDF, then compress it under 300 KB.
 </details>
+
+### Check the Portal Rules Before Compressing
+
+File-size limits are not universal. The same certificate may have different requirements for UPSC, SSC, IBPS, NTA, or a state portal, and a notification may specify both minimum and maximum sizes. Record the required format and limit before compression, and keep the original scan so you can create another version if the first output is too blurry or too small.
+
+For identity documents, verify that the final PDF still shows the full name, document number, issue details, photograph, and official seal where the form requires them. Do not upload a document just because it meets the KB limit if compression has made those details unreadable.
 `
   },
   {
     id: "convert-aadhaar-pan-card-pdf-to-jpg",
     title: "How to Convert Aadhaar and PAN Card PDF to High-Res JPG Safely for KYC",
+    metaTitle: "Convert Aadhaar or PAN PDF to JPG for KYC",
+    metaDescription: "Convert Aadhaar and PAN PDFs to clear JPG images for KYC and bank verification. Process identity documents locally without cloud uploads.",
     cluster: "Indian Taxes, KYC & Corporate Identity",
     excerpt: "Convert your password-protected e-Aadhaar and e-PAN PDF documents to high-resolution JPG/JPEG for online KYC, bank verification, and portal uploads without uploading identity documents to cloud servers.",
     date: "August 17, 2026",
     lastUpdated: "August 28, 2026",
+    reviewedDate: "September 19, 2026",
+    sources: [
+      { label: "UIDAI", url: "https://uidai.gov.in/" },
+      { label: "Income Tax Department", url: "https://www.incometax.gov.in/iec/foportal/" }
+    ],
     author: "PDFTools4U Team",
     coverImage: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "pdf-to-jpg",
@@ -2287,15 +2417,28 @@ Most KYC verification failures occur when image resolution is too low (
 <summary>Can I convert only the front card portion of my e-Aadhaar?</summary>
 Yes. Convert the PDF to JPG first, then open [Crop Image](/crop-image) to snip the exact front or back card section.
 </details>
+
+### Identity-Document Safety Checklist
+
+Use the current instructions from the bank or KYC provider to decide whether a masked Aadhaar, full Aadhaar, PAN card, or a particular page is required. Confirm the accepted file type, maximum size, image resolution, and whether both sides must be submitted. Avoid emailing the converted image or leaving it in a shared downloads folder after submission.
+
+Because portal requirements can change, the password examples and size suggestions in this guide are starting points rather than guarantees. Check the issuing authority or receiving portal before preparing a final upload.
 `
   },
   {
     id: "remove-password-from-salary-slip-bank-statement",
     title: "How to Remove Password from Salary Slips and Bank Statements Online (100% Private)",
+    metaTitle: "Remove Password from Salary Slip and Bank PDF",
+    metaDescription: "Learn how to remove a password from salary slips and bank statement PDFs using the authorized password. Process financial files locally in your browser.",
     cluster: "Indian Taxes, KYC & Corporate Identity",
     excerpt: "Learn how to securely unlock and remove passwords from salary slips and bank statements (SBI, HDFC, ICICI, Axis) without uploading sensitive financial data to cloud servers.",
     date: "August 17, 2026",
     lastUpdated: "August 28, 2026",
+    reviewedDate: "September 19, 2026",
+    sources: [
+      { label: "Reserve Bank of India", url: "https://www.rbi.org.in/" },
+      { label: "Income Tax Department e-Filing portal", url: "https://www.incometax.gov.in/iec/foportal/" }
+    ],
     author: "PDFTools4U Team",
     coverImage: "https://images.unsplash.com/photo-1614064641913-a53b51614742?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "unlock-pdf",
@@ -2416,15 +2559,28 @@ Yes. As the authorized account holder, removing password protection to fulfill l
 <summary>Can I remove a password if I don't know it?</summary>
 No. For security and privacy reasons, client-side unlock tools require you to provide the original authorization password once to decrypt the file.
 </details>
+
+### What to Do After Unlocking a Financial PDF
+
+Open the downloaded copy and confirm that every page is present, the statement period is correct, and account numbers and totals are readable. Submit the unprotected copy only through the intended secure portal, and delete extra copies from shared or public devices afterward. Keep the original encrypted file as your source record.
+
+Password formats differ by bank, employer, and statement date. The examples above are common patterns, not universal rules. If a password fails, obtain the current instructions from the issuing bank or payroll provider rather than repeatedly guessing.
 `
   },
   {
     id: "combine-handwritten-assignment-pages-pdf",
     title: "How to Combine Multiple Handwritten Assignment Pages into a Single PDF (Under 2MB / 5MB)",
+    metaTitle: "Convert Handwritten Assignment Photos to PDF",
+    metaDescription: "Convert handwritten assignment photos into one readable PDF under 2MB or 5MB for Google Classroom, Moodle, Canvas, and university portals.",
     cluster: "Govt Exams & Academics",
     excerpt: "Learn how to convert phone photos of handwritten assignment sheets into a single, high-contrast, compressed PDF under 2MB or 5MB for Google Classroom, Moodle, Canvas, and university portal submissions.",
     date: "August 17, 2026",
     lastUpdated: "August 28, 2026",
+    reviewedDate: "September 19, 2026",
+    sources: [
+      { label: "Google Classroom Help", url: "https://support.google.com/edu/classroom/" },
+      { label: "Canvas Student Guide", url: "https://community.canvaslms.com/t5/Student-Guide/tkb-p/student" }
+    ],
     author: "PDFTools4U Team",
     coverImage: "https://images.unsplash.com/photo-1456735190827-d1262f71b8a3?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "jpg-to-pdf",
@@ -2555,6 +2711,8 @@ No. Document-focused compression prioritizes sharp edge contrast for handwriting
   {
     id: "pretty-print-clean-json-online",
     title: "How to Pretty-Print and Clean Messy JSON Code Online Instantly (100% Private)",
+    metaTitle: "Pretty-Print and Validate JSON Online",
+    metaDescription: "Format, validate, and clean messy JSON online. Fix syntax errors and beautify API payloads locally without uploading sensitive developer data.",
     cluster: "Financial Parsing & Developer Utilities",
     excerpt: "Format, validate, and beautify messy or minified JSON code online. Fix syntax errors and pretty-print nested JSON payloads locally inside your browser without uploading sensitive API data to cloud servers.",
     date: "August 17, 2026",
@@ -2713,6 +2871,8 @@ The official JSON specification (RFC 8259) explicitly requires double quotation 
   {
     id: "convert-excel-to-pdf-without-cutting-off-columns",
     title: "Convert Excel to PDF Without Cutting Columns (Free & Private)",
+    metaTitle: "Convert Excel to PDF Without Cutting Columns",
+    metaDescription: "Export Excel sheets to clean multi-page PDFs without clipped columns. Set layout and page breaks while keeping workbook data private in your browser.",
     cluster: "Financial & Tax",
     excerpt: "Learn how to export Excel spreadsheets to PDF without splitting columns. Convert large XLSX sheets into clean multi-page PDFs with 100% browser privacy.",
     date: "August 30, 2026",
@@ -2889,6 +3049,8 @@ No. The conversion creates a visual snapshot of your calculated values, formatti
   {
     id: "html-to-pdf-with-css",
     title: "Convert HTML to PDF with CSS: Keep Styles Free & Private",
+    metaTitle: "Convert HTML to PDF with CSS and Styles",
+    metaDescription: "Convert HTML and CSS templates to PDF while preserving fonts, colors, backgrounds, and layout. Render files privately in your browser.",
     cluster: "Developer Tools",
     excerpt: "Learn how to convert HTML code and templates to PDF without losing CSS styling, fonts, or background colors with 100% browser privacy.",
     date: "September 3, 2026",
@@ -2902,8 +3064,8 @@ No. The conversion creates a visual snapshot of your calculated values, formatti
       "@graph": [
         {
           "@type": "Article",
-          "@id": "https://www.pdftools4u.in",
-          "mainEntityOfPage": "https://www.pdftools4u.in",
+          "@id": "https://www.pdftools4u.in/blog/html-to-pdf-with-css#article",
+          "mainEntityOfPage": "https://www.pdftools4u.in/blog/html-to-pdf-with-css",
           "headline": "Convert HTML to PDF with CSS: Keep Styles Free & Private",
           "description": "Learn how to convert HTML code and templates to PDF without losing CSS styling, fonts, or background colors with 100% browser privacy.",
           "datePublished": "2026-09-03",
@@ -3144,6 +3306,8 @@ Because our tool runs 100% locally in your browser for privacy, third-party URLs
   {
     id: "convert-html-to-multi-page-pdf-page-breaks",
     title: "Convert Multi-Page HTML to PDF Without Splitting Text",
+    metaTitle: "Convert HTML to PDF with Page Breaks",
+    metaDescription: "Create multi-page PDFs from HTML without split text, broken tables, or orphaned headings. Use CSS page-break rules with private browser rendering.",
     cluster: "Developer Tools",
     excerpt: "Learn how to convert multi-page HTML to PDF seamlessly. Master HTML to PDF page break CSS rules to prevent text split and fix broken tables in your exports.",
     date: "September 6, 2026",
@@ -3385,10 +3549,17 @@ Yes. Because PDFtools4u processes files 100% locally inside your browser memory 
   {
     id: "permanently-redact-text-in-pdf-online",
     title: "Permanently Redact Text in PDF Online Free (100% Private)",
+    metaTitle: "Permanently Redact Text in PDF Online",
+    metaDescription: "Permanently remove sensitive text, PAN numbers, and bank details from PDFs. Apply secure redactions locally before sharing the document.",
     cluster: "Government & ID",
     excerpt: "Learn how to permanently redact text in PDF online free. Black out sensitive bank details, PAN numbers, and legal data with 100% client-side privacy.",
     date: "September 11, 2026",
     lastUpdated: "September 11, 2026",
+    reviewedDate: "September 19, 2026",
+    sources: [
+      { label: "NIST Privacy Framework", url: "https://www.nist.gov/privacy-framework" },
+      { label: "U.S. National Archives records management", url: "https://www.archives.gov/records-mgmt" }
+    ],
     author: "PDFTools4U Team",
     coverImage: "https://images.unsplash.com/photo-1618044733300-9472054094ee?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "redact-pdf",

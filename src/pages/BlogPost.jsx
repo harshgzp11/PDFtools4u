@@ -2,10 +2,11 @@ import React, { useEffect, useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
-import { ArrowLeft, Calendar, User, Clock, ArrowRight, Zap, Folder, ShieldCheck, Share2, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Calendar, User, Clock, ArrowRight, Folder, ShieldCheck, Share2, ChevronDown } from 'lucide-react';
 import { BLOG_POSTS } from '../lib/blogData';
 import { DOMAINS } from '../lib/toolConfig';
 import { trackEvent } from '../lib/analytics';
+import { BLOG_INTENT_GUIDANCE } from '../lib/blogIntentGuidance';
 
 export default function BlogPost({ id, onNavigate }) {
   const post = BLOG_POSTS.find(p => p.id === id);
@@ -65,6 +66,10 @@ export default function BlogPost({ id, onNavigate }) {
   }
 
   const readTime = Math.ceil((post.content.split(' ').length || 1) / 200);
+  const relatedPosts = BLOG_POSTS
+    .filter(candidate => candidate.published && candidate.id !== post.id && candidate.cluster === post.cluster)
+    .slice(0, 3);
+  const intentGuidance = BLOG_INTENT_GUIDANCE[post.id];
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 py-12 animate-in fade-in">
@@ -88,6 +93,9 @@ export default function BlogPost({ id, onNavigate }) {
           <span className="flex items-center gap-1.5"><Calendar className="w-4 h-4" /> Published {post.date}</span>
           {post.lastUpdated && (
             <span className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-orange-500" /> Updated {post.lastUpdated}</span>
+          )}
+          {post.reviewedDate && (
+            <span className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-emerald-500" /> Reviewed {post.reviewedDate}</span>
           )}
           <span className="flex items-center gap-1.5"><User className="w-4 h-4" /> {post.author}</span>
           <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" /> {readTime} min read</span>
@@ -139,6 +147,47 @@ export default function BlogPost({ id, onNavigate }) {
         </ReactMarkdown>
       </article>
 
+      {intentGuidance && (
+        <section className="mx-auto mt-12 max-w-3xl border-t border-gray-200 pt-8" aria-labelledby="intent-guidance-heading">
+          <h2 id="intent-guidance-heading" className="mb-3 text-xl font-bold text-gray-900">{intentGuidance.heading}</h2>
+          <p className="mb-4 leading-relaxed text-gray-600">{intentGuidance.text}</p>
+          <ul className="grid gap-3 sm:grid-cols-2">
+            {intentGuidance.related.map(related => (
+              <li key={related.id}>
+                <a
+                  href={`/blog/${related.id}`}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    onNavigate(`blog/${related.id}`);
+                  }}
+                  className="block rounded-xl border border-gray-200 p-4 font-semibold text-blue-600 hover:border-blue-300 hover:bg-blue-50 hover:underline"
+                >
+                  {related.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {post.sources?.length > 0 && (
+        <section className="mx-auto mt-12 max-w-3xl border-t border-gray-200 pt-8" aria-labelledby="official-references-heading">
+          <h2 id="official-references-heading" className="mb-3 text-xl font-bold text-gray-900">Official references</h2>
+          <p className="mb-4 text-sm leading-relaxed text-gray-600">
+            Requirements can change. Check the current instructions on the relevant official portal before submitting a final document.
+          </p>
+          <ul className="list-disc space-y-2 pl-5 text-sm">
+            {post.sources.map(source => (
+              <li key={source.url}>
+                <a href={source.url} target="_blank" rel="noopener noreferrer" className="font-semibold text-blue-600 hover:underline">
+                  {source.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       {/* Bottom Tool CTA */}
       {targetTool && (
         <div className="mt-16 max-w-4xl mx-auto bg-gradient-to-br from-indigo-900 via-indigo-800 to-blue-900 rounded-[2rem] p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl relative overflow-hidden border border-indigo-700/50">
@@ -172,6 +221,28 @@ export default function BlogPost({ id, onNavigate }) {
             Launch Tool <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
+      )}
+
+      {relatedPosts.length > 0 && (
+        <section className="mt-16 max-w-3xl mx-auto border-t border-gray-200 pt-8" aria-labelledby="related-guides-heading">
+          <h2 id="related-guides-heading" className="text-2xl font-bold text-gray-900 mb-5">Related guides</h2>
+          <ul className="grid gap-3 sm:grid-cols-2">
+            {relatedPosts.map(relatedPost => (
+              <li key={relatedPost.id}>
+                <a
+                  href={`/blog/${relatedPost.id}`}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    onNavigate(`blog/${relatedPost.id}`);
+                  }}
+                  className="block rounded-xl border border-gray-200 p-4 font-semibold text-blue-600 hover:border-blue-300 hover:bg-blue-50 hover:underline"
+                >
+                  {relatedPost.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
 
       <div className="mt-12 pt-8 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4 max-w-3xl mx-auto">

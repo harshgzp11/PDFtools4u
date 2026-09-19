@@ -55,6 +55,16 @@ function extractSeoData() {
     };
   });
 
+  // Extract SEO metadata for canonical blog topic hubs
+  const clusterContent = fs.readFileSync(path.resolve(__dirname, '../src/lib/blogClusters.js'), 'utf-8');
+  const clusterMatches = [...clusterContent.matchAll(/\{\s*slug:\s*'([^']+)',\s*label:\s*'[^']+',\s*title:\s*'([^']+)',\s*description:\s*'([^']+)'/g)];
+  clusterMatches.forEach(match => {
+    seoData['/blog/topic/' + match[1]] = {
+      title: match[2] + ' | PDFTools4U',
+      description: match[3],
+    };
+  });
+
   return { seoData, defaultTitle, defaultDesc };
 }
 
