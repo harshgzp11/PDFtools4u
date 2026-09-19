@@ -1,7 +1,7 @@
 import React from 'react';
 import { ArrowRight, BookOpen, Calendar } from 'lucide-react';
 import { BLOG_POSTS } from '../lib/blogData';
-import { getBlogCluster } from '../lib/blogClusters';
+import { BLOG_CLUSTERS, getBlogCluster } from '../lib/blogClusters';
 
 export default function BlogCluster({ slug, onNavigate }) {
   const cluster = getBlogCluster(slug);

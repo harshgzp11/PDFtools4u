@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { SEO_HEAD, HOMEPAGE_SEO } from '../lib/seoHead';
 import { SEO_CONTENT, CATEGORY_FALLBACKS } from '../lib/seoContent';
 import { DOMAINS, POPULAR_TOOL_IDS } from '../lib/toolConfig';
@@ -24,18 +25,17 @@ const PUBLISHER = {
 
 /**
  * SEOHead — Centralized metadata & structured data engine for every route.
+ * Uses react-helmet-async (<Helmet>) for declarative head management while
+ * maintaining support for dynamic route computation and custom overrides.
  *
- * Handles: title, description, canonical, OG tags, Twitter cards, JSON-LD structured data.
- * All injected tags are cleaned up on unmount to prevent stale meta during SPA navigation.
- *
- * Route types handled:
- *   - Homepage (activeTool = null)
- *   - Tool pages (activeTool = 'compress-pdf', 'pdf-merge', etc.)
- *   - Blog list (activeTool = 'blog')
- *   - Blog posts (activeTool = 'blog/<slug>')
- *   - Static pages (activeTool = 'privacy', 'terms', 'about', 'contact')
+ * Props:
+ *   - activeTool?: string
+ *   - title?: string
+ *   - description?: string
+ *   - canonicalUrl?: string
+ *   - schema?: object | object[]
  */
-export default function SEOHead({ activeTool }) {
+export default function SEOHead({ activeTool, title: overrideTitle, description: overrideDescription, canonicalUrl: overrideCanonical, schema: overrideSchema }) {
   useEffect(() => {
     const injectedElements = [];
 
@@ -95,41 +95,41 @@ export default function SEOHead({ activeTool }) {
     if (isBlogTopic) {
       const topicSlug = activeTool.split('/')[2];
       const cluster = getBlogCluster(topicSlug);
-      title = cluster ? `${cluster.title} | ${SITE_NAME}` : `Topic Not Found — ${SITE_NAME}`;
-      description = cluster?.description || 'This blog topic does not exist.';
-      canonicalUrl = `${BASE_URL}/${activeTool}`;
+      title = overrideTitle || (cluster ? `${cluster.title} | ${SITE_NAME}` : `Topic Not Found — ${SITE_NAME}`);
+      description = overrideDescription || cluster?.description || 'This blog topic does not exist.';
+      canonicalUrl = overrideCanonical || `${BASE_URL}/${activeTool}`;
       ogImage = OG_IMAGE;
       ogType = 'website';
       noindex = !cluster;
     } else if (isBlogPost) {
       const slug = activeTool.split('/')[1];
       const post = BLOG_POSTS.find(p => p.id === slug && p.published);
-      title = post ? (post.metaTitle || `${post.title} — ${SITE_NAME} Blog`) : `Article Not Found — ${SITE_NAME}`;
-      description = post ? (post.metaDescription || post.excerpt) : 'This article is currently being written or does not exist.';
-      canonicalUrl = `${BASE_URL}/${activeTool}`;
+      title = overrideTitle || (post ? (post.metaTitle || `${post.title} — ${SITE_NAME} Blog`) : `Article Not Found — ${SITE_NAME}`);
+      description = overrideDescription || (post ? (post.metaDescription || post.excerpt) : 'This article is currently being written or does not exist.');
+      canonicalUrl = overrideCanonical || `${BASE_URL}/${activeTool}`;
       ogImage = post?.coverImage || OG_IMAGE;
       ogType = 'article';
       noindex = post?.noindex || false;
     } else if (isBlogList) {
       const seoData = SEO_HEAD['blog'];
-      title = seoData?.title || `Blog — ${SITE_NAME}`;
-      description = seoData?.description || HOMEPAGE_SEO.description;
-      canonicalUrl = `${BASE_URL}/blog`;
+      title = overrideTitle || seoData?.title || `Blog — ${SITE_NAME}`;
+      description = overrideDescription || seoData?.description || HOMEPAGE_SEO.description;
+      canonicalUrl = overrideCanonical || `${BASE_URL}/blog`;
       ogImage = OG_IMAGE;
       ogType = 'website';
       noindex = seoData?.noindex || false;
     } else if (activeTool) {
       const seoData = SEO_HEAD[activeTool] || HOMEPAGE_SEO;
-      title = seoData.title;
-      description = seoData.description;
-      canonicalUrl = `${BASE_URL}/${activeTool.toLowerCase()}`;
+      title = overrideTitle || seoData.title;
+      description = overrideDescription || seoData.description;
+      canonicalUrl = overrideCanonical || `${BASE_URL}/${activeTool.toLowerCase()}`;
       ogImage = OG_IMAGE;
       ogType = 'website';
       noindex = seoData.noindex || false;
     } else {
-      title = HOMEPAGE_SEO.title;
-      description = HOMEPAGE_SEO.description;
-      canonicalUrl = BASE_URL + '/';
+      title = overrideTitle || HOMEPAGE_SEO.title;
+      description = overrideDescription || HOMEPAGE_SEO.description;
+      canonicalUrl = overrideCanonical || (BASE_URL + '/');
       ogImage = OG_IMAGE;
       ogType = 'website';
       noindex = HOMEPAGE_SEO.noindex || false;
@@ -286,33 +286,25 @@ export default function SEOHead({ activeTool }) {
       });
       schemas.push({ '@type': 'BreadcrumbList', 'itemListElement': breadcrumbItems });
 
-      // WebApplication (enhanced with PriceSpecification)
+      // WebApplication schema following schema.org specification
       if (toolInfo) {
         const webApp = {
+          '@context': 'https://schema.org',
           '@type': 'WebApplication',
-          'name': `${toolInfo.name} — ${SITE_NAME}`,
+          'name': `PDFTools4U - ${toolInfo.name}`,
           'url': canonicalUrl,
-          'description': toolInfo.description,
-          'applicationCategory': 'UtilityApplication',
-          'operatingSystem': 'Any',
-          'browserRequirements': 'Requires a modern browser with JavaScript enabled',
+          'operatingSystem': 'All',
+          'applicationCategory': 'UtilitiesApplication',
+          'description': seoData?.description || toolInfo.description || '',
           'offers': {
             '@type': 'Offer',
             'price': '0',
-            'priceCurrency': 'INR',
-            'availability': 'https://schema.org/InStock',
-            'priceSpecification': {
-              '@type': 'PriceSpecification',
-              'price': '0',
-              'priceCurrency': 'USD',
-              'description': 'Completely free, no hidden charges.',
-            },
+            'priceCurrency': 'USD',
           },
         };
 
-        // Add feature list if seoContent provides features
-        if (toolContent?.features?.length) {
-          webApp.featureList = toolContent.features.join('; ');
+        if (finalToolContent?.features?.length) {
+          webApp.featureList = finalToolContent.features.join('; ');
         }
 
         schemas.push(webApp);
@@ -347,8 +339,10 @@ export default function SEOHead({ activeTool }) {
         });
       }
 
-      // Wrap all tool schemas in @graph
-      if (finalToolContent?.customSchema) {
+      // Wrap all tool schemas in @graph or prioritize overrideSchema
+      if (overrideSchema) {
+        addJsonLd(overrideSchema);
+      } else if (finalToolContent?.customSchema) {
         addJsonLd(finalToolContent.customSchema);
       } else if (schemas.length) {
         addJsonLd({ '@context': 'https://schema.org', '@graph': schemas });
@@ -567,7 +561,52 @@ export default function SEOHead({ activeTool }) {
         }
       });
     };
-  }, [activeTool]);
+  }, [activeTool, overrideTitle, overrideDescription, overrideCanonical, overrideSchema]);
 
-  return null; // This component only manages <head>, renders nothing
+  // Derive title, description, canonicalUrl for declarative <Helmet> integration
+  let computedTitle = overrideTitle;
+  let computedDesc = overrideDescription;
+  let computedCanonical = overrideCanonical;
+
+  if (!computedTitle || !computedDesc || !computedCanonical) {
+    if (activeTool && activeTool.startsWith('blog/topic/')) {
+      const cluster = getBlogCluster(activeTool.split('/')[2]);
+      if (!computedTitle) computedTitle = cluster ? `${cluster.title} | ${SITE_NAME}` : `Topic Not Found — ${SITE_NAME}`;
+      if (!computedDesc) computedDesc = cluster?.description || 'This blog topic does not exist.';
+      if (!computedCanonical) computedCanonical = `${BASE_URL}/${activeTool}`;
+    } else if (activeTool && activeTool.startsWith('blog/')) {
+      const slug = activeTool.split('/')[1];
+      const post = BLOG_POSTS.find(p => p.id === slug && p.published);
+      if (!computedTitle) computedTitle = post ? (post.metaTitle || `${post.title} — ${SITE_NAME} Blog`) : `Article Not Found — ${SITE_NAME}`;
+      if (!computedDesc) computedDesc = post ? (post.metaDescription || post.excerpt) : 'This article is currently being written or does not exist.';
+      if (!computedCanonical) computedCanonical = `${BASE_URL}/${activeTool}`;
+    } else if (activeTool === 'blog') {
+      const seoData = SEO_HEAD['blog'];
+      if (!computedTitle) computedTitle = seoData?.title || `Blog — ${SITE_NAME}`;
+      if (!computedDesc) computedDesc = seoData?.description || HOMEPAGE_SEO.description;
+      if (!computedCanonical) computedCanonical = `${BASE_URL}/blog`;
+    } else if (activeTool) {
+      const seoData = SEO_HEAD[activeTool] || HOMEPAGE_SEO;
+      if (!computedTitle) computedTitle = seoData.title;
+      if (!computedDesc) computedDesc = seoData.description;
+      if (!computedCanonical) computedCanonical = `${BASE_URL}/${activeTool.toLowerCase()}`;
+    } else {
+      if (!computedTitle) computedTitle = HOMEPAGE_SEO.title;
+      if (!computedDesc) computedDesc = HOMEPAGE_SEO.description;
+      if (!computedCanonical) computedCanonical = `${BASE_URL}/`;
+    }
+  }
+
+  return (
+    <Helmet prioritizeSeoTags>
+      <title>{computedTitle}</title>
+      <meta name="description" content={computedDesc} />
+      <link rel="canonical" href={computedCanonical} />
+      <meta property="og:title" content={computedTitle} />
+      <meta property="og:description" content={computedDesc} />
+      <meta property="og:url" content={computedCanonical} />
+      <meta name="twitter:title" content={computedTitle} />
+      <meta name="twitter:description" content={computedDesc} />
+    </Helmet>
+  );
 }

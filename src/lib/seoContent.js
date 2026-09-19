@@ -1452,6 +1452,12 @@ export const CATEGORY_FALLBACKS = {
       { key: "Data Privacy", value: "Zero Server Uploads / No Logging" },
       { key: "Pricing & Limits", value: "100% Free / Unlimited Usage" }
     ],
+    features: [
+      "100% Client-Side Processing: All operations run locally in browser memory via WebAssembly with zero server uploads.",
+      "Zero File Retention: Your confidential files and documents never leave your device, ensuring total privacy.",
+      "Preserves Full Quality: Clean vector output, formatting retention, and crystal clear rendering.",
+      "Completely Free & No Watermarks: Free forever with unlimited document conversions and no hidden subscription fees."
+    ],
     faq: [
       {
         q: "Are my files uploaded to a cloud server for processing?",
@@ -1496,6 +1502,12 @@ export const CATEGORY_FALLBACKS = {
       { key: "Supported Formats", value: "JPG, PNG, WebP, GIF" },
       { key: "Privacy Protocol", value: "Strictly Offline Processing" },
       { key: "Quality Retention", value: "Lossless (Bicubic Resampling)" }
+    ],
+    features: [
+      "100% Client-Side Processing: Client-side JavaScript & Canvas rendering ensures photos are never sent to remote servers.",
+      "Lossless Resolution & Sharpness: High-precision bicubic resampling preserves sharpness, color accuracy, and transparency.",
+      "Universal Format Support: Seamless conversion between JPG, PNG, WebP, and other popular image standards.",
+      "Completely Free & Uncapped: Edit and optimize as many images as needed with zero fees or watermarks."
     ],
     faq: [
       {
@@ -1542,6 +1554,12 @@ export const CATEGORY_FALLBACKS = {
       { key: "File Security", value: "Secure Ephemeral Processing" },
       { key: "Dependencies", value: "Zero Installations Required" }
     ],
+    features: [
+      "100% Client-Side / Zero File Uploads: Process private office files, financial statements, and contracts with total security.",
+      "High-Fidelity Document Rendering: Preserves tables, fonts, formatting, and page structures accurately.",
+      "Cross-Platform Compatibility: Converts seamlessly on desktop, mobile, and Chromebooks without Microsoft Office.",
+      "Completely Free: Unlimited document processing without subscription costs or watermarks."
+    ],
     faq: [
       {
         q: "Is my confidential business data secure during the conversion process?",
@@ -1586,6 +1604,12 @@ export const CATEGORY_FALLBACKS = {
       { key: "Processing Speed", value: "Instantaneous (No API Latency)" },
       { key: "Validation", value: "Real-time Syntax Parsing" },
       { key: "Privacy Standard", value: "Zero API Logging / Local Execution" }
+    ],
+    features: [
+      "100% Client-Side Execution: API tokens, source code, and JSON datasets are processed locally in RAM.",
+      "Real-Time Syntax Parsing: Instant formatting, minification, and conversion with zero server latency.",
+      "Large Payload Support: Handles heavy payloads and datasets leveraging your device's native CPU.",
+      "Completely Free & No Limits: Free for personal and commercial developer workflows with no rate limits."
     ],
     faq: [
       {

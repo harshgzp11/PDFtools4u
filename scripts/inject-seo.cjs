@@ -8,6 +8,7 @@ const BASE_URL = 'https://www.pdftools4u.in';
 // Helper to parse JS files for specific blocks (primitive but effective for static generation)
 function extractSeoData() {
   const seoData = {};
+  const toolMetadata = {};
   
   // 1. Parse seoHead.js
   const seoHeadContent = fs.readFileSync(path.resolve(__dirname, '../src/lib/seoHead.js'), 'utf-8');
@@ -19,11 +20,20 @@ function extractSeoData() {
   const defaultTitle = homeTitleMatch ? homeTitleMatch[1] : 'PDFtools4u';
   const defaultDesc = homeDescMatch ? homeDescMatch[1] : '';
 
+  const toolConfigContent = fs.readFileSync(path.resolve(__dirname, '../src/lib/toolConfig.js'), 'utf-8');
+  const toolMatches = [...toolConfigContent.matchAll(/\{\s*id:\s*['"]([^'"]+)['"],\s*name:\s*['"]([^'"]+)['"],\s*description:\s*['"]([^'"]+)['"]/g)];
+  toolMatches.forEach(match => {
+    toolMetadata['/' + match[1]] = {
+      name: match[2],
+      description: match[3],
+    };
+  });
+
   seoData['/'] = { title: defaultTitle, description: defaultDesc };
 
   // Extract SEO_HEAD items
-  const toolMatches = [...seoHeadContent.matchAll(/'([^']+)'\s*:\s*{\s*title:\s*['"]([^'"]+)['"]\s*,\s*description:\s*['"]([^'"]+)['"]/g)];
-  toolMatches.forEach(m => {
+  const seoHeadMatches = [...seoHeadContent.matchAll(/'([^']+)'\s*:\s*{\s*title:\s*['"]([^'"]+)['"]\s*,\s*description:\s*['"]([^'"]+)['"]/g)];
+  seoHeadMatches.forEach(m => {
     const slug = m[1];
     let route = '/' + slug;
     if (slug === 'blog') route = '/blog';
@@ -65,7 +75,7 @@ function extractSeoData() {
     };
   });
 
-  return { seoData, defaultTitle, defaultDesc };
+  return { seoData, defaultTitle, defaultDesc, toolMetadata };
 }
 
 function generateStaticRoutes() {
@@ -74,7 +84,7 @@ function generateStaticRoutes() {
     return;
   }
 
-  const { seoData, defaultTitle, defaultDesc } = extractSeoData();
+  const { seoData, defaultTitle, defaultDesc, toolMetadata } = extractSeoData();
   const template = fs.readFileSync(INDEX_PATH, 'utf-8');
 
   // Escape helpers
@@ -167,6 +177,26 @@ function generateStaticRoutes() {
         ]
       };
       const schemaTag = `  <script type="application/ld+json">\n${JSON.stringify(securityFaqSchema, null, 2)}\n  </script>`;
+      html = html.replace('</head>', `${schemaTag}\n  </head>`);
+    }
+
+    const tool = toolMetadata[route];
+    if (tool) {
+      const toolSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'WebApplication',
+        'name': `PDFTools4U - ${tool.name}`,
+        'url': `${BASE_URL}${route}`,
+        'operatingSystem': 'All',
+        'applicationCategory': 'UtilitiesApplication',
+        'description': data.description || tool.description,
+        'offers': {
+          '@type': 'Offer',
+          'price': '0',
+          'priceCurrency': 'USD',
+        },
+      };
+      const schemaTag = `  <script type="application/ld+json">${JSON.stringify(toolSchema).replace(/</g, '\\u003c')}</script>`;
       html = html.replace('</head>', `${schemaTag}\n  </head>`);
     }
 

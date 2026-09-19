@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import { ChevronDown, CheckCircle2, FileText, HelpCircle, Lightbulb, ArrowRight, ShieldCheck, Server, BookOpen } from 'lucide-react';
 import { SEO_CONTENT, CATEGORY_FALLBACKS } from '../../lib/seoContent';
@@ -51,17 +51,25 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
       why: fallback.getOverview(toolInfo.name),
       howTo: fallback.getHowTo(toolInfo.name),
       specs: fallback.specs,
-      features: [
-        "100% Secure & Private Processing: Document privacy is guaranteed. All file conversions are protected with end-to-end encryption and client-side processing.",
-        "Data Protection: Uploaded files are automatically deleted from server caches immediately after conversion."
+      features: fallback.features || [
+        "100% Client-Side / Zero File Uploads: Process private documents securely without external server transfers.",
+        "Zero File Retention: No files are permanently stored; operations run strictly within your browser.",
+        "Preserves Full Quality: Full vector clarity, exact font preservation, and crystal clear rendering.",
+        "Completely Free & No Watermarks: Unlimited document processing without subscription costs or watermarks."
       ],
       faq: fallback.faq
     };
   } else if (content && fallback) {
-    // Merge missing fields (like specs) into existing content
+    // Merge missing fields (like specs, features) into existing content
     content = {
       ...content,
       specs: content.specs || fallback.specs,
+      features: content.features?.length ? content.features : (fallback.features || [
+        "100% Client-Side Processing: WebAssembly and HTML5 Canvas keep documents private on your machine.",
+        "Zero Cloud Uploads: Sensitive information never leaves your device's memory.",
+        "High Fidelity Output: Clean vector and visual rendering with zero quality degradation.",
+        "100% Free Forever: No hidden fees, limits, watermarks, or account registration required."
+      ]),
       why: content.why || fallback.getOverview(toolInfo?.name || "Tool"),
       faq: content.faq?.length >= 7 ? content.faq : fallback.faq
     };
@@ -136,6 +144,40 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
           </div>
         </div>
       </div>
+
+      {/* Key Features Section */}
+      {content.features && content.features.length > 0 && (
+        <div className="py-6 max-w-4xl mx-auto">
+          <div className="flex items-center gap-3 mb-6 justify-center">
+            <div className="p-2.5 bg-emerald-50 text-emerald-600 rounded-xl">
+              <CheckCircle2 className="w-6 h-6" />
+            </div>
+            <h3 className="text-2xl font-bold text-gray-900 text-center">Key Features & Selling Points</h3>
+          </div>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {content.features.map((feature, idx) => {
+              const [heading, ...rest] = feature.split(':');
+              return (
+                <div key={idx} className="flex items-start gap-3 p-4 rounded-xl border border-gray-200/80 bg-white hover:border-emerald-200 hover:shadow-sm transition-all">
+                  <div className="p-1 text-emerald-600 flex-shrink-0 mt-0.5">
+                    <CheckCircle2 className="w-5 h-5" />
+                  </div>
+                  <div className="text-sm leading-relaxed text-gray-700">
+                    {rest.length > 0 ? (
+                      <>
+                        <span className="font-semibold text-gray-900">{heading}:</span>
+                        <span>{rest.join(':')}</span>
+                      </>
+                    ) : (
+                      <span className="font-medium text-gray-800">{feature}</span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Overview & Why Section */}
       <div className="py-8 md:py-10 max-w-4xl mx-auto">
@@ -274,24 +316,13 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
 }
 
 function FAQItem({ question, answer }) {
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
-    <div className="border-b border-gray-200 overflow-hidden transition-all hover:border-gray-300">
-      <button 
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-5 text-left focus:outline-none"
-      >
-        <span className="font-bold text-gray-900 pr-4">{question}</span>
-        <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
-      </button>
-      <div 
-        className={`transition-all duration-300 ease-in-out ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
-      >
-        <p className="p-5 pt-0 text-gray-600 leading-relaxed">
-          {answer}
-        </p>
-      </div>
-    </div>
+    <details className="group border-b border-gray-200 overflow-hidden transition-all hover:border-gray-300">
+      <summary className="flex w-full cursor-pointer list-none items-center justify-between p-5 text-left focus:outline-none [&::-webkit-details-marker]:hidden">
+        <span className="pr-4 font-bold text-gray-900">{question}</span>
+        <ChevronDown className="h-5 w-5 flex-shrink-0 text-gray-400 transition-transform duration-300 group-open:rotate-180" />
+      </summary>
+      <p className="p-5 pt-0 leading-relaxed text-gray-600">{answer}</p>
+    </details>
   );
 }
