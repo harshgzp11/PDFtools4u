@@ -466,6 +466,18 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://www.pdftools4u.in/blog/reduce-pdf-file-size-online-without-uploading</loc>
+    <lastmod>2026-09-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.pdftools4u.in/blog/pdf-format-converter-online-free</loc>
+    <lastmod>2026-09-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.pdftools4u.in/blog/topic/developer-tools</loc>
     <lastmod>2026-09-19</lastmod>
     <changefreq>weekly</changefreq>
@@ -512,11 +524,5 @@
     <lastmod>2026-09-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.pdftools4u.in/blog/reduce-pdf-file-size-online-without-uploading</loc>
-    <lastmod>2026-09-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
   </url>
 </urlset>
