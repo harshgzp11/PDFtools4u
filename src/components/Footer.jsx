@@ -80,8 +80,9 @@ export default function Footer({ onSelectTool }) {
           <p>&copy; {new Date().getFullYear()} PDFtools4u &mdash; Made with ❤️ for local-first users.</p>
           
           <div className="flex flex-wrap items-center justify-center gap-6">
-            <a href="/privacy" onClick={(e) => handleLinkClick(e, 'privacy')} className="hover:text-white transition-colors cursor-pointer">Privacy Policy</a>
-            <a href="/terms" onClick={(e) => handleLinkClick(e, 'terms')} className="hover:text-white transition-colors cursor-pointer">Terms of Service</a>
+            <a href="/privacy-policy" onClick={(e) => handleLinkClick(e, 'privacy-policy')} className="hover:text-white transition-colors cursor-pointer">Privacy Policy</a>
+            <a href="/terms-of-service" onClick={(e) => handleLinkClick(e, 'terms-of-service')} className="hover:text-white transition-colors cursor-pointer">Terms of Service</a>
+            <a href="/cookie-policy" onClick={(e) => handleLinkClick(e, 'cookie-policy')} className="hover:text-white transition-colors cursor-pointer">Cookie Policy</a>
             <a href="/about" onClick={(e) => handleLinkClick(e, 'about')} className="hover:text-white transition-colors cursor-pointer">About Us</a>
             <a href="/contact" onClick={(e) => handleLinkClick(e, 'contact')} className="hover:text-white transition-colors cursor-pointer">Contact Us</a>
             <a href="/blog" onClick={(e) => handleLinkClick(e, 'blog')} className="hover:text-white transition-colors cursor-pointer">Blog</a>

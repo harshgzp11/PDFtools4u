@@ -30,7 +30,7 @@ export default function TermsOfService() {
           <section>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">1. Acceptance of Terms</h2>
             <p>
-              By accessing or using PDFtools4u, you acknowledge that you have read, understood, and agreed to be bound by these Terms of Service, as well as our Privacy Policy. These Terms apply to all visitors, users, and others who access or use the website.
+              By accessing or using PDFtools4u, you acknowledge that you have read, understood, and agreed to be bound by these Terms of Service, as well as our <a href="/privacy-policy" className="text-blue-600 hover:underline font-medium">Privacy Policy</a> and <a href="/cookie-policy" className="text-blue-600 hover:underline font-medium">Cookie Policy</a>. These Terms apply to all visitors, users, and others who access or use the website.
             </p>
           </section>
 

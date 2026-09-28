@@ -84,6 +84,7 @@ const RtfToPdf = lazyWithRetry(() => import('./tools/RtfToPdf'));
 
 const PrivacyPolicy = lazyWithRetry(() => import('./pages/PrivacyPolicy'));
 const TermsOfService = lazyWithRetry(() => import('./pages/TermsOfService'));
+const CookiePolicy = lazyWithRetry(() => import('./pages/CookiePolicy'));
 
 // Blog System
 const BlogList = lazyWithRetry(() => import('./pages/BlogList'));
@@ -113,7 +114,11 @@ const URL_REDIRECTS = {
   // Short aliases for legal pages (footer links use these)
   'privacy': 'privacy-policy',
   'terms': 'terms-of-service',
+  'cookie': 'cookie-policy',
+  'cookies': 'cookie-policy',
 };
+
+const LEGAL_PAGE_SLUGS = ['privacy-policy', 'terms-of-service', 'cookie-policy', 'about', 'contact', 'security'];
 
 const TOOL_COMPONENTS = {
   'edit-pdf': PdfEditor,
@@ -174,6 +179,7 @@ const TOOL_COMPONENTS = {
   'rtf-to-pdf': RtfToPdf,
   'privacy-policy': PrivacyPolicy,
   'terms-of-service': TermsOfService,
+  'cookie-policy': CookiePolicy,
   'about': AboutUs,
   'contact': ContactUs,
   'all-tools': AllTools,
@@ -254,7 +260,7 @@ function App() {
         }} 
         onSelectTool={navigateTo}
         onSearch={(q) => { setSearchQuery(q); navigateTo(null); }}
-        isToolView={!!activeTool && activeTool !== 'blog' && !activeTool.startsWith('blog/') && !['privacy-policy', 'terms-of-service', 'about', 'contact', 'security'].includes(activeTool)}
+        isToolView={!!activeTool && activeTool !== 'blog' && !activeTool.startsWith('blog/') && !LEGAL_PAGE_SLUGS.includes(activeTool)}
       >
         {activeTool ? (
           <div className="relative flex-1 w-full flex flex-col">
@@ -295,8 +301,9 @@ function App() {
                           <ToolComponent onSelectTool={navigateTo} />
                         )}
                         
-                        {/* SEO Content Injection */}
-                        <ToolSEOContent toolId={toolId} onSelectTool={navigateTo} />
+                        {!LEGAL_PAGE_SLUGS.includes(toolId) && (
+                          <ToolSEOContent toolId={toolId} onSelectTool={navigateTo} />
+                        )}
                       </div>
                     </div>
                   );

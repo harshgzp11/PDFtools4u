@@ -37,7 +37,7 @@ function extractSeoData() {
     const slug = m[1];
     let route = '/' + slug;
     if (slug === 'blog') route = '/blog';
-    else if (['about', 'contact', 'privacy', 'terms'].includes(slug)) route = '/' + slug;
+    else if (['about', 'contact', 'privacy', 'terms', 'privacy-policy', 'terms-of-service', 'cookie-policy'].includes(slug)) route = '/' + slug;
     
     seoData[route] = { title: m[2], description: m[3] };
   });
@@ -92,6 +92,12 @@ function generateStaticRoutes() {
 
   Object.entries(seoData).forEach(([route, data]) => {
     if (route === '/') return; // index.html already has default SEO
+
+    const preserveStaticLegal = new Set(['/privacy-policy', '/terms-of-service', '/cookie-policy']);
+    if (preserveStaticLegal.has(route)) {
+      console.log(`Kept static legal HTML for: ${route}`);
+      return;
+    }
 
     let html = template;
 

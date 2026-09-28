@@ -84,7 +84,7 @@ export default function SEOHead({ activeTool, title: overrideTitle, description:
     const isBlogTopic = activeTool && activeTool.startsWith('blog/topic/');
     const isBlogPost = activeTool && activeTool.startsWith('blog/') && !isBlogTopic;
     const isBlogRoute = isBlogList || isBlogTopic || isBlogPost;
-    const isStaticPage = ['privacy', 'terms', 'about', 'contact', 'security'].includes(activeTool);
+    const isStaticPage = ['privacy-policy', 'terms-of-service', 'cookie-policy', 'about', 'contact', 'security'].includes(activeTool);
     const isToolPage = activeTool && !isBlogRoute && !isStaticPage;
     const isHomepage = !activeTool;
 
@@ -538,8 +538,9 @@ export default function SEOHead({ activeTool, title: overrideTitle, description:
       const pageNames = {
         'about': 'About Us',
         'contact': 'Contact Us',
-        'privacy': 'Privacy Policy',
-        'terms': 'Terms of Service',
+        'privacy-policy': 'Privacy Policy',
+        'terms-of-service': 'Terms of Service',
+        'cookie-policy': 'Cookie Policy',
         'security': 'Security & Architecture',
       };
 

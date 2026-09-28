@@ -110,6 +110,7 @@ function extractUrls() {
   urls.push({ route: '/contact', filePath: path.join(SRC_DIR, 'pages/ContactUs.jsx') });
   urls.push({ route: '/privacy-policy', filePath: path.join(SRC_DIR, 'pages/PrivacyPolicy.jsx') });
   urls.push({ route: '/terms-of-service', filePath: path.join(SRC_DIR, 'pages/TermsOfService.jsx') });
+  urls.push({ route: '/cookie-policy', filePath: path.join(SRC_DIR, 'pages/CookiePolicy.jsx') });
   urls.push({ route: '/all-tools', filePath: path.join(SRC_DIR, 'pages/AllTools.jsx') });
   urls.push({ route: '/security', filePath: path.join(SRC_DIR, 'pages/SecurityArchitecture.jsx') });
 

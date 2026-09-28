@@ -53,7 +53,7 @@ export default function PrivacyPolicy() {
           <section>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">4. Cookies and Tracking Technologies</h2>
             <p className="mb-3">
-              We may use cookies or similar technologies for analytics and essential site functionality. We do not currently serve advertisements or use Google AdSense.
+              We may use cookies or similar technologies for analytics and essential site functionality. We do not currently serve advertisements or use Google AdSense. For a full breakdown, see our <a href="/cookie-policy" className="text-blue-600 hover:underline font-medium">Cookie Policy</a>.
             </p>
             <p>
               If advertising or additional third-party tracking is introduced in the future, we will update this policy before those services are used.

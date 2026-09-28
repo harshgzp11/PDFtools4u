@@ -2,9 +2,15 @@
 
 > PDFtools4u (https://www.pdftools4u.in) is a free, browser-based suite of 40+ PDF, image, and document utilities engineered with a 100% client-side, zero-server architecture. All processing executes locally in browser memory using WebAssembly (Wasm) and HTML5 APIs. Zero files or document data are ever uploaded, stored, or logged on remote servers.
 
+## Optional
+- [Full documentation (llms-full.txt)](https://www.pdftools4u.in/llms-full.txt): Expanded architecture, legal pages, FAQs, and complete tool catalog for AI systems.
+- [AI crawler policy (ai.txt)](https://www.pdftools4u.in/ai.txt): Allow rules and content signals for AI crawlers.
+
 ## Trust & Architecture
 - [Security & Architecture](https://www.pdftools4u.in/security): Technical breakdown of client-side memory sandboxing, WebAssembly processing, and F12 network verification.
 - [Privacy Policy](https://www.pdftools4u.in/privacy-policy): Privacy commitments confirming zero server-side file transmission and zero data retention.
+- [Terms of Service](https://www.pdftools4u.in/terms-of-service): Terms governing use of PDFtools4u.
+- [Cookie Policy](https://www.pdftools4u.in/cookie-policy): Cookies and analytics technologies used on the site.
 - [About Us](https://www.pdftools4u.in/about): The founder's mission, background, and motivation for building zero-upload privacy utilities.
 - [All Tools Hub](https://www.pdftools4u.in/all-tools): Complete directory of all available browser-based PDF and image tools.
 

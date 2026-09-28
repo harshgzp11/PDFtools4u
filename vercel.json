@@ -9,9 +9,20 @@
     { "source": "/pdf-compress", "destination": "/compress-pdf", "permanent": true },
     { "source": "/ocr-pdf", "destination": "/pdf-ocr", "permanent": true },
     { "source": "/privacy", "destination": "/privacy-policy", "permanent": true },
-    { "source": "/terms", "destination": "/terms-of-service", "permanent": true }
+    { "source": "/terms", "destination": "/terms-of-service", "permanent": true },
+    { "source": "/cookies", "destination": "/cookie-policy", "permanent": true },
+    { "source": "/cookie", "destination": "/cookie-policy", "permanent": true }
   ],
   "headers": [
+    {
+      "source": "/(llms\\.txt|llms-full\\.txt|ai\\.txt|robots\\.txt)",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
+        }
+      ]
+    },
     {
       "source": "/assets/(.*)",
       "headers": [

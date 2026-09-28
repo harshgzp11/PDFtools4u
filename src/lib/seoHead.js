@@ -385,6 +385,12 @@ export const SEO_HEAD = {
     h1: 'Terms of Service',
     keywords: ['pdftools4u terms of service'],
   },
+  'cookie-policy': {
+    title: 'Cookie Policy – PDFtools4u',
+    description: 'Cookie Policy for PDFtools4u. Learn which cookies we use for analytics and site function. Document files are never stored in cookies.',
+    h1: 'Cookie Policy',
+    keywords: ['pdftools4u cookie policy'],
+  },
   'all-tools': {
     title: 'All PDF & Image Tools – PDFtools4u',
     description: 'Explore the complete collection of free, fast, and secure browser-based PDF and image utilities by PDFtools4u.',

@@ -1,0 +1,72 @@
+# ai.txt — PDFtools4u
+# Machine-readable policy for AI crawlers, assistants, and training systems.
+# Canonical: https://www.pdftools4u.in/ai.txt
+
+User-Agent: *
+Allow: /
+Content-Signal: search=yes, ai-train=yes, ai-input=yes
+
+User-Agent: GPTBot
+Allow: /
+
+User-Agent: ChatGPT-User
+Allow: /
+
+User-Agent: OAI-SearchBot
+Allow: /
+
+User-Agent: Google-Extended
+Allow: /
+
+User-Agent: Googlebot
+Allow: /
+
+User-Agent: ClaudeBot
+Allow: /
+
+User-Agent: anthropic-ai
+Allow: /
+
+User-Agent: Claude-Web
+Allow: /
+
+User-Agent: PerplexityBot
+Allow: /
+
+User-Agent: Applebot-Extended
+Allow: /
+
+User-Agent: CCBot
+Allow: /
+
+User-Agent: Bytespider
+Allow: /
+
+User-Agent: Amazonbot
+Allow: /
+
+User-Agent: meta-externalagent
+Allow: /
+
+User-Agent: FacebookBot
+Allow: /
+
+User-Agent: cohere-ai
+Allow: /
+
+User-Agent: Diffbot
+Allow: /
+
+# Discovery files
+Sitemap: https://www.pdftools4u.in/sitemap.xml
+llms-txt: https://www.pdftools4u.in/llms.txt
+llms-full-txt: https://www.pdftools4u.in/llms-full.txt
+
+# Legal
+Privacy-Policy: https://www.pdftools4u.in/privacy-policy
+Terms-of-Service: https://www.pdftools4u.in/terms-of-service
+Cookie-Policy: https://www.pdftools4u.in/cookie-policy
+
+# Publisher contact
+Contact: mailto:support@pdftools4u.in
+Host: https://www.pdftools4u.in
