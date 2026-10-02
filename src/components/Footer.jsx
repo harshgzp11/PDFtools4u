@@ -43,7 +43,7 @@ export default function Footer({ onSelectTool }) {
               </div>
             </a>
             <p className="text-gray-400 text-sm leading-relaxed">
-              Free, secure online PDF converter and editor. Convert, merge, compress, and edit PDFs directly in your browser with zero file uploads.
+              Free browser-based PDF converter and editor. Supported tools are designed to process selected files locally; see our Privacy Policy for analytics and other data use.
             </p>
           </div>
 

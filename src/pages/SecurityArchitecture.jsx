@@ -15,34 +15,21 @@ import {
 const FAQ_ITEMS = [
   {
     q: "How does pdftools4u.in process documents without uploading them to a remote server?",
-    a: "Our platform utilizes a client-side architecture powered by WebAssembly (Wasm) and modern JavaScript engines. When you select a document, it is loaded directly into your browser's local sandbox memory using the HTML5 File API. All conversions, compression, and edits execute directly on your device's CPU—zero document data or metadata is ever transmitted to an external server."
+    a: "Supported tools are designed to read selected files in the browser and process them on your device rather than upload them to PDFtools4u servers. The website still makes network requests for scripts, assets, and analytics. The exact behaviour can differ by tool, so check that tool's instructions and inspect your browser's Network panel if you need to verify a specific operation."
   },
   {
-    q: "Is pdftools4u.in compliant with corporate data regulations like GDPR and HIPAA?",
-    a: "Because PDFtools4u operates entirely on your local machine with zero server uploads, we never receive, store, or transmit your documents or Personally Identifiable Information (PII). By eliminating third-party data processing and cloud storage, using our tools avoids data processor liabilities and supports GDPR, HIPAA, and CCPA privacy standards by design (Privacy by Architecture)."
+    q: "Does using a local-processing tool make my organization compliant with privacy laws?",
+    a: "No. Local file processing may reduce the need to send a document to a processing server, but the site also uses analytics and third-party assets. Your organization's legal obligations depend on its use, settings, and circumstances. Review our Privacy Policy and consult qualified counsel for compliance advice."
   },
   {
     q: "Does using a browser-based PDF converter reduce file conversion speeds or output quality?",
-    a: "No. Local WebAssembly processing eliminates slow network upload and download bottlenecks. Conversions begin instantly without waiting in remote server queues, delivering full-fidelity output while utilizing your device's native computing performance."
+    a: "Processing on your device avoids uploading and downloading the selected file for supported operations, but speed and output quality depend on the tool, file, browser, and device. Review the result before relying on it."
   },
   {
-    q: "Are my password-protected and encrypted PDFs safe from interception here?",
-    a: "Yes. Decryption and encryption occur completely inside your browser's private memory sandbox. Your master passwords and document contents are never transmitted across the network, eliminating the transit security liabilities inherent in traditional server-side conversion services."
+    q: "How can I verify what a tool sends over the network?",
+    a: "Open your browser's developer tools and select the Network panel before using the tool. Compare requests and payloads before and during processing. A page can make requests for assets or analytics even when its file-processing code runs locally. Review the relevant tool's instructions and avoid using sensitive files if the network behaviour is unclear."
   }
 ];
-
-const FAQ_SCHEMA = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": FAQ_ITEMS.map(item => ({
-    "@type": "Question",
-    "name": item.q,
-    "acceptedAnswer": {
-      "@type": "Answer",
-      "text": item.a
-    }
-  }))
-};
 
 export default function SecurityArchitecture({ onSelectTool }) {
   const [openFaq, setOpenFaq] = useState(null);
@@ -58,19 +45,13 @@ export default function SecurityArchitecture({ onSelectTool }) {
 
   return (
     <div className="w-full h-full overflow-y-auto custom-scrollbar">
-      {/* Schema.org FAQPage JSON-LD */}
-      <script 
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_SCHEMA) }}
-      />
-
       <div className="max-w-5xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-gray-800 animate-in fade-in space-y-16">
         
         {/* Hero Section */}
         <header className="relative text-center max-w-3xl mx-auto pt-4">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-700 text-xs sm:text-sm font-semibold shadow-xs mb-6">
             <ShieldCheck className="w-4 h-4 text-emerald-600" />
-            <span>Zero Uploads • 100% Client-Side Architecture</span>
+            <span>Browser-Based File Processing</span>
           </div>
 
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight mb-6">
@@ -78,7 +59,7 @@ export default function SecurityArchitecture({ onSelectTool }) {
           </h1>
 
           <p className="text-lg text-gray-600 leading-relaxed">
-            Unlike traditional web utilities that force you to upload your sensitive files to a remote server, PDFtools4u is engineered differently. Our entire processing engine runs <strong className="text-gray-900 font-bold">locally within your browser's memory sandbox</strong>.
+            Supported PDF and image tools are designed to process selected files locally in your browser rather than upload them to PDFtools4u servers. The website also loads assets and analytics, which may send separate technical and usage information. Processing details can vary by tool.
           </p>
         </header>
 
@@ -99,34 +80,33 @@ export default function SecurityArchitecture({ onSelectTool }) {
                 <tr className="border-b border-gray-200 text-gray-500 font-semibold">
                   <th className="py-4 px-4">Architecture Metric</th>
                   <th className="py-4 px-4 text-emerald-700 bg-emerald-50/50 rounded-t-xl font-bold">PDFtools4u (Local)</th>
-                  <th className="py-4 px-4 text-gray-600">Traditional Cloud Utilities</th>
+                  <th className="py-4 px-4 text-gray-600">What this means</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 <tr>
                   <td className="py-4 px-4 font-medium text-gray-900">File Processing Location</td>
-                  <td className="py-4 px-4 text-emerald-700 bg-emerald-50/30 font-semibold">Local Browser RAM (Device CPU)</td>
-                  <td className="py-4 px-4 text-rose-600">Remote Cloud Server (AWS/GCP)</td>
+                  <td className="py-4 px-4 text-emerald-700 bg-emerald-50/30 font-semibold">Supported operations run in the browser</td>
+                  <td className="py-4 px-4 text-gray-600">Check each tool's instructions for its processing path</td>
                 </tr>
                 <tr>
                   <td className="py-4 px-4 font-medium text-gray-900">Data Upload Bandwidth</td>
-                  <td className="py-4 px-4 text-emerald-700 bg-emerald-50/30 font-semibold">0 Bytes (Zero network upload)</td>
-                  <td className="py-4 px-4 text-rose-600">Full document size sent over HTTP</td>
+                  <td className="py-4 px-4 text-emerald-700 bg-emerald-50/30 font-semibold">Designed not to upload selected files to our servers</td>
+                  <td className="py-4 px-4 text-gray-600">The site still requests assets and analytics</td>
                 </tr>
                 <tr>
                   <td className="py-4 px-4 font-medium text-gray-900">Storage & Retention</td>
-                  <td className="py-4 px-4 text-emerald-700 bg-emerald-50/30 font-semibold">0 Seconds (Wiped on tab close)</td>
-                  <td className="py-4 px-4 text-gray-600">1 to 24 Hours on remote disk queue</td>
+                  <td className="py-4 px-4 text-emerald-700 bg-emerald-50/30 font-semibold">No server-side file retention as part of supported local processing</td>
+                  <td className="py-4 px-4 text-gray-600">Browser memory and temporary object URLs are controlled by the browser</td>
                 </tr>
                 <tr>
                   <td className="py-4 px-4 font-medium text-gray-900">Decryption & Passwords</td>
-                  <td className="py-4 px-4 text-emerald-700 bg-emerald-50/30 font-semibold">Keys stay in isolated local memory</td>
-                  <td className="py-4 px-4 text-rose-600">Master passwords sent over network</td>
+                  <td className="py-4 px-4 text-emerald-700 bg-emerald-50/30 font-semibold">Check the specific tool's documented flow</td>
+                  <td className="py-4 px-4 text-gray-600">Do not assume all sites or tools handle credentials the same way</td>
                 </tr>
                 <tr>
-                  <td className="py-4 px-4 font-medium text-gray-900">Data Processor Risk (GDPR/HIPAA)</td>
-                  <td className="py-4 px-4 text-emerald-700 bg-emerald-50/30 font-semibold">Zero third-party liability</td>
-                  <td className="py-4 px-4 text-gray-600">Requires DPA & third-party trust</td>
+                  <td className="py-4 px-4 font-medium text-gray-900">Legal and compliance status</td>
+                  <td colSpan="2" className="py-4 px-4 text-gray-600">Local processing does not itself establish compliance. Assess your obligations and the site's analytics and other network activity.</td>
                 </tr>
               </tbody>
             </table>
@@ -141,7 +121,7 @@ export default function SecurityArchitecture({ onSelectTool }) {
             </div>
             <h3 className="text-2xl font-bold text-gray-900 mb-4">No Server Uploads</h3>
             <p className="text-gray-600 leading-relaxed">
-              When you "upload" a file on PDFtools4u, it never leaves your machine. The file is loaded directly into your browser's local memory footprint via the HTML5 File API. We have zero access to your documents.
+              Supported operations are designed to read selected files in browser memory instead of uploading them to PDFtools4u servers. The website still makes separate requests for assets and analytics.
             </p>
           </div>
 
@@ -165,7 +145,7 @@ export default function SecurityArchitecture({ onSelectTool }) {
               <div>
                 <h4 className="font-bold text-xl text-gray-900">1. Stateless Operation</h4>
                 <p className="text-gray-600 mt-2">
-                  Our application is completely stateless. Once you refresh the page or close your browser tab, all document data loaded into memory is instantly destroyed by your browser's garbage collector.
+                  Supported file processing does not create a server-side copy as part of the operation. The browser manages in-memory data and temporary object URLs; close the page when finished, and avoid using shared devices for sensitive files.
                 </p>
               </div>
             </div>
@@ -174,7 +154,7 @@ export default function SecurityArchitecture({ onSelectTool }) {
               <div>
                 <h4 className="font-bold text-xl text-gray-900">2. LocalStorage Constraints</h4>
                 <p className="text-gray-600 mt-2">
-                  We only use `localStorage` to save your basic UI preferences (like Dark Mode or your last used tool). No file metadata, contents, or telemetry tracking is ever stored.
+                  The site may use browser storage for operation. Analytics services can separately process usage or performance information as described in our Privacy Policy.
                 </p>
               </div>
             </div>
@@ -183,7 +163,7 @@ export default function SecurityArchitecture({ onSelectTool }) {
               <div>
                 <h4 className="font-bold text-xl text-gray-900">3. F12 Network Verification</h4>
                 <p className="text-gray-600 mt-2">
-                  We challenge our users to verify our claims. Press `F12` to open your browser's Developer Tools, go to the Network tab, and process a file. You will see absolutely no outgoing network requests containing your file payload.
+                  Use the Network panel to compare requests before and during a specific operation. The page can make asset or analytics requests, so inspect their destinations and payloads instead of assuming there are no network requests.
                 </p>
               </div>
             </div>
@@ -200,7 +180,7 @@ export default function SecurityArchitecture({ onSelectTool }) {
               Private PDF Utility Infrastructure FAQ
             </h2>
             <p className="text-gray-600 mt-2">
-              Clear, technical answers regarding our zero-server processing architecture and privacy compliance.
+              Clear answers about supported local processing, analytics, and what this architecture does not guarantee.
             </p>
           </div>
 
@@ -246,4 +226,3 @@ export default function SecurityArchitecture({ onSelectTool }) {
     </div>
   );
 }
-

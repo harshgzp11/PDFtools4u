@@ -4,6 +4,7 @@ import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import { ArrowLeft, Calendar, User, Clock, ArrowRight, Folder, ShieldCheck, Share2, ChevronDown } from 'lucide-react';
 import { BLOG_POSTS } from '../lib/blogData';
+import { BLOG_CLUSTERS } from '../lib/blogClusters';
 import { DOMAINS } from '../lib/toolConfig';
 import { trackEvent } from '../lib/analytics';
 import { BLOG_INTENT_GUIDANCE } from '../lib/blogIntentGuidance';
@@ -70,20 +71,32 @@ export default function BlogPost({ id, onNavigate }) {
     .filter(candidate => candidate.published && candidate.id !== post.id && candidate.cluster === post.cluster)
     .slice(0, 3);
   const intentGuidance = BLOG_INTENT_GUIDANCE[post.id];
+  const postCluster = BLOG_CLUSTERS.find(cluster => cluster.label === post.cluster);
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 py-12 animate-in fade-in">
-        <button 
-          onClick={() => onNavigate('blog')}
+        <a
+          href="/blog"
+          onClick={(event) => {
+            event.preventDefault();
+            onNavigate('blog');
+          }}
           className="flex items-center gap-2 text-gray-500 hover:text-gray-900 font-medium mb-10 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> Back to all articles
-        </button>
+        </a>
 
       <div className="mb-12 text-center flex flex-col items-center">
-        <span className="bg-indigo-100 text-indigo-700 text-sm font-bold px-4 py-1.5 rounded-full mb-6 flex items-center gap-2">
+        <a
+          href={postCluster ? `/blog/topic/${postCluster.slug}` : '/blog'}
+          onClick={(event) => {
+            event.preventDefault();
+            onNavigate(postCluster ? `blog/topic/${postCluster.slug}` : 'blog');
+          }}
+          className="bg-indigo-100 text-indigo-700 text-sm font-bold px-4 py-1.5 rounded-full mb-6 flex items-center gap-2 hover:bg-indigo-200"
+        >
           <Folder className="w-4 h-4" /> {post.cluster}
-        </span>
+        </a>
         
         <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-6 leading-tight">
           {post.title}
@@ -199,17 +212,19 @@ export default function BlogPost({ id, onNavigate }) {
 
           <div className="flex flex-col gap-3 flex-1 text-center md:text-left relative z-10">
             <div className="inline-flex items-center justify-center md:justify-start gap-2 text-indigo-200 text-sm mb-1">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" /> 100% Secure & Local
+              <ShieldCheck className="w-4 h-4 text-emerald-400" /> Browser-Based Processing
             </div>
             <h3 className="text-2xl md:text-3xl font-semibold text-white flex items-center justify-center md:justify-start gap-3 leading-tight">
               Ready to use the {targetTool.name} tool?
             </h3>
             <p className="text-indigo-100/90 text-lg max-w-xl leading-relaxed">
-              Process your files instantly in your browser. <span className="text-white font-medium">Zero server uploads.</span> Complete privacy guaranteed.
+              Use the tool to process supported files in your browser. Review the tool's instructions and our privacy details for information about file handling and analytics.
             </p>
           </div>
-          <button 
-            onClick={() => {
+          <a
+            href={`/${targetTool.id}`}
+            onClick={(event) => {
+              event.preventDefault();
               trackEvent('blog_cta_click', {
                 blog_slug: id,
                 target_tool: targetTool.id,
@@ -219,7 +234,7 @@ export default function BlogPost({ id, onNavigate }) {
             className="group relative z-10 flex items-center justify-center gap-3 bg-white hover:bg-gray-50 text-indigo-900 px-8 py-3.5 rounded-2xl font-semibold transition-all duration-300 w-full md:w-auto shadow-lg hover:scale-105 active:scale-95"
           >
             Launch Tool <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          </button>
+          </a>
         </div>
       )}
 

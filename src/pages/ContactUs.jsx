@@ -24,7 +24,7 @@ const HELP_TOPICS = [
     icon: Shield,
     title: 'Privacy & Security Questions',
     keywords: ['client-side processing', 'local PDF processing', 'no file upload', 'data privacy', 'GDPR', 'DPDP', 'browser-based PDF tool'],
-    desc: 'PDFTools4U processes all files 100% inside your browser using WebAssembly — your documents are never uploaded to any server. If you have questions about our zero-server-upload architecture, GDPR compliance, or India\'s DPDP Act, we\'re happy to explain.',
+    desc: 'Supported tools are designed to process selected files locally in your browser rather than upload them to PDFtools4u servers. The site also makes requests for assets and analytics. Contact us with questions about a specific tool or our data practices.',
   },
   {
     icon: Wrench,

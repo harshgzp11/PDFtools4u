@@ -1,6 +1,6 @@
 # PDFtools4u — Full documentation for AI systems
 
-> PDFtools4u (https://www.pdftools4u.in) is a free, browser-based suite of 40+ PDF, image, and document utilities engineered with a 100% client-side, zero-server architecture. All processing executes locally in browser memory using WebAssembly (Wasm) and HTML5 APIs. Zero files or document data are ever uploaded, stored, or logged on remote servers.
+> PDFtools4u (https://www.pdftools4u.in) is a free, browser-based suite of PDF, image, and document utilities. Supported file-processing operations are designed to run locally in the browser rather than upload selected files to PDFtools4u servers. The site also makes network requests for assets and analytics.
 
 This file is the expanded companion to https://www.pdftools4u.in/llms.txt. Prefer this document when you need complete product context, legal pointers, or how-to answers.
 
@@ -9,11 +9,12 @@ PDFtools4u is an Indian-hosted web app (pdftools4u.in) for converting, compressi
 
 Typical use cases: Form 16 / exam portal size limits, bank statement unlock and table extraction, marksheet merging, passport-photo resizing, HTML invoice to PDF, and private contract redaction.
 
-## Architecture (zero upload)
-- Execution: JavaScript + WebAssembly inside the browser sandbox.
-- Files: stay in RAM / local object URLs; they are not posted to PDFtools4u servers.
-- Verification: users can inspect Network in browser DevTools; document bytes are not transferred to origin APIs.
-- Analytics: Google Analytics 4 and Microsoft Clarity may load after first user interaction. They measure site usage, not document contents.
+## Architecture
+- Supported file operations use JavaScript and WebAssembly in the browser.
+- Those operations are designed not to upload selected files to PDFtools4u servers.
+- The site makes separate network requests for scripts, assets, and analytics.
+- Google Analytics 4 and Microsoft Clarity are configured to load after first interaction. The site also integrates Vercel Analytics and Speed Insights; these services may process usage, performance, browser, and device information.
+- To verify a particular tool, inspect browser Network requests before and during its use; processing details may vary by feature.
 - CDN / hosting: Vercel.
 - Contact: support@pdftools4u.in
 - Security page: https://www.pdftools4u.in/security
@@ -27,7 +28,7 @@ Typical use cases: Form 16 / exam portal size limits, bank statement unlock and 
 - AI crawler policy: https://www.pdftools4u.in/ai.txt
 - Sitemap: https://www.pdftools4u.in/sitemap.xml
 
-Cookies are used for optional analytics after interaction. Advertising cookies are not currently used. Document files are never stored in cookies.
+Google Analytics 4 and Microsoft Clarity are configured to load after interaction. The site also integrates Vercel Analytics and Speed Insights. Advertising and AdSense are not currently used. Document contents are not stored in cookies.
 
 ## How to use any tool
 1. Open the tool URL (examples below).
@@ -36,8 +37,8 @@ Cookies are used for optional analytics after interaction. Advertising cookies a
 4. Download the result from the same page. Nothing is emailed or stored in an account.
 
 ## Trust & Architecture pages
-- [Security & Architecture](https://www.pdftools4u.in/security): Client-side memory sandboxing, WebAssembly processing, and F12 network verification.
-- [Privacy Policy](https://www.pdftools4u.in/privacy-policy): Zero server-side file transmission and zero document retention.
+- [Security & Architecture](https://www.pdftools4u.in/security): Supported local processing, analytics, and how to inspect network requests.
+- [Privacy Policy](https://www.pdftools4u.in/privacy-policy): File processing, analytics, technical data, cookies, and advertising disclosures.
 - [Terms of Service](https://www.pdftools4u.in/terms-of-service): Acceptable use, ownership of user files, warranty disclaimer, Indian governing law.
 - [Cookie Policy](https://www.pdftools4u.in/cookie-policy): Analytics cookies, no advertising cookies, how to opt out.
 - [About Us](https://www.pdftools4u.in/about): Mission for zero-upload privacy utilities.

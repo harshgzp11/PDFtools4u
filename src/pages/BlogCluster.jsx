@@ -2,12 +2,19 @@ import React from 'react';
 import { ArrowRight, BookOpen, Calendar } from 'lucide-react';
 import { BLOG_POSTS } from '../lib/blogData';
 import { BLOG_CLUSTERS, getBlogCluster } from '../lib/blogClusters';
+import { DOMAINS } from '../lib/toolConfig';
 
 export default function BlogCluster({ slug, onNavigate }) {
   const cluster = getBlogCluster(slug);
   const posts = cluster
     ? BLOG_POSTS.filter(post => post.published && post.cluster === cluster.label)
     : [];
+  const availableTools = DOMAINS.flatMap(domain =>
+    domain.categories.flatMap(category => category.tools.filter(tool => !tool.comingSoon))
+  );
+  const relatedTools = [...new Set(posts.map(post => post.targetToolUrl).filter(Boolean))]
+    .map(toolId => availableTools.find(tool => tool.id === toolId))
+    .filter(Boolean);
 
   if (!cluster) {
     return (
@@ -73,6 +80,31 @@ export default function BlogCluster({ slug, onNavigate }) {
           ))}
         </div>
       </section>
+
+      {relatedTools.length > 0 && (
+        <section className="mt-12 border-t border-gray-200 pt-8" aria-labelledby="cluster-tools-heading">
+          <h2 id="cluster-tools-heading" className="mb-5 text-2xl font-bold text-gray-900">
+            Tools for these workflows
+          </h2>
+          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {relatedTools.map(tool => (
+              <li key={tool.id}>
+                <a
+                  href={`/${tool.id}`}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    onNavigate(tool.id);
+                  }}
+                  className="flex h-full flex-col rounded-xl border border-gray-200 p-4 hover:border-blue-300 hover:bg-blue-50"
+                >
+                  <span className="font-semibold text-blue-600">{tool.name}</span>
+                  <span className="mt-1 text-sm text-gray-600">{tool.description}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <section className="mt-12 border-t border-gray-200 pt-8" aria-labelledby="related-topics-heading">
         <h2 id="related-topics-heading" className="mb-5 text-2xl font-bold text-gray-900">Explore related topics</h2>

@@ -1,30 +1,30 @@
 export const SEO_CONTENT = {
   "html-to-pdf": {
-    "title": "Convert HTML Code & Files to High-Quality PDF (100% Private)",
-    "description": "Convert raw HTML snippets, styled templates, invoices, and .html files into crisp, printable multi-page PDF documents directly in your browser. With our client-side rendering engine, your code, proprietary stylesheets, and customer data never leave your device.",
+    "title": "Convert HTML Code & Files to PDF",
+    "description": "Convert raw HTML snippets, styled templates, invoices, and .html files into multi-page PDF documents in your browser. Configure page size, orientation, and margins.",
     "howTo": [
       "Input Your HTML Content: Paste your raw HTML and CSS code directly into the code editor, or click Upload .html File to load a saved template from your device.",
       "Configure Output Settings: Choose your preferred page standard (A4 or US Letter), select orientation (Portrait or Landscape), and pick your margin preference (None, Compact, or Standard).",
       "Convert & Download: Click Convert to PDF. The browser compiler renders the DOM snapshot into high-density PDF pages ready for instant download."
     ],
-    "why": "Unlike traditional online converters that upload your proprietary source code and sensitive customer data to third-party cloud queues, PDFTools4U executes the entire conversion locally inside your browser memory (RAM) via HTML5 APIs and WebAssembly. Maintain fonts, background colors, custom flexbox layouts, tables, and borders. Inline styles and <style> blocks are accurately interpreted and rendered. Prevent awkward horizontal text splitting. Our engine applies clean page-break rules so headers, paragraphs, and table rows transition smoothly across multiple A4 or Letter pages. Generate clean, professional vector-sharp PDFs without account registrations, paywalls, or forced branding.\n\n**Common Use Cases for HTML to PDF Conversion:**\n- **Invoices & Receipts:** Transform dynamic HTML billing templates into client-ready PDF receipts with exact tabular alignment.\n- **Developer Documentation & Reports:** Convert markdown-rendered HTML tables, API documentation, and code logs into shareable technical manuals.\n- **Resumes & Portfolios:** Compile HTML5/CSS3 single-page resumes into clean, ATS-friendly PDF documents.\n- **Email Newsletters & Memos:** Archive formatted HTML email templates as static, non-editable PDF records for legal and audit compliance.\n\n**Optimize & Combine Your Generated PDF:**\nNeed to modify your converted document further? Use our integrated suite of privacy-first utilities:\n- **Compress PDF Size:** Make your exported PDF lightweight for email attachments using our [Compress PDF Tool](/compress-pdf).\n- **Merge Multiple Documents:** Combine your generated HTML report with existing cover letters and spreadsheets via [Merge PDF](/pdf-merge).\n- **Convert HTML to Images:** Need a PNG or JPG snapshot of your HTML code instead of a document? Use our [HTML to Image Tool](/html-to-image).\n- **Extract Word to Clean HTML:** Converting from Microsoft Word back to web markup? Try our [DOCX to HTML Converter](/docx-to-html).",
+    "why": "Use the browser-based converter to turn HTML snippets or saved .html files into PDFs. Output layout depends on the supplied markup, styles, assets, browser, and selected page settings; review the exported file before sharing. Supported conversion processing is designed to run in your browser rather than upload the selected file to PDFtools4u servers. The site separately requests scripts, assets, and analytics as described in the Privacy Policy.\n\n**Common Use Cases for HTML to PDF Conversion:**\n- **Invoices & Receipts:** Convert HTML billing templates into printable PDF receipts.\n- **Developer Documentation & Reports:** Export HTML tables, API documentation, and reports as PDFs.\n- **Resumes & Portfolios:** Save an HTML resume as a PDF and check the final layout.\n- **Email Newsletters & Memos:** Create a static PDF copy of a formatted HTML document.\n\n**Optimize & Combine Your Generated PDF:**\nUse our [Compress PDF Tool](/compress-pdf) to reduce a PDF's size, [Merge PDF](/pdf-merge) to combine documents, or [HTML to Image](/html-to-image) to create an image from HTML.",
     "specs": [
-      { "key": "Data Privacy", "value": "100% Local (Zero Server Transmission) vs High Risk in Cloud" },
+      { "key": "File Processing", "value": "Supported conversion runs in the browser; site assets and analytics make separate requests" },
       { "key": "CSS Backgrounds & Colors", "value": "Enabled by default" },
       { "key": "Headers & Footers Bloat", "value": "Clean (No URL/Date stamps)" },
       { "key": "Page Break Control", "value": "Automatic element protection" },
-      { "key": "File Size Limits", "value": "Unlimited (Device Memory)" }
+      { "key": "File Size Limits", "value": "Depends on browser, device memory, and input file" }
     ],
     "features": [
-      "100% Client-Side Privacy (Zero Server Uploads)",
-      "Pixel-Perfect CSS3 & Modern Styling Support",
-      "Smart Multi-Page Pagination",
-      "Completely Free & No Watermarks"
+      "Browser-based conversion for supported inputs",
+      "CSS rendering for supported markup; output depends on the browser and source",
+      "Multi-page output with available page settings",
+      "Free to use; availability and features may change"
     ],
     "faq": [
       {
         "q": "Is it safe to convert proprietary HTML and confidential data here?",
-        "a": "Yes. PDFTools4U operates strictly inside your local web browser. Your code, text, styles, and embedded images are never uploaded to any remote server or stored in any database, ensuring 100% data confidentiality for sensitive financial and corporate documents."
+        "a": "The supported conversion is designed to process your input in the browser rather than upload it to PDFtools4u servers. The site still makes separate requests for scripts, assets, and analytics. Review the Privacy Policy and inspect Network requests for this tool if you need to verify its current behaviour."
       },
       {
         "q": "How does the converter handle page breaks in long HTML documents?",
@@ -36,11 +36,11 @@ export const SEO_CONTENT = {
       },
       {
         "q": "What is the difference between this tool and Browser Print to PDF (Ctrl+P)?",
-        "a": "Standard browser printing often strips background colors, alters custom margins, and injects default browser headers (such as page URLs, timestamps, and page titles). Our HTML to PDF converter preserves full visual styling, background graphics, and custom CSS without adding messy browser artifacts."
+        "a": "Browser printing and this converter may handle backgrounds, margins, headers, and CSS differently. Check the available settings and review the exported PDF."
       },
       {
         "q": "Can I convert an entire webpage just by entering a URL?",
-        "a": "Because our tool runs 100% locally in your browser for privacy, third-party URLs cannot be fetched directly due to browser CORS security restrictions. To convert a webpage, save the page as an .html file (or copy its page source via View Source) and paste/upload it directly into the converter."
+        "a": "This tool accepts HTML content or a saved .html file rather than fetching an arbitrary webpage URL. External resources in supplied markup may be restricted by browser security rules or may not render; check the exported PDF."
       }
     ],
     "customSchema": {
@@ -60,11 +60,11 @@ export const SEO_CONTENT = {
             "priceCurrency": "USD"
           },
           "featureList": [
-            "100% Client-Side In-Browser Conversion",
+            "Browser-based conversion for supported inputs",
             "Raw HTML Code and .html File Support",
             "CSS3 and Flexbox Layout Rendering",
             "Smart Multi-Page A4 and Letter Pagination",
-            "Zero Server Uploads & Complete Data Privacy"
+            "Selected input is processed in-browser; site assets and analytics make separate requests"
           ]
         },
         {
@@ -86,7 +86,7 @@ export const SEO_CONTENT = {
             {
               "@type": "HowToStep",
               "name": "Convert and Download PDF",
-              "text": "Click Convert to PDF to generate an optimized vector-quality PDF file instantly."
+              "text": "Click Convert to PDF and review the generated document."
             }
           ]
         },
@@ -99,7 +99,7 @@ export const SEO_CONTENT = {
               "name": "Is it safe to convert proprietary HTML and confidential data here?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes. All processing is executed client-side in your local browser memory. No source code or files are ever sent to external servers."
+                "text": "Supported conversion is designed to process selected input in your browser rather than upload it to PDFtools4u servers. The site still makes separate requests for scripts, assets, and analytics."
               }
             },
             {
@@ -115,7 +115,7 @@ export const SEO_CONTENT = {
               "name": "What is the difference between this tool and Browser Print to PDF?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Our converter preserves background colors, precise CSS dimensions, and layout styling without adding browser header artifacts, timestamps, or page URLs."
+                "text": "Rendering can differ between this converter and browser printing. Check the available settings and review the exported PDF."
               }
             },
             {
@@ -140,25 +140,25 @@ export const SEO_CONTENT = {
       "Click the 'Compress PDF' button to start instant reduction.",
       "Download your compressed PDF file ready for portal upload."
     ],
-    "why": "Our tool is designed for users who need to compress pdf online free without the hassle of watermarks or restricted trials. Whether you are a student uploading to a sarkari exam portal (UPSC, SSC, Bank PO, Railways), an employee trying to compress form 16 pdf under 500kb, or a business shrinking large files, this is the ultimate solution. It is 100% free with unlimited compressions and zero hidden fees. There is absolutely no registration, account sign-up, or email required to use it.",
+    "why": "Use the PDF compressor to reduce a file's size in your browser. The achieved size and visual quality depend on the source PDF and compression settings; check the downloaded file against the requirements of the destination portal before submitting it. Supported file processing is designed to run locally rather than upload the selected PDF to PDFtools4u servers. The site separately requests assets and analytics as explained in the Privacy Policy. This tool is currently free to use without an account.",
     "features": [
-      "Smart Reduction: High-compression algorithms that shrink file sizes down to target limits (under 100KB, 200KB, or 500KB).",
-      "Preserves Quality: Reduce pdf file size without losing quality, preserving text clarity, images, and official seals/signatures.",
-      "Fast & Private: Fast client-side and encrypted file processing ensures rapid document handling.",
-      "100% Secure: No files are permanently stored on servers; all uploaded and processed documents are automatically and permanently deleted immediately after processing."
+      "Compression settings: Choose an available level and check the resulting file size.",
+      "Review output: Compression may affect image quality; inspect the exported PDF before using it.",
+      "Browser-based processing: Supported operations are designed to process the selected file locally.",
+      "Free to use: Current availability and features may change."
     ],
     "faq": [
       {
         "q": "How can I compress a PDF to under 100KB or 200KB for exam forms?",
-        "a": "To hit strict portal limits like compress pdf to 100kb or compress pdf to 200kb for a sarkari exam, simply choose the 'High' compression level before processing. Our algorithm aggressively optimizes hidden metadata and scales down embedded images to ensure it meets the target file size."
+        "a": "Choose a compression level, download the result, and check its actual size. The tool cannot guarantee a target size or acceptance by an external portal; portal limits can change, so check the current official instructions."
       },
       {
         "q": "Will compressing my PDF reduce the quality of text or signatures?",
-        "a": "No. Our smart optimization engine allows you to reduce pdf file size without losing quality. It carefully preserves font crispness and signature readability, ensuring your academic marksheets and official ID proofs remain entirely legible."
+        "a": "Compression can change image quality, especially at stronger settings. Open and inspect the exported file before submitting or sharing it."
       },
       {
         "q": "Is it safe to compress confidential PDFs like Form 16 or bank statements?",
-        "a": "Absolutely. Whether you need to compress form 16 pdf under 500kb or process bank records, our tool uses zero-logging policies. All processing happens securely, and your files are immediately and permanently deleted from memory after compression."
+        "a": "Supported compression is designed to run in your browser rather than upload the selected file to PDFtools4u servers. The site still makes separate requests for assets and analytics. Review the Privacy Policy and inspect Network requests for this tool if you need to verify its current behaviour."
       }
     ]
   },
@@ -172,10 +172,10 @@ export const SEO_CONTENT = {
       "Click Merge: Select 'Merge PDF' to join all documents into a single file.",
       "Download: Save your merged master PDF document instantly to your device."
     ],
-    "why": "Combining multiple documents is essential when submitting college admission transcripts, multi-page job applications, or combined semester marksheets for government exam portals (UPSC, SSC, Banking). Our free PDF merger lets you join unlimited PDF files without page limits, watermark overlays, or account registration. It maintains original formatting, fonts, and page orientation across all combined pages.",
+    "why": "Use the PDF merger to combine selected documents into one file and arrange them in the required order. The number and size of files a browser can handle depends on the tool, device, and input PDFs. Check the exported document before submitting it to an external portal.",
     "features": [
-      "100% Secure & Private Processing: Your uploaded files are processed locally within your browser using secure client-side execution.",
-      "Data Protection: Your private contracts, certificates, and personal files are never permanently stored on external servers and are automatically purged after download."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Separate requests: The site also loads scripts, assets, and analytics; see the Privacy Policy for details."
     ],
     "faq": [
       {
@@ -184,11 +184,11 @@ export const SEO_CONTENT = {
       },
       {
         "q": "Is there a limit on how many PDF files I can merge at once?",
-        "a": "No, you can combine as many PDF files as your browser memory supports for free."
+        "a": "The practical number and size of PDFs depend on the tool and your browser and device resources. Try fewer or smaller files if processing fails."
       },
       {
         "q": "Will merging PDFs decrease the quality of embedded text or images?",
-        "a": "No, the merging process preserves original text resolution, vector graphics, and image clarity."
+        "a": "Merging generally keeps the source pages together, but review the resulting document in a PDF viewer before relying on it."
       }
     ]
   },
@@ -203,8 +203,8 @@ export const SEO_CONTENT = {
     ],
     "why": "Large PDF files often contain unnecessary pages that make documents too large to email or submit to official portals. Our PDF splitter allows you to extract individual pages, delete blank sheets, or divide large manuals into manageable chunks. Enjoy fast, precise splitting without paying for desktop software subscriptions or signing up.",
     "features": [
-      "100% Secure & Private Processing: All page extraction operations run locally inside your web browser.",
-      "Data Protection: Your private tax forms, salary slips, and legal contracts are processed securely without being recorded or transmitted to third-party databases."
+      "File processing: Supported page extraction is designed to run in your browser.",
+      "Separate requests: The site also loads scripts, assets, and analytics; see the Privacy Policy for details."
     ],
     "faq": [
       {
@@ -232,8 +232,8 @@ export const SEO_CONTENT = {
     ],
     "why": "Re-typing non-editable PDF documents wastes valuable hours. Our PDF to Word converter extracts text, tables, fonts, and paragraph structures into an editable Word document without ruining your layout. Perfect for freelancers editing client contracts, students revising assignment notes, and office workers updating legacy documents.",
     "features": [
-      "100% Secure & Private Processing: Document privacy is guaranteed. All file conversions are protected with end-to-end encryption and client-side processing.",
-      "Data Protection: Uploaded files are automatically deleted from server caches immediately after conversion."
+      "File processing: Supported conversion is designed to run in your browser.",
+      "Results: Conversion quality and layout depend on the source PDF, options, browser, and output format."
     ],
     "faq": [
       {
@@ -242,11 +242,11 @@ export const SEO_CONTENT = {
       },
       {
         "q": "Will the original document layout and formatting change after conversion?",
-        "a": "Our conversion engine preserves margins, headings, line breaks, and embedded graphics to match your original PDF layout."
+        "a": "Conversion can change margins, headings, line breaks, or graphics. Review the exported document against the original."
       },
       {
         "q": "Is there any cost or limit to converting PDF files to Word?",
-        "a": "No, the tool is 100% free with no registration requirements or document length restrictions."
+        "a": "The site is currently free to use and this operation does not require an account. File size and page limits depend on the tool and device."
       }
     ]
   },
@@ -261,8 +261,8 @@ export const SEO_CONTENT = {
     ],
     "why": "Manually copy-pasting numbers from bank statements, financial audits, or digital invoices into spreadsheets leads to data entry errors. Our tool extracts raw PDF tables directly into structured Excel rows and columns, preserving numeric data formatting and mathematical decimal alignment for seamless accounting and tax prep.",
     "features": [
-      "100% Secure & Private Processing: Financial data requires maximum confidentiality. All bank statements and invoice conversions run in a secure, sandboxed environment.",
-      "Data Protection: No financial records are stored, logged, or exposed."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Sensitive data: Avoid using the tool with confidential records unless you have reviewed its data practices."
     ],
     "faq": [
       {
@@ -271,11 +271,11 @@ export const SEO_CONTENT = {
       },
       {
         "q": "Does this tool work with multi-page accounting statements?",
-        "a": "Yes, it extracts tables across multiple pages and compiles them into a single unified Excel worksheet."
+        "a": "Table extraction depends on the PDF structure and whether its contents are selectable text or scanned images. Review the resulting spreadsheet for missing or misaligned data."
       },
       {
         "q": "Will numeric formatting and decimals remain intact?",
-        "a": "Yes, numbers are converted as raw numeric values so you can apply Excel formulas immediately."
+        "a": "Check the exported values and number formats before using them in calculations; extraction may require correction."
       }
     ]
   },
@@ -290,8 +290,8 @@ export const SEO_CONTENT = {
     ],
     "why": "Official files like bank statements and salary slips come encrypted with default passwords that prevent editing, printing, or uploading to official portal forms. Our unlock tool permanently removes restrictions so you can view, print, or convert your documents without re-entering passwords every time.",
     "features": [
-      "100% Secure & Private Processing: Decryption occurs entirely on your device browser.",
-      "Data Protection: Your passwords and sensitive identity documents remain 100% private and are never saved or shared."
+      "File processing: Supported decryption is designed to run in your browser.",
+      "Sensitive data: Avoid entering passwords for confidential documents unless you have reviewed the tool's current data practices."
     ],
     "faq": [
       {
@@ -319,8 +319,8 @@ export const SEO_CONTENT = {
     ],
     "why": "Scanned PDFs are essentially image files that do not allow you to search, highlight, or copy text. Our free Optical Character Recognition (OCR) engine converts non-searchable document scans into searchable text files. Ideal for students digitizing textbook scans, researchers indexing archived papers, and developers extracting raw text strings.",
     "features": [
-      "100% Secure & Private Processing: All OCR scanning algorithms run locally or through encrypted browser streams.",
-      "Data Protection: Ensures your private book scans, academic certificates, and personal receipts remain completely confidential."
+      "File processing: OCR runs in the browser where supported by the tool.",
+      "OCR results: Recognition quality depends on scan quality, language, and document layout."
     ],
     "faq": [
       {
@@ -346,10 +346,10 @@ export const SEO_CONTENT = {
       "Adjust Crop Area: Drag the selection box to frame your passport photo or signature accurately.",
       "Download Image: Click 'Resize & Download' to save your portal-ready JPG file."
     ],
-    "why": "Meeting rigid file size and dimension requirements for government exam portals (UPSC, SSC, Bank PO, NTA, and Railways) can be frustrating. Our free tool allows you to crop, resize, and compress passport photos and signatures to exact dimensions without losing clarity. Enjoy unlimited resizes with zero registration, no hidden fees, and instant previewing to ensure your document gets accepted on the first attempt.",
+    "why": "Use the image resizer to adjust dimensions and file size for a photo or signature. Enter the requirements shown by the destination form, then check the exported image yourself: compression can reduce quality, and a tool cannot guarantee acceptance by an external portal.",
     "features": [
-      "100% Secure & Private Processing: Your photos and signatures contain sensitive personal identity details. All crop and resize operations run completely inside your web browser using client-side execution.",
-      "Data Protection: Your files are never uploaded to remote servers, ensuring 100% privacy and data protection."
+      "File processing: Supported image operations are designed to run in your browser.",
+      "Separate requests: The site also loads scripts, assets, and analytics; see the Privacy Policy for details."
     ],
     "faq": [
       {
@@ -375,10 +375,10 @@ export const SEO_CONTENT = {
       "Adjust Settings: Customize page orientation (portrait/landscape), page size, and margins.",
       "Convert & Download: Click 'Convert to PDF' and save your compiled document instantly."
     ],
-    "why": "When filling out university admission portals, government job applications (UPSC, SSC, Railways), or sending multi-page documentation to clients, uploading separate image files is often prohibited. Our tool combines multiple mobile camera shots, scanned certificates, and photos into a single, professional PDF document in seconds. Enjoy fast conversions with zero watermarks, no registration, and unlimited uploads.",
+    "why": "Combine selected JPG or PNG images into a PDF, arrange their order, and choose the available page settings. Review the resulting document before sharing or submitting it; the output depends on your source images and selected options.",
     "features": [
-      "100% Secure & Private Processing: We take user privacy seriously. All image rendering and PDF compiling are executed locally in your web browser.",
-      "Data Protection: Your private photos, certificates, and documents are never permanently stored on external servers and are erased immediately after processing."
+      "File processing: Supported image-to-PDF operations are designed to run in your browser.",
+      "Separate requests: The site also loads scripts, assets, and analytics; see the Privacy Policy for details."
     ],
     "faq": [
       {
@@ -406,8 +406,8 @@ export const SEO_CONTENT = {
     ],
     "why": "Sharing editable Word files across different devices often leads to broken formatting, missing fonts, and accidental edits. Converting your .docx files to PDF locks in your exact layout, typography, and page structure. Whether you are submitting a college research paper, a corporate business proposal, or an official resume, our free converter ensures your document looks identical on every screen.",
     "features": [
-      "100% Secure & Private Processing: Your confidential documents and text files are handled with complete privacy.",
-      "Data Protection: File transformations utilize secure client-side and encrypted processing protocols, ensuring no content is cached, logged, or retained on remote servers."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
@@ -420,7 +420,7 @@ export const SEO_CONTENT = {
       },
       {
         "q": "Is there any file size limit or cost to convert Word files?",
-        "a": "No, our tool is completely free with no usage limits, hidden fees, or account creation requirements."
+        "a": "The site is currently free to use and this operation does not require an account. Usage and file limits depend on the tool and device."
       }
     ]
   },
@@ -433,15 +433,15 @@ export const SEO_CONTENT = {
       "Select Permissions: Choose to restrict opening, editing, printing, or content copying.",
       "Encrypt & Download: Click 'Protect PDF' to download your newly encrypted file."
     ],
-    "why": "Sending sensitive legal agreements, tax filings, financial reports, or personal identity documents via email carries security risks. Protecting your PDF with industry-standard 128-bit or 256-bit AES encryption ensures that only authorized recipients with the correct password can view or modify the contents. Keep your confidential records safe from unauthorized access without installing complex software.",
+    "why": "Use the password-protection tool to apply the available PDF encryption options. Encryption strength and permissions depend on the selected settings and resulting file; test the exported document in a compatible PDF reader before sharing sensitive information.",
     "features": [
-      "100% Secure & Private Processing: Your passwords and documents never leave your browser unencrypted.",
-      "Data Protection: All cryptographic hashing and protection procedures run in a secure local environment, keeping your credentials completely private."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
         "q": "How strong is the PDF password encryption provided by this tool?",
-        "a": "Our tool uses robust AES encryption standards to protect your PDF against unauthorized opening and brute-force cracking."
+        "a": "Encryption options depend on the tool and source document. Check the selected settings and test the resulting PDF in a compatible reader before relying on its protection."
       },
       {
         "q": "Can I prevent recipients from printing or editing my PDF?",
@@ -462,10 +462,10 @@ export const SEO_CONTENT = {
       "Set Orientation: Click the Rotate Left (90°) or Rotate Right (90°) buttons to adjust alignment.",
       "Save & Download: Click 'Apply Rotation' and save your permanently aligned PDF."
     ],
-    "why": "Document scans captured using mobile phones or desktop scanners often end up oriented sideways or upside down. Reading or submitting misaligned documents looks unprofessional and triggers automatic rejection on official application portals. Our PDF rotation tool lets you orient individual pages or whole documents in seconds with real-time visual previews and zero cost.",
+    "why": "Document scans captured with phones or scanners can be sideways or upside down. Use the rotation controls to adjust selected pages, then review the exported PDF before sharing or submitting it.",
     "features": [
-      "100% Secure & Private Processing: Your document processing is private and self-contained.",
-      "Data Protection: All orientation changes are rendered locally within your browser window without uploading raw document contents to external storage."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
@@ -493,8 +493,8 @@ export const SEO_CONTENT = {
     ],
     "why": "Printing out contracts, signing them by hand, and scanning them back to digital format wastes paper and time. Our free e-signature tool allows you to sign contracts, offer letters, lease agreements, and official forms digitally in seconds. Add typed, drawn, or uploaded signatures easily on any device without downloading third-party software.",
     "features": [
-      "100% Secure & Private Processing: Your handwritten signatures and personal documents remain confidential.",
-      "Data Protection: All signature rendering and document flattening occur client-side in your browser, ensuring no signature graphics or private records are saved remotely."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
@@ -522,8 +522,8 @@ export const SEO_CONTENT = {
     ],
     "why": "Protecting intellectual property, draft manuscripts, confidential financial reports, and design previews from unauthorized copying is crucial. Our watermark generator allows you to overlay semi-transparent text or image logos onto your PDF pages. Secure your work before emailing documents to prospective clients, vendors, or external review boards.",
     "features": [
-      "100% Secure & Private Processing: All watermark compositing algorithms execute directly within your browser session.",
-      "Data Protection: Your proprietary designs, documents, and custom logo files remain completely private and are never archived on cloud servers."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
@@ -551,8 +551,8 @@ export const SEO_CONTENT = {
     ],
     "why": "Excessive white margins, header/footer clutter, and unnecessary page borders make reading PDFs on mobile devices or e-readers difficult. Our visual PDF crop tool lets you isolate essential text, tables, or figures while trimming away blank borders. Optimize your documents for smaller mobile screens, e-book readers, or compact printing setups effortlessly.",
     "features": [
-      "100% Secure & Private Processing: All clipping and margin trimming functions run locally inside your browser memory.",
-      "Data Protection: Your confidential documents are never uploaded to remote hosting servers, maintaining strict data privacy."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
@@ -580,8 +580,8 @@ export const SEO_CONTENT = {
     ],
     "why": "Blank pages, redundant cover sheets, sensitive appendix pages, and template trailing notes can clutter an otherwise polished document. Our PDF page remover lets you delete unwanted pages from reports, manuals, and eBooks in seconds. Streamline your documents before submitting them to job portals, clients, or academic review boards without paying for desktop PDF editing software.",
     "features": [
-      "100% Secure & Private Processing: Your privacy is fully protected. Page extraction and deletion processes execute inside your local browser instance.",
-      "Data Protection: No document content is stored, tracked, or cached on external cloud infrastructure."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
@@ -609,8 +609,8 @@ export const SEO_CONTENT = {
     ],
     "why": "Large PDF manuals, books, or multi-page reports often contain only a few pages you actually need. Our free page extraction tool lets you isolate essential sections, pull out specific certificate sheets, or extract individual marksheets from multi-page files. Enjoy fast, precise extraction without paying for desktop software subscriptions or creating an account.",
     "features": [
-      "100% Secure & Private Processing: Your document processing remains strictly confidential.",
-      "Data Protection: All page extraction and rendering tasks execute locally inside your web browser memory. Your files are never archived, logged, or saved on remote servers."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
@@ -619,7 +619,7 @@ export const SEO_CONTENT = {
       },
       {
         "q": "Does extracting pages reduce the text or image resolution?",
-        "a": "No, extracted pages maintain 100% of their original vector text, font formatting, and image clarity."
+        "a": "Page extraction is intended to retain the selected pages. Review the exported PDF to verify its text, images, and formatting."
       },
       {
         "q": "Can I extract pages from password-protected files?",
@@ -638,8 +638,8 @@ export const SEO_CONTENT = {
     ],
     "why": "Scanned multi-page files frequently arrive out of order, upside down, or cluttered with blank pages. Our visual PDF organizer gives you total control to reorder, rotate, and delete pages in one simple interface. Prepare perfectly structured portfolios, legal binders, and academic submissions before emailing or uploading them to official web portals.",
     "features": [
-      "100% Secure & Private Processing: Your document security is guaranteed.",
-      "Data Protection: All page reordering and thumbnail generation run locally within your web browser. No copy of your document is stored or shared with external third parties."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
@@ -667,8 +667,8 @@ export const SEO_CONTENT = {
     ],
     "why": "Unnumbered documents look incomplete and make cross-referencing difficult during business meetings, legal reviews, or academic evaluations. Our page numbering tool allows you to add clean, professional headers or footers to any PDF in seconds. Customize start ranges, skip cover pages, and format numbers to match official submission standards effortlessly.",
     "features": [
-      "100% Secure & Private Processing: Your documents remain private at all times.",
-      "Data Protection: Page numbering operations process locally in your browser. Uploaded files are automatically purged from local memory after conversion."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
@@ -696,8 +696,8 @@ export const SEO_CONTENT = {
     ],
     "why": "Interactive fillable PDFs, annotations, and layered signatures can be accidentally modified or rendered incorrectly when opened on different devices or uploaded to official portals. Flattening a PDF converts fillable form fields and annotations into permanent background elements. Secure your filled forms, prevent unauthorized edits, and ensure smooth printing on all devices.",
     "features": [
-      "100% Secure & Private Processing: All layer merging and flattening routines run directly in your browser session.",
-      "Data Protection: Your completed forms, personal details, and legal data are never saved or processed on external servers."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
@@ -706,7 +706,7 @@ export const SEO_CONTENT = {
       },
       {
         "q": "Why should I flatten a fillable PDF form before emailing it?",
-        "a": "Flattening prevents recipients from changing your answers and guarantees the form displays identically on mobile phones and computers."
+        "a": "Flattening can make form fields and annotations less editable, but display may still vary between PDF viewers and devices. Review the exported file before sharing it."
       },
       {
         "q": "Does flattening a PDF affect printable quality?",
@@ -725,13 +725,13 @@ export const SEO_CONTENT = {
     ],
     "why": "Presenting slides across different devices often leads to missing custom fonts, shifted text boxes, and broken slide animations. Converting your .pptx files to PDF locks every slide design into a universal format. Perfect for students submitting presentation assignments, executives sharing pitch decks with clients, and speakers distributing printable handouts.",
     "features": [
-      "100% Secure & Private Processing: Your intellectual property and presentation slides remain completely private.",
-      "Data Protection: All file conversions are processed with browser-level encryption, ensuring files are erased automatically after processing."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
         "q": "Will my presentation fonts and slide layouts stay intact?",
-        "a": "Yes, our conversion engine locks font styling, shape positions, images, and slide backgrounds exactly as designed."
+        "a": "The converter attempts to retain visual elements, but fonts, layouts, and images may change. Check the exported PDF against the original presentation."
       },
       {
         "q": "Can I convert both older .ppt and modern .pptx formats?",
@@ -754,8 +754,8 @@ export const SEO_CONTENT = {
     ],
     "why": "Printing or sharing raw Excel files often results in awkward page breaks that slice wide data tables in half. Our Excel to PDF converter formats spreadsheets into neat, professional pages without cutting off columns. Convert financial models, balance sheets, and class attendance sheets into clean PDF files ready for formal reviews and official submissions.",
     "features": [
-      "100% Secure & Private Processing: Financial records and spreadsheet data require strict privacy.",
-      "Data Protection: All calculations, row rendering, and PDF generation execute locally in your browser sandbox without exposing data to third parties."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
@@ -783,8 +783,8 @@ export const SEO_CONTENT = {
     ],
     "why": "If you received a presentation deck locked in PDF format that needs updating, re-creating slides from scratch is time-consuming. Our PDF to PowerPoint converter transforms document pages into editable presentation slides, extracting text boxes, images, and vector graphics into slide layouts. Save time and edit content directly inside PowerPoint.",
     "features": [
-      "100% Secure & Private Processing: We ensure complete confidentiality for your slide decks and corporate reports.",
-      "Data Protection: All conversion processes run securely, and files are erased immediately upon download completion."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
@@ -797,7 +797,7 @@ export const SEO_CONTENT = {
       },
       {
         "q": "Is there a cost or subscription required to convert PDF to PPTX?",
-        "a": "No, this tool is 100% free with no registration requirements or document length restrictions."
+        "a": "The site is currently free to use and this operation does not require an account. File size and document limits depend on the tool and device."
       }
     ]
   },
@@ -812,8 +812,8 @@ export const SEO_CONTENT = {
     ],
     "why": "Modifying text, filling out unformatted forms, or adding last-minute notes to PDF documents usually requires expensive software. Our online PDF editor gives you browser-based tools to annotate, draw, insert images, and add text boxes to any PDF for free. Perform quick edits on desktop or mobile devices without installing heavy programs.",
     "features": [
-      "100% Secure & Private Processing: Your document edits process locally within your web browser sandbox.",
-      "Data Protection: Your personal records, contracts, and edited documents are never saved or monitored on cloud servers."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
@@ -841,8 +841,8 @@ export const SEO_CONTENT = {
     ],
     "why": "Filling out application forms, job surveys, insurance claims, and tax documents by hand is slow and outdated. Our online PDF form filler allows you to complete interactive and static PDF forms directly in your browser. Type clear text, check boxes, fill out multi-page applications, and download clean results ready for immediate submission.",
     "features": [
-      "100% Secure & Private Processing: Your private personal details, addresses, and form answers remain 100% confidential.",
-      "Data Protection: Form processing is completed locally in your browser window with zero server logging."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
@@ -855,7 +855,7 @@ export const SEO_CONTENT = {
       },
       {
         "q": "Is it free to fill out multi-page application forms?",
-        "a": "Yes, there are no page limits or hidden fees for filling and downloading completed forms."
+        "a": "The site is currently free to use. Page and file limits depend on the tool and your device."
       }
     ]
   },
@@ -868,15 +868,15 @@ export const SEO_CONTENT = {
       "Sanitize Metadata: Remove underlying hidden document text and metadata layers automatically.",
       "Redact & Download: Click 'Apply Redaction' to burn blackouts permanently into the file."
     ],
-    "why": "Simply drawing black shapes over sensitive numbers or personal records in basic editors often leaves underlying text copyable underneath. Our PDF redaction tool permanently sanitizes and blackouts confidential text, financial figures, and personal identifiers. Safely share legal discovery files, public records, and corporate reports without leaking private data.",
+    "why": "A black shape placed over text may leave the underlying content in the PDF. Use the redaction controls and independently verify that sensitive content is removed from the exported file before sharing it.",
     "features": [
-      "100% Secure & Private Processing: Redaction security is paramount.",
-      "Data Protection: Sanitization occurs locally on your machine, ensuring redacted text is permanently destroyed from the document file structure before it ever leaves your browser."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
         "q": "Is redacted text permanently erased or can someone copy it out?",
-        "a": "Our redaction tool permanently deletes the underlying text and graphics layer so it can never be copied or recovered."
+        "a": "Do not assume selected content is permanently removed until you have verified the exported PDF. Reopen it in a separate viewer and check whether the covered text can still be selected, searched, or extracted."
       },
       {
         "q": "Can I redact sensitive images or signatures in addition to text?",
@@ -884,7 +884,7 @@ export const SEO_CONTENT = {
       },
       {
         "q": "Why is drawing a black box in a normal editor unsafe?",
-        "a": "Normal editors only cover text visually, allowing anyone to highlight and copy the hidden text underneath. Our tool sanitizes the data layer completely."
+        "a": "Some editors place a shape over text without removing the text itself. Verify the output of any redaction tool by reopening the PDF and checking whether the covered content can still be selected, searched, or extracted."
       }
     ]
   },
@@ -899,8 +899,8 @@ export const SEO_CONTENT = {
     ],
     "why": "Opening large PDF files often triggers slow desktop software downloads. Our lightweight, browser-based PDF reader opens documents instantly on any computer or mobile device. Highlight textbook passages, add study notes, review contract clauses, and collaborate on design markups without installing extra applications.",
     "features": [
-      "100% Secure & Private Processing: Your reading and annotation session is strictly private.",
-      "Data Protection: Document rendering runs entirely in your local browser environment, meaning your reading material is never tracked or stored remotely."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
@@ -928,8 +928,8 @@ export const SEO_CONTENT = {
     ],
     "why": "Juggling multiple individual converter tools for images, office documents, and PDFs is tedious. Our all-in-one Universal Converter handles file format conversions across documents, spreadsheets, presentations, and images in one centralized place. Convert files effortlessly between PDF, Word, Excel, PowerPoint, JPG, PNG, and WebP formats without switching websites.",
     "features": [
-      "100% Secure & Private Processing: All file conversions run inside isolated, encrypted processing pipelines.",
-      "Data Protection: Your files are processed safely and deleted automatically immediately after conversion."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
@@ -942,13 +942,13 @@ export const SEO_CONTENT = {
       },
       {
         "q": "Is there any cost or subscription fee for using the universal converter?",
-        "a": "No, it is 100% free with unlimited daily conversions and zero account sign-up requirements."
+        "a": "The site is currently free to use and does not require an account for this operation. Features and availability may change."
       }
     ]
   },
   "pdf-annotator": {
     "title": "Annotate PDF Files Online",
-    "description": "Markup your PDF documents by adding notes, highlights, and annotations entirely for free.",
+    "description": "Add notes, highlights, and annotations to supported PDF documents in your browser.",
     "howTo": [
       "Upload PDF: Drag and drop the PDF document requiring notes or markups into the editor.",
       "Select Annotation Tool: Choose text callouts, sticky notes, highlighters, drawing pens, or underline tools.",
@@ -957,8 +957,8 @@ export const SEO_CONTENT = {
     ],
     "why": "Reviewing research papers, student assignments, corporate proposals, and design drafts usually requires downloading paid software. Our free online PDF annotator gives you a complete set of markup tools directly inside your web browser. Highlight key sections, add callout boxes, draw freehand diagrams, and leave feedback for team members effortlessly.",
     "features": [
-      "100% Secure & Private Processing: Your document processing remains strictly confidential.",
-      "Data Protection: All annotations, notes, and visual markups run locally within your browser environment, ensuring your private review files are never stored or tracked on cloud servers."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
@@ -971,7 +971,7 @@ export const SEO_CONTENT = {
       },
       {
         "q": "Is there any file size or page limit for annotating PDFs?",
-        "a": "No, you can load multi-page books, lecture slides, and long reports for free without page restrictions."
+        "a": "Practical file size and page limits depend on the tool, browser, and device resources."
       }
     ]
   },
@@ -984,10 +984,10 @@ export const SEO_CONTENT = {
       "Click Convert: Select 'Convert to PNG' to extract all document pages into image format.",
       "Download Images: Save individual PNG files or download all pages together in a single ZIP archive."
     ],
-    "why": "When embedding document pages into websites, digital presentations, or graphic designs, PNG format provides superior lossless quality compared to standard JPGs. Our PDF to PNG converter transforms pages into high-resolution PNG images while preserving sharp text fonts, vector lines, and transparent backgrounds.",
+    "why": "PNG uses lossless compression for image data, while JPG is a lossy format. Converting a PDF page to PNG rasterizes it, so output resolution and transparency depend on the converter settings and source document. Review the exported image at its intended size.",
     "features": [
-      "100% Secure & Private Processing: Your document security is fully guaranteed.",
-      "Data Protection: All page rendering and file conversions take place locally in your web browser. No copy of your files is uploaded, saved, or exposed on remote server databases."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
@@ -1015,8 +1015,8 @@ export const SEO_CONTENT = {
     ],
     "why": "Transmitting multiple individual screenshot PNG files or graphic design proofs via email can look disorganized. Our PNG to PDF converter compiles transparent graphics, screenshots, and artwork into a single professional PDF document in seconds. Preserve crisp graphics, vector text, and clean backgrounds without watermarks or account registration.",
     "features": [
-      "100% Secure & Private Processing: We respect your privacy.",
-      "Data Protection: All image compiling routines execute locally in your web browser. Your private artwork, design files, and screenshots are never stored on external hosting servers."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
@@ -1044,8 +1044,8 @@ export const SEO_CONTENT = {
     ],
     "why": "Official exam portals (UPSC, SSC, Banking, NTA), university admission forms, and job application sites strictly reject passport photos and signature scans that exceed tight size limits (e.g., 20KB to 50KB). Our smart image compressor shrinks image file size drastically while preserving facial details, clarity, and dimensions.",
     "features": [
-      "100% Secure & Private Processing: Your identity photos and personal signatures are protected.",
-      "Data Protection: Compression algorithms process locally inside your browser, ensuring no images are transmitted, saved, or logged on remote servers."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
@@ -1073,8 +1073,8 @@ export const SEO_CONTENT = {
     ],
     "why": "Copy-pasting text line by line from large PDF reports, eBook chapters, or legal filings is tedious. Our PDF to Text converter extracts all plain text from multi-page documents instantly. Ideal for students summarizing study notes, developers parsing text strings, and writers converting legacy documents into plain text files.",
     "features": [
-      "100% Secure & Private Processing: Your document text remains completely confidential.",
-      "Data Protection: Extraction operates locally inside your browser memory sandbox. No text contents or document pages are cached or recorded."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
@@ -1093,17 +1093,17 @@ export const SEO_CONTENT = {
   },
   "image-crop": {
     "title": "Crop & Rotate Images Online",
-    "description": "Crop, rotate, and align your photos perfectly, designed with application and exam portals in mind.",
+    "description": "Crop and rotate photos to prepare them for forms and other common uses. Review the exported image against the destination requirements.",
     "howTo": [
       "Upload Image: Select or drag and drop your photo, passport scan, or signature image.",
       "Set Crop Area: Drag the selection handles or choose preset aspect ratios (e.g., 1:1, 4:3, or custom dimensions).",
       "Adjust Rotation: Use the rotation buttons to tilt or rotate your image 90°, 180°, or 270°.",
-      "Crop & Download: Click 'Apply Crop' and save your perfectly framed image file."
+      "Crop & Download: Click 'Apply Crop' and review the exported image."
     ],
-    "why": "Official exam portals (UPSC, SSC, Banking, Railways) and job portals require exact aspect ratios and upright orientation for photo and signature uploads. Uploading misaligned or uncropped photos leads to instant form rejection. Our free tool lets you trim extra margins, center your facial photo, and fix sideways scans in seconds with live visual previews and zero cost.",
+    "why": "Some application portals specify image dimensions, aspect ratios, and file sizes. Use the crop controls to prepare an image, then compare the exported result with the portal's current requirements; acceptance is determined by that portal.",
     "features": [
-      "100% Secure & Private Processing: Your privacy is fully protected.",
-      "Data Protection: All image clipping, cropping, and rotation routines execute locally within your browser session. Your photos and signature scans are never uploaded, logged, or saved on cloud servers."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
@@ -1131,8 +1131,8 @@ export const SEO_CONTENT = {
     ],
     "why": "Dim lighting or low contrast can make scanned identity photos look dark or unreadable on online forms. Our browser-based photo editor lets you brighten dark photos, sharpen blurry scans, and adjust color levels in seconds. Perfect for students tuning up exam photos, creators touching up blog graphics, and freelancers polishing portfolio images without downloading heavy software.",
     "features": [
-      "100% Secure & Private Processing: Your personal photos remain completely confidential.",
-      "Data Protection: All image processing, color rendering, and filter applications run locally inside your browser sandbox without sending raw photo data to external servers."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
@@ -1145,7 +1145,7 @@ export const SEO_CONTENT = {
       },
       {
         "q": "Is there a watermark added to edited photos?",
-        "a": "No, our tool is 100% free and exports clean, un-watermarked high-resolution images."
+        "a": "The site is currently free to use. Check the exported image and the tool's current options for watermark and resolution details."
       }
     ]
   },
@@ -1160,8 +1160,8 @@ export const SEO_CONTENT = {
     ],
     "why": "Government registration forms, passport applications, and corporate profile sites often strictly require a plain white or light blue background behind your face. If you took a photo in front of a cluttered wall, our free background remover isolates your portrait instantly. Swap busy backgrounds for solid portal-compliant colors without needing complex manual selection tools.",
     "features": [
-      "100% Secure & Private Processing: We prioritize identity security.",
-      "Data Protection: Your uploaded portraits process locally or through secure encrypted streams. Photos are never stored, used for AI training, or shared with third parties."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
@@ -1189,8 +1189,8 @@ export const SEO_CONTENT = {
     ],
     "why": "Different websites, mobile apps, and government portals require specific image formats—some reject WebP files, while others demand lightweight PNGs or standard JPGs. Our universal image converter lets you convert image files between all major formats in seconds. Enjoy fast batch conversions with no file size caps, watermarks, or account registration.",
     "features": [
-      "100% Secure & Private Processing: Your graphics and personal photos are safe.",
-      "Data Protection: Conversion tasks execute locally in your web browser. No files are saved on external cloud storage or indexed by web scrapers."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
@@ -1220,8 +1220,8 @@ export const SEO_CONTENT = {
     ],
     "why": "When you need to quickly piece together notes, screenshots, and text snippets into a single document, opening a heavy word processor is overkill. Our Text & Image to PDF compiler lets you assemble content visually right in your browser.",
     "features": [
-      "100% Secure & Private Processing: Your texts and images are compiled locally.",
-      "Data Protection: Nothing is uploaded to remote servers. All processing happens in your browser."
+      "File processing: Supported operations are designed to run in your browser.",
+      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
@@ -1242,15 +1242,15 @@ export const SEO_CONTENT = {
       "Wait for Processing: Our tool will process the formatting.",
       "Download PDF: Save the generated PDF file to your device."
     ],
-    "why": "RTF files can display differently depending on the operating system. Converting them to PDF ensures that your document looks exactly the same for every viewer.",
+    "why": "RTF files can display differently across applications and operating systems. Converting a document to PDF can make it easier to share, but fonts, layout, and rendering may still vary. Review the exported file in the PDF viewers your audience uses.",
     "features": [
-      "100% Secure: Local processing in your browser.",
+      "Browser-based processing: Supported operations run in the page; see the Privacy Policy for separate site requests.",
       "Preserves Layout: Text formatting and structure are retained."
     ],
     "faq": [
       {
         "q": "Will my fonts and text colors be preserved?",
-        "a": "Yes, standard formatting is perfectly preserved in the final PDF."
+        "a": "Formatting can vary with the source file, fonts, and conversion options. Review the exported PDF."
       }
     ]
   },
@@ -1264,7 +1264,7 @@ export const SEO_CONTENT = {
     ],
     "why": "If you need to share a document on social media, embed a page in a presentation, or send a preview without requiring a PDF reader, converting PDF pages to JPG images is the easiest solution.",
     "features": [
-      "100% Secure: Local processing in your browser.",
+      "Browser-based processing: Supported operations run in the page; see the Privacy Policy for separate site requests.",
       "High Resolution: Output crisp, clean images."
     ],
     "faq": [
@@ -1284,7 +1284,7 @@ export const SEO_CONTENT = {
     ],
     "why": "When you need raw text data from a formatted Word document for programming, data entry, or plain text archiving, this tool strips away complex formatting to leave only the characters you need.",
     "features": [
-      "100% Secure: Local processing in your browser.",
+      "Browser-based processing: Supported operations run in the page; see the Privacy Policy for separate site requests.",
       "Fast Extraction: Instant parsing without server uploads."
     ],
     "faq": [
@@ -1304,7 +1304,7 @@ export const SEO_CONTENT = {
     ],
     "why": "Publishing Word documents directly to a website can result in bloated, messy code. Our converter generates clean, web-ready HTML that maintains your basic formatting like bold, italics, and lists.",
     "features": [
-      "100% Secure: Local processing in your browser.",
+      "Browser-based processing: Supported operations run in the page; see the Privacy Policy for separate site requests.",
       "Clean Code: Generates semantic HTML without unnecessary inline styles."
     ],
     "faq": [
@@ -1324,7 +1324,7 @@ export const SEO_CONTENT = {
     ],
     "why": "When you have raw text notes that need to be submitted as a formal Microsoft Word document, our tool instantly packages your text into a compliant .docx file ready for submission.",
     "features": [
-      "100% Secure: Local processing in your browser.",
+      "Browser-based processing: Supported operations run in the page; see the Privacy Policy for separate site requests.",
       "Instant Generation: Creates valid .docx files instantly."
     ],
     "faq": [
@@ -1345,7 +1345,7 @@ export const SEO_CONTENT = {
     ],
     "why": "Plain text files lack pagination and proper margins when printed. Converting them to PDF ensures a clean, readable layout across all devices and printers.",
     "features": [
-      "100% Secure: Local processing in your browser.",
+      "Browser-based processing: Supported operations run in the page; see the Privacy Policy for separate site requests.",
       "Auto-pagination: Handles page breaks and margins automatically."
     ],
     "faq": [
@@ -1365,7 +1365,7 @@ export const SEO_CONTENT = {
     ],
     "why": "Perfect for developers and designers who want to quickly snap a visual of a code snippet or UI component without deploying it. Turn code into shareable graphic assets instantly.",
     "features": [
-      "100% Secure: Local processing in your browser.",
+      "Browser-based processing: Supported operations run in the page; see the Privacy Policy for separate site requests.",
       "Accurate Rendering: Renders standard CSS visually."
     ],
     "faq": [
@@ -1385,7 +1385,7 @@ export const SEO_CONTENT = {
     ],
     "why": "Cleaning up badly formatted text manually is incredibly tedious. Whether you need to fix ALL CAPS emails, remove redundant spaces from data, or format titles, this utility saves you time.",
     "features": [
-      "100% Secure: Local processing in your browser.",
+      "Browser-based processing: Supported operations run in the page; see the Privacy Policy for separate site requests.",
       "Instant Results: Operations happen immediately as you type."
     ],
     "faq": [
@@ -1403,15 +1403,15 @@ export const SEO_CONTENT = {
       "Select Conversion: Choose your target output format.",
       "Copy Result: Instantly copy the transformed data."
     ],
-    "why": "Developers and data analysts constantly need to switch between data formats. Our local-only converters ensure that your sensitive API responses and database exports never leave your machine.",
+    "why": "Developers and data analysts often need to convert JSON, CSV, Base64, and other text formats. Supported transformations are designed to run in the browser. The site separately makes requests for scripts, assets, and analytics; avoid entering secrets and review the Privacy Policy.",
     "features": [
-      "100% Secure: Local processing in your browser.",
+      "Browser-based processing: Supported operations run in the page; see the Privacy Policy for separate site requests.",
       "Developer Friendly: Formats output cleanly for immediate use."
     ],
     "faq": [
       {
         "q": "Is my data sent to a server for processing?",
-        "a": "Absolutely not. All parsing and conversion algorithms run entirely inside your browser."
+        "a": "Supported parsing and conversion are designed to run in your browser rather than upload input text to PDFtools4u servers. The site still makes separate requests for scripts, assets, and analytics; review the Privacy Policy for details."
       }
     ]
   },
@@ -1425,7 +1425,7 @@ export const SEO_CONTENT = {
     ],
     "why": "Quick access to essential developer tools right in your browser without the risk of exposing proprietary code to external APIs or logging services.",
     "features": [
-      "100% Secure: Local processing in your browser.",
+      "Browser-based processing: Supported operations run in the page; see the Privacy Policy for separate site requests.",
       "Multiple Tools: Includes formatters, minifiers, and counters."
     ],
     "faq": [
@@ -1439,37 +1439,37 @@ export const SEO_CONTENT = {
 
 export const CATEGORY_FALLBACKS = {
   "PDF Tools": {
-    getOverview: (toolName) => `Our ${toolName} tool provides a secure, efficient, and completely free solution for managing your PDF documents directly from your browser. Unlike traditional desktop software that requires expensive subscriptions or bulky installations, this tool leverages modern WebAssembly to deliver enterprise-grade performance instantly. Whether you are an academic submitting college applications, a professional organizing legal contracts, or a user preparing digital forms for government portals (such as UPSC, SSC, or banking exams), this utility is tailored for precise and reliable execution. You can easily process multiple files, adjust complex settings, and manage high-resolution documents without worrying about forced watermarks or daily usage limits. By executing entirely on the client-side, it guarantees that your sensitive personal information, financial data, and proprietary business documents remain under your control at all times, making it the safest choice for confidential processing.`,
+    getOverview: (toolName) => `${toolName} helps you manage PDF documents in your browser. Choose the file and settings required for the task, run the operation, and review the exported result. Supported file-processing operations are designed to run locally rather than upload selected files to PDFtools4u servers. The site separately loads scripts, assets, and analytics; see the Privacy Policy for details. Results, limits, and supported options depend on the individual tool, input file, browser, and device.`,
     getHowTo: (toolName) => [
       `Select Document: Click the upload area or simply drag and drop your PDF file directly into the browser window.`,
       `Configure Settings: Adjust the specific options, formatting preferences, or page selections required for your task.`,
-      `Process Instantly: Click the action button to let our local WebAssembly engine execute the ${toolName} operation securely.`,
+      `Process: Click the action button to run the ${toolName} operation and wait for it to finish.`,
       `Download Output: Save the fully processed, high-quality document back to your device without leaving the page.`
     ],
     specs: [
       { key: "Execution Environment", value: "Client-side WebAssembly" },
-      { key: "Max File Size", value: "Up to 100MB (Browser Dependent)" },
-      { key: "Data Privacy", value: "Zero Server Uploads / No Logging" },
-      { key: "Pricing & Limits", value: "100% Free / Unlimited Usage" }
+      { key: "File Size", value: "Depends on the browser, device memory, and input file" },
+      { key: "File Processing", value: "Supported operations are designed to process selected files in-browser" },
+      { key: "Availability", value: "Currently free to use; features may change" }
     ],
     features: [
-      "100% Client-Side Processing: All operations run locally in browser memory via WebAssembly with zero server uploads.",
-      "Zero File Retention: Your confidential files and documents never leave your device, ensuring total privacy.",
-      "Preserves Full Quality: Clean vector output, formatting retention, and crystal clear rendering.",
-      "Completely Free & No Watermarks: Free forever with unlimited document conversions and no hidden subscription fees."
+      "Browser-based processing: Supported operations are designed to process selected files locally.",
+      "Network transparency: The site also makes separate requests for assets and analytics.",
+      "Review results: Output quality depends on the operation, input file, settings, browser, and device.",
+      "Free to use: Current availability and features may change."
     ],
     faq: [
       {
         q: "Are my files uploaded to a cloud server for processing?",
-        a: "No. Your privacy and security are our top priorities. All document processing utilizes advanced client-side WebAssembly technology. This means the engine runs locally inside your web browser's memory sandbox. Your sensitive files, such as bank statements or tax forms, are never uploaded, logged, or stored on external servers."
+        a: "Supported operations are designed to process selected files in your browser rather than upload them to PDFtools4u servers. The site still makes separate requests for scripts, assets, and analytics. Review the Privacy Policy and inspect the Network panel for the specific tool if you need to verify its current behaviour."
       },
       {
         q: "What is the maximum file size limit for this tool?",
-        a: "Because our platform operates entirely within your browser, the only limit is your device's available RAM. Modern browsers easily handle files up to 100MB effortlessly. You can process extensive manuals, high-resolution scans, and multi-page books without encountering traditional server upload restrictions or timeouts."
+        a: "File size limits depend on the tool, browser, device memory, and source file. Large documents may be slow or fail on devices with limited memory; try a smaller file or a desktop browser if that happens."
       },
       {
         q: "Is this tool completely free to use without hidden costs?",
-        a: "Yes. Our platform is 100% free forever. There are no daily usage caps, no paywalls blocking premium features, and absolutely no credit card requirements. You can process as many documents as you need without even creating a user account."
+        a: "The site is currently free to use and does not require an account for this operation. Features and availability may change over time."
       },
       {
         q: "Will using this tool cause any loss in document text quality?",
@@ -1481,7 +1481,7 @@ export const CATEGORY_FALLBACKS = {
       },
       {
         q: "What should I do if my PDF is password-protected or encrypted?",
-        a: "If your document utilizes AES-256 or 128-bit encryption, you must first remove the security restrictions. You can use our dedicated 'Unlock PDF' utility to provide the authorized password, permanently decrypt the file, and then seamlessly import it into this tool for processing."
+        a: "If the PDF is password-protected, the tool may require the correct password or removal of restrictions before it can process the file. Check the exported result in a PDF reader."
       },
       {
         q: "Can I use this tool while offline or on a slow connection?",
@@ -1490,7 +1490,7 @@ export const CATEGORY_FALLBACKS = {
     ]
   },
   "Image Tools": {
-    getOverview: (toolName) => `The ${toolName} online utility is engineered for creators, students, and professionals who need rapid, high-fidelity image manipulation without relying on heavyweight editing software like Photoshop. By utilizing HTML5 Canvas rasterization and local GPU acceleration, this tool processes your photographs, digital signatures, and graphics instantly inside your browser. From resizing official passport photos for stringent government job applications (e.g., SSC, UPSC) to optimizing large marketing banners for web performance, it delivers pixel-perfect accuracy. Users benefit from a streamlined interface that supports all major formats including JPG, PNG, WebP, and GIF. The tool ensures lossless optimization wherever possible, preserving vital metadata, color profiles (sRGB), and sharpness. More importantly, it eliminates privacy concerns entirely by ensuring your personal photos are never transmitted to third-party cloud servers, maintaining complete confidentiality for sensitive personal scans and identity documents.`,
+    getOverview: (toolName) => `${toolName} provides browser-based image processing for common editing and conversion tasks. Select an image, set the available options, and review the exported file. Supported operations are designed to process selected files locally rather than upload them to PDFtools4u servers; the site separately loads scripts, assets, and analytics. Dimensions, format support, output quality, and limits depend on the tool and input image.`,
     getHowTo: (toolName) => [
       `Upload Image: Drag and drop your target image file (JPG, PNG, WebP) directly onto the canvas area.`,
       `Adjust Parameters: Set your exact pixel dimensions, aspect ratio constraints, or target KB limits as required.`,
@@ -1498,33 +1498,33 @@ export const CATEGORY_FALLBACKS = {
       `Save File: Download the optimized, high-resolution image directly to your local storage instantly.`
     ],
     specs: [
-      { key: "Rendering Engine", value: "HTML5 Canvas / Local GPU" },
+      { key: "Rendering Engine", value: "Browser-based image processing" },
       { key: "Supported Formats", value: "JPG, PNG, WebP, GIF" },
-      { key: "Privacy Protocol", value: "Strictly Offline Processing" },
-      { key: "Quality Retention", value: "Lossless (Bicubic Resampling)" }
+      { key: "File Processing", value: "Supported operations are designed to run in-browser" },
+      { key: "Output Quality", value: "Depends on selected settings and source image" }
     ],
     features: [
-      "100% Client-Side Processing: Client-side JavaScript & Canvas rendering ensures photos are never sent to remote servers.",
+      "Browser-based processing: Supported operations are designed to process selected files locally.",
       "Lossless Resolution & Sharpness: High-precision bicubic resampling preserves sharpness, color accuracy, and transparency.",
       "Universal Format Support: Seamless conversion between JPG, PNG, WebP, and other popular image standards.",
-      "Completely Free & Uncapped: Edit and optimize as many images as needed with zero fees or watermarks."
+      "Free to use: Current availability and features may change."
     ],
     faq: [
       {
         q: "Are my personal photos uploaded or saved on a remote server?",
-        a: "Absolutely not. We employ client-side JavaScript and HTML5 Canvas processing to ensure your images are manipulated locally on your device. Your personal photos, signatures, and ID scans remain 100% private and are never transferred across the network to our servers."
+        a: "Supported operations are designed to process selected images in your browser rather than upload them to PDFtools4u servers. The site still makes separate requests for assets and analytics. Inspect the Network panel during the specific operation if you need to verify its current behaviour."
       },
       {
         q: "What image formats and file sizes are supported by this tool?",
-        a: "We support a wide array of standard formats including JPG/JPEG, PNG, WebP, GIF, and standard BMP files. Since processing relies on your device's memory, you can comfortably handle high-resolution DSLR photos or large scans up to 50MB directly in the browser."
+        a: "Supported formats and practical file sizes depend on the specific tool, browser, and device memory. Check the tool's controls and try a smaller image if processing fails."
       },
       {
         q: "Do I need to sign up or pay to process multiple images?",
-        a: "No registration, email, or payment is required. The platform operates on a completely unrestricted, free-to-use model. You can process an unlimited number of images daily without encountering paywalls or disruptive premium prompts."
+        a: "The site is currently free to use and this operation does not require an account. Features and availability may change over time."
       },
       {
         q: "Will this tool degrade the resolution or sharpness of my images?",
-        a: "Unless you specifically choose aggressive compression settings to meet strict KB limits, our tool utilizes high-quality bicubic or Lanczos resampling algorithms. This guarantees crisp edges, accurate color retention, and high-fidelity output for professional use."
+        a: "Resizing or compression can affect sharpness, color, and file size. Inspect the exported image at its intended dimensions before using it."
       },
       {
         q: "Can I use this tool on my iPhone or Android smartphone?",
@@ -1541,41 +1541,41 @@ export const CATEGORY_FALLBACKS = {
     ]
   },
   "Document Tools (DOCX, XLSX, PPTX, TXT)": {
-    getOverview: (toolName) => `Our ${toolName} converter provides a robust, seamless bridge between complex office documents and universally accessible formats. Handling proprietary files like Microsoft Word (.docx), Excel (.xlsx), and PowerPoint (.pptx) can often result in broken formatting, missing fonts, or alignment issues when shared across different devices. This tool utilizes advanced parsing algorithms to accurately interpret document structures, rich text styling, embedded graphics, and complex spreadsheet formulas, ensuring an exact visual translation. Ideal for professionals preparing client proposals, students submitting academic theses, and accountants sharing uneditable financial reports, it eliminates the need for expensive office suite subscriptions. The conversion is executed with strict adherence to privacy protocols, ensuring your corporate data, intellectual property, and academic research remain secure. Enjoy high-fidelity document transformation that guarantees your final file looks perfectly professional on any screen or printed page.`,
+    getOverview: (toolName) => `${toolName} helps convert supported office documents in your browser. Select a file, choose the available output options, and inspect the exported document. Formatting can change because of differences in source content, fonts, and output format. Supported file-processing operations are designed to run locally; the site separately loads scripts, assets, and analytics. See the Privacy Policy for details and avoid using the tool with confidential records unless you have reviewed its data practices.`,
     getHowTo: (toolName) => [
       `Select File: Drag and drop your office document (e.g., DOCX, XLSX, PPTX) into the processing zone.`,
       `Configure Output: Choose your preferred layout preservation settings or target format options.`,
       `Execute Conversion: Click the ${toolName} action button to start the document parsing engine.`,
-      `Download Result: Retrieve your perfectly formatted, universally compatible document instantly.`
+      `Download Result: Save and review the exported document in a compatible viewer.`
     ],
     specs: [
       { key: "Format Support", value: "DOCX, XLSX, PPTX, TXT, CSV" },
       { key: "Layout Engine", value: "Precision DOM Mapping" },
-      { key: "File Security", value: "Secure Ephemeral Processing" },
+      { key: "Processing", value: "Browser-based for supported operations" },
       { key: "Dependencies", value: "Zero Installations Required" }
     ],
     features: [
-      "100% Client-Side / Zero File Uploads: Process private office files, financial statements, and contracts with total security.",
-      "High-Fidelity Document Rendering: Preserves tables, fonts, formatting, and page structures accurately.",
+      "Browser-based processing: Supported operations are designed to run locally in the page.",
+      "Formatting: Output can vary with the source file, fonts, and selected options; review the result.",
       "Cross-Platform Compatibility: Converts seamlessly on desktop, mobile, and Chromebooks without Microsoft Office.",
-      "Completely Free: Unlimited document processing without subscription costs or watermarks."
+      "Free to use: Current availability and features may change."
     ],
     faq: [
       {
         q: "Is my confidential business data secure during the conversion process?",
-        a: "Yes, security is intrinsic to our architecture. All document parsing and conversion is executed in a highly secure, sandboxed environment. We adhere to a strict zero-retention policy, meaning your business proposals and financial spreadsheets are permanently deleted from memory immediately after processing."
+        a: "Supported operations are designed to process selected files in your browser rather than upload them to PDFtools4u servers. The site still makes separate requests for scripts, assets, and analytics. Review the Privacy Policy and inspect Network requests for the specific tool if you need to verify its current behaviour."
       },
       {
         q: "Can this tool handle large presentations or multi-sheet workbooks?",
-        a: "Absolutely. Our optimized parsing engine is designed to handle robust, multi-page documents. You can confidently process lengthy corporate presentations or complex Excel workbooks containing multiple sheets and dense data arrays without experiencing arbitrary page limits."
+        a: "Supported file size and page counts depend on the tool, browser, and device resources. Try a smaller file if the operation is slow or fails."
       },
       {
         q: "Will I be charged for converting multiple office documents?",
-        a: "No, our document conversion utilities are entirely free of charge. We provide unrestricted access without requiring subscriptions, premium upgrades, or account registrations, ensuring you can process as many files as your workflow demands."
+        a: "The site is currently free to use and this operation does not require an account. Features, usage, and file limits may change."
       },
       {
-        q: "Will the original formatting, fonts, and layout be preserved exactly?",
-        a: "We utilize advanced layout-retention algorithms that precisely map original paragraphs, margins, embedded graphics, and table structures to the final output, ensuring the highest possible fidelity and preventing frustrating formatting shifts."
+        q: "Will the original formatting, fonts, and layout be preserved?",
+        a: "Formatting can change with the source file, fonts, and output format. Review the exported document against the original."
       },
       {
         q: "Do I need to install Microsoft Office or plugins to use this tool?",
@@ -1592,7 +1592,7 @@ export const CATEGORY_FALLBACKS = {
     ]
   },
   "Text & Developer Tools": {
-    getOverview: (toolName) => `The ${toolName} utility is an essential workbench tailored for developers, data analysts, and technical writers who require precise manipulation of text and raw data arrays. Working with JSON, CSV, Base64 strings, or unformatted code snippets often requires specialized local scripts or bulky IDEs. This tool brings powerful parsing, minification, and formatting capabilities directly into your browser interface. Built for speed and accuracy, it instantly handles large string payloads, syntax highlighting, and data sanitization without the latency of server round-trips. Whether you are debugging an API response, formatting a messy dataset for machine learning, or simply generating robust hashes, it provides immediate feedback. Furthermore, processing raw code and proprietary data locally guarantees that your intellectual property, API keys, and sensitive data structures are never exposed to external analytics or logging systems.`,
+    getOverview: (toolName) => `${toolName} provides text and data-formatting operations in the browser. Paste or enter the text you want to process, select the operation, and inspect the result before copying or downloading it. The operation is designed to run locally; the site separately makes requests for scripts, assets, and analytics. Avoid entering passwords, API keys, or other secrets into a website unless you have reviewed its current data practices.`,
     getHowTo: (toolName) => [
       `Input Data: Paste your raw text, code snippet, or dataset directly into the input editor.`,
       `Select Operation: Choose your desired formatting, encoding, or parsing parameters from the menu.`,
@@ -1601,24 +1601,24 @@ export const CATEGORY_FALLBACKS = {
     ],
     specs: [
       { key: "Data Types", value: "JSON, CSV, Base64, Raw Text" },
-      { key: "Processing Speed", value: "Instantaneous (No API Latency)" },
+      { key: "Processing", value: "Browser-based for supported text operations" },
       { key: "Validation", value: "Real-time Syntax Parsing" },
-      { key: "Privacy Standard", value: "Zero API Logging / Local Execution" }
+      { key: "Processing", value: "Supported text operations run in the browser" }
     ],
     features: [
-      "100% Client-Side Execution: API tokens, source code, and JSON datasets are processed locally in RAM.",
-      "Real-Time Syntax Parsing: Instant formatting, minification, and conversion with zero server latency.",
-      "Large Payload Support: Handles heavy payloads and datasets leveraging your device's native CPU.",
-      "Completely Free & No Limits: Free for personal and commercial developer workflows with no rate limits."
+      "Browser-based operation: Supported text transformations run locally in the page.",
+      "Interactive results: Processing time depends on input size, browser, and device.",
+      "Input size: Large datasets may be slower or exceed available device memory.",
+      "Free to use: Current availability and features may change."
     ],
     faq: [
       {
         q: "Are my proprietary code snippets or API keys logged on a server?",
-        a: "Never. We understand the critical nature of developer data. All text formatting, JSON parsing, and string manipulation execute 100% locally using client-side JavaScript. Your proprietary logic and sensitive API keys never leave your browser environment."
+        a: "The text transformation is designed to run in the browser rather than upload your input to PDFtools4u servers. The site also makes requests for analytics and assets. Avoid pasting API keys or passwords into the page; inspect Network requests if you need to verify a particular operation."
       },
       {
         q: "Can this tool handle extremely large JSON files or text datasets?",
-        a: "Yes, our editor is optimized for high performance. Relying on your device's native CPU and RAM, it can quickly parse, format, and render massive text payloads or large JSON trees that would typically crash standard web forms."
+        a: "Practical input size depends on the operation, browser, and device. Large inputs may be slow or exceed available memory."
       },
       {
         q: "Is this developer tool completely free for commercial use?",
@@ -1630,7 +1630,7 @@ export const CATEGORY_FALLBACKS = {
       },
       {
         q: "Can I use this utility on restricted corporate networks?",
-        a: "Because all processing occurs strictly within the browser environment without requiring external API calls or database connections, it easily bypasses corporate firewall restrictions, making it perfect for secure enterprise environments."
+        a: "Network restrictions may affect access to the site and its assets. Do not treat the tool as an approved secure enterprise environment; follow your organization's data-handling policies."
       },
       {
         q: "How does the tool handle complex character encodings like UTF-8?",
@@ -1638,7 +1638,7 @@ export const CATEGORY_FALLBACKS = {
       },
       {
         q: "Is it possible to automate this tool via an API endpoint?",
-        a: "Currently, our platform is designed as a secure, browser-based graphical interface for manual tasks. To maintain our strict zero-logging and local-processing security guarantees, we do not expose public API endpoints for automated server requests."
+        a: "These utilities are designed for interactive use in the browser; no public API is documented for automated requests. Avoid entering secrets and review the Privacy Policy for details about separate site requests."
       }
     ]
   }

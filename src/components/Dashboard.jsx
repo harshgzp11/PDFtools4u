@@ -130,7 +130,7 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
             {/* Soft Trust Pill */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs sm:text-sm font-semibold shadow-xs">
               <ShieldCheck className="w-4 h-4 text-blue-600" />
-              <span>100% Free & Completely Private</span>
+              <span>Free browser-based tools</span>
             </div>
 
             {/* Main Title */}
@@ -140,7 +140,7 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
 
             {/* Subtitle — supporting long-tail keywords */}
             <h2 className="text-lg sm:text-xl text-gray-600 max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal">
-              Edit, convert, compress, merge & sign documents right in your browser. Zero file uploads, 100% secure & private.
+              Edit, convert, compress, merge & sign documents with tools designed to process supported files in your browser. See how file processing and analytics work.
             </h2>
 
             {/* Search Input Bar (Smallpdf style quick action) */}
@@ -394,9 +394,9 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
           <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-emerald-50 text-emerald-700 text-xs font-bold uppercase tracking-wider rounded-full border border-emerald-200 mx-auto">
             <ShieldCheck className="w-4 h-4" /> Your Privacy Matters
           </div>
-          <h2 className="text-4xl font-bold text-gray-900 tracking-tight">100% Private & Secure</h2>
+          <h2 className="text-4xl font-bold text-gray-900 tracking-tight">Browser-Based File Processing</h2>
           <p className="text-xl text-gray-500 max-w-3xl mx-auto">
-            Every file you process stays on your device. Nothing ever leaves your browser.
+            Supported file operations are designed to run on your device. The site also loads assets and analytics; see our security and privacy details for the distinction.
           </p>
         </div>
 
@@ -408,18 +408,18 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
             </div>
             <h3 className="font-bold text-gray-900 text-lg mb-2">No Server Uploads</h3>
             <p className="text-gray-500 text-sm leading-relaxed">
-              All processing happens locally in your browser's memory. Your files never touch our servers.
+              Supported file operations are designed to process selected files locally in your browser rather than upload them to our servers.
             </p>
           </div>
 
-          {/* Card 2: No Data Collection */}
+          {/* Card 2: Document Content */}
           <div className="bg-white border border-gray-200 rounded-2xl p-6 text-center hover:shadow-lg transition-all group">
             <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-5 group-hover:scale-110 transition-transform">
               <Eye className="w-7 h-7 text-blue-600" />
             </div>
-            <h3 className="font-bold text-gray-900 text-lg mb-2">Zero Data Collection</h3>
+            <h3 className="font-bold text-gray-900 text-lg mb-2">Document Content</h3>
             <p className="text-gray-500 text-sm leading-relaxed">
-              We don't track, store, or analyze any content from your documents. What's yours stays yours.
+              Core processing does not intentionally send selected document contents to our servers. Analytics services may receive separate usage and technical information.
             </p>
           </div>
 
@@ -430,7 +430,7 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
             </div>
             <h3 className="font-bold text-gray-900 text-lg mb-2">Secure by Design</h3>
             <p className="text-gray-500 text-sm leading-relaxed">
-              Built with browser-native APIs and modern encryption standards. No external dependencies for file handling.
+              Processing libraries and other page assets may be downloaded by your browser. Check the specific tool and privacy details for how it works.
             </p>
           </div>
 
@@ -452,14 +452,14 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
             <Shield className="w-8 h-8 text-emerald-600" />
           </div>
           <div className="text-center sm:text-left flex-1">
-            <h4 className="font-bold text-emerald-900 text-lg">Client-Side Data Privacy Guarantee</h4>
+            <h4 className="font-bold text-emerald-900 text-lg">How Local Processing Works</h4>
             <p className="text-emerald-700 text-sm mt-1 mb-3">
-              All PDF, image, and document processing occurs 100% locally in your browser memory. No file data is ever transmitted to external servers. Your documents remain strictly on your machine at all times.
+              Supported tools are designed to process selected files locally in your browser without uploading them to PDFtools4u servers. The website still makes requests for assets and analytics. Behaviour can vary by tool, so verify the specific operation if you have sensitive data.
             </p>
             <div className="bg-emerald-100/50 rounded-lg p-3 border border-emerald-200">
               <p className="text-emerald-800 text-sm font-semibold flex items-center gap-2">
                 <span className="bg-emerald-600 text-white px-2 py-0.5 rounded text-xs">The F12 Challenge</span>
-                Don't trust us? Press F12, open your Network tab, and process a file. You will see zero document data leaving your machine.
+                To check a particular tool, open your browser's Network panel, note requests before processing, then repeat the operation and inspect any new requests and payloads.
               </p>
             </div>
           </div>

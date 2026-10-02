@@ -35,7 +35,7 @@ export default function AboutUs() {
         <header className="relative text-center max-w-3xl mx-auto pt-4">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs sm:text-sm font-semibold shadow-xs mb-6">
             <ShieldCheck className="w-4 h-4 text-blue-600" />
-            <span>India's Web Utility Hub • 100% Free & Secure</span>
+            <span>India's Browser-Based Utility Hub</span>
           </div>
 
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight mb-6">
@@ -50,10 +50,10 @@ export default function AboutUs() {
               I built this platform out of sheer frustration. I was tired of PDF tools demanding a $9 monthly subscription just to compress a simple file. I was tired of websites forcing me to upload my sensitive documents—like my tax forms and ID cards—to unknown, remote servers just to merge two pages together.
             </p>
             <p className="text-base text-gray-600 leading-relaxed mb-4">
-              I realized that with modern web technologies, we don't need servers for this anymore. I engineered PDFtools4u so that every single tool runs <strong className="text-gray-900 font-bold">100% locally in your browser's memory</strong>. It’s faster, completely private, and it will always be free.
+              I built PDFtools4u around browser-based processing: supported tools are designed to process selected files on your device instead of uploading them to our servers. The site still makes requests for assets and analytics, as explained in our <a href="/privacy-policy" className="text-blue-600 hover:underline">Privacy Policy</a>.
             </p>
             <p className="text-base text-gray-600 leading-relaxed font-semibold">
-              No hidden costs, no subscriptions, no watermarks, and zero file uploads.
+              The tools are currently free to use. Features and availability may change over time.
             </p>
           </div>
         </header>

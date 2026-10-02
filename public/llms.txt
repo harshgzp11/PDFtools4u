@@ -1,14 +1,14 @@
 # PDFtools4u
 
-> PDFtools4u (https://www.pdftools4u.in) is a free, browser-based suite of 40+ PDF, image, and document utilities engineered with a 100% client-side, zero-server architecture. All processing executes locally in browser memory using WebAssembly (Wasm) and HTML5 APIs. Zero files or document data are ever uploaded, stored, or logged on remote servers.
+> PDFtools4u (https://www.pdftools4u.in) is a free, browser-based suite of PDF, image, and document utilities. Supported file-processing operations are designed to run locally in the browser rather than upload selected files to PDFtools4u servers. The site also makes network requests for assets and analytics.
 
 ## Optional
 - [Full documentation (llms-full.txt)](https://www.pdftools4u.in/llms-full.txt): Expanded architecture, legal pages, FAQs, and complete tool catalog for AI systems.
 - [AI crawler policy (ai.txt)](https://www.pdftools4u.in/ai.txt): Allow rules and content signals for AI crawlers.
 
 ## Trust & Architecture
-- [Security & Architecture](https://www.pdftools4u.in/security): Technical breakdown of client-side memory sandboxing, WebAssembly processing, and F12 network verification.
-- [Privacy Policy](https://www.pdftools4u.in/privacy-policy): Privacy commitments confirming zero server-side file transmission and zero data retention.
+- [Security & Architecture](https://www.pdftools4u.in/security): Explanation of supported local file processing, analytics, and how to inspect network requests.
+- [Privacy Policy](https://www.pdftools4u.in/privacy-policy): Information about file processing, analytics, technical data, cookies, and advertising.
 - [Terms of Service](https://www.pdftools4u.in/terms-of-service): Terms governing use of PDFtools4u.
 - [Cookie Policy](https://www.pdftools4u.in/cookie-policy): Cookies and analytics technologies used on the site.
 - [About Us](https://www.pdftools4u.in/about): The founder's mission, background, and motivation for building zero-upload privacy utilities.
@@ -74,4 +74,3 @@
 - [Bank Statement PDF to Excel Converter](https://www.pdftools4u.in/blog/bank-statement-pdf-to-excel-converter): How to extract financial transaction tables without exposing banking data to cloud servers.
 - [Remove Password from Salary Slip & Bank Statement](https://www.pdftools4u.in/blog/remove-password-from-salary-slip-bank-statement): Local PDF decryption guide.
 - [Compress Form 16 PDF Under 500KB](https://www.pdftools4u.in/blog/compress-form-16-pdf-under-500kb): Compressing income tax certificates for government portal uploads.
-

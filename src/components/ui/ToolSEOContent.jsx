@@ -52,10 +52,10 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
       howTo: fallback.getHowTo(toolInfo.name),
       specs: fallback.specs,
       features: fallback.features || [
-        "100% Client-Side / Zero File Uploads: Process private documents securely without external server transfers.",
-        "Zero File Retention: No files are permanently stored; operations run strictly within your browser.",
-        "Preserves Full Quality: Full vector clarity, exact font preservation, and crystal clear rendering.",
-        "Completely Free & No Watermarks: Unlimited document processing without subscription costs or watermarks."
+        "Browser-based processing: Supported operations are designed to process selected files locally.",
+        "Network transparency: The page also loads assets and analytics as described in the Privacy Policy.",
+        "Review results: Output quality depends on the input file, selected options, browser, and tool.",
+        "Free to use: Current availability and features may change over time."
       ],
       faq: fallback.faq
     };
@@ -65,10 +65,10 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
       ...content,
       specs: content.specs || fallback.specs,
       features: content.features?.length ? content.features : (fallback.features || [
-        "100% Client-Side Processing: WebAssembly and HTML5 Canvas keep documents private on your machine.",
-        "Zero Cloud Uploads: Sensitive information never leaves your device's memory.",
-        "High Fidelity Output: Clean vector and visual rendering with zero quality degradation.",
-        "100% Free Forever: No hidden fees, limits, watermarks, or account registration required."
+        "Browser-based processing: Supported operations are designed to process selected files locally.",
+        "Network transparency: The page also loads assets and analytics as described in the Privacy Policy.",
+        "Review results: Output quality depends on the input file, selected options, browser, and tool.",
+        "Free to use: Current availability and features may change over time."
       ]),
       why: content.why || fallback.getOverview(toolInfo?.name || "Tool"),
       faq: content.faq?.length >= 7 ? content.faq : fallback.faq
@@ -77,12 +77,9 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
 
   if (!content) return null;
 
-  // Find related blog guides (naively matching by words in toolId)
+  // Prefer guides that explicitly recommend this tool as their next step.
   const relatedBlogs = BLOG_POSTS.filter(post => 
-    post.published && 
-    toolId.split('-').some(keyword => 
-      keyword.length > 2 && post.id.includes(keyword)
-    )
+    post.published && post.targetToolUrl === toolId
   ).slice(0, 3);
 
   return (
@@ -204,13 +201,13 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
 
         <div className="flex flex-col gap-3 flex-1 text-center md:text-left relative z-10">
           <div className="inline-flex items-center justify-center md:justify-start gap-2 text-indigo-200 text-sm mb-1">
-            <ShieldCheck className="w-5 h-5 text-emerald-400" /> 100% Client-Side Processing
+            <ShieldCheck className="w-5 h-5 text-emerald-400" /> Browser-Based Processing
           </div>
           <h3 className="text-2xl md:text-3xl font-semibold text-white leading-tight">
-            Your Privacy is Guaranteed
+            How Supported Tools Process Files
           </h3>
           <p className="text-indigo-100/90 text-lg max-w-xl leading-relaxed">
-            Unlike other converters, we process your files entirely inside your web browser using WebAssembly. <span className="text-white font-medium">Your files are never uploaded to our servers.</span>
+            Supported operations are designed to process selected files locally instead of uploading them to PDFtools4u servers. The page also makes requests for assets and analytics; see the Privacy Policy for details.
           </p>
         </div>
       </div>

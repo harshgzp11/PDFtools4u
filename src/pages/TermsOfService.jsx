@@ -15,7 +15,7 @@ export default function TermsOfService() {
         <div className="border-b border-gray-100 pb-6 mb-8 text-center sm:text-left">
           <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">Terms of Service</h1>
           <p className="text-sm font-medium text-gray-500 mt-2">
-            PDFtools4u &bull; Last Updated: August 7, 2026
+            PDFtools4u &bull; Last Updated: October 1, 2026
           </p>
         </div>
 
@@ -48,7 +48,7 @@ export default function TermsOfService() {
           <section>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">3. Client-Side Processing &amp; Document Ownership</h2>
             <ul className="list-disc pl-6 space-y-3">
-              <li><strong>Local Processing:</strong> PDFtools4u operates primarily using client-side processing (JavaScript / WebAssembly execution directly within your web browser). Your files and document data are processed locally on your own device and are not uploaded to or stored on our servers.</li>
+              <li><strong>Browser-Based Processing:</strong> Supported tools are designed to process selected files locally in your browser rather than upload them to PDFtools4u servers. The site still makes requests for assets and analytics, and processing behaviour can vary by feature. See the Privacy Policy for information about third-party services.</li>
               <li><strong>User Ownership:</strong> You retain full ownership, copyright, and all intellectual property rights to all files, documents, and data processed using PDFtools4u. PDFtools4u claims zero ownership over your content.</li>
               <li><strong>User Responsibility:</strong> You are solely responsible for keeping backup copies of your original files before processing them through our tools. PDFtools4u is not responsible for any file corruption, data loss, or unintentional modifications occurring during processing.</li>
             </ul>

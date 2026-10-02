@@ -119,6 +119,7 @@ const URL_REDIRECTS = {
 };
 
 const LEGAL_PAGE_SLUGS = ['privacy-policy', 'terms-of-service', 'cookie-policy', 'about', 'contact', 'security'];
+const STATIC_PAGE_SLUGS = [...LEGAL_PAGE_SLUGS, 'all-tools'];
 
 const TOOL_COMPONENTS = {
   'edit-pdf': PdfEditor,
@@ -187,6 +188,16 @@ const TOOL_COMPONENTS = {
 };
 
 const PLACEHOLDER_TOOLS = {};
+
+function ClientOnly({ children, fallback }) {
+  const [isClientReady, setIsClientReady] = useState(false);
+
+  useEffect(() => {
+    setIsClientReady(true);
+  }, []);
+
+  return isClientReady ? children : fallback;
+}
 
 // Resolve a slug: if it's an alias, return the canonical slug; otherwise return as-is
 function resolveSlug(slug) {
@@ -287,6 +298,7 @@ function App() {
                   if (!isPlaceholder && !ToolComponent) return null;
                   
                   const isActive = activeTool === toolId;
+                  const isToolPage = !STATIC_PAGE_SLUGS.includes(toolId);
                   
                   return (
                     <div 
@@ -296,7 +308,13 @@ function App() {
                     >
                       <div className="flex flex-col w-full">
                         {isPlaceholder ? (
-                          <PlaceholderTool toolName={PLACEHOLDER_TOOLS[toolId]} />
+                          <ClientOnly fallback={<ToolSkeleton />}>
+                            <PlaceholderTool toolName={PLACEHOLDER_TOOLS[toolId]} />
+                          </ClientOnly>
+                        ) : isToolPage ? (
+                          <ClientOnly fallback={<ToolSkeleton />}>
+                            <ToolComponent onSelectTool={navigateTo} />
+                          </ClientOnly>
                         ) : (
                           <ToolComponent onSelectTool={navigateTo} />
                         )}

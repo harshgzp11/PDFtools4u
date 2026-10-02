@@ -14,7 +14,7 @@ export default function CookiePolicy() {
         <div className="border-b border-gray-100 pb-6 mb-8 text-center sm:text-left">
           <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">Cookie Policy</h1>
           <p className="text-sm font-medium text-gray-500 mt-2">
-            PDFtools4u &bull; Last Updated: September 25, 2026
+            PDFtools4u &bull; Last Updated: October 1, 2026
           </p>
         </div>
 
@@ -36,34 +36,35 @@ export default function CookiePolicy() {
           <section className="bg-blue-50/60 border border-blue-100 rounded-xl p-5">
             <h2 className="text-xl sm:text-2xl font-bold text-blue-950 mb-3">3. Document Files Are Never Stored in Cookies</h2>
             <p className="text-blue-900">
-              PDF, image, and document processing on PDFtools4u runs locally in your browser. Your files are not uploaded to our servers and are not written into cookies. Cookies are used only for site operation and aggregate analytics, never to store document contents.
+              Supported PDF and image operations are designed to process selected files in your browser; the tool does not intentionally upload those files to PDFtools4u servers. Cookies are not used to store document contents. This does not mean the site makes no network requests: it loads scripts and other assets, and analytics services may receive usage and technical information.
             </p>
           </section>
 
           <section>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">4. Cookies We Use</h2>
             <ul className="list-disc pl-6 space-y-2">
-              <li><strong>Essential / functional:</strong> Cookies or local storage needed for basic site behaviour, such as remembering UI state during a session. These do not profile you for advertising.</li>
-              <li><strong>Analytics:</strong> After you first interact with the site (for example click, scroll, or type), we may load Google Analytics 4 and Microsoft Clarity. These tools set cookies to measure visits, page performance, and aggregate usage so we can improve the product.</li>
-              <li><strong>Advertising:</strong> We do not currently serve advertisements or use Google AdSense, and we do not set advertising or retargeting cookies.</li>
+              <li><strong>Site operation:</strong> Browser storage may be used by the site or its libraries for operation and preferences.</li>
+              <li><strong>Analytics and performance:</strong> Google Analytics 4 and Microsoft Clarity are configured to load after a visitor interacts with the page. The site also integrates Vercel Analytics and Speed Insights. These services may send page-view, interaction, performance, browser, and device information; exact data and storage depend on provider and site configuration.</li>
+              <li><strong>Advertising:</strong>               We do not currently serve advertisements or use Google AdSense, and do not currently set advertising cookies for those services.</li>
             </ul>
           </section>
 
           <section>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">5. Third-Party Cookies</h2>
             <p className="mb-3">
-              Analytics cookies may be set by Google and Microsoft when those scripts load. Those providers process data under their own policies:
+              Analytics and performance scripts may make requests to Google, Microsoft, and Vercel when used. Those providers process data under their own policies:
             </p>
             <ul className="list-disc pl-6 space-y-2">
               <li>Google Analytics: <a href="https://policies.google.com/privacy" className="text-blue-600 hover:underline" rel="noopener noreferrer">Google Privacy Policy</a></li>
               <li>Microsoft Clarity: <a href="https://privacy.microsoft.com/privacystatement" className="text-blue-600 hover:underline" rel="noopener noreferrer">Microsoft Privacy Statement</a></li>
+              <li>Vercel: <a href="https://vercel.com/legal/privacy-policy" className="text-blue-600 hover:underline" rel="noopener noreferrer">Vercel Privacy Policy</a></li>
             </ul>
           </section>
 
           <section>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">6. How to Control Cookies</h2>
             <p className="mb-3">
-              You can refuse or delete cookies through your browser settings. Blocking analytics cookies will not stop PDF or image tools from working, because those tools run locally and do not depend on tracking.
+              The site does not currently offer a per-category analytics consent control. You can block or delete cookies and other site data through browser settings. Blocking cookies may not prevent all non-cookie requests made by analytics scripts. The core supported file-processing operations are designed to work locally and do not depend on analytics.
             </p>
             <p>
               You may also use industry opt-out tools such as the Google Analytics opt-out browser add-on where available.
@@ -73,7 +74,7 @@ export default function CookiePolicy() {
           <section>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">7. Updates</h2>
             <p>
-              If we introduce advertising, additional tracking, or new cookie categories, we will update this Cookie Policy before those technologies are used.
+              If we introduce advertising, additional tracking, or new cookie categories, we will update this Cookie Policy to describe the change and applicable choices.
             </p>
           </section>
 

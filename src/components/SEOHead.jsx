@@ -598,6 +598,8 @@ export default function SEOHead({ activeTool, title: overrideTitle, description:
     }
   }
 
+  if (typeof document === 'undefined') return null;
+
   return (
     <Helmet prioritizeSeoTags>
       <title>{computedTitle}</title>
