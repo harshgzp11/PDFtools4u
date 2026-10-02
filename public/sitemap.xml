@@ -83,7 +83,7 @@
   </url>
   <url>
     <loc>https://www.pdftools4u.in/organize-pdf</loc>
-    <lastmod>2026-08-17</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -125,7 +125,7 @@
   </url>
   <url>
     <loc>https://www.pdftools4u.in/ppt-to-pdf</loc>
-    <lastmod>2026-08-28</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -480,6 +480,18 @@
   <url>
     <loc>https://www.pdftools4u.in/blog/pdf-format-converter-online-free</loc>
     <lastmod>2026-09-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.pdftools4u.in/blog/convert-pptx-to-pdf-online</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.pdftools4u.in/blog/reorder-pdf-pages-visually-online</loc>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

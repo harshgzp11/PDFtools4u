@@ -4,7 +4,6 @@ import React, { useState, useRef } from 'react';
 import { Files, GripHorizontal, Trash2, RotateCw, Plus, FilePlus, RefreshCcw, FileText } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import { getPdfThumbnails } from '../lib/pdfRenderer';
-import { getDynamicGridClass } from '../lib/utils';
 import { toast } from 'sonner';
 import { trackError } from '../lib/analytics';
 
@@ -18,6 +17,7 @@ export default function OrganizePdf() {
   const [dragOverIdx, setDragOverIdx] = useState(null);
   
   const fileInputRef = useRef(null);
+  const pageCardRefs = useRef([]);
 
   const handleFile = async (newFile) => {
     if (!newFile || newFile.type !== 'application/pdf') {
@@ -126,7 +126,7 @@ export default function OrganizePdf() {
   };
 
   const removePage = (id) => {
-    setPagesOrder(pagesOrder.filter(p => p.id !== id));
+    setPagesOrder(pagesOrder.filter(page => page.id !== id));
   };
   
   const rotatePage = (id) => {
@@ -134,13 +134,18 @@ export default function OrganizePdf() {
   };
   
   const insertBlankAfter = (index) => {
-    const newOrder = [...pagesOrder];
-    newOrder.splice(index + 1, 0, {
+    const blankPage = {
       id: `blank-${Date.now()}`,
       isBlank: true,
       rotation: 0
-    });
+    };
+    const newOrder = [...pagesOrder];
+    newOrder.splice(index + 1, 0, blankPage);
     setPagesOrder(newOrder);
+  };
+
+  const scrollToPage = (index) => {
+    pageCardRefs.current[index]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   };
 
   const organizePdf = async () => {
@@ -197,70 +202,99 @@ export default function OrganizePdf() {
   };
 
   const customPreviewNode = (
-    <div className="w-full flex flex-col pt-4 pb-8">
+    <div className="flex h-full min-h-0 w-full pt-4 pb-8">
       {pagesOrder.length > 0 ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 w-full px-2" onDragOver={(e) => e.preventDefault()}>
-          {pagesOrder.map((page, index) => {
-            const isDragging = draggedIdx === index;
-            const isDragOver = dragOverIdx === index && draggedIdx !== index;
-            
-            return (
-              <div 
-                key={page.id} 
-                draggable
-                onDragStart={(e) => onDragStart(e, index)}
-                onDragOver={(e) => onDragOver(e, index)}
-                onDrop={(e) => onDrop(e, index)}
-                onDragEnd={onDragEnd}
-                className={`group animate-in zoom-in-95 duration-300 relative aspect-[1/1.4] rounded-xl shadow-sm border overflow-visible flex flex-col transition-all cursor-grab active:cursor-grabbing bg-white ${
-                  isDragging ? 'opacity-40 border-dashed border-gray-400 scale-95 shadow-none' : 
-                  isDragOver ? (draggedIdx < index ? 'shadow-[6px_0_0_0_#4f46e5] -translate-x-1 border-gray-200 z-10' : 'shadow-[-6px_0_0_0_#4f46e5] translate-x-1 border-gray-200 z-10') : 
-                  'border-gray-200 hover:border-indigo-300 hover:shadow-xl hover:-translate-y-1'
-                }`}
-              >
-                <div className="w-full h-full rounded-lg overflow-hidden flex items-center justify-center bg-gray-50 pointer-events-none">
+        <>
+          <aside className="w-16 shrink-0 overflow-y-auto border-r border-gray-200 px-2 pb-2">
+            <div className="space-y-2">
+              {pagesOrder.map((page, index) => (
+                <button
+                  key={page.id}
+                  type="button"
+                  onClick={() => scrollToPage(index)}
+                  aria-label={`Go to page ${index + 1}`}
+                  className="block w-full rounded-md border border-gray-200 bg-white p-1 text-center text-[10px] font-semibold text-gray-600 hover:border-indigo-400 hover:text-indigo-600"
+                >
                   {page.isBlank ? (
-                    <div className="flex items-center justify-center text-gray-400 w-full h-full border border-dashed border-gray-300 m-2 rounded-lg bg-white">
-                       <span className="font-bold text-sm tracking-wide uppercase">Blank</span>
-                    </div>
+                    <div className="flex aspect-[3/4] items-center justify-center bg-gray-50 text-[8px] text-gray-400">Blank</div>
                   ) : (
-                    <img 
-                      src={page.dataUrl} 
-                      alt={`Page ${index + 1}`} 
-                      className="w-full h-full object-contain pointer-events-none rounded-lg bg-white"
-                      style={{ transform: `rotate(${page.rotation}deg)`, transition: 'transform 0.3s ease' }}
+                    <img
+                      src={page.dataUrl}
+                      alt=""
+                      loading="lazy"
+                      className="aspect-[3/4] w-full bg-gray-50 object-contain"
                     />
                   )}
-                </div>
+                  <span className="mt-1 block">{index + 1}</span>
+                </button>
+              ))}
+            </div>
+          </aside>
+          <div
+            className="grid min-w-0 flex-1 grid-cols-2 gap-4 overflow-y-auto px-2 sm:grid-cols-3 lg:grid-cols-4"
+            onDragOver={(e) => e.preventDefault()}
+          >
+              {pagesOrder.map((page, index) => {
+                const isDragging = draggedIdx === index;
+                const isDragOver = dragOverIdx === index && draggedIdx !== index;
 
-                <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl pointer-events-none z-10"></div>
+                return (
+                  <div
+                    key={page.id}
+                    ref={(element) => { pageCardRefs.current[index] = element; }}
+                    draggable
+                    onDragStart={(e) => onDragStart(e, index)}
+                    onDragOver={(e) => onDragOver(e, index)}
+                    onDrop={(e) => onDrop(e, index)}
+                    onDragEnd={onDragEnd}
+                    className={`group animate-in zoom-in-95 duration-300 relative aspect-[1/1.4] rounded-xl shadow-sm border overflow-visible flex flex-col transition-all cursor-grab active:cursor-grabbing bg-white ${
+                      isDragging ? 'opacity-40 border-dashed border-gray-400 scale-95 shadow-none' :
+                      isDragOver ? (draggedIdx < index ? 'shadow-[6px_0_0_0_#4f46e5] -translate-x-1 border-gray-200 z-10' : 'shadow-[-6px_0_0_0_#4f46e5] translate-x-1 border-gray-200 z-10') :
+                      'border-gray-200 hover:border-indigo-300 hover:shadow-xl hover:-translate-y-1'
+                    }`}
+                  >
+                    <div className="w-full h-full rounded-lg overflow-hidden flex items-center justify-center bg-gray-50 pointer-events-none">
+                      {page.isBlank ? (
+                        <div className="flex items-center justify-center text-gray-400 w-full h-full border border-dashed border-gray-300 m-2 rounded-lg bg-white">
+                          <span className="font-bold text-sm tracking-wide uppercase">Blank</span>
+                        </div>
+                      ) : (
+                        <img
+                          src={page.dataUrl}
+                          alt={`Page ${index + 1}`}
+                          className="w-full h-full object-contain pointer-events-none rounded-lg bg-white"
+                          style={{ transform: `rotate(${page.rotation}deg)`, transition: 'transform 0.3s ease' }}
+                        />
+                      )}
+                    </div>
 
-                {/* Toolbar (Centered inside card) */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-1.5 bg-gray-900/95 text-white rounded-xl p-1.5 opacity-0 group-hover:opacity-100 transition-all scale-90 group-hover:scale-100 shadow-2xl z-20 pointer-events-auto">
-                   <button onClick={(e) => { e.stopPropagation(); rotatePage(page.id); }} className="p-2 hover:bg-white/20 rounded-lg transition-colors" title="Rotate 90°">
-                     <RotateCw className="w-4 h-4" />
-                   </button>
-                   <button onClick={(e) => { e.stopPropagation(); insertBlankAfter(index); }} className="p-2 hover:bg-white/20 rounded-lg transition-colors" title="Insert blank page after">
-                     <Plus className="w-4 h-4" />
-                   </button>
-                   <div className="w-px h-5 bg-white/30 mx-1"></div>
-                   <button onClick={(e) => { e.stopPropagation(); removePage(page.id); }} className="p-2 text-rose-400 hover:bg-rose-500 hover:text-white rounded-lg transition-colors" title="Remove page">
-                     <Trash2 className="w-4 h-4" />
-                   </button>
-                </div>
-                
-                {/* Drag Handle Indicator */}
-                <div className="absolute bottom-3 left-3 p-2 bg-black/60 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-md pointer-events-none z-20">
-                  <GripHorizontal className="w-4 h-4" />
-                </div>
-                
-                <div className="absolute -bottom-2 -right-2 p-1.5 rounded-full bg-indigo-600 text-xs font-bold text-white w-7 h-7 flex items-center justify-center shadow-lg border-2 border-white z-10 pointer-events-none">
-                  {index + 1}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+                    <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl pointer-events-none z-10"></div>
+
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-1.5 bg-gray-900/95 text-white rounded-xl p-1.5 opacity-0 group-hover:opacity-100 transition-all scale-90 group-hover:scale-100 shadow-2xl z-20 pointer-events-auto">
+                      <button onClick={(e) => { e.stopPropagation(); rotatePage(page.id); }} className="p-2 hover:bg-white/20 rounded-lg transition-colors" title="Rotate 90°">
+                        <RotateCw className="w-4 h-4" />
+                      </button>
+                      <button onClick={(e) => { e.stopPropagation(); insertBlankAfter(index); }} className="p-2 hover:bg-white/20 rounded-lg transition-colors" title="Insert blank page after">
+                        <Plus className="w-4 h-4" />
+                      </button>
+                      <div className="w-px h-5 bg-white/30 mx-1"></div>
+                      <button onClick={(e) => { e.stopPropagation(); removePage(page.id); }} className="p-2 text-rose-400 hover:bg-rose-500 hover:text-white rounded-lg transition-colors" title="Remove page">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    <div className="absolute bottom-3 left-3 p-2 bg-black/60 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-md pointer-events-none z-20">
+                      <GripHorizontal className="w-4 h-4" />
+                    </div>
+
+                    <div className="absolute -bottom-2 -right-2 p-1.5 rounded-full bg-indigo-600 text-xs font-bold text-white w-7 h-7 flex items-center justify-center shadow-lg border-2 border-white z-10 pointer-events-none">
+                      {index + 1}
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+        </>
       ) : (
         <div className="h-full flex flex-col items-center justify-center text-gray-500 mt-20">
           <p>No pages in the workspace.</p>

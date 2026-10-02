@@ -716,14 +716,14 @@ export const SEO_CONTENT = {
   },
   "ppt-to-pdf": {
     "title": "Convert PowerPoint to PDF Online",
-    "description": "Convert PowerPoint presentations into clean, static PDF documents perfect for sharing and printing.",
+    "description": "Extract text and selected embedded images from a PPTX in your browser and rebuild them as PDF pages. Review the output because slide layouts may change.",
     "howTo": [
-      "Upload Presentation: Drag and drop your .ppt or .pptx presentation file.",
-      "Select Conversion Mode: Choose slide alignment and layout settings.",
-      "Click Convert: Select 'Convert to PDF' to transform your presentation slides.",
-      "Download: Save your high-resolution, print-ready PDF presentation."
+      "Select Presentation: Choose a .pptx file from your device.",
+      "Review Slides: Wait for the browser to parse the presentation and inspect the available preview.",
+      "Convert: Select 'Convert to PDF' to rebuild the extracted content as PDF pages.",
+      "Download and Check: Save the PDF and review its text, images, order, and page dimensions."
     ],
-    "why": "Presenting slides across different devices often leads to missing custom fonts, shifted text boxes, and broken slide animations. Converting your .pptx files to PDF locks every slide design into a universal format. Perfect for students submitting presentation assignments, executives sharing pitch decks with clients, and speakers distributing printable handouts.",
+    "why": "The browser tool reads .pptx slide XML, extracts text, and locates embedded images before assembling a new PDF. It is an extraction workflow, not a full PowerPoint renderer: original text-box positions, fonts, shapes, charts, animations, and other slide styling are not preserved. Slides with images currently place the first extracted image on the output page instead of laying out both the image and extracted text. Use native PowerPoint or Google Slides export when visual fidelity matters, and review every generated page.",
     "features": [
       "File processing: Supported operations are designed to run in your browser.",
       "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
@@ -731,15 +731,15 @@ export const SEO_CONTENT = {
     "faq": [
       {
         "q": "Will my presentation fonts and slide layouts stay intact?",
-        "a": "The converter attempts to retain visual elements, but fonts, layouts, and images may change. Check the exported PDF against the original presentation."
+        "a": "No. This tool rebuilds pages from extracted text and selected images rather than rendering the original slides. Check the exported PDF against the presentation."
       },
       {
         "q": "Can I convert both older .ppt and modern .pptx formats?",
-        "a": "Yes, the tool seamlessly converts both legacy Microsoft PowerPoint .ppt and current .pptx formats."
+        "a": "The current upload control accepts .pptx files. It does not advertise support for the older binary .ppt format."
       },
       {
         "q": "Are speaker notes included in the converted PDF?",
-        "a": "The converter exports primary visual slides in high resolution for clean viewing and easy printing."
+        "a": "The current parser reads slide XML text and embedded images; it does not advertise speaker-note export. Verify the resulting PDF and use your presentation app's native export if notes are required."
       }
     ]
   },

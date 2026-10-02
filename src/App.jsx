@@ -106,6 +106,7 @@ const NotFound = lazyWithRetry(() => import('./pages/NotFound'));
 // Users hitting an alias URL get seamlessly redirected to the canonical URL
 const URL_REDIRECTS = {
   'merge-pdf': 'pdf-merge',
+  'remove-pages': 'delete-pdf-pages',
   'split-pdf': 'pdf-split',
   'pdf-protect': 'protect-pdf',
   'pdf-unlock': 'unlock-pdf',

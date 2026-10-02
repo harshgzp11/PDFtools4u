@@ -117,9 +117,10 @@ async function prerenderRoutes() {
   })
 
   try {
-    const [{ default: App }, { ErrorBoundary }] = await Promise.all([
+    const [{ default: App }, { ErrorBoundary }, { BLOG_POSTS }] = await Promise.all([
       server.ssrLoadModule('/src/App.jsx'),
       server.ssrLoadModule('/src/ErrorBoundary.jsx'),
+      server.ssrLoadModule('/src/lib/blogData.js'),
     ])
     const routes = getRoutes()
 
@@ -135,10 +136,19 @@ async function prerenderRoutes() {
       location.pathname = route
       const markup = await renderApp(App, ErrorBoundary, route)
       const html = fs.readFileSync(filePath, 'utf8')
-      const prerenderedHtml = html.replace(
+      let prerenderedHtml = html.replace(
         '<div id="root"></div>',
         `<div id="root">${markup}</div>`,
       )
+
+      const post = BLOG_POSTS.find(
+        candidate => candidate.published && route === `/blog/${candidate.id}` && candidate.customSchema,
+      )
+      if (post) {
+        const schema = JSON.stringify(post.customSchema).replace(/</g, '\\u003c')
+        const schemaTag = `<script type="application/ld+json" data-blog-schema="${post.id}">${schema}</script>`
+        prerenderedHtml = prerenderedHtml.replace('</head>', `  ${schemaTag}\n  </head>`)
+      }
 
       if (prerenderedHtml === html) {
         throw new Error(`Could not find the application root in ${filePath}`)

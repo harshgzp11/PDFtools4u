@@ -391,7 +391,7 @@ export default function PptToPdf() {
            </div>
            <div className="flex justify-between text-sm text-orange-800 font-bold">
              <span>Layout:</span>
-             <span className="bg-orange-200 px-2 py-0.5 rounded-md">16:9 Widescreen PDF</span>
+             <span className="bg-orange-200 px-2 py-0.5 rounded-md">Landscape A4 PDF</span>
            </div>
            <div className="flex justify-between text-sm text-orange-800 font-bold">
              <span>Processing:</span>
@@ -402,14 +402,13 @@ export default function PptToPdf() {
         <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-xl mt-4 flex flex-col gap-2">
           <div className="flex items-center gap-2 text-emerald-800">
             <CheckCircle2 className="w-5 h-5 shrink-0" />
-            <h4 className="font-bold text-sm">High Quality PDF Rendering</h4>
+            <h4 className="font-bold text-sm">Extracted Text and Images</h4>
           </div>
           <p className="text-emerald-800 text-xs font-medium leading-relaxed">
-            Extracts presentation titles, text paragraphs, bullet points, and embedded slide images into formatted 16:9 landscape PDF pages.
+            Rebuilds landscape A4 pages from extracted slide text or the first image found on a slide. Original slide positioning and styling are not preserved.
           </p>
         </div>
       </div>
     </ToolPreviewLayout>
   );
 }
-

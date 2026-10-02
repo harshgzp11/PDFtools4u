@@ -88,9 +88,9 @@ export const SEO_HEAD = {
     keywords: ['word to pdf converter free', 'docx to pdf online', 'convert word to pdf free'],
   },
   'ppt-to-pdf': {
-    title: 'PowerPoint to PDF Converter Free Online | PDFtools4u',
-    description: 'Convert PowerPoint presentations (.pptx, .ppt) to PDF format. Preserve slides, animations layout & fonts. Free browser-based converter.',
-    h1: 'Convert PowerPoint to PDF — Keep Slide Layouts Intact',
+    title: 'Convert PPTX to PDF Online | PDFtools4u',
+    description: 'Extract text and selected images from a PPTX in your browser and rebuild them as a PDF. Review the output; original slide layouts may change.',
+    h1: 'Convert PPTX to PDF — Review the Extracted Slides',
     keywords: ['ppt to pdf converter free', 'powerpoint to pdf online', 'convert pptx to pdf'],
   },
   'excel-to-pdf': {

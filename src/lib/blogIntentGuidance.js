@@ -60,5 +60,14 @@ export const BLOG_INTENT_GUIDANCE = {
     related: [
       { id: 'html-to-pdf-with-css', label: 'Preserve CSS styles when converting HTML to PDF' }
     ]
+  },
+  'reorder-pdf-pages-visually-online': {
+    heading: 'Choose the right PDF page workflow',
+    text: 'Reorder pages when the whole document should stay together. Split a PDF to extract selected pages, merge separate files before arranging them, or rotate pages when orientation is the only problem.',
+    related: [
+      { id: 'merge-pdf-files-into-one-master-document', label: 'Combine PDF files before organizing their pages' },
+      { id: 'split-pdf-pages-online-free', label: 'Extract selected pages or page ranges' },
+      { id: 'rotate-pdf-pages-online-free', label: 'Correct sideways or upside-down PDF pages' }
+    ]
   }
 };

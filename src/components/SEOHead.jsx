@@ -519,7 +519,14 @@ export default function SEOHead({ activeTool, title: overrideTitle, description:
           }
         }
 
-        addJsonLd({ '@context': 'https://schema.org', '@graph': schemas });
+        const prerenderedSchema = document.querySelector(
+          `script[type="application/ld+json"][data-blog-schema="${slug}"]`,
+        );
+        if (prerenderedSchema) {
+          injectedElements.push(prerenderedSchema);
+        } else {
+          addJsonLd({ '@context': 'https://schema.org', '@graph': schemas });
+        }
 
         // Add noindex for unpublished posts (safety — already filtered by `published`)
         // This block only runs if post exists and is published, but kept for defensive clarity
