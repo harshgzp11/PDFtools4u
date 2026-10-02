@@ -117,10 +117,15 @@ export default function ToolPreviewLayout({
       }
 
       trackEvent('tool_success', eventParams);
+      const sourceFile = Array.isArray(file) ? file[0] : file;
+      trackEvent('file_conversion_success', {
+        tool_name: (title || 'unknown_tool').toLowerCase().replace(/\s+/g, '-'),
+        file_type: sourceFile?.name?.split('.').pop()?.toLowerCase() || 'unknown',
+      });
       
       setProcessingStartTime(null);
     }
-  }, [successData, title]); // Removed processingStartTime from deps to avoid re-triggering if it clears
+  }, [successData, title, file]); // Removed processingStartTime from deps to avoid re-triggering if it clears
 
   useEffect(() => {
     if (!file) {

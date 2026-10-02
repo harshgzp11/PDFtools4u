@@ -54,6 +54,9 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
   
   const allTools = DOMAINS.flatMap(d => d.categories.flatMap(c => c.tools));
   const popularTools = POPULAR_TOOL_IDS.map(id => allTools.find(t => t.id === id)).filter(Boolean);
+  const quickLaunchTools = ['compress-pdf', 'excel-to-pdf', 'pdf-annotator', 'redact-pdf']
+    .map(id => allTools.find(tool => tool.id === id))
+    .filter(Boolean);
 
   const scrollToAllTools = () => {
     const el = document.getElementById('all-tools');
@@ -142,6 +145,26 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
             <h2 className="text-lg sm:text-xl text-gray-600 max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal">
               Edit, convert, compress, merge & sign documents with tools designed to process supported files in your browser. See how file processing and analytics work.
             </h2>
+
+            <div className="pt-1">
+              <p className="mb-2 text-xs font-bold uppercase tracking-wide text-gray-500">Popular tools</p>
+              <div className="grid grid-cols-2 gap-2">
+                {quickLaunchTools.map(tool => {
+                  const Icon = tool.icon;
+                  return (
+                    <a
+                      key={tool.id}
+                      href={`/${tool.id}`}
+                      onClick={(e) => handleLinkClick(e, tool.id)}
+                      className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm font-semibold text-gray-800 shadow-sm transition-colors hover:border-blue-300 hover:bg-blue-50"
+                    >
+                      <Icon className={`h-4 w-4 shrink-0 ${tool.color}`} aria-hidden="true" />
+                      <span className="truncate">{tool.name}</span>
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
 
             {/* Search Input Bar (Smallpdf style quick action) */}
             <div className="pt-2 max-w-lg mx-auto lg:mx-0">
@@ -317,7 +340,6 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
           {/* Decorative background elements */}
           <div className="absolute top-0 right-0 -mr-20 -mt-20 w-72 h-72 bg-indigo-500 rounded-full mix-blend-overlay filter blur-[64px] opacity-60 animate-pulse"></div>
           <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-72 h-72 bg-blue-400 rounded-full mix-blend-overlay filter blur-[64px] opacity-60"></div>
-          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay pointer-events-none"></div>
           
           <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="flex-1 text-center md:text-left flex flex-col gap-3">
@@ -509,6 +531,19 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
         <div className="text-center space-y-4 mb-12">
           <h2 className="text-4xl font-bold text-gray-900 tracking-tight">All Tools</h2>
           <p className="text-xl text-gray-500">Everything you need, organized by category.</p>
+        </div>
+
+        <div className="mx-auto mb-10 max-w-4xl rounded-2xl border border-gray-200 bg-white p-6 text-gray-600 shadow-sm">
+          <h3 className="mb-3 text-xl font-bold text-gray-900">Choose the right browser-based file tool</h3>
+          <p className="leading-relaxed">
+            PDFtools4U brings common document and image tasks together in one browser-based toolkit. Depending on the tool, you can combine, reorder, rotate, split, compress, annotate, or convert files without installing desktop software. The available input and output formats vary by tool; check each tool page for its supported formats, file limits, and instructions before starting.
+          </p>
+          <p className="mt-3 leading-relaxed">
+            Some tools also support spreadsheets, presentations, text files, and common raster-image formats; exact compatibility is listed on each tool’s page.
+          </p>
+          <p className="mt-3 leading-relaxed">
+            Where local processing is supported, the selected file is handled by the page in your browser rather than intentionally uploaded to our servers. Your browser may still request application code, fonts, libraries, and other site assets, while analytics may collect separate usage or technical information. Some features also need an initial model or library download. For sensitive documents, review the specific tool’s privacy details and verify its network behavior in your browser. Use the category links below to find the task you need, then review the generated file before sharing or submitting it.
+          </p>
         </div>
 
         {/* Domain Tabs */}

@@ -2,6 +2,3 @@ User-agent: *
 Allow: /
 
 Sitemap: https://www.pdftools4u.in/sitemap.xml
-LLMs: https://www.pdftools4u.in/llms.txt
-LLMs-Full: https://www.pdftools4u.in/llms-full.txt
-AI-Policy: https://www.pdftools4u.in/ai.txt

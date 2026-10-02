@@ -55,7 +55,7 @@ export default function ContactUs() {
           "@type": "Organization",
           "name": "PDFTools4U",
           "url": "https://www.pdftools4u.in",
-          "logo": "https://www.pdftools4u.in/logo.png",
+          "logo": "https://www.pdftools4u.in/images/pdftool4u-logo.png",
           "contactPoint": {
             "@type": "ContactPoint",
             "email": "support@pdftools4u.in",

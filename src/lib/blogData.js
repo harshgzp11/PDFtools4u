@@ -9,7 +9,7 @@ export const BLOG_CATEGORIES = [
   "Productivity"
 ];
 
-export const BLOG_POSTS = [
+const blogPosts = [
   {
     id: "server-side-vs-client-side-processing",
     title: "Server-Side vs Client-Side Processing: Architecture Guide",
@@ -941,7 +941,7 @@ If the upload fails after compression, confirm the file extension, exact KB rang
       { label: "Staff Selection Commission", url: "https://ssc.gov.in/" }
     ],
     author: "PDFTools4U Team",
-    coverImage: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=1000",
+    coverImage: "/images/blog/photo-1523240795612-9a054b0db644.jpg",
     targetToolUrl: "pdf-merge",
     published: true,
     customSchema: {
@@ -1669,7 +1669,7 @@ No. Client-side merging connects the raw document streams without re-compressing
           "mainEntityOfPage": "https://www.pdftools4u.in/blog/rotate-pdf-pages-online-free",
           "headline": "How to Rotate PDF Pages Permanently Online for Free (Step-by-Step)",
           "description": "Learn how to rotate PDF pages permanently online for free using PDFtools4u. Fix sideways or upside-down scanned documents without server uploads.",
-          "image": "https://images.unsplash.com/photo-1542626991-cbc4e32524cc?auto=format&fit=crop&q=80&w=1000",
+          "image": "https://www.pdftools4u.in/images/blog/photo-1542626991-cbc4e32524cc.jpg",
           "author": {
             "@type": "Organization",
             "name": "PDFtools4u",
@@ -1969,7 +1969,7 @@ If colors look different after conversion, compare the result in another image v
     date: "August 30, 2026",
     lastUpdated: "August 28, 2026",
     author: "PDFTools4U Team",
-    coverImage: "https://images.unsplash.com/photo-1614064641913-a53b51614742?auto=format&fit=crop&q=80&w=1000",
+    coverImage: "/images/blog/photo-1589829085413-56de8ae18c73.jpg",
     targetToolUrl: "protect-pdf",
     published: false,
     content: ``
@@ -2446,7 +2446,7 @@ Because portal requirements can change, the password examples and size suggestio
       { label: "Income Tax Department e-Filing portal", url: "https://www.incometax.gov.in/iec/foportal/" }
     ],
     author: "PDFTools4U Team",
-    coverImage: "https://images.unsplash.com/photo-1614064641913-a53b51614742?auto=format&fit=crop&q=80&w=1000",
+    coverImage: "/images/blog/photo-1589829085413-56de8ae18c73.jpg",
     targetToolUrl: "unlock-pdf",
     published: true,
     customSchema: {
@@ -2899,7 +2899,7 @@ The official JSON specification (RFC 8259) explicitly requires double quotation 
           "datePublished": "2026-08-30",
           "dateModified": "2026-08-30",
           "author": { "@type": "Organization", "name": "PDFTools4U", "url": "https://www.pdftools4u.in" },
-          "publisher": { "@type": "Organization", "name": "PDFTools4U", "logo": { "@type": "ImageObject", "url": "https://www.pdftools4u.in/logo.png" } },
+          "publisher": { "@type": "Organization", "name": "PDFTools4U", "logo": { "@type": "ImageObject", "url": "https://www.pdftools4u.in/images/pdftool4u-logo.png" } },
           "hasPart": [
             { "@id": "https://www.pdftools4u.in/blog/convert-excel-to-pdf-without-cutting-off-columns#howto" },
             { "@id": "https://www.pdftools4u.in/blog/convert-excel-to-pdf-without-cutting-off-columns#faq" }
@@ -3086,7 +3086,7 @@ No. The conversion creates a visual snapshot of your calculated values, formatti
             "name": "PDFTools4U",
             "logo": {
               "@type": "ImageObject",
-              "url": "https://www.pdftools4u.in/logo.png"
+              "url": "https://www.pdftools4u.in/images/pdftool4u-logo.png"
             }
           }
         },
@@ -3582,7 +3582,7 @@ Yes. Because PDFtools4u processes files 100% locally inside your browser memory 
           "datePublished": "2026-09-11",
           "dateModified": "2026-09-11",
           "author": { "@type": "Organization", "name": "PDFTools4U", "url": "https://www.pdftools4u.in" },
-          "publisher": { "@type": "Organization", "name": "PDFTools4U", "logo": { "@type": "ImageObject", "url": "https://www.pdftools4u.in/logo.png" } },
+          "publisher": { "@type": "Organization", "name": "PDFTools4U", "logo": { "@type": "ImageObject", "url": "https://www.pdftools4u.in/images/pdftool4u-logo.png" } },
           "hasPart": [
             { "@id": "https://www.pdftools4u.in/blog/permanently-redact-text-in-pdf-online#howto" },
             { "@id": "https://www.pdftools4u.in/blog/permanently-redact-text-in-pdf-online#faq" }
@@ -3736,14 +3736,14 @@ No. The redaction process maintains sharp vector text quality across all un-reda
   {
     id: "how-to-annotate-pdf-online-free",
     title: "How to Annotate a PDF Online Free Without Uploading Files",
-    metaTitle: "How to Annotate a PDF Online Free Without Uploading Files",
+    metaTitle: "How to Annotate a PDF Online Free (100% Private Tool)",
     metaDescription: "Learn how to safely markup and annotate pdf documents online. Draw, add text, and highlight sensitive contracts with 100% client-side privacy.",
     cluster: "Productivity",
     excerpt: "Learn how to safely markup and annotate pdf documents online. Draw, add text, and highlight sensitive contracts with 100% client-side privacy.",
     date: "September 13, 2026",
     lastUpdated: "September 13, 2026",
     author: "PDFTools4U Team",
-    coverImage: "https://images.unsplash.com/photo-1456324504439-367bee0b8c?auto=format&fit=crop&q=80&w=1000",
+    coverImage: "/images/blog/photo-1455390582262-044cdead277a.jpg",
     targetToolUrl: "pdf-annotator",
     published: true,
     customSchema: {
@@ -4393,7 +4393,7 @@ Yes. Once the initial tool layout loads in your active browser window, the core 
   {
     id: "reorder-pdf-pages-visually-online",
     title: "Reorder PDF Pages Visually Online Free",
-    metaTitle: "Reorder PDF Pages Visually Online Free",
+    metaTitle: "Reorder PDF Pages Visually Online Free — Drag & Drop",
     metaDescription: "Learn how to reorder PDF pages visually in your browser. Fix scan order, rotate or remove pages, and review your exported PDF before sharing.",
     cluster: "General File Optimization & Image Conversions",
     excerpt: "Reorder PDF pages with a visual thumbnail workspace, combine pages from multiple PDFs, and rotate, remove, or insert pages before exporting.",
@@ -4584,4 +4584,9 @@ No. The selected-file parsing and PDF generation happen in browser-side code, bu
 Ready to arrange your document? Open the [Organize PDF tool](/organize-pdf), arrange the thumbnails, and check the exported file before sharing.
 `
   }
-]
+];
+
+export const BLOG_POSTS = blogPosts.map(post => {
+  const photoId = post.coverImage?.match(/images\.unsplash\.com\/(photo-[^/?]+)/)?.[1];
+  return photoId ? { ...post, coverImage: `/images/blog/${photoId}.jpg` } : post;
+});

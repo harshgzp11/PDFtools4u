@@ -88,6 +88,12 @@ export default function SEOHead({ activeTool, title: overrideTitle, description:
     const isToolPage = activeTool && !isBlogRoute && !isStaticPage;
     const isHomepage = !activeTool;
 
+    document.querySelectorAll('script[type="application/ld+json"][data-tool-schema]').forEach(script => {
+      if (script.getAttribute('data-tool-schema') !== (isToolPage ? activeTool : '')) {
+        script.remove();
+      }
+    });
+
     // ─── Resolve metadata ────────────────────────────────────
 
     let title, description, canonicalUrl, ogImage, ogType, noindex;
@@ -107,7 +113,9 @@ export default function SEOHead({ activeTool, title: overrideTitle, description:
       title = overrideTitle || (post ? (post.metaTitle || `${post.title} — ${SITE_NAME} Blog`) : `Article Not Found — ${SITE_NAME}`);
       description = overrideDescription || (post ? (post.metaDescription || post.excerpt) : 'This article is currently being written or does not exist.');
       canonicalUrl = overrideCanonical || `${BASE_URL}/${activeTool}`;
-      ogImage = post?.coverImage || OG_IMAGE;
+      ogImage = post?.coverImage
+        ? (post.coverImage.startsWith('http') ? post.coverImage : `${BASE_URL}${post.coverImage}`)
+        : OG_IMAGE;
       ogType = 'article';
       noindex = post?.noindex || false;
     } else if (isBlogList) {
@@ -265,6 +273,9 @@ export default function SEOHead({ activeTool, title: overrideTitle, description:
       }
 
       const schemas = [];
+      const hasPrerenderedToolSchema = Boolean(
+        document.querySelector(`script[type="application/ld+json"][data-tool-schema="${activeTool}"]`),
+      );
 
       // BreadcrumbList
       const breadcrumbItems = [
@@ -291,10 +302,12 @@ export default function SEOHead({ activeTool, title: overrideTitle, description:
         const webApp = {
           '@context': 'https://schema.org',
           '@type': 'WebApplication',
+          '@id': `${canonicalUrl}#webapp`,
           'name': `PDFTools4U - ${toolInfo.name}`,
           'url': canonicalUrl,
           'operatingSystem': 'All',
           'applicationCategory': 'UtilitiesApplication',
+          'browserRequirements': 'Requires JavaScript. Requires HTML5.',
           'description': seoData?.description || toolInfo.description || '',
           'offers': {
             '@type': 'Offer',
@@ -343,9 +356,52 @@ export default function SEOHead({ activeTool, title: overrideTitle, description:
       if (overrideSchema) {
         addJsonLd(overrideSchema);
       } else if (finalToolContent?.customSchema) {
-        addJsonLd(finalToolContent.customSchema);
+        const customSchema = finalToolContent.customSchema;
+        let customGraph = Array.isArray(customSchema['@graph'])
+          ? [...customSchema['@graph']]
+          : [customSchema];
+
+        if (hasPrerenderedToolSchema) {
+          customGraph = customGraph.filter(schema => {
+            const types = Array.isArray(schema['@type']) ? schema['@type'] : [schema['@type']];
+            return !types.includes('WebApplication');
+          });
+        } else {
+          const webAppIndex = customGraph.findIndex(schema => {
+            const types = Array.isArray(schema['@type']) ? schema['@type'] : [schema['@type']];
+            return types.includes('WebApplication');
+          });
+
+          if (webAppIndex === -1) {
+            customGraph.unshift(webApp);
+          } else {
+            const existingWebApp = customGraph[webAppIndex];
+            customGraph[webAppIndex] = {
+              ...existingWebApp,
+              '@context': existingWebApp['@context'] || 'https://schema.org',
+              '@id': existingWebApp['@id'] || webApp['@id'],
+              name: existingWebApp.name || webApp.name,
+              url: existingWebApp.url || webApp.url,
+              applicationCategory: existingWebApp.applicationCategory || webApp.applicationCategory,
+              operatingSystem: existingWebApp.operatingSystem || webApp.operatingSystem,
+              browserRequirements: existingWebApp.browserRequirements || webApp.browserRequirements,
+              description: existingWebApp.description || webApp.description,
+              offers: existingWebApp.offers || webApp.offers,
+            };
+          }
+        }
+
+        if (customGraph.length) {
+          addJsonLd({
+            '@context': customSchema['@context'] || 'https://schema.org',
+            '@graph': customGraph,
+          });
+        }
       } else if (schemas.length) {
-        addJsonLd({ '@context': 'https://schema.org', '@graph': schemas });
+        const schemasToAdd = hasPrerenderedToolSchema
+          ? schemas.filter(schema => schema['@type'] !== 'WebApplication')
+          : schemas;
+        addJsonLd({ '@context': 'https://schema.org', '@graph': schemasToAdd });
       }
     }
 

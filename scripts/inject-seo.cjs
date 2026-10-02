@@ -147,10 +147,12 @@ function generateStaticRoutes() {
       const toolSchema = {
         '@context': 'https://schema.org',
         '@type': 'WebApplication',
+        '@id': `${BASE_URL}${route}#webapp`,
         'name': `PDFTools4U - ${tool.name}`,
         'url': `${BASE_URL}${route}`,
         'operatingSystem': 'All',
         'applicationCategory': 'UtilitiesApplication',
+        'browserRequirements': 'Requires JavaScript. Requires HTML5.',
         'description': data.description || tool.description,
         'offers': {
           '@type': 'Offer',
@@ -158,7 +160,7 @@ function generateStaticRoutes() {
           'priceCurrency': 'USD',
         },
       };
-      const schemaTag = `  <script type="application/ld+json">${JSON.stringify(toolSchema).replace(/</g, '\\u003c')}</script>`;
+      const schemaTag = `  <script type="application/ld+json" data-tool-schema="${route.slice(1)}">${JSON.stringify(toolSchema).replace(/</g, '\\u003c')}</script>`;
       html = html.replace('</head>', `${schemaTag}\n  </head>`);
     }
 
