@@ -82,6 +82,7 @@ export default function PdfConverterHub() {
   const handleConversionSelect = (targetToolId) => {
     // Pass the file via global object for a seamless handoff to the next tool if supported
     window.__sharedFile = file;
+    window.__conversionSource = 'pdf-converter';
     window.history.pushState({}, "", "/" + targetToolId);
     window.dispatchEvent(new Event('popstate'));
   };

@@ -43,6 +43,7 @@ export default function ToolPreviewLayout({
   const [showSidebar, setShowSidebar] = useState(true);
   const pageRefs = useRef([]);
   const canvasContainerRef = useRef(null);
+  const pdfConverterDownloadRef = useRef(false);
 
   // Track tool_start
   useEffect(() => {
@@ -118,12 +119,18 @@ export default function ToolPreviewLayout({
 
       trackEvent('tool_success', eventParams);
       const sourceFile = Array.isArray(file) ? file[0] : file;
-      trackEvent('file_conversion_success', {
-        tool_name: (title || 'unknown_tool').toLowerCase().replace(/\s+/g, '-'),
-        file_type: sourceFile?.name?.split('.').pop()?.toLowerCase() || 'unknown',
-      });
+      pdfConverterDownloadRef.current = window.__conversionSource === 'pdf-converter';
+      delete window.__conversionSource;
+      if (!pdfConverterDownloadRef.current) {
+        trackEvent('file_conversion_success', {
+          tool_name: (title || 'unknown_tool').toLowerCase().replace(/\s+/g, '-'),
+          file_type: sourceFile?.name?.split('.').pop()?.toLowerCase() || 'unknown',
+        });
+      }
       
       setProcessingStartTime(null);
+    } else {
+      pdfConverterDownloadRef.current = false;
     }
   }, [successData, title, file]); // Removed processingStartTime from deps to avoid re-triggering if it clears
 
@@ -279,6 +286,10 @@ export default function ToolPreviewLayout({
       tool_name: title || 'unknown_tool',
       file_size_kb: successData.outputSize ? Math.round(successData.outputSize / 1024) : undefined,
     });
+    if (pdfConverterDownloadRef.current) {
+      trackEvent('file_conversion_success', { tool_name: 'pdf-converter' });
+      pdfConverterDownloadRef.current = false;
+    }
 
     const link = document.createElement('a');
     link.href = successData.url;
