@@ -58,16 +58,16 @@
         if (window.analyticsLoaded) return;
         window.analyticsLoaded = true;
         
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function(){window.dataLayer.push(arguments);};
+        window.gtag('js', new Date());
+        window.gtag('config', 'G-4ZKBY66LCN');
+
         // Google Tag Manager
         const gtagScript = document.createElement('script');
         gtagScript.async = true;
         gtagScript.src = "https://www.googletagmanager.com/gtag/js?id=G-4ZKBY66LCN";
         document.head.appendChild(gtagScript);
-        
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-4ZKBY66LCN');
 
         // Microsoft Clarity Analytics
         (function(c,l,a,r,i,t,y){
@@ -78,8 +78,8 @@
       };
       
       // Load analytics strictly on first user interaction
-      ['touchstart', 'pointerdown', 'scroll', 'click', 'keydown'].forEach(e => 
-        window.addEventListener(e, loadAnalytics, { once: true, passive: true })
+      ['touchstart', 'pointerdown', 'scroll', 'click', 'keydown', 'drop'].forEach(e =>
+        window.addEventListener(e, loadAnalytics, { once: true, passive: true, capture: true })
       );
     </script>
   </body>

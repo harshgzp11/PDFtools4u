@@ -1,10 +1,11 @@
 import { trackEvent } from '../lib/analytics';
 import React, { useState, useRef, useEffect } from 'react';
-import { Crop, FileText, RefreshCw, CheckCircle, Download, Maximize2, Minimize, ListOrdered, Share2, ArrowLeft, Scissors, Layers } from 'lucide-react';
+import { Crop, FileText, RefreshCw, CheckCircle, Download, Maximize2, Share2, ArrowLeft, Layers } from 'lucide-react';
 
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import DragDropZone from '../components/ui/DragDropZone';
+import DownloadPageExtras from '../components/ui/DownloadPageExtras';
 import { getPdfThumbnails } from '../lib/pdfRenderer';
 import { trackError } from '../lib/analytics';
 
@@ -263,59 +264,7 @@ export default function CropPdf() {
             Download Cropped PDF
           </button>
 
-          <div className="border-t border-gray-100 pt-10">
-            <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-6">Continue working on this PDF</h4>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <a 
-                href="/compress-pdf" 
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.history.pushState({}, "", "/compress-pdf");
-                  window.dispatchEvent(new Event('popstate'));
-                }} 
-                className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors border border-gray-100 flex flex-col items-center gap-2 group cursor-pointer"
-              >
-                <Minimize className="w-6 h-6 text-gray-400 group-hover:text-blue-500 transition-colors" />
-                <span className="text-sm font-medium text-gray-700">Compress</span>
-              </a>
-              <a 
-                href="/pdf-split" 
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.history.pushState({}, "", "/pdf-split");
-                  window.dispatchEvent(new Event('popstate'));
-                }} 
-                className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors border border-gray-100 flex flex-col items-center gap-2 group cursor-pointer"
-              >
-                <Scissors className="w-6 h-6 text-gray-400 group-hover:text-blue-500 transition-colors" />
-                <span className="text-sm font-medium text-gray-700">Split PDF</span>
-              </a>
-              <a 
-                href="/number-pages" 
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.history.pushState({}, "", "/number-pages");
-                  window.dispatchEvent(new Event('popstate'));
-                }} 
-                className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors border border-gray-100 flex flex-col items-center gap-2 group cursor-pointer"
-              >
-                <ListOrdered className="w-6 h-6 text-gray-400 group-hover:text-blue-500 transition-colors" />
-                <span className="text-sm font-medium text-gray-700">Add Numbers</span>
-              </a>
-              <a 
-                href="/rotate-pdf" 
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.history.pushState({}, "", "/rotate-pdf");
-                  window.dispatchEvent(new Event('popstate'));
-                }} 
-                className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors border border-gray-100 flex flex-col items-center gap-2 group cursor-pointer"
-              >
-                <RefreshCw className="w-6 h-6 text-gray-400 group-hover:text-blue-500 transition-colors" />
-                <span className="text-sm font-medium text-gray-700">Rotate</span>
-              </a>
-            </div>
-          </div>
+          <DownloadPageExtras toolId="crop-pdf" />
 
           <div className="mt-12 flex items-center justify-center gap-4">
             <button onClick={handleNewFile} className="flex items-center gap-2 text-gray-500 hover:text-gray-900 font-medium py-2 px-4 rounded-lg hover:bg-gray-100 transition-colors">

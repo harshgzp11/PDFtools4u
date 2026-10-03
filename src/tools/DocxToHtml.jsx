@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import mammoth from 'mammoth';
 import { Code, CheckCircle, Download, RefreshCw, Loader2, Copy, FileCode2 } from 'lucide-react';
 import DragDropZone from '../components/ui/DragDropZone';
+import DownloadPageExtras from '../components/ui/DownloadPageExtras';
 import { trackError } from '../lib/analytics';
 
 export default function DocxToHtml() {
@@ -189,6 +190,7 @@ ${extractedHtml}
             )}
           </div>
         </div>
+        <DownloadPageExtras toolId="docx-to-html" />
       </div>
     );
   }

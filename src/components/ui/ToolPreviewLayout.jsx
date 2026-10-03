@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
-  RefreshCw, FileText, CheckCircle, Download, ArrowLeft, Share2, ShieldCheck, 
-  ThumbsUp, ThumbsDown, MessageSquareCheck, ZoomIn, ZoomOut, RotateCcw, 
+  RefreshCw, CheckCircle, Download, ArrowLeft, Share2, ShieldCheck,
+  ZoomIn, ZoomOut, RotateCcw,
   PanelLeft, PanelLeftClose, ChevronUp, ChevronDown, Layers 
 } from 'lucide-react';
 import { toast } from 'sonner';
 import DragDropZone from './DragDropZone';
+import DownloadPageExtras from './DownloadPageExtras';
 import { getPdfThumbnails } from '../../lib/pdfRenderer';
 import { getDynamicGridClass } from '../../lib/utils';
 import { trackEvent } from '../../lib/analytics';
@@ -19,7 +20,7 @@ export default function ToolPreviewLayout({
   onFileSelect,
   isProcessing,
   processButton,
-  successData, // { url, filename, title, subtitle, statsComponent, quickActions }
+  successData, // { url, filename, title, subtitle, statsComponent }
   onReset,
   children, // Configuration panel content
   previewOverlay, // Optional: function that takes (previewImage) and returns a React Node
@@ -32,10 +33,6 @@ export default function ToolPreviewLayout({
   const [thumbnails, setThumbnails] = useState([]);
   const [isLoadingPreview, setIsLoadingPreview] = useState(false);
   const [processingStartTime, setProcessingStartTime] = useState(null);
-  const [feedbackState, setFeedbackState] = useState('idle'); // idle, thumbs_down, submitted
-  const [feedbackText, setFeedbackText] = useState('');
-  const [feedbackReason, setFeedbackReason] = useState(null); // 'other_issue' or null
-  const [submittedRating, setSubmittedRating] = useState(null); // 'thumbs_up' or 'thumbs_down'
 
   // Viewer controls & sidebar state
   const [activePage, setActivePage] = useState(1);
@@ -60,36 +57,6 @@ export default function ToolPreviewLayout({
       }
     }
   }, [file, title]);
-
-  // Reset feedback state when file changes
-  useEffect(() => {
-    if (!file) {
-      setFeedbackState('idle');
-      setFeedbackText('');
-      setFeedbackReason(null);
-      setSubmittedRating(null);
-    }
-  }, [file]);
-
-  const handleFeedback = (rating) => {
-    trackEvent('tool_feedback', {
-      tool_name: title || 'unknown_tool',
-      rating: rating,
-    });
-    setSubmittedRating(rating);
-    setFeedbackState('submitted');
-  };
-
-  const submitDetailedFeedback = (reason) => {
-    trackEvent('tool_feedback', {
-      tool_name: title || 'unknown_tool',
-      rating: 'thumbs_down',
-      reason: reason,
-      feedback_text: reason === 'other_issue' && feedbackText ? feedbackText.substring(0, 100) : undefined,
-    });
-    setSubmittedRating('thumbs_down');
-    setFeedbackState('submitted');
-  };
 
   // Track processing start time
   useEffect(() => {
@@ -593,88 +560,7 @@ export default function ToolPreviewLayout({
             </button>
           )}
 
-          {successData.quickActions && (
-            <div className="border-t border-gray-100 pt-6 w-full max-w-2xl">
-              <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Continue working</h4>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {successData.quickActions}
-              </div>
-            </div>
-          )}
-
-          {/* Micro-Feedback Component */}
-          <div className="mt-6 mb-2 w-full max-w-lg mx-auto min-h-[140px] flex items-center justify-center">
-            {feedbackState === 'idle' && (
-              <div className="flex flex-col items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100 w-full animate-in fade-in">
-                <p className="text-sm font-medium text-gray-700">Did this tool work well for you?</p>
-                <div className="flex items-center gap-3">
-                  <button 
-                    onClick={() => handleFeedback('thumbs_up')}
-                    className="flex items-center gap-1.5 px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-green-50 hover:border-green-200 hover:text-green-700 transition-colors text-sm font-medium text-gray-600 shadow-sm"
-                  >
-                    <ThumbsUp className="w-4 h-4" /> Yes
-                  </button>
-                  <button 
-                    onClick={() => setFeedbackState('thumbs_down')}
-                    className="flex items-center gap-1.5 px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-red-50 hover:border-red-200 hover:text-red-700 transition-colors text-sm font-medium text-gray-600 shadow-sm"
-                  >
-                    <ThumbsDown className="w-4 h-4" /> No
-                  </button>
-                </div>
-              </div>
-            )}
-            
-            {feedbackState === 'thumbs_down' && (
-              <div className="flex flex-col items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100 animate-in fade-in slide-in-from-top-2 w-full">
-                <p className="text-sm font-medium text-gray-700">Sorry about that. What went wrong?</p>
-                
-                {feedbackReason !== 'other_issue' && (
-                  <div className="flex flex-wrap justify-center gap-2">
-                    <button onClick={() => submitDetailedFeedback('file_still_too_large')} className="px-3 py-1.5 bg-white border border-gray-200 rounded-full text-xs font-medium text-gray-600 hover:bg-gray-100 transition-colors shadow-sm">File size still too large</button>
-                    <button onClick={() => submitDetailedFeedback('quality_loss')} className="px-3 py-1.5 bg-white border border-gray-200 rounded-full text-xs font-medium text-gray-600 hover:bg-gray-100 transition-colors shadow-sm">Output quality dropped</button>
-                    <button onClick={() => submitDetailedFeedback('processing_too_slow')} className="px-3 py-1.5 bg-white border border-gray-200 rounded-full text-xs font-medium text-gray-600 hover:bg-gray-100 transition-colors shadow-sm">Processing was slow</button>
-                    <button onClick={() => setFeedbackReason('other_issue')} className="px-3 py-1.5 bg-white border border-gray-200 rounded-full text-xs font-medium text-gray-600 hover:bg-gray-100 transition-colors shadow-sm">Other issue</button>
-                  </div>
-                )}
-
-                {feedbackReason === 'other_issue' && (
-                  <div className="w-full flex flex-col gap-2 animate-in fade-in">
-                    <input 
-                      type="text" 
-                      value={feedbackText}
-                      onChange={(e) => setFeedbackText(e.target.value)}
-                      placeholder="Tell us more (max 100 chars)..." 
-                      maxLength={100}
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      autoFocus
-                    />
-                    <div className="flex justify-end gap-2 mt-1">
-                      <button onClick={() => setFeedbackReason(null)} className="px-3 py-1.5 text-xs font-medium text-gray-500 hover:text-gray-700 transition-colors">Cancel</button>
-                      <button onClick={() => submitDetailedFeedback('other_issue')} className="px-3 py-1.5 bg-gray-900 text-white rounded-lg text-xs font-medium hover:bg-gray-800 transition-colors shadow-sm">Submit</button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-            
-            {feedbackState === 'submitted' && (
-              <div className="w-full flex justify-center animate-in zoom-in-95">
-                {submittedRating === 'thumbs_up' ? (
-                  <div className="flex flex-col items-center gap-1 p-3 bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 rounded-xl border border-emerald-100 dark:border-emerald-900 shadow-sm">
-                    <p className="text-sm font-medium flex items-center gap-1.5">
-                      <CheckCircle className="w-4 h-4" /> Thanks for your feedback!
-                    </p>
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center gap-1 p-3 bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
-                    <p className="text-sm font-medium flex items-center gap-1.5">
-                      <MessageSquareCheck className="w-4 h-4" /> Thank you for helping us improve!
-                    </p>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+          <DownloadPageExtras />
 
           <div className="mt-8 pt-6 border-t border-gray-100 w-full flex items-center justify-center gap-4">
             <button onClick={onReset} className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-900 font-medium py-1.5 px-3 rounded-md hover:bg-gray-100 transition-colors">

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import mammoth from 'mammoth';
 import { FileText, CheckCircle, Download, RefreshCw, Loader2, Copy } from 'lucide-react';
 import DragDropZone from '../components/ui/DragDropZone';
+import DownloadPageExtras from '../components/ui/DownloadPageExtras';
 import { trackError } from '../lib/analytics';
 
 export default function DocxToText() {
@@ -147,6 +148,7 @@ export default function DocxToText() {
             />
           </div>
         </div>
+        <DownloadPageExtras toolId="docx-to-text" />
       </div>
     );
   }

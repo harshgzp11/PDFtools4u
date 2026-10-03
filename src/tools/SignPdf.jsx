@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 
 import { Download, PenTool, FileText, CheckCircle, ArrowLeft, RefreshCw, Loader2, Plus, Check, X } from 'lucide-react';
 import DragDropZone from '../components/ui/DragDropZone';
+import DownloadPageExtras from '../components/ui/DownloadPageExtras';
 import SignatureModal from '../components/ui/SignatureModal';
 import DraggableOverlay from '../components/ui/DraggableOverlay';
 import { getPdfThumbnails } from '../lib/pdfRenderer';
@@ -215,6 +216,7 @@ export default function SignPdf() {
             <RefreshCw className="w-6 h-6" /> Edit another
           </button>
         </div>
+        <DownloadPageExtras toolId="sign-pdf" />
       </div>
     );
   }

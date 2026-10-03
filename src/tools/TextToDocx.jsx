@@ -2,6 +2,7 @@ import { trackEvent } from '../lib/analytics';
 import React, { useState } from 'react';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
 import { FileCode2, Download, RefreshCw, Loader2, FileText, CheckCircle } from 'lucide-react';
+import DownloadPageExtras from '../components/ui/DownloadPageExtras';
 import { trackError } from '../lib/analytics';
 
 export default function TextToDocx() {
@@ -104,6 +105,7 @@ export default function TextToDocx() {
             <RefreshCw className="w-6 h-6" /> Edit Text
           </button>
         </div>
+        <DownloadPageExtras toolId="text-to-docx" />
       </div>
     );
   }

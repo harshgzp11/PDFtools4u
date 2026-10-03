@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 
 import { Download, PlusCircle, Trash2, FileText, CheckCircle, ArrowLeft, RefreshCw, Loader2, GripVertical } from 'lucide-react';
 import DragDropZone from '../components/ui/DragDropZone';
+import DownloadPageExtras from '../components/ui/DownloadPageExtras';
 import { getPdfThumbnails } from '../lib/pdfRenderer';
 import { trackError } from '../lib/analytics';
 
@@ -150,6 +151,7 @@ export default function PdfMerger() {
             <RefreshCw className="w-6 h-6" /> Start Over
           </button>
         </div>
+        <DownloadPageExtras toolId="pdf-merge" />
       </div>
     );
   }

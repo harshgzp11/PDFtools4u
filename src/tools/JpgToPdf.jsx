@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import jsPDF from 'jspdf';
 import { Download, PlusCircle, Trash2, Image as ImageIcon, CheckCircle, ArrowLeft, ImagePlus, FileUp } from 'lucide-react';
 import DragDropZone from '../components/ui/DragDropZone';
+import DownloadPageExtras from '../components/ui/DownloadPageExtras';
 import { trackError } from '../lib/analytics';
 
 export default function JpgToPdf() {
@@ -144,6 +145,7 @@ export default function JpgToPdf() {
             <ImagePlus className="w-6 h-6" /> Start Over
           </button>
         </div>
+        <DownloadPageExtras toolId="jpg-to-pdf" />
       </div>
     );
   }
