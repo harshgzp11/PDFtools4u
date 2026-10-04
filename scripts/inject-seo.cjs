@@ -89,6 +89,13 @@ function generateStaticRoutes() {
 
   // Escape helpers
   const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (character) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  })[character]);
 
   Object.entries(seoData).forEach(([route, data]) => {
     if (route === '/') return; // index.html already has default SEO
@@ -100,29 +107,31 @@ function generateStaticRoutes() {
     }
 
     let html = template;
+    const title = escapeHtml(data.title);
+    const description = escapeHtml(data.description);
 
     // Replace Title
     html = html.replace(
       /<title>.*?<\/title>/, 
-      `<title>${data.title}</title>`
+      `<title>${title}</title>`
     );
 
     // Replace Description
     html = html.replace(
       /<meta\s+name=["']description["']\s+content=["'][^>]+["']\s*\/?>/,
-      `<meta name="description" content="${data.description}" />`
+      `<meta name="description" content="${description}" />`
     );
 
     // Replace OG Title
     html = html.replace(
       /<meta\s+property=["']og:title["']\s+content=["'][^>]+["']\s*\/?>/,
-      `<meta property="og:title" content="${data.title}" />`
+      `<meta property="og:title" content="${title}" />`
     );
 
     // Replace OG Description
     html = html.replace(
       /<meta\s+property=["']og:description["']\s+content=["'][^>]+["']\s*\/?>/,
-      `<meta property="og:description" content="${data.description}" />`
+      `<meta property="og:description" content="${description}" />`
     );
 
     // Replace OG URL (default is homepage)

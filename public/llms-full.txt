@@ -95,7 +95,7 @@ Google Analytics 4 and Microsoft Clarity are configured to load after interactio
 - [DOCX to Text](https://www.pdftools4u.in/docx-to-text): Extract plain text from Word documents.
 - [DOCX to HTML](https://www.pdftools4u.in/docx-to-html): Convert Word documents into HTML.
 - [Data Converter](https://www.pdftools4u.in/data-converter): Transform CSV, JSON, and Base64 locally.
-- [Text Reformatter](https://www.pdftools4u.in/text-reformatter): Clean whitespace, change case, remove duplicate lines.
+- [Text Reformatter](https://www.pdftools4u.in/text-reformatter): Automatically capitalize sentence starts as you type, change text case, clean whitespace, remove duplicate lines, sort or number lines, and find and replace text.
 - [Developer Tools](https://www.pdftools4u.in/dev-tools): JSON formatter, minifier, word counter, and text diff.
 
 ## Key Technical Guides

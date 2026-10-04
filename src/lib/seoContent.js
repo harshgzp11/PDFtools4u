@@ -1377,11 +1377,12 @@ export const SEO_CONTENT = {
   },
   "text-reformatter": {
     "title": "Text Case & Reformatter Tools",
-    "description": "Change text case, remove duplicates, and clean up whitespace instantly.",
+    "description": "Automatically capitalize sentence starts while typing, change text case, clean whitespace, remove duplicate lines, sort lines, and find and replace text.",
     "howTo": [
-      "Enter Text: Paste the messy or unformatted text.",
-      "Select Operation: Choose UPPERCASE, lowercase, Title Case, or whitespace removal.",
-      "Copy Output: Copy the instantly reformatted text."
+      "Enter Text: Paste or type text; sentence starts are capitalized automatically in the output.",
+      "Select Operations: Combine case conversion, whitespace cleanup, duplicate removal, sorting, and line numbering as needed.",
+      "Find and Replace: Enter text to find and its replacement, then select Apply.",
+      "Copy Output: Copy or download the reformatted result."
     ],
     "why": "Cleaning up badly formatted text manually is incredibly tedious. Whether you need to fix ALL CAPS emails, remove redundant spaces from data, or format titles, this utility saves you time.",
     "features": [

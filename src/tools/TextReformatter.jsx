@@ -1,12 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo, useState } from 'react';
 import { copyToClipboard, downloadTextAsFile } from '../lib/utils';
-import { Copy, Download, Trash2, ArrowDownAZ, ArrowUpZA, Hash, Search } from 'lucide-react';
+import { Copy, Download, Trash2, ArrowDownAZ, ArrowUpZA, Hash } from 'lucide-react';
 import { toast } from 'sonner';
 import { trackEvent } from '../lib/analytics';
 
+const toTitleCase = (text) => text
+  .toLocaleLowerCase()
+  .replace(/[\p{L}\p{N}][\p{L}\p{M}\p{N}'’]*/gu, (word) => {
+    const [firstCharacter, ...remainingCharacters] = Array.from(word);
+    return firstCharacter.toLocaleUpperCase() + remainingCharacters.join('');
+  });
+
+const capitalizeSentenceStarts = (text) => text.replace(
+  /(^|[.!?][)"'’”\]}»]*|\n)(\s*)(\p{L})/gu,
+  (_, boundary, whitespace, letter) => `${boundary}${whitespace}${letter.toLocaleUpperCase()}`
+).replace(
+  /(^|[^\p{L}\p{N}_])i(?=$|[^\p{L}\p{N}_])/giu,
+  (_, boundary) => `${boundary}I`
+);
+
+const toSnakeCase = (text) => text
+  .replace(/([\p{Ll}\p{N}])(\p{Lu})/gu, '$1_$2')
+  .replace(/([\p{Lu}])([\p{Lu}][\p{Ll}])/gu, '$1_$2')
+  .replace(/[^\p{L}\p{N}]+/gu, '_')
+  .replace(/^_+|_+$/g, '')
+  .toLocaleLowerCase();
+
 export default function TextReformatter() {
   const [input, setInput] = useState('');
-  const [output, setOutput] = useState('');
   
   // Toggles for Quick Actions
   const [activeCase, setActiveCase] = useState(null); // 'upper', 'lower', 'title', 'snake'
@@ -19,23 +40,30 @@ export default function TextReformatter() {
   const [findText, setFindText] = useState('');
   const [replaceText, setReplaceText] = useState('');
 
-  // Re-calculate output whenever input or toggles change
-  useEffect(() => {
+  const output = useMemo(() => {
     let res = input;
-    if (!res) {
-      setOutput('');
-      return;
+    if (!res) return '';
+
+    res = res.replace(/\r\n?/g, '\n');
+
+    if (cleanSpace) {
+      res = res.split('\n').map(line => line.trim().replace(/[ \t]+/g, ' ')).join('\n');
+    }
+
+    if (activeCase === 'upper') {
+      res = res.toLocaleUpperCase();
+    } else if (activeCase === 'lower') {
+      res = res.toLocaleLowerCase();
+    } else if (activeCase === 'title') {
+      res = toTitleCase(res);
+    } else if (activeCase === 'snake') {
+      res = res.split('\n').map(toSnakeCase).join('\n');
+    } else {
+      res = capitalizeSentenceStarts(res);
     }
 
     if (removeDupes) {
       res = [...new Set(res.split('\n'))].join('\n');
-    }
-    
-    if (cleanSpace) {
-      res = res.split('\n')
-        .map(line => line.trim().replace(/[ \t]{2,}/g, ' '))
-        .filter(line => line.length > 0)
-        .join('\n');
     }
     
     if (sortMode === 'asc') {
@@ -48,20 +76,7 @@ export default function TextReformatter() {
       res = res.split('\n').map((line, idx) => `${idx + 1}. ${line}`).join('\n');
     }
 
-    if (activeCase === 'upper') {
-      res = res.toUpperCase();
-    } else if (activeCase === 'lower') {
-      res = res.toLowerCase();
-    } else if (activeCase === 'title') {
-      res = res.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
-    } else if (activeCase === 'snake') {
-      res = res.replace(/\W+/g, ' ')
-        .split(/ |\B(?=[A-Z])/)
-        .map(word => word.toLowerCase())
-        .join('_');
-    }
-
-    setOutput(res);
+    return res;
   }, [input, activeCase, removeDupes, cleanSpace, numbered, sortMode]);
 
   const toggleCase = (type) => setActiveCase(prev => prev === type ? null : type);
@@ -69,8 +84,8 @@ export default function TextReformatter() {
 
   // One-off actions update the base input directly so they persist across toggles
   const applyFindReplace = () => {
-    trackEvent('tool_executed', { tool_name: 'Text Case & Line Reformatter' });
     if (!input || !findText) return;
+    trackEvent('tool_executed', { tool_name: 'Text Case & Line Reformatter' });
     const res = input.split(findText).join(replaceText);
     setInput(res);
     setFindText('');
@@ -96,8 +111,8 @@ export default function TextReformatter() {
   return (
     <div className="space-y-6 animate-in fade-in">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Text Case & Line Reformatter</h2>
-        <p className="text-gray-500">Format text case, remove duplicate lines, clean up messy whitespace, sort, and replace.</p>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">Text Case & Reformatter Tools</h2>
+        <p className="text-gray-500">Sentence capitalization updates automatically as you type. You can also change case, remove duplicate lines, clean up whitespace, sort, and replace.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -148,21 +163,21 @@ export default function TextReformatter() {
           <div>
             <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-4">Quick Actions (Toggles)</h3>
             <div className="flex flex-wrap gap-2">
-              <button onClick={() => toggleCase('upper')} className={toggleBtnClass(activeCase === 'upper')}>UPPERCASE</button>
-              <button onClick={() => toggleCase('lower')} className={toggleBtnClass(activeCase === 'lower')}>lowercase</button>
-              <button onClick={() => toggleCase('title')} className={toggleBtnClass(activeCase === 'title')}>Title Case</button>
-              <button onClick={() => toggleCase('snake')} className={toggleBtnClass(activeCase === 'snake')}>snake_case</button>
+              <button onClick={() => toggleCase('upper')} aria-pressed={activeCase === 'upper'} className={toggleBtnClass(activeCase === 'upper')}>UPPERCASE</button>
+              <button onClick={() => toggleCase('lower')} aria-pressed={activeCase === 'lower'} className={toggleBtnClass(activeCase === 'lower')}>lowercase</button>
+              <button onClick={() => toggleCase('title')} aria-pressed={activeCase === 'title'} className={toggleBtnClass(activeCase === 'title')}>Title Case</button>
+              <button onClick={() => toggleCase('snake')} aria-pressed={activeCase === 'snake'} className={toggleBtnClass(activeCase === 'snake')}>snake_case</button>
             </div>
             
             <div className="flex flex-wrap gap-2 mt-4">
-              <button onClick={() => setRemoveDupes(!removeDupes)} className={toggleBtnClass(removeDupes)}>Remove Duplicates</button>
-              <button onClick={() => setCleanSpace(!cleanSpace)} className={toggleBtnClass(cleanSpace)}>Clean Whitespace</button>
-              <button onClick={() => setNumbered(!numbered)} className={`${toggleBtnClass(numbered)} flex items-center gap-1`}><Hash className="w-4 h-4"/> Number Lines</button>
+              <button onClick={() => setRemoveDupes(!removeDupes)} aria-pressed={removeDupes} className={toggleBtnClass(removeDupes)}>Remove Duplicates</button>
+              <button onClick={() => setCleanSpace(!cleanSpace)} aria-pressed={cleanSpace} className={toggleBtnClass(cleanSpace)}>Clean Whitespace</button>
+              <button onClick={() => setNumbered(!numbered)} aria-pressed={numbered} className={`${toggleBtnClass(numbered)} flex items-center gap-1`}><Hash className="w-4 h-4"/> Number Lines</button>
             </div>
             
             <div className="flex flex-wrap gap-2 mt-4">
-              <button onClick={() => toggleSort('asc')} className={`${toggleBtnClass(sortMode === 'asc')} flex items-center gap-1`}><ArrowDownAZ className="w-4 h-4"/> Sort A-Z</button>
-              <button onClick={() => toggleSort('desc')} className={`${toggleBtnClass(sortMode === 'desc')} flex items-center gap-1`}><ArrowUpZA className="w-4 h-4"/> Sort Z-A</button>
+              <button onClick={() => toggleSort('asc')} aria-pressed={sortMode === 'asc'} className={`${toggleBtnClass(sortMode === 'asc')} flex items-center gap-1`}><ArrowDownAZ className="w-4 h-4"/> Sort A-Z</button>
+              <button onClick={() => toggleSort('desc')} aria-pressed={sortMode === 'desc'} className={`${toggleBtnClass(sortMode === 'desc')} flex items-center gap-1`}><ArrowUpZA className="w-4 h-4"/> Sort Z-A</button>
             </div>
           </div>
         </div>
@@ -189,7 +204,7 @@ export default function TextReformatter() {
               </div>
               <button 
                 onClick={applyFindReplace}
-                disabled={!findText}
+                disabled={!input || !findText}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-sm text-sm font-medium hover:bg-blue-700 whitespace-nowrap disabled:opacity-50 transition-colors"
               >
                 Apply

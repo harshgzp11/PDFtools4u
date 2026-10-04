@@ -11,6 +11,147 @@ export const BLOG_CATEGORIES = [
 
 const blogPosts = [
   {
+    id: "change-text-case-online",
+    title: "How to Change Text Case Online: Sentence, Title, Uppercase & Lowercase",
+    metaTitle: "Change Text Case Online: Free Title, Upper & Lowercase Tool",
+    metaDescription: "Change text case online: convert text to sentence case, UPPERCASE, lowercase, Title Case, or snake_case instantly in your browser. Text is processed locally.",
+    cluster: "Developer Tools",
+    excerpt: "Need to change text case online? Compare sentence case, lowercase, uppercase, Title Case, and snake_case, then reformat text with a browser-based text case converter.",
+    date: "October 4, 2026",
+    lastUpdated: "October 4, 2026",
+    author: "PDFTools4U Team",
+    coverImage: "/images/blog/photo-1555066931-4365d14bab8c.jpg",
+    targetToolUrl: "text-reformatter",
+    published: true,
+    customSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I change text case online?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Paste or type your text into a text case converter, choose a case such as uppercase, lowercase, Title Case, or sentence case, and copy or download the result."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between sentence case and Title Case?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sentence case capitalizes the start of sentences while leaving other words in their existing case. Title Case capitalizes the first letter of each word and lowercases the remaining letters."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can a text case converter identify proper nouns?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not reliably. Automatic sentence capitalization can capitalize sentence beginnings, but names and other proper nouns should be checked and corrected manually."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is my text uploaded when I use the PDFtools4u text reformatter?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Text formatting is performed in browser-side code rather than uploaded to a PDFtools4u processing server. The website still makes separate requests for assets and may make analytics requests; review the Privacy Policy before entering sensitive information."
+          }
+        }
+      ]
+    },
+    content: `
+Changing the case of text one letter at a time is slow and easy to get wrong. A **text case converter** can turn a paragraph into uppercase, lowercase, sentence case, Title Case, or a developer-friendly format such as snake_case in seconds.
+
+Use the [Text Case & Reformatter](/text-reformatter) to type or paste text and see a reformatted result as you work. Sentence starts are capitalized automatically by default; select a case action when you need a different format. This guide explains what each text case means, how to choose one, and what to review before using the result.
+
+## Text case quick guide
+
+| Format | Example | Common use |
+| --- | --- | --- |
+| Sentence case | \`A quick guide to text formatting.\` | Sentences, descriptions, and readable paragraphs |
+| lowercase | \`a quick guide to text formatting.\` | Email addresses, tags, and normalized text |
+| UPPERCASE | \`A QUICK GUIDE TO TEXT FORMATTING.\` | Short labels, headings, or codes that require capitals |
+| Title Case | \`A Quick Guide To Text Formatting\` | Titles and headings when that style is required |
+| snake_case | \`a_quick_guide_to_text_formatting\` | Variable names and identifiers in some codebases |
+
+These formats are not interchangeable. Choose the one expected by the destination, style guide, or programming language.
+
+## How to change text case online
+
+1. Open the [online text case converter](/text-reformatter).
+2. Paste or type the text in the input box. The output updates as you type, with sentence starts capitalized automatically.
+3. Select **lowercase**, **UPPERCASE**, **Title Case**, or **snake_case** if you need that specific format. Select the active case button again to turn it off and return to automatic sentence capitalization.
+4. Use optional actions to clean whitespace, remove duplicate lines, sort lines, or number them.
+5. Review the output, then choose **Copy** or **Download .txt**.
+
+The text reformatter also includes Find & Replace for repeated edits. You can combine the available line actions, so check the final result before using it in a document or codebase.
+
+## Sentence case vs. Title Case
+
+**Sentence case** is designed for normal prose: capitalize the beginning of a sentence and leave the rest of the words alone. In this tool, sentence-start capitalization and the standalone pronoun “I” are applied automatically unless another case action is selected.
+
+**Title Case** capitalizes the first letter of each word. For example, \`a guide to changing text case\` becomes \`A Guide To Changing Text Case\`. Different editorial style guides treat short words such as “to,” “and,” or “of” differently, so adjust headings to match the style you need.
+
+Automatic formatting cannot reliably know whether a word is a proper noun, brand name, acronym, or product-specific spelling. For example, sentence case will not infer that a name typed in lowercase should be capitalized. Proofread names and acronyms after using a case changer.
+
+## When to use uppercase or lowercase
+
+Use **uppercase text** when a form, specification, or short label explicitly requires capital letters. Avoid converting long passages to all caps unless required; it can be harder to read and may not match the destination's style.
+
+Use **lowercase text** to normalize values such as tags or text fields that are intended to be case-insensitive. Lowercasing can change acronyms and names, so check terms like API, HTML, and company names before publishing or sharing.
+
+## Convert text to snake_case
+
+**snake_case** replaces word boundaries with underscores and uses lowercase letters, such as \`User Profile Name\` → \`user_profile_name\`. It is useful where a programming convention expects lowercase identifiers separated by underscores.
+
+Naming rules differ across languages and projects. Check for reserved words, punctuation, leading digits, and required identifier conventions before pasting a converted name into source code. A case converter changes formatting; it does not validate whether an identifier is allowed.
+
+## Clean up lines and whitespace
+
+The reformatter can also help prepare lists and pasted text:
+
+- **Clean Whitespace** trims spaces at the start and end of each line and collapses repeated spaces or tabs within a line. Blank lines are preserved.
+- **Remove Duplicates** removes repeated lines while keeping the first occurrence.
+- **Sort A-Z / Sort Z-A** reorders lines alphabetically.
+- **Number Lines** adds a sequence number to each line.
+- **Find & Replace** replaces each occurrence of the text you specify.
+
+Review lists after sorting or de-duplication: line order can carry meaning, and two lines that look similar may not be duplicates if their punctuation or spacing differs.
+
+## Is an online text case converter private?
+
+The [Text Case & Reformatter](/text-reformatter) performs supported text transformations in browser-side code rather than sending the text to a PDFtools4u processing server. The website still loads scripts and other assets and may make analytics requests. That means local text processing should not be confused with a guarantee that the entire website makes no network requests. Review the [Privacy Policy](/privacy-policy), and avoid entering confidential text if the site's data practices do not meet your needs.
+
+## Frequently asked questions
+
+### How can I convert uppercase text to lowercase?
+
+Paste the text into the [text reformatter](/text-reformatter) and select **lowercase**. Check the output for names, acronyms, and terms that should retain capital letters.
+
+### Does sentence case capitalize every word?
+
+No. Sentence case capitalizes sentence starts, while Title Case capitalizes the first letter of each word. Use Title Case for headings only when it matches your chosen style.
+
+### Will automatic capitalization fix names and acronyms?
+
+No. The tool can capitalize sentence starts and the standalone pronoun “I,” but it cannot determine every proper noun or preferred acronym spelling. Review these manually.
+
+### Can I change the case of multiple lines at once?
+
+Yes. Paste multiple lines into the input and select the desired case action. The tool applies the case conversion to the text while keeping line breaks available for the other line-formatting actions.
+
+### Can I copy or download the converted text?
+
+Yes. Use **Copy** to copy the output to your clipboard or **Download .txt** to save it as a text file.
+
+## Reformat text now
+
+Whether you need to **capitalize text online**, change uppercase to lowercase, prepare a heading in Title Case, or convert words to snake_case, choose the destination format and proofread proper names and acronyms. Open the [free online text case converter](/text-reformatter) to format text and copy or download the result.
+`
+  },
+  {
     id: "server-side-vs-client-side-processing",
     title: "Server-Side vs Client-Side Processing: Architecture Guide",
     metaTitle: "Client-Side vs Server-Side Processing Guide",

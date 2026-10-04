@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 
-import { Search, Shield, Zap, Menu, X, FileText, Image as ImageIcon, ChevronDown, BookOpen } from 'lucide-react';
+import { Search, Shield, Zap, Menu, X, FileText, Image as ImageIcon, Code, ChevronDown, BookOpen } from 'lucide-react';
 import { DOMAINS } from '../lib/toolConfig';
 import Footer from './Footer';
 import SiteDirectory from './SiteDirectory';
+
+const NAV_DOMAINS = DOMAINS.filter((domain) =>
+  ['PDF Tools', 'Image Tools', 'Text & Developer Tools'].includes(domain.title)
+);
 
 export default function Layout({ children, onNavigateToDomain, onSearch, onSelectTool, isToolView = false }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -77,7 +81,7 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
             
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-2 relative mega-dropdown-container h-full">
-              {DOMAINS.slice(0, 2).map((domain, index) => (
+              {NAV_DOMAINS.map((domain) => (
                 <div 
                   key={domain.title} 
                   className="relative group flex items-center h-full"
@@ -93,7 +97,11 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
                       activeDropdown === domain.title ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                     }`}
                   >
-                     {domain.title === 'PDF Tools' ? <FileText className="w-4 h-4" aria-hidden="true" /> : <ImageIcon className="w-4 h-4" aria-hidden="true" />}
+                     {domain.title === 'PDF Tools'
+                       ? <FileText className="w-4 h-4" aria-hidden="true" />
+                       : domain.title === 'Image Tools'
+                         ? <ImageIcon className="w-4 h-4" aria-hidden="true" />
+                         : <Code className="w-4 h-4" aria-hidden="true" />}
                      {domain.title}
                      <ChevronDown className={`w-3.5 h-3.5 transition-transform ${activeDropdown === domain.title ? 'rotate-180' : ''}`} aria-hidden="true" />
                   </button>
@@ -229,14 +237,18 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
               <div className="flex flex-col gap-5">
                 
                 {/* Mobile Accordions */}
-                {DOMAINS.slice(0, 2).map((domain) => (
+                {NAV_DOMAINS.map((domain) => (
                   <div key={domain.title} className="flex flex-col gap-1">
                     <button 
                       onClick={() => setExpandedMobileDomain(expandedMobileDomain === domain.title ? null : domain.title)} 
                       className="flex items-center justify-between text-base font-bold text-gray-800 hover:text-blue-600 py-3 w-full text-left rounded-lg transition-colors"
                     >
                       <div className="flex items-center gap-3">
-                        {domain.title === 'PDF Tools' ? <FileText className="w-5 h-5 text-blue-500" /> : <ImageIcon className="w-5 h-5 text-emerald-500" />}
+                        {domain.title === 'PDF Tools'
+                          ? <FileText className="w-5 h-5 text-blue-500" />
+                          : domain.title === 'Image Tools'
+                            ? <ImageIcon className="w-5 h-5 text-emerald-500" />
+                            : <Code className="w-5 h-5 text-purple-500" />}
                         {domain.title}
                       </div>
                       <ChevronDown className={`w-5 h-5 transition-transform ${expandedMobileDomain === domain.title ? 'rotate-180 text-blue-600' : 'text-gray-400'}`} />
