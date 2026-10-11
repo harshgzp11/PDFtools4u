@@ -1,7 +1,7 @@
 import { trackEvent } from '../lib/analytics';
 import React, { useState, useEffect } from 'react';
 import jsPDF from 'jspdf';
-import { Download, PlusCircle, Trash2, Image as ImageIcon, CheckCircle, ArrowLeft, ImagePlus, FileUp } from 'lucide-react';
+import { Download, PlusCircle, Trash2, Image as ImageIcon, CheckCircle, ArrowLeft, ImagePlus, FileUp, GripVertical, RotateCw } from 'lucide-react';
 import DragDropZone from '../components/ui/DragDropZone';
 import DownloadPageExtras from '../components/ui/DownloadPageExtras';
 import { trackError } from '../lib/analytics';
@@ -11,6 +11,10 @@ export default function JpgToPdf() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [outputUrl, setOutputUrl] = useState(null);
+  const [orientation, setOrientation] = useState('portrait');
+  const [margin, setMargin] = useState(10);
+  const [draggedIdx, setDraggedIdx] = useState(null);
+  const [dragOverIdx, setDragOverIdx] = useState(null);
 
   useEffect(() => {
     if (window.__sharedFile) {
@@ -27,56 +31,115 @@ export default function JpgToPdf() {
     
     // Read all images as Data URLs
     Promise.all(valid.map(file => {
-      return new Promise((resolve) => {
+      return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = (e) => resolve({ file, dataUrl: e.target.result });
+        reader.onload = (e) => resolve({ file, dataUrl: e.target.result, rotation: 0 });
+        reader.onerror = () => reject(reader.error || new Error(`Could not read ${file.name}`));
         reader.readAsDataURL(file);
       });
     })).then(results => {
       setImages(prev => [...prev, ...results]);
       setSuccess(false);
       setOutputUrl(null);
+    }).catch(err => {
+      trackError('Jpg To Pdf', 'file_read_error');
+      console.error(err);
+      alert('Could not read one or more selected images.');
     });
   };
 
   const removeImage = (index) => {
-    setImages(images.filter((_, i) => i !== index));
+    setImages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const reorderImage = (fromIndex, toIndex) => {
+    setImages(prev => {
+      if (fromIndex === toIndex || fromIndex < 0 || toIndex < 0 ||
+          fromIndex >= prev.length || toIndex >= prev.length) return prev;
+      const reordered = [...prev];
+      const [image] = reordered.splice(fromIndex, 1);
+      reordered.splice(toIndex, 0, image);
+      return reordered;
+    });
+  };
+
+  const handleDragStart = (event, index) => {
+    setDraggedIdx(index);
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', String(index));
+  };
+
+  const handleDrop = (event, index) => {
+    event.preventDefault();
+    const fromIndex = draggedIdx;
+    if (fromIndex !== null) reorderImage(fromIndex, index);
+    setDraggedIdx(null);
+    setDragOverIdx(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIdx(null);
+    setDragOverIdx(null);
+  };
+
+  const rotateImage = (index) => {
+    setImages(prev => prev.map((image, i) => (
+      i === index ? { ...image, rotation: (image.rotation + 90) % 360 } : image
+    )));
   };
 
   const resetTool = () => {
     setImages([]);
     setSuccess(false);
     setOutputUrl(null);
+    setOrientation('portrait');
+    setMargin(10);
   };
 
-  const generatePdf = () => {
+  const generatePdf = async () => {
     if (images.length === 0) return;
     trackEvent('tool_executed', { tool_name: 'JPG to PDF' });
     setLoading(true);
     
     try {
-      const doc = new jsPDF();
+      const doc = new jsPDF({ orientation, unit: 'mm', format: 'a4' });
       const pageWidth = doc.internal.pageSize.getWidth();
       const pageHeight = doc.internal.pageSize.getHeight();
       
-      images.forEach((imgObj, index) => {
+      for (const [index, imgObj] of images.entries()) {
         if (index > 0) doc.addPage();
         
         const imgProps = doc.getImageProperties(imgObj.dataUrl);
-        let imgWidth = imgProps.width;
-        let imgHeight = imgProps.height;
+        const rotated = imgObj.rotation === 90 || imgObj.rotation === 270;
+        const sourceWidth = rotated ? imgProps.height : imgProps.width;
+        const sourceHeight = rotated ? imgProps.width : imgProps.height;
+        const availableWidth = pageWidth - margin * 2;
+        const availableHeight = pageHeight - margin * 2;
         
-        // Scale to fit page
-        const ratio = Math.min(pageWidth / imgWidth, pageHeight / imgHeight);
-        imgWidth *= ratio;
-        imgHeight *= ratio;
+        const ratio = Math.min(availableWidth / sourceWidth, availableHeight / sourceHeight);
+        const imgWidth = sourceWidth * ratio;
+        const imgHeight = sourceHeight * ratio;
         
-        // Center image
         const x = (pageWidth - imgWidth) / 2;
         const y = (pageHeight - imgHeight) / 2;
-        
-        doc.addImage(imgObj.dataUrl, 'JPEG', x, y, imgWidth, imgHeight);
-      });
+
+        if (imgObj.rotation) {
+          const canvas = document.createElement('canvas');
+          canvas.width = sourceWidth;
+          canvas.height = sourceHeight;
+          const context = canvas.getContext('2d');
+          if (!context) throw new Error('Could not prepare the rotated image.');
+          const image = new Image();
+          image.src = imgObj.dataUrl;
+          await image.decode();
+          context.translate(sourceWidth / 2, sourceHeight / 2);
+          context.rotate((imgObj.rotation * Math.PI) / 180);
+          context.drawImage(image, -imgProps.width / 2, -imgProps.height / 2);
+          doc.addImage(canvas.toDataURL('image/png'), 'PNG', x, y, imgWidth, imgHeight);
+        } else {
+          doc.addImage(imgObj.dataUrl, x, y, imgWidth, imgHeight);
+        }
+      }
 
       const pdfBytes = doc.output('blob');
       const url = URL.createObjectURL(pdfBytes);
@@ -104,7 +167,7 @@ export default function JpgToPdf() {
         <div className="text-center mb-10 space-y-4">
           <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">JPG to PDF</h2>
           <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
-            Convert JPG images to PDF in seconds. Easily adjust orientation and margins.
+            Combine images into a PDF, then set page orientation and margins.
           </p>
         </div>
         
@@ -165,14 +228,66 @@ export default function JpgToPdf() {
         
         <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-6">
           {images.map((img, i) => (
-            <div key={i} className="group relative aspect-[3/4] bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden flex flex-col hover:shadow-lg transition-all hover:-translate-y-1">
-              <img src={img.dataUrl} alt="preview" className="w-full h-full object-cover" />
+            <div
+              key={`${img.file.name}-${i}`}
+              onDragOver={event => {
+                event.preventDefault();
+                if (draggedIdx !== null && draggedIdx !== i) setDragOverIdx(i);
+              }}
+              onDrop={event => handleDrop(event, i)}
+              className={`group relative aspect-[3/4] bg-white rounded-xl shadow-md border overflow-hidden flex flex-col transition-all ${
+                draggedIdx === i ? 'opacity-40 border-dashed border-gray-400' :
+                dragOverIdx === i ? 'border-blue-500 ring-2 ring-blue-200' :
+                'border-gray-200 hover:shadow-lg hover:-translate-y-1'
+              }`}
+            >
+              <img
+                src={img.dataUrl}
+                alt={`Preview of ${img.file.name}`}
+                className={img.rotation % 180
+                  ? 'absolute left-1/2 top-1/2 w-[133.333%] h-3/4 max-w-none object-contain'
+                  : 'w-full h-full object-contain p-2'}
+                style={img.rotation % 180
+                  ? { transform: `translate(-50%, -50%) rotate(${img.rotation}deg)` }
+                  : undefined}
+              />
               <button 
                 onClick={() => removeImage(i)} 
+                aria-label={`Remove ${img.file.name}`}
                 className="absolute top-2 right-2 p-1.5 bg-white/90 text-red-500 rounded-md opacity-0 group-hover:opacity-100 transition-opacity shadow-sm hover:bg-red-50"
               >
                 <Trash2 className="w-4 h-4"/>
               </button>
+              <div className="absolute top-2 left-2 flex gap-1">
+                <button
+                  type="button"
+                  draggable
+                  onDragStart={event => handleDragStart(event, i)}
+                  onDragEnd={handleDragEnd}
+                  onKeyDown={event => {
+                    if (event.key === 'ArrowUp' && i > 0) {
+                      event.preventDefault();
+                      reorderImage(i, i - 1);
+                    } else if (event.key === 'ArrowDown' && i < images.length - 1) {
+                      event.preventDefault();
+                      reorderImage(i, i + 1);
+                    }
+                  }}
+                  aria-label={`Drag to reorder ${img.file.name}; use up and down arrow keys to move`}
+                  title="Drag to reorder (or use up/down arrow keys)"
+                  className="p-1.5 bg-white/90 text-gray-700 rounded-md shadow-sm hover:bg-white cursor-grab active:cursor-grabbing"
+                >
+                  <GripVertical className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => rotateImage(i)}
+                  aria-label={`Rotate ${img.file.name} 90 degrees clockwise`}
+                  className="p-1.5 bg-white/90 text-gray-700 rounded-md shadow-sm hover:bg-white"
+                >
+                  <RotateCw className="w-4 h-4" />
+                </button>
+              </div>
               <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent p-3 pt-8">
                 <span className="text-xs font-medium text-white truncate block w-full">{img.file.name}</span>
               </div>
@@ -200,9 +315,33 @@ export default function JpgToPdf() {
              <span className="text-xl font-extrabold text-yellow-600 bg-yellow-100 px-3 py-1 rounded-lg">{images.length}</span>
           </div>
 
-          <div className="space-y-3">
-             <p className="text-sm text-gray-600 font-medium">Looking to reorder them?</p>
-             <p className="text-xs text-gray-500">Currently, images are converted in the order they were selected. Remove and re-add them to change order.</p>
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="jpg-pdf-orientation" className="block text-sm text-gray-700 font-semibold mb-1">Page orientation</label>
+              <select
+                id="jpg-pdf-orientation"
+                value={orientation}
+                onChange={e => setOrientation(e.target.value)}
+                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
+              >
+                <option value="portrait">Portrait</option>
+                <option value="landscape">Landscape</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="jpg-pdf-margin" className="block text-sm text-gray-700 font-semibold mb-1">Page margins</label>
+              <select
+                id="jpg-pdf-margin"
+                value={margin}
+                onChange={e => setMargin(Number(e.target.value))}
+                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
+              >
+                <option value={0}>None</option>
+                <option value={10}>Small (10 mm)</option>
+                <option value={20}>Large (20 mm)</option>
+              </select>
+            </div>
+            <p className="text-xs text-gray-500">Drag the grip on each preview to change page order, or rotate an image clockwise. You can also focus a grip and use the arrow keys.</p>
           </div>
         </div>
 
