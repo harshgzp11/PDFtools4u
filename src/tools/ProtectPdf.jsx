@@ -1,6 +1,5 @@
 import { trackEvent } from '../lib/analytics';
 import React, { useState } from 'react';
-import { PDFDocument } from '@cantoo/pdf-lib';
 import { Download, Lock, FileText, CheckCircle, ArrowLeft, RefreshCw, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { getPdfThumbnails } from '../lib/pdfRenderer';
 import { getDynamicGridClass } from '../lib/utils';
@@ -55,6 +54,7 @@ export default function ProtectPdf() {
     
     try {
       const arrayBuffer = await file.arrayBuffer();
+      const { PDFDocument } = await import('@cantoo/pdf-lib');
       const pdfDoc = await PDFDocument.load(arrayBuffer);
       
       pdfDoc.encrypt({

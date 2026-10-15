@@ -3,9 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { FileSpreadsheet, FileOutput, Columns, LayoutList, TableProperties } from 'lucide-react';
 import { toast } from 'sonner';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
-import * as XLSX from 'xlsx';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
 import { trackError } from '../lib/analytics';
 
 export default function ExcelToPdf() {
@@ -56,6 +53,7 @@ export default function ExcelToPdf() {
   const parseExcelFile = async (currentFile) => {
     try {
       const arrayBuffer = await currentFile.arrayBuffer();
+      const XLSX = await import('xlsx');
       const wb = XLSX.read(arrayBuffer, { type: 'array' });
       
       if (!wb.SheetNames || wb.SheetNames.length === 0) {
@@ -77,7 +75,7 @@ export default function ExcelToPdf() {
     }
   };
 
-  const loadSheetData = (wb, sheetName) => {
+  const loadSheetData = async (wb, sheetName) => {
     setActiveSheet(sheetName);
     const ws = wb.Sheets[sheetName];
     if (!ws) {
@@ -85,6 +83,7 @@ export default function ExcelToPdf() {
       return;
     }
     
+    const XLSX = await import('xlsx');
     const rawData = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
     
     if (!rawData || rawData.length === 0) {
@@ -122,7 +121,7 @@ export default function ExcelToPdf() {
     }
   };
 
-  const convertToPdf = () => {
+  const convertToPdf = async () => {
     if (sheetData.length === 0) {
       toast.error("No valid data to convert in this sheet.");
       return;
@@ -137,6 +136,8 @@ export default function ExcelToPdf() {
         ? (maxCols > 6 ? 'landscape' : 'portrait')
         : orientation;
 
+      const { default: jsPDF } = await import('jspdf');
+      const { default: autoTable } = await import('jspdf-autotable');
       const doc = new jsPDF({
         orientation: targetOrientation,
         unit: 'pt',

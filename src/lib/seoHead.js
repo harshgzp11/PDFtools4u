@@ -162,10 +162,10 @@ export const SEO_HEAD = {
     keywords: ['rotate pdf pages online free', 'rotate pdf 90 degrees', 'fix upside down pdf'],
   },
   'pdf-annotator': {
-    title: 'Annotate PDF Online Free — Highlight & Mark Up | PDFtools4u',
-    description: 'Highlight, underline & add notes to PDF documents. Annotate contracts, assignments & reports without any software. Free browser-based tool.',
-    h1: 'Annotate PDF — Highlight, Comment & Mark Up Documents',
-    keywords: ['annotate pdf online free', 'highlight pdf online', 'pdf markup tool free'],
+    title: 'Free Online PDF Annotator | Draw & Write on PDFs (No Signup)',
+    description: 'Annotate any PDF for free in your browser. Highlight text, draw, or add comments securely without uploading files to a server.',
+    h1: 'Free Online PDF Annotator � Draw, Write & Highlight (No Signup)',
+    keywords: ['free online pdf annotator', 'draw on pdf no signup', 'write on pdf online', 'annotate pdf without upload', 'highlight pdf in browser'],
   },
   'pdf-form-filler': {
     title: 'Fill PDF Forms Online Free — Interactive Form Filler | PDFtools4u',
@@ -288,10 +288,10 @@ export const SEO_HEAD = {
     keywords: ['text to docx converter', 'create word from text', 'txt to word online'],
   },
   'txt-to-pdf': {
-    title: 'TXT to PDF Converter Free Online | PDFtools4u',
-    description: 'Convert plain text files (.txt) into PDF documents with available font, margin, and page-size options in your browser.',
-    h1: 'TXT to PDF — Convert Plain Text to Formatted Documents',
-    keywords: ['txt to pdf converter free', 'text file to pdf', 'convert txt to pdf online'],
+    title: 'Free TXT to PDF Converter Online | Convert Text to PDF (No Signup)',
+    description: 'Convert plain text files (.txt) into clean PDF documents directly in your browser. Free, fast, and secure with no signup or server upload required.',
+    h1: 'TXT to PDF � Convert Plain Text to Formatted Documents',
+    keywords: ['txt to pdf converter free', 'text file to pdf', 'convert txt to pdf online', 'free txt to pdf no signup'],
   },
   'rtf-to-pdf': {
     title: 'RTF to PDF Converter Free Online | PDFtools4u',

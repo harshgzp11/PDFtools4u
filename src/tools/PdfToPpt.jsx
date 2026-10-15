@@ -49,6 +49,7 @@ export default function PdfToPpt() {
       const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
       const numPages = pdf.numPages;
       
+      const { default: pptxgen } = await import('pptxgenjs');
       const pres = new pptxgen();
 
       const SLIDE_W = 10;

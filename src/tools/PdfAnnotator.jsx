@@ -5,7 +5,7 @@ import DragDropZone from '../components/ui/DragDropZone';
 
 
 
-import SignatureCanvas from 'react-signature-canvas';
+const SignatureCanvas = React.lazy(() => import('react-signature-canvas'));
 import { trackError } from '../lib/analytics';
 
 
@@ -51,7 +51,10 @@ export default function PdfAnnotator() {
       const buffer = await newFile.arrayBuffer();
       const typedArray = new Uint8Array(buffer);
 
-      const pdfjsLib = await import('pdfjs-dist');
+      const [pdfjsLib] = await Promise.all([
+        import('pdfjs-dist'),
+        import('react-signature-canvas')
+      ]);
       pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mjs', import.meta.url).href;
     
       const loadingTask = pdfjsLib.getDocument({ data: typedArray });

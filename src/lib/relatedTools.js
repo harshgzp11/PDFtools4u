@@ -33,13 +33,13 @@ export const RELATED_TOOLS = {
   // EDIT PDF
   'edit-pdf': ['protect-pdf', 'compress-pdf', 'redact-pdf', 'pdf-merge'],
   'rotate-pdf': ['organize-pdf', 'crop-pdf', 'edit-pdf', 'pdf-merge'],
-  'pdf-annotator': ['sign-pdf', 'protect-pdf', 'compress-pdf', 'redact-pdf'],
+  'pdf-annotator': ['unlock-pdf', 'pdf-to-text', 'sign-pdf', 'compress-pdf', 'edit-pdf', 'protect-pdf'],
   'pdf-form-filler': ['sign-pdf', 'protect-pdf', 'compress-pdf', 'flatten-pdf'],
   'crop-pdf': ['compress-pdf', 'protect-pdf', 'redact-pdf', 'pdf-annotator'],
   'pdf-reader': ['pdf-annotator', 'edit-pdf', 'pdf-to-word', 'compress-pdf'],
 
   // PDF SECURITY
-  'unlock-pdf': ['protect-pdf', 'pdf-to-jpg', 'compress-pdf', 'redact-pdf'],
+  'unlock-pdf': ['pdf-annotator', 'protect-pdf', 'pdf-to-text', 'compress-pdf', 'redact-pdf'],
   'protect-pdf': ['compress-pdf', 'redact-pdf', 'flatten-pdf', 'pdf-merge'],
   'sign-pdf': ['protect-pdf', 'compress-pdf', 'redact-pdf', 'pdf-form-filler'],
   'pdf-watermark': ['protect-pdf', 'edit-pdf', 'sign-pdf', 'compress-pdf'],

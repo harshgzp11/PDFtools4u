@@ -1,6 +1,5 @@
 import { trackEvent } from '../lib/analytics';
 import React, { useState, useEffect } from 'react';
-import { PDFDocument, PDFTextField, PDFDropdown, PDFCheckBox, PDFRadioGroup, PDFOptionList } from '@cantoo/pdf-lib';
 import { FileSignature, FileText, Eraser, Loader2, AlertCircle } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import { trackError } from '../lib/analytics';
@@ -34,6 +33,7 @@ export default function PdfFormFiller() {
     setIsScanning(true);
     try {
       const arrayBuffer = await pdfFile.arrayBuffer();
+      const { PDFDocument, PDFTextField, PDFDropdown, PDFCheckBox, PDFRadioGroup, PDFOptionList } = await import('@cantoo/pdf-lib');
       const pdfDoc = await PDFDocument.load(arrayBuffer);
       const form = pdfDoc.getForm();
       const fields = form.getFields();

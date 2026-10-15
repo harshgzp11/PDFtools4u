@@ -1,6 +1,5 @@
 import { trackEvent } from '../lib/analytics';
 import React, { useState } from 'react';
-import { PDFDocument, rgb, degrees } from '@cantoo/pdf-lib';
 import { Stamp, Type } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import { trackError } from '../lib/analytics';
@@ -37,6 +36,7 @@ export default function PdfWatermark() {
     
     try {
       const arrayBuffer = await file.arrayBuffer();
+      const { PDFDocument, rgb, degrees } = await import('@cantoo/pdf-lib');
       const pdfDoc = await PDFDocument.load(arrayBuffer);
       const font = await pdfDoc.embedFont('Helvetica-Bold');
       const pages = pdfDoc.getPages();

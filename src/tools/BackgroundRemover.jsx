@@ -91,6 +91,7 @@ export default function BackgroundRemover() {
       },
     };
 
+    const { removeBackground: imglyRemoveBackground } = await import('@imgly/background-removal');
     const blob = await imglyRemoveBackground(imageSrc, config);
     return blob;
   };
@@ -119,6 +120,7 @@ export default function BackgroundRemover() {
       },
     };
 
+    const { removeBackground: imglyRemoveBackground } = await import('@imgly/background-removal');
     const blob = await imglyRemoveBackground(imageSrc, config);
     return blob;
   };

@@ -105,7 +105,7 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
             <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl">
               <FileText className="w-6 h-6" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900">How to use this tool</h3>
+            <h3 className="text-xl font-bold text-gray-900">{content.howToTitle || "How to use this tool"}</h3>
           </div>
           <ol className="space-y-4">
             {content.howTo.map((step, idx) => (
@@ -178,7 +178,7 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
 
       {/* Overview & Why Section */}
       <div className="py-8 md:py-10 max-w-4xl mx-auto">
-        <h3 className="text-2xl font-bold text-gray-900 mb-4 text-center">Why use our {content.title.split(' ')[0]} tool?</h3>
+        <h3 className="text-2xl font-bold text-gray-900 mb-4 text-center">{content.whyTitle || ("Why use our " + content.title.split(' ')[0] + " tool?")}</h3>
         <div className="text-gray-700 leading-relaxed text-lg text-justify whitespace-pre-wrap">
           <ReactMarkdown
             components={{
@@ -270,7 +270,7 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
       {/* Related Tools Section */}
       {relatedToolIds.length > 0 && (
         <div className="pt-12 border-t border-gray-100">
-          <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">Related Tools You May Need</h3>
+          <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">{content.relatedToolsTitle || (domainTitle?.includes("PDF") || toolId.includes("pdf") ? "Related PDF Management Tools" : "Related Tools You May Need")}</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {relatedToolIds.slice(0, 4).map(relatedId => {
               const { tool: toolInfo } = findToolInfo(relatedId);
@@ -309,6 +309,44 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
                 </a>
               );
             })}
+          </div>
+
+          {/* Dedicated Text-Based Cross-Linking Ecosystem */}
+          <div className="mt-8 p-6 bg-slate-50 border border-slate-200/80 rounded-2xl">
+            <h4 className="text-base font-bold text-gray-900 mb-2">Related Document Management & Conversion Ecosystem</h4>
+            <p className="text-sm text-gray-600 mb-4 leading-relaxed">
+              PDFtools4u processes files locally inside your browser with 100% client-side execution�cutting out server waiting queues and privacy risks. Explore these interconnected document management tools:
+            </p>
+            <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
+              {relatedToolIds.map(relId => {
+                const { tool: relInfo } = findToolInfo(relId);
+                if (!relInfo) return null;
+                return (
+                  <li key={relId} className="flex items-start gap-2 bg-white p-3 rounded-xl border border-gray-100 shadow-xs">
+                    <span className="text-blue-500 font-bold mt-0.5">�</span>
+                    <div>
+                      <a
+                        href={`https://pdftools4u.in/${relId}`}
+                        onClick={(e) => {
+                          if (onSelectTool) {
+                            e.preventDefault();
+                            trackEvent('related_tool_click', {
+                              source_tool: toolId,
+                              destination_tool: relId,
+                            });
+                            onSelectTool(relId);
+                          }
+                        }}
+                        className="font-semibold text-blue-600 hover:text-blue-800 hover:underline"
+                      >
+                        {relInfo.name}
+                      </a>
+                      <span className="text-gray-500 text-xs block mt-0.5">{relInfo.description}</span>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
         </div>
       )}

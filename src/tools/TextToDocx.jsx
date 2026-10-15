@@ -1,6 +1,5 @@
 import { trackEvent } from '../lib/analytics';
 import React, { useState } from 'react';
-import { Document, Packer, Paragraph, TextRun } from 'docx';
 import { FileCode2, Download, RefreshCw, Loader2, FileText, CheckCircle } from 'lucide-react';
 import DownloadPageExtras from '../components/ui/DownloadPageExtras';
 import { trackError } from '../lib/analytics';
@@ -37,6 +36,7 @@ export default function TextToDocx() {
         });
       });
 
+      const { Document, Packer, Paragraph, TextRun } = await import('docx');
       const doc = new Document({
         sections: [
           {

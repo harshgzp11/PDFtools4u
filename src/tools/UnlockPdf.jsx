@@ -1,6 +1,5 @@
 import { trackEvent } from '../lib/analytics';
 import React, { useState, useEffect } from 'react';
-import { PDFDocument } from '@cantoo/pdf-lib';
 import { Unlock, FileText, CheckCircle, ArrowLeft, RefreshCw, Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import { trackError } from '../lib/analytics';
@@ -39,6 +38,7 @@ export default function UnlockPdf() {
       const arrayBuffer = await file.arrayBuffer();
       
       // Load and decrypt the PDF using the provided password
+      const { PDFDocument } = await import('@cantoo/pdf-lib');
       const pdfDoc = await PDFDocument.load(arrayBuffer, { password: password });
       
       // Saving without encryption options outputs a decrypted PDF
