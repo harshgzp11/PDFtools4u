@@ -5251,11 +5251,11 @@ An electronic signature image and a certificate-based digital signature are diff
 
 ### Annotations and links may be affected
 
-Some flattening tools can include annotations in the page appearance; others only handle form fields. Printing to PDF may remove hyperlinks, bookmarks, layers, or other features. Check the output rather than assuming comments, signatures, and links were all handled.
+Some flattening tools can include annotations in the page appearance; others only handle form fields. Printing to PDF may remove hyperlinks, bookmarks, layers, or other features. Check the output rather than assuming comments, signatures, and links were all handled. If your goal is to add review notes rather than finalize form fields, see [how to annotate a PDF](/blog/how-to-annotate-pdf-online-free).
 
 ### It does not encrypt or secure the document
 
-Flattening can make ordinary form-field editing less convenient, but it does **not** prevent someone from opening, copying, or editing the PDF with suitable software. It is not tamper-proofing, redaction, or password protection. For access restrictions, see [Protect PDF](/protect-pdf). If sensitive information must be removed, use a true redaction workflow and inspect the result.
+Flattening can make ordinary form-field editing less convenient, but it does **not** prevent someone from opening, copying, or editing the PDF with suitable software. It is not tamper-proofing, redaction, or password protection. For access restrictions, see [Protect PDF](/protect-pdf). If sensitive information must be removed, use a true [PDF redaction workflow](/blog/permanently-redact-text-in-pdf-online) and inspect the result.
 
 ### File size and accessibility can change
 
@@ -5306,6 +5306,13 @@ To make a separate PDF copy using macOS Preview, open the form, confirm its valu
 - Verify signatures using the intended PDF reader before and after any permitted processing.
 - Check that links, attachments, bookmarks, and accessibility features still meet your needs.
 - Do not use flattening as a substitute for password protection or redaction.
+
+## Related PDF guides
+
+- [Permanently redact sensitive text in a PDF](/blog/permanently-redact-text-in-pdf-online) when information must be removed, not just made non-interactive.
+- [Annotate a PDF online](/blog/how-to-annotate-pdf-online-free) to add review comments or markups before finalizing a document.
+- [Add a CONFIDENTIAL or DRAFT watermark](/blog/add-custom-watermark-pdf-online-confidential-draft) to label a review copy; remember that a watermark is not access control.
+- [Protect a PDF with a password](/protect-pdf) when you need access restrictions rather than flattened form fields.
 
 ## Frequently asked questions
 
