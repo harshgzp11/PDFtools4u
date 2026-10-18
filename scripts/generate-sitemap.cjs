@@ -128,6 +128,7 @@ function extractUrls() {
   // Parse blogData.js
   const blogDataContent = fs.readFileSync(blogDataPath, 'utf-8');
   const blogBlocks = blogDataContent.split(/id:\s*['"]/);
+  let latestBlogDate = null;
   
   for (let i = 1; i < blogBlocks.length; i++) {
     const block = blogBlocks[i];
@@ -159,11 +160,21 @@ function extractUrls() {
       }
     }
 
+    if (overrideDate && (!latestBlogDate || overrideDate > latestBlogDate)) {
+      latestBlogDate = overrideDate;
+    }
+
     urls.push({ 
       route: '/blog/' + slug, 
       filePath: blogDataPath,
       lastmodOverride: overrideDate
     });
+  }
+
+  // Auto-sync /blog entry to latest published blog date
+  const blogIndexEntry = urls.find(u => u.route === '/blog');
+  if (blogIndexEntry && latestBlogDate) {
+    blogIndexEntry.lastmodOverride = latestBlogDate;
   }
 
   // Add canonical topic hub URLs
@@ -205,6 +216,9 @@ function generateSitemap() {
     
     if (route === '/') {
       priority = '1.0';
+      changefreq = 'daily';
+    } else if (route === '/blog') {
+      priority = '0.9';
       changefreq = 'daily';
     } else if (route.startsWith('/blog/topic/')) {
       priority = '0.8';
