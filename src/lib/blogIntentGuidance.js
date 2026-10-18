@@ -69,5 +69,16 @@ export const BLOG_INTENT_GUIDANCE = {
       { id: 'split-pdf-pages-online-free', label: 'Extract selected pages or page ranges' },
       { id: 'rotate-pdf-pages-online-free', label: 'Correct sideways or upside-down PDF pages' }
     ]
+  },
+  'how-to-sign-pdf-document-online-free': {
+    heading: 'Contract and form signing workflow',
+    text: 'Signing is often one step in legal and business paperwork. Flatten your PDF after signing to prevent signature tampering, redact confidential financial data before sending, or add draft watermarks to preliminary agreements.',
+    related: [
+      { id: 'flatten-pdf-form-before-submitting', label: 'Flatten PDF after signing to lock signature layers' },
+      { id: 'permanently-redact-text-in-pdf-online', label: 'Permanently redact confidential numbers and text' },
+      { id: 'add-custom-watermark-pdf-online-confidential-draft', label: 'Add Confidential or Draft watermarks to proposals' },
+      { id: 'server-side-vs-client-side-processing', label: 'Why client-side processing keeps your legal files safe' }
+    ]
   }
 };
+

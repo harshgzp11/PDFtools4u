@@ -140,6 +140,18 @@ function generateStaticRoutes() {
       `<meta property="og:url" content="${BASE_URL}${route}" />`
     );
 
+    // Replace Twitter Title
+    html = html.replace(
+      /<meta\s+name=["']twitter:title["']\s+content=["'][^>]+["']\s*\/?>/,
+      `<meta name="twitter:title" content="${title}" />`
+    );
+
+    // Replace Twitter Description
+    html = html.replace(
+      /<meta\s+name=["']twitter:description["']\s+content=["'][^>]+["']\s*\/?>/,
+      `<meta name="twitter:description" content="${description}" />`
+    );
+
     // Replace Canonical URL or inject it
     if (html.includes('<link rel="canonical"')) {
       html = html.replace(
