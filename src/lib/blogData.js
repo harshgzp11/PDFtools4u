@@ -2307,32 +2307,44 @@ Often, signing a document is just one stage of your paperwork pipeline. You can 
 
 <details>
 <summary>Is it legal to sign a PDF online without printing?</summary>
+
 Yes. In most jurisdictions globally—including the United States (ESIGN Act and UETA), the European Union (eIDAS regulation), the United Kingdom, Canada, and India (Information Technology Act for general electronic agreements)—electronic signatures carry the same legal weight as traditional wet-ink pen signatures for commercial and personal contracts.
+
 </details>
 
 <details>
 <summary>How do I prevent someone from moving or deleting my signature after signing?</summary>
+
 After signing your PDF, run it through our **[Flatten PDF Tool](/flatten-pdf)**. Flattening merges visual signature layers directly into the underlying document raster/vector canvas, locking it permanently in place.
+
 </details>
 
 <details>
 <summary>Can I sign a document using my smartphone or tablet?</summary>
+
 Yes. The PDFTools4U layout is completely mobile-responsive. Open the **[Sign PDF Tool](/sign-pdf)** on any Android or iOS browser, select your PDF, choose the Draw tab, and sketch your signature naturally using your fingertip or stylus.
+
 </details>
 
 <details>
 <summary>Will my signature look pixelated or blurry?</summary>
+
 No. The tool captures drawn strokes as high-resolution vector paths and embeds uploaded signatures at high fidelity. Your signature remains sharp when viewed on Retina displays or when printed out on paper.
+
 </details>
 
 <details>
 <summary>Are my uploaded contracts stored or logged on PDFTools4U?</summary>
+
 No. PDFTools4U uses 100% client-side architecture. The document never leaves your browser's local RAM. No copies are saved to any cloud database, server disk, or cache. Read our **[Security Architecture](/security)** documentation to learn how in-browser execution works.
+
 </details>
 
 <details>
 <summary>Are there usage limits or watermarks on the signed documents?</summary>
+
 No. There are no file size caps, no daily conversion limits, and zero platform watermarks added to your documents. The service is completely free and unrestricted.
+
 </details>
 `
   },
