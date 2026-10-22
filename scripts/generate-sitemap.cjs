@@ -139,8 +139,9 @@ function extractUrls() {
     const slug = idMatch[1];
     let overrideDate = null;
     
-    // First try JSON-LD datePublished (handles YYYY-MM-DD or ISO strings like YYYY-MM-DDTHH:mm:ss)
-    const dateMatch = block.match(/"datePublished"\s*:\s*['"]([0-9]{4}-[0-9]{2}-[0-9]{2})/);
+    // Prefer JSON-LD dateModified for lastmod, then fall back to datePublished.
+    const dateMatch = block.match(/"dateModified"\s*:\s*['"]([0-9]{4}-[0-9]{2}-[0-9]{2})/)
+      || block.match(/"datePublished"\s*:\s*['"]([0-9]{4}-[0-9]{2}-[0-9]{2})/);
     if (dateMatch) {
       overrideDate = dateMatch[1];
     } else {

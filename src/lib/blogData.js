@@ -1181,8 +1181,7 @@ After merging, check that no page is upside down, cropped, duplicated, or missin
     metaDescription: "Remove the white or grey background from any scanned or photographed signature and save it as a transparent PNG. 100% free, AI-powered, processes locally in your browser — no uploads.",
     cluster: "Indian Taxes, KYC & Corporate Identity",
     excerpt: "Remove the white or grey background from your scanned signature image instantly using AI. Get a clean transparent PNG signature that overlays perfectly on PDFs, government forms, contracts, and UPSC/SSC applications — processed 100% locally in your browser.",
-    date: "August 15, 2026",
-    lastUpdated: "October 22, 2026",
+    date: "October 22, 2026",
     author: "PDFTools4U Team",
     coverImage: "https://images.unsplash.com/photo-1583526362016-c3137c71cc3a?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "bg-remover",
@@ -1200,7 +1199,7 @@ After merging, check that no page is upside down, cropped, duplicated, or missin
             "@type": "ImageObject",
             "url": "https://images.unsplash.com/photo-1583526362016-c3137c71cc3a?auto=format&fit=crop&q=80&w=1000"
           },
-          "datePublished": "2026-08-15",
+          "datePublished": "2026-10-22",
           "dateModified": "2026-10-22",
           "author": {
             "@type": "Organization",
@@ -6013,7 +6012,9 @@ If you need a fixed copy of form fields, start with the [Flatten PDF tool](/flat
   }
 ];
 
-export const BLOG_POSTS = blogPosts.map(post => {
-  const photoId = post.coverImage?.match(/images\.unsplash\.com\/(photo-[^/?]+)/)?.[1];
-  return photoId ? { ...post, coverImage: `/images/blog/${photoId}.jpg` } : post;
-});
+export const BLOG_POSTS = blogPosts
+  .map(post => {
+    const photoId = post.coverImage?.match(/images\.unsplash\.com\/(photo-[^/?]+)/)?.[1];
+    return photoId ? { ...post, coverImage: `/images/blog/${photoId}.jpg` } : post;
+  })
+  .sort((a, b) => Date.parse(b.lastUpdated || b.date) - Date.parse(a.lastUpdated || a.date));
