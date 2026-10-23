@@ -692,51 +692,6 @@ Yes. Download the official PDF from DigiLocker, upload it to the converter, and 
 
   // Cluster 2: Financial, Tax & Accounting Records
   {
-    id: "bank-statement-pdf-to-excel-converter",
-    title: "How to Convert Bank Statement PDF to Excel Spreadsheet Safely",
-    cluster: "Financial Parsing & Developer Utilities",
-    excerpt: "Discover how to accurately extract tables and transaction data from your bank statement PDFs directly into an Excel spreadsheet.",
-    date: "August 8, 2026",
-    lastUpdated: "August 28, 2026",
-    author: "PDFTools4U Team",
-    coverImage: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=1000",
-    targetToolUrl: "pdf-to-excel",
-    published: false,
-    content: `
-Converting bank statements from PDF to Excel is one of the most common tasks for accountants, freelancers, and small business owners. When tax season approaches, manually typing hundreds of transactions into a spreadsheet is not just tedious—it's prone to massive errors.
-
-Fortunately, you can automate this process entirely.
-
-### Why PDFs Are Hard to Extract Data From
-PDFs are essentially digital paper. They don't store "tables" in a way that Excel understands; they just store text at specific X and Y coordinates on a page. To get that data into Excel, you need a tool that can visually recognize the table structure and reconstruct it into columns and rows.
-
-### How to Convert Bank Statements to Excel
-
-1. **Prepare Your Document:** Ensure your PDF is a text-based document (like the one you download directly from your bank's website) rather than a scanned image.
-2. **Use Our Converter:** Go to our [PDF to Excel](/pdf-to-excel) tool.
-3. **Upload & Process:** Drag your bank statement into the upload area. Our tool will automatically detect table structures and extract the raw data.
-4. **Download the Spreadsheet:** Click convert and download your new .xlsx file.
-
-### Dealing with Scanned Bank Statements
-If your bank statement is a physical piece of paper that you scanned, standard conversion won't work. The PDF is just an image. In this case, you need to use an **OCR (Optical Character Recognition)** tool first to recognize the text within the image before converting it to a spreadsheet.
-
-**Privacy Note for Financial Documents:** Bank statements contain highly sensitive financial data. Traditional online converters upload your statements to external servers for processing. PDFTools4U processes your files entirely within your own browser locally, ensuring your financial data never leaves your computer.
-    `
-  },
-  {
-    id: "convert-salary-slip-pdf-to-editable-word",
-    title: "How to Convert Salary Slip PDF to Word Without Formatting Loss",
-    cluster: "Financial Parsing & Developer Utilities",
-    excerpt: "Need to edit formatting on your salary slip? Learn how to convert your PDF payslip into a fully editable Word document.",
-    date: "August 9, 2026",
-    lastUpdated: "August 28, 2026",
-    author: "PDFTools4U Team",
-    coverImage: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&q=80&w=1000",
-    targetToolUrl: "pdf-to-word",
-    published: false,
-    content: ``
-  },
-  {
     id: "compress-form-16-pdf-under-500kb",
     title: "How to Compress Form 16 PDF Under 500KB for ITR (100% Private)",
     metaTitle: "Compress Form 16 PDF Under 500KB for ITR",
@@ -840,19 +795,6 @@ Before uploading, compare the final file with the current portal notice. Confirm
 
 If the PDF contains a cryptographic signature, treat the compressed file as a new copy and verify whether the receiving portal requires the original signed file. A visual signature can remain visible while the underlying digital signature becomes invalid after a PDF rewrite.
 `
-  },
-  {
-    id: "pdf-invoice-to-excel-spreadsheet",
-    title: "How to Extract Invoice Data from PDF to Excel Instantly",
-    cluster: "Financial Parsing & Developer Utilities",
-    excerpt: "Automate your invoicing process by extracting line items and totals from PDF invoices straight into Excel.",
-    date: "August 11, 2026",
-    lastUpdated: "August 28, 2026",
-    author: "PDFTools4U Team",
-    coverImage: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=1000",
-    targetToolUrl: "pdf-to-excel",
-    published: false,
-    content: ``
   },
   {
     id: "extract-images-from-pdf-receipt",
@@ -1839,66 +1781,6 @@ After converting the PDF to JPG, adjust the quality setting or use the Compress 
 `
   },
   {
-    id: "degree-certificate-scanned-pdf-to-ocr",
-    title: "Make Scanned Degree Certificates Searchable (OCR)",
-    cluster: "Govt Exams & Academics",
-    excerpt: "Apply OCR technology to your scanned degree certificates so you can copy and paste the text directly from the image.",
-    date: "August 17, 2026",
-    lastUpdated: "August 28, 2026",
-    author: "PDFTools4U Team",
-    coverImage: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=1000",
-    targetToolUrl: "pdf-ocr",
-    published: false,
-    content: ``
-  },
-
-  // Cluster 4: Core Productivity & Universal Conversions
-  {
-    id: "convert-pdf-to-editable-word-without-losing-layout",
-    title: "Convert PDF to Word Online Free Without Losing Layout",
-    cluster: "Financial Parsing & Developer Utilities",
-    excerpt: "Learn the secrets to converting complex PDFs into Microsoft Word documents while preserving tables, fonts, and exact layouts.",
-    date: "August 18, 2026",
-    lastUpdated: "August 28, 2026",
-    author: "PDFTools4U Team",
-    coverImage: "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?auto=format&fit=crop&q=80&w=1000",
-    targetToolUrl: "pdf-to-word",
-    published: false,
-    content: `
-Converting a PDF to a Word document is easy. Converting a PDF to a Word document *without the entire layout breaking* is a different story entirely. 
-
-If you've ever tried to convert a resume or a complex invoice, you know the pain of images shifting, text boxes overlapping, and tables exploding across the page.
-
-### Why Layouts Break During Conversion
-
-A PDF document is designed to be a final, static output. It doesn't use standard "paragraphs" or "margins" like Microsoft Word does. Instead, it places individual letters and lines at exact coordinate points on a canvas.
-
-When a converter tries to turn those coordinates back into a flowing paragraph that you can edit, it has to guess the structure. If it guesses wrong, your layout breaks.
-
-### How to Preserve Your Formatting
-
-1. **Use an Advanced Converter:** Basic converters just dump raw text into a page. You need a tool that reconstructs tables and layout blocks. Use our [PDF to Word](/pdf-to-word) tool, which utilizes advanced heuristics to maintain structural integrity.
-2. **Check for Scanned Pages:** If your PDF is actually a scanned image, a standard Word converter will just paste the giant image into Word. You won't be able to edit the text unless you use an OCR tool first.
-3. **Standard Fonts Help:** Documents using standard system fonts (Arial, Times New Roman, Calibri) convert much cleaner than documents using custom, embedded web fonts.
-4. **Avoid Complex Vectors:** PDFs with heavy vector graphics or complex overlapping transparencies often struggle to map perfectly into Word's limited graphic engine.
-
-By using high-quality conversion algorithms and understanding the limitations of the format, you can save hours of tedious re-typing and formatting!
-    `
-  },
-  {
-    id: "scanned-pdf-to-text-ocr-online-free",
-    title: "Scanned PDF to Text (OCR) Online Free",
-    cluster: "Financial Parsing & Developer Utilities",
-    excerpt: "Extract raw, editable text from scanned PDF images using advanced Optical Character Recognition.",
-    date: "August 19, 2026",
-    lastUpdated: "August 28, 2026",
-    author: "PDFTools4U Team",
-    coverImage: "https://images.unsplash.com/photo-1586281380117-5a60ae2050cc?auto=format&fit=crop&q=80&w=1000",
-    targetToolUrl: "pdf-ocr",
-    published: false,
-    content: ``
-  },
-  {
     id: "split-pdf-pages-online-free",
     title: "How to Split PDF Pages Online Separately for Free",
     metaTitle: "Split PDF Pages Online and Extract Pages",
@@ -2419,72 +2301,6 @@ If colors look different after conversion, compare the result in another image v
     `
   },
   {
-    id: "webp-to-png-pdf-converter",
-    title: "How to Convert WebP Images to PNG or PDF Online",
-    cluster: "General File Optimization & Image Conversions",
-    excerpt: "Downloaded an image from the web and it's a WebP? Learn how to easily convert it to a standard PNG or PDF format.",
-    date: "August 24, 2026",
-    lastUpdated: "August 28, 2026",
-    author: "PDFTools4U Team",
-    coverImage: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1000",
-    targetToolUrl: "convert-image",
-    published: false,
-    content: ``
-  },
-  {
-    id: "combine-mobile-camera-photos-into-one-pdf",
-    title: "How to Combine Phone Camera Photos Into One Master PDF",
-    cluster: "General File Optimization & Image Conversions",
-    excerpt: "Turn a gallery of smartphone photos into a single, clean PDF document ideal for sharing assignments or reports.",
-    date: "August 25, 2026",
-    lastUpdated: "August 28, 2026",
-    author: "PDFTools4U Team",
-    coverImage: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=1000",
-    targetToolUrl: "jpg-to-pdf",
-    published: false,
-    content: ``
-  },
-  {
-    id: "pdf-pages-to-high-dpi-png-images",
-    title: "How to Convert PDF Pages to High DPI PNG Online",
-    cluster: "General File Optimization & Image Conversions",
-    excerpt: "Extract high-resolution, lossless PNG graphics from your PDF documents for professional printing or web design.",
-    date: "August 26, 2026",
-    lastUpdated: "August 28, 2026",
-    author: "PDFTools4U Team",
-    coverImage: "https://images.unsplash.com/photo-1600132806370-bf17e65e942f?auto=format&fit=crop&q=80&w=1000",
-    targetToolUrl: "pdf-to-jpg", // We can use the image converter tool for this
-    published: false,
-    content: ``
-  },
-  {
-    id: "top-5-free-apps-scan-documents-india",
-    title: "Top 5 Free Document Scanner Apps in India (No Watermark)",
-    cluster: "Indian Taxes, KYC & Corporate Identity",
-    excerpt: "A curated list of the best, safest, and completely free document scanning applications available for Indian users.",
-    date: "July 28, 2026",
-    lastUpdated: "August 28, 2026",
-    author: "PDFTools4U Team",
-    coverImage: "https://images.unsplash.com/photo-1616423640778-28d1b53229bd?auto=format&fit=crop&q=80&w=1000",
-    targetToolUrl: "compress-pdf",
-    published: false,
-    content: ``
-  },
-  // Add a few more stubs to reach 30 if needed, but 25 is enough for the pattern. I'll add 5 more to reach 30.
-  {
-    id: "compress-pdf-mac-preview-alternative",
-    title: "Best Free Mac Preview Alternative to Compress PDF Files",
-    cluster: "General File Optimization & Image Conversions",
-    excerpt: "Mac Preview often ruins PDF quality when reducing file size. Discover a better, lossless alternative.",
-    date: "August 27, 2026",
-    lastUpdated: "August 28, 2026",
-    author: "PDFTools4U Team",
-    coverImage: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=1000",
-    targetToolUrl: "compress-pdf",
-    published: false,
-    content: ``
-  },
-  {
     id: "how-to-sign-pdf-document-online-free",
     title: "How to Sign a PDF Document Online Free Without Printing or Scanning",
     metaTitle: "Sign PDF Online Free Without Printing or Scanning",
@@ -2756,46 +2572,6 @@ No. There are no file size caps, no daily conversion limits, and zero platform w
 </details>
 `
   },
-  {
-    id: "extract-text-from-image-online",
-    title: "How to Copy and Extract Text from Image Online Instantly",
-    cluster: "Financial Parsing & Developer Utilities",
-    excerpt: "Turn screenshots and photos into editable text instantly using AI-powered OCR.",
-    date: "August 29, 2026",
-    lastUpdated: "August 28, 2026",
-    author: "PDFTools4U Team",
-    coverImage: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1000",
-    targetToolUrl: "pdf-ocr",
-    published: false,
-    content: ``
-  },
-  {
-    id: "protect-pdf-with-password-encryption",
-    title: "How to Protect PDF Files with Strong Password Encryption Free",
-    cluster: "Indian Taxes, KYC & Corporate Identity",
-    excerpt: "Secure your sensitive documents by locking them with bank-grade AES encryption before sharing.",
-    date: "August 30, 2026",
-    lastUpdated: "August 28, 2026",
-    author: "PDFTools4U Team",
-    coverImage: "/images/blog/photo-1589829085413-56de8ae18c73.jpg",
-    targetToolUrl: "protect-pdf",
-    published: false,
-    content: ``
-  },
-  {
-    id: "convert-json-to-csv-excel",
-    title: "How to Convert JSON Data to CSV or Excel (Local & Secure)",
-    cluster: "Financial Parsing & Developer Utilities",
-    excerpt: "Easily transform raw JSON API responses into clean, readable CSV files for data analysis.",
-    date: "August 31, 2026",
-    lastUpdated: "August 28, 2026",
-    author: "PDFTools4U Team",
-    coverImage: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=1000",
-    targetToolUrl: "data-converter",
-    published: false,
-    content: ``
-  },
-  // --- New SEO Clusters ---
   {
     id: "resize-photo-signature-ssc-upsc",
     title: "How to Resize Photo and Signature for SSC, UPSC, and Govt Exam Forms (20KB – 50KB)",
