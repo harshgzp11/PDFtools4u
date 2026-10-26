@@ -179,12 +179,6 @@ Yes. The generated \`.docx\` file conforms to the standard Office Open XML speci
 
 ### Can I convert password-protected bank statements or salary slips?
 Yes, but you must remove the encryption password first. If your PDF is locked (such as an SBI/HDFC bank statement or monthly payslip), run it through the [Unlock PDF](/unlock-pdf) tool on PDFtools4u, then convert the unlocked file here.
-
----
-
-> ### Ready to convert your document securely?
-> [**Launch the PDF to Word Converter Now →**](/pdf-to-word)  
-> *100% free, private browser-side conversion. No file uploads or account required.*
 `
   },
   {
