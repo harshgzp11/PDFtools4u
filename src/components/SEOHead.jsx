@@ -517,6 +517,7 @@ export default function SEOHead({ activeTool, title: overrideTitle, description:
             '@id': canonicalUrl,
           },
           'url': canonicalUrl,
+          'isAccessibleForFree': true,
         };
         schemas.push(articleSchema);
 
