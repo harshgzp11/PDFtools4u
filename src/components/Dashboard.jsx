@@ -509,7 +509,7 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
             </div>
             <h3 className="font-bold text-gray-900 text-lg mb-2">Upload Your File</h3>
             <p className="text-gray-500 text-sm leading-relaxed">
-              Drag and drop or browse. Your file stays in your browser — nothing is uploaded.
+              Drag and drop or browse. Your file is processed in your browser memory — documents are not uploaded to our servers.
             </p>
           </div>
           <div className="text-center group">

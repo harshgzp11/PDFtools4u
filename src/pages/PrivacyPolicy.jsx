@@ -55,7 +55,7 @@ export default function PrivacyPolicy() {
           <section>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">4. Cookies and Tracking Technologies</h2>
             <p className="mb-3">
-              The site uses cookies, local storage, and similar technologies for analytics, performance measurement, site operation, and advertising. Third-party vendors, including Google, use cookies to serve ads based on a user's prior visits to this website or other websites. For detailed information on the cookies we use and how to control them, see our <a href="/cookie-policy" className="text-blue-600 hover:underline font-medium">Cookie Policy</a>.
+              The site uses cookies, local storage, and similar technologies for analytics, performance measurement, and site operation, as well as prospective advertising. When advertising is enabled, third-party vendors, including Google, will use cookies to serve ads based on a user's prior visits to this website or other websites. For detailed information on the cookies we use and how to control them, see our <a href="/cookie-policy" className="text-blue-600 hover:underline font-medium">Cookie Policy</a>.
             </p>
             <p>
               You can block or delete cookies and other site data through your browser settings. You can also opt out of personalized advertising directly via <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-medium">Google Ad Settings</a> or <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-medium">aboutads.info</a>.
@@ -65,10 +65,10 @@ export default function PrivacyPolicy() {
           <section>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">5. Advertising and Third-Party Data Sharing</h2>
             <p className="mb-3">
-              We partner with third-party advertising networks and vendors, including Google AdSense, to serve advertisements when you visit our website.
+              We are preparing this website to partner with third-party advertising networks and vendors, including Google AdSense, to display advertisements.
             </p>
             <ul className="list-disc pl-6 space-y-2 mb-3">
-              <li>Third-party vendors, including Google, use cookies to serve ads based on your prior visits to our website or other sites on the Internet.</li>
+              <li>When advertising is enabled, third-party vendors, including Google, will use cookies to serve ads based on your prior visits to our website or other sites on the Internet.</li>
               <li>Google's use of advertising cookies enables it and its partners to serve personalized ads to you based on your visits to PDFtools4u and other websites across the web.</li>
               <li>Users may opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-medium">Google Ads Settings</a> or through the Network Advertising Initiative at <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-medium">www.aboutads.info</a>.</li>
             </ul>

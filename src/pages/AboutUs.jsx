@@ -135,11 +135,11 @@ export default function AboutUs() {
           <div className="space-y-6">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-100/90 border border-emerald-200 text-emerald-800 text-xs sm:text-sm font-semibold shadow-2xs">
               <ShieldCheck className="w-4 h-4 text-emerald-600" />
-              <span>Data Protection Guarantee</span>
+              <span>Data Protection Principles</span>
             </div>
 
             <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
-              Our Security Architecture: 100% Client-Side Data Privacy
+              Our Security Architecture: Local Client-Side Processing
             </h2>
 
             <p className="text-gray-700 text-sm sm:text-base leading-relaxed max-w-4xl">

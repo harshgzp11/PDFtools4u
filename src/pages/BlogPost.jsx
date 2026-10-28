@@ -208,6 +208,29 @@ export default function BlogPost({ id, onNavigate }) {
         </ReactMarkdown>
       </article>
 
+      {/* Official References & Sources */}
+      {post.sources && post.sources.length > 0 && (
+        <section className="mt-8 pt-6 border-t border-gray-100 max-w-3xl mx-auto">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">
+            Official References &amp; Portal Guidelines
+          </h3>
+          <div className="flex flex-wrap gap-2">
+            {post.sources.map((source, idx) => (
+              <a
+                key={idx}
+                href={source.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 border border-gray-200 text-xs font-medium text-blue-600 hover:text-blue-800 transition-colors"
+              >
+                <span>{source.label}</span>
+                <span className="text-gray-400 text-[10px]">↗</span>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* 4-5 Tools Talked About in This Guide */}
       {mentionedTools.length > 0 && (
         <section className="mt-14 max-w-3xl mx-auto border-t border-gray-100 pt-10">
@@ -267,13 +290,13 @@ export default function BlogPost({ id, onNavigate }) {
           
           <div className="flex flex-col gap-3 flex-1 text-center md:text-left relative z-10">
             <div className="inline-flex items-center justify-center md:justify-start gap-2 text-indigo-200 text-sm mb-1">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" /> 100% Secure & Local
+              <ShieldCheck className="w-4 h-4 text-emerald-400" /> Local Browser Processing
             </div>
             <h3 className="text-2xl md:text-3xl font-semibold text-white flex items-center justify-center md:justify-start gap-3 leading-tight">
               Ready to use the {targetTool.name} tool?
             </h3>
             <p className="text-indigo-100/90 text-lg max-w-xl leading-relaxed">
-              Process your files instantly in your browser. <span className="text-white font-medium">Zero server uploads.</span> Complete privacy guaranteed.
+              Process your files directly in your browser memory. <span className="text-white font-medium">No document uploads to our servers.</span> Designed for local privacy.
             </p>
           </div>
           <button 

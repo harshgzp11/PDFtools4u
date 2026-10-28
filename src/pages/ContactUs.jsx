@@ -144,9 +144,8 @@ export default function ContactUs() {
         {/* ── Bottom note ── */}
         <div className="mt-12 text-center p-6 bg-blue-50 border border-blue-100 rounded-2xl">
           <p className="text-sm text-gray-700 leading-relaxed">
-            <strong>Privacy reminder:</strong> PDFTools4U never uploads your files to any server.
-            All PDF compression, merging, splitting, conversion, and image processing happens
-            100% inside your browser. When contacting support, <strong>do not attach confidential documents</strong> — 
+            <strong>Privacy reminder:</strong> PDFTools4U processes supported operations directly inside your browser memory — documents are not uploaded to our servers.
+            When contacting support, <strong>do not attach confidential documents</strong> — 
             only describe the issue or share a generic sample file if needed.
           </p>
         </div>

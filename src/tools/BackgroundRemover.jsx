@@ -245,7 +245,7 @@ export default function BackgroundRemover() {
       {/* Header */}
       <div className="flex-shrink-0 px-6 pt-5 pb-4 border-b border-gray-100 bg-white">
         <h2 className="text-2xl font-bold text-gray-900 mb-1">AI Background Remover</h2>
-        <p className="text-gray-500 text-sm">Remove image backgrounds with AI, running 100% locally in your browser.</p>
+        <p className="text-gray-500 text-sm">Remove image backgrounds with AI running locally in your browser without uploading images to our servers.</p>
         <p className="text-xs text-orange-600 font-medium mt-1">Note: A one-time AI model download (~40MB to 80MB) is required on the first use.</p>
       </div>
 
@@ -371,7 +371,7 @@ export default function BackgroundRemover() {
               
               <div className="flex items-start gap-2 text-[11px] leading-tight text-gray-500">
                 <Eye className="w-4 h-4 flex-shrink-0 text-green-500 mt-0.5" />
-                <span><strong>100% Private:</strong> Processing runs locally in your browser.</span>
+                <span><strong>Local AI Processing:</strong> Segmentation runs on your device using WebAssembly after loading the model. No image data is sent to our servers.</span>
               </div>
             </div>
           )}

@@ -240,7 +240,7 @@ export default function PdfToWord() {
           <p className="text-green-800 text-sm font-medium flex gap-2 items-start">
             <span className="text-lg">🔒</span>
             <span>
-              <strong>100% Private & Local Processing:</strong> Your files never leave your device. We process everything securely inside your browser without external servers.
+              <strong>Local Browser Processing:</strong> Document text is extracted directly in your browser memory without uploading files to our servers.
             </span>
           </p>
         </div>

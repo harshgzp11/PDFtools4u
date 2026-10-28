@@ -192,7 +192,7 @@ export default function Toolbar({
             onClick={onExport}
             disabled={isProcessing}
             className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium flex items-center gap-2 transition-colors disabled:opacity-50"
-            title="Download processing occurs 100% locally"
+            title="Download processing occurs locally in your browser"
           >
             {isProcessing ? <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Download className="w-3.5 h-3.5" />}
             Download

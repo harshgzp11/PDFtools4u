@@ -252,7 +252,7 @@ export default function PdfReader() {
           
           <div className="mt-8 pt-6 border-t border-gray-100 flex items-center justify-center gap-2 text-sm text-gray-500">
             <ShieldCheck className="w-5 h-5 text-green-500" />
-            <span>Strictly client-side. No files are uploaded to any server. Complete privacy.</span>
+            <span>Strictly client-side. Document files are rendered in your browser memory without server uploads.</span>
           </div>
         </div>
       </div>

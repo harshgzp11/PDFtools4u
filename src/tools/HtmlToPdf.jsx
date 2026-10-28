@@ -219,7 +219,7 @@ const TEMPLATES = {
   </div>
 
   <h2>1. Executive Summary</h2>
-  <p>During the third quarter, our primary focus was eliminating friction in document workflows and accelerating client-side generation pipelines. All operations now run completely client-side without transmitting user data to third-party endpoints, ensuring GDPR compliance and complete privacy.</p>
+  <p>During the third quarter, our primary focus was eliminating friction in document workflows and accelerating client-side generation pipelines. All operations now run completely client-side without transmitting user data to third-party endpoints, designed for GDPR compliance and client-side privacy.</p>
 
   <h2>2. Key Deliverables</h2>
   <ul>
@@ -811,7 +811,7 @@ export default function HtmlToPdf() {
           <FileCode className="w-10 h-10 text-blue-500" /> HTML to PDF Converter
         </h1>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Convert HTML code or files to high-quality PDF documents securely and 100% in your browser.
+          Convert HTML code or files to high-quality PDF documents securely directly in your browser memory.
         </p>
 
         {/* Quick Starter Templates */}
@@ -1064,9 +1064,9 @@ export default function HtmlToPdf() {
             <Settings2 className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="font-bold text-emerald-900 mb-1">100% Client-Side & Private</h4>
+            <h4 className="font-bold text-emerald-900 mb-1">Local Browser Processing</h4>
             <p className="text-emerald-700 text-sm leading-relaxed">
-              Your HTML and CSS are compiled directly inside your browser. No documents, code, or personal data ever leave your machine.
+              Your HTML and CSS are compiled directly inside your browser memory. Documents and code are not uploaded to our servers.
             </p>
           </div>
         </div>

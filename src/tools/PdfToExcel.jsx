@@ -111,7 +111,7 @@ export default function PdfToExcel() {
            </div>
            <div className="flex justify-between text-sm text-green-800 font-bold">
              <span>Processing:</span>
-             <span className="bg-green-200 px-2 py-0.5 rounded-md">100% Client-Side</span>
+             <span className="bg-green-200 px-2 py-0.5 rounded-md">Client-Side</span>
            </div>
            <div className="flex justify-between text-sm text-green-800 font-bold">
              <span>Method:</span>

@@ -195,8 +195,8 @@ export default function ConvertPanel({ file, onClose }) {
               <div className="flex items-start gap-3 bg-indigo-50/50 text-indigo-900 p-3 rounded-xl text-xs leading-relaxed border border-indigo-100 shadow-sm">
                 <div className="text-indigo-600 mt-0.5 shrink-0 text-base">🔒</div>
                 <div>
-                  <strong className="block mb-0.5 text-sm">100% Private & Local Processing</strong>
-                  Your files never leave your device. Because we process everything securely inside your browser without external servers, complex PDF tables in "Editable Text" mode are extracted as plain structured text.
+                  <strong className="block mb-0.5 text-sm">Local Browser Processing</strong>
+                  Document text is processed directly in your browser memory without uploading files to our servers. Complex PDF tables in "Editable Text" mode are extracted as plain structured text.
                 </div>
               </div>
 
