@@ -55,17 +55,25 @@ export default function PrivacyPolicy() {
           <section>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">4. Cookies and Tracking Technologies</h2>
             <p className="mb-3">
-              The site uses scripts and similar technologies for analytics, performance measurement, and site operation. We do not currently serve advertisements or use Google AdSense. For more detail, see our <a href="/cookie-policy" className="text-blue-600 hover:underline font-medium">Cookie Policy</a>.
+              The site uses cookies, local storage, and similar technologies for analytics, performance measurement, site operation, and advertising. Third-party vendors, including Google, use cookies to serve ads based on a user's prior visits to this website or other websites. For detailed information on the cookies we use and how to control them, see our <a href="/cookie-policy" className="text-blue-600 hover:underline font-medium">Cookie Policy</a>.
             </p>
             <p>
-              This site does not currently offer a per-category analytics consent control. You can block or delete cookies and other site data through your browser settings; blocking analytics may not prevent all non-cookie requests made by third-party scripts.
+              You can block or delete cookies and other site data through your browser settings. You can also opt out of personalized advertising directly via <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-medium">Google Ad Settings</a> or <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-medium">aboutads.info</a>.
             </p>
           </section>
 
           <section>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">5. Advertising and Third-Party Data Sharing</h2>
+            <p className="mb-3">
+              We partner with third-party advertising networks and vendors, including Google AdSense, to serve advertisements when you visit our website.
+            </p>
+            <ul className="list-disc pl-6 space-y-2 mb-3">
+              <li>Third-party vendors, including Google, use cookies to serve ads based on your prior visits to our website or other sites on the Internet.</li>
+              <li>Google's use of advertising cookies enables it and its partners to serve personalized ads to you based on your visits to PDFtools4u and other websites across the web.</li>
+              <li>Users may opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-medium">Google Ads Settings</a> or through the Network Advertising Initiative at <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-medium">www.aboutads.info</a>.</li>
+            </ul>
             <p>
-              PDFtools4u does not currently display third-party advertisements or use Google AdSense. If advertising is introduced, this policy and the Cookie Policy will be updated to describe the advertising technology and applicable choices before it is enabled.
+              We do not sell, rent, or trade your document contents to third parties. File processing is designed to occur locally within your browser sandbox.
             </p>
           </section>
 
@@ -94,7 +102,7 @@ export default function PrivacyPolicy() {
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">8. Children&apos;s Privacy</h2>
             <ul className="list-disc pl-6 space-y-2">
               <li>Our services are not directed at minors, and we set an age threshold of 13 years old to ensure we do not knowingly collect personal data from children.</li>
-              <li>              We do not currently use AdSense or serve advertisements on the site.</li>
+              <li>We do not knowingly target personalized advertisements or collect personal data from children under 13.</li>
             </ul>
           </section>
 

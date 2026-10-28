@@ -115,8 +115,6 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
     );
   }
 
-  const activeDomain = DOMAINS.find(d => d.title === activeTab);
-
   return (
     <div className="animate-in fade-in duration-500 pb-20">
       

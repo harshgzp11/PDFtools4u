@@ -48,15 +48,17 @@ export default function NotFound({ onSelectTool }) {
           {suggested.map(tool => {
             const Icon = tool.icon;
             return (
-              <button
+              <a
                 key={tool.id}
-                onClick={() => {
+                href={`/${tool.id}`}
+                onClick={(e) => {
+                  e.preventDefault();
                   trackEvent('404_suggested_tool_click', {
                     destination_tool: tool.id,
                   });
                   onSelectTool(tool.id);
                 }}
-                className="group flex flex-col items-start gap-3 p-5 rounded-xl border border-gray-200 hover:border-indigo-300 hover:shadow-lg hover:shadow-indigo-100/50 bg-white transition-all duration-200 text-left cursor-pointer"
+                className="group flex flex-col items-start gap-3 p-5 rounded-xl border border-gray-200 hover:border-indigo-300 hover:shadow-lg hover:shadow-indigo-100/50 bg-white transition-all duration-200 text-left cursor-pointer no-underline"
                 title={`Use ${tool.name} tool`}
               >
                 <div className={`p-2 rounded-lg ${tool.bg} transition-transform group-hover:scale-110`}>
@@ -69,19 +71,23 @@ export default function NotFound({ onSelectTool }) {
                   </div>
                   <p className="text-xs text-gray-500 mt-1 leading-relaxed">{tool.description}</p>
                 </div>
-              </button>
+              </a>
             );
           })}
         </div>
       </div>
 
       {/* Back to Home */}
-      <button
-        onClick={() => onSelectTool(null)}
-        className="mt-10 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition-all shadow-md hover:shadow-lg flex items-center gap-2"
+      <a
+        href="/"
+        onClick={(e) => {
+          e.preventDefault();
+          onSelectTool(null);
+        }}
+        className="mt-10 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition-all shadow-md hover:shadow-lg flex items-center gap-2 no-underline"
       >
         Back to Home <ArrowRight className="w-4 h-4" />
-      </button>
+      </a>
     </div>
   );
 }

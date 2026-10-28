@@ -45,19 +45,19 @@ export default function CookiePolicy() {
             <ul className="list-disc pl-6 space-y-2">
               <li><strong>Site operation:</strong> Browser storage may be used by the site or its libraries for operation and preferences.</li>
               <li><strong>Analytics and performance:</strong> Google Analytics 4 and Microsoft Clarity are configured to load after a visitor interacts with the page. The site also integrates Vercel Analytics and Speed Insights. These services may send page-view, interaction, performance, browser, and device information; exact data and storage depend on provider and site configuration.</li>
-              <li><strong>Advertising:</strong>               We do not currently serve advertisements or use Google AdSense, and do not currently set advertising cookies for those services.</li>
+              <li><strong>Advertising and monetization:</strong> Third-party advertising partners, including Google AdSense, use cookies (such as DoubleClick cookies) to serve relevant advertisements based on a user's visits to this website and other sites across the internet. Users may opt out of personalized advertising via <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Google Ad Settings</a> or <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">aboutads.info</a>.</li>
             </ul>
           </section>
 
           <section>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">5. Third-Party Cookies</h2>
             <p className="mb-3">
-              Analytics and performance scripts may make requests to Google, Microsoft, and Vercel when used. Those providers process data under their own policies:
+              Analytics, performance, and advertising scripts may make requests to Google, Microsoft, and Vercel when used. Those providers process data under their own policies:
             </p>
             <ul className="list-disc pl-6 space-y-2">
-              <li>Google Analytics: <a href="https://policies.google.com/privacy" className="text-blue-600 hover:underline" rel="noopener noreferrer">Google Privacy Policy</a></li>
-              <li>Microsoft Clarity: <a href="https://privacy.microsoft.com/privacystatement" className="text-blue-600 hover:underline" rel="noopener noreferrer">Microsoft Privacy Statement</a></li>
-              <li>Vercel: <a href="https://vercel.com/legal/privacy-policy" className="text-blue-600 hover:underline" rel="noopener noreferrer">Vercel Privacy Policy</a></li>
+              <li>Google Analytics &amp; Google AdSense: <a href="https://policies.google.com/privacy" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">Google Privacy &amp; Terms</a> and <a href="https://policies.google.com/technologies/ads" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">Google Advertising Technologies</a></li>
+              <li>Microsoft Clarity: <a href="https://privacy.microsoft.com/privacystatement" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">Microsoft Privacy Statement</a></li>
+              <li>Vercel: <a href="https://vercel.com/legal/privacy-policy" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">Vercel Privacy Policy</a></li>
             </ul>
           </section>
 

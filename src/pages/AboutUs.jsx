@@ -10,7 +10,8 @@ import {
   Mail, 
   Clock, 
   Globe,
-  CheckCircle2
+  CheckCircle2,
+  ServerOff
 } from 'lucide-react';
 
 export default function AboutUs() {
@@ -44,7 +45,7 @@ export default function AboutUs() {
 
           <div className="text-left bg-gray-50 p-6 sm:p-8 rounded-2xl border border-gray-200">
             <p className="text-lg text-gray-700 leading-relaxed mb-4">
-              Hi, I'm the creator of <strong className="text-gray-900 font-bold">PDFtools4u</strong>. 
+              Hi, I'm <strong className="text-gray-900 font-bold">Harsh Srivastava</strong>, founder and developer of <strong className="text-gray-900 font-bold">PDFtools4u</strong>. 
             </p>
             <p className="text-base text-gray-600 leading-relaxed mb-4">
               I built this platform out of sheer frustration. I was tired of PDF tools demanding a $9 monthly subscription just to compress a simple file. I was tired of websites forcing me to upload my sensitive documents—like my tax forms and ID cards—to unknown, remote servers just to merge two pages together.
@@ -138,11 +139,11 @@ export default function AboutUs() {
             </div>
 
             <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
-              Why Millions Trust Us: 100% Local & Secure Data Privacy
+              Our Security Architecture: 100% Client-Side Data Privacy
             </h2>
 
             <p className="text-gray-700 text-sm sm:text-base leading-relaxed max-w-4xl">
-              We understand that your files, data, and scripts are deeply private. Unlike traditional cloud platforms that store your data indefinitely, PDFtools4u is engineered with a strict <strong className="text-emerald-950 font-bold bg-emerald-100/70 px-2 py-0.5 rounded">Privacy-First Architecture</strong>:
+              We understand that your documents, contracts, and images are strictly private. Rather than transmitting files to remote cloud servers, PDFtools4u is engineered with a strict <strong className="text-emerald-950 font-bold bg-emerald-100/70 px-2 py-0.5 rounded">Client-Side Architecture</strong>:
             </p>
 
             <div className="grid sm:grid-cols-3 gap-6 pt-2">
@@ -152,17 +153,17 @@ export default function AboutUs() {
                 </div>
                 <h4 className="font-bold text-gray-900 text-lg mb-2">Local Processing</h4>
                 <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
-                  Most of our conversion systems execute locally via your web browser, ensuring your private information never touches an external server.
+                  Our conversion engines execute directly in your web browser memory, ensuring your document data is processed on your device.
                 </p>
               </div>
 
               <div className="bg-white/90 border border-blue-100/90 rounded-2xl p-6 shadow-xs hover:shadow-md hover:border-blue-200 transition-all">
                 <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-4">
-                  <Clock className="w-6 h-6 stroke-[1.75]" />
+                  <ServerOff className="w-6 h-6 stroke-[1.75]" />
                 </div>
-                <h4 className="font-bold text-gray-900 text-lg mb-2">Instant Deletion</h4>
+                <h4 className="font-bold text-gray-900 text-lg mb-2">Zero Server Uploads</h4>
                 <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
-                  For tools requiring minimal server handling, your uploaded data is automatically and permanently wiped out from our secure servers within 1 hour of processing.
+                  Supported operations are handled locally. Your documents are never uploaded to, transmitted across, or stored on our servers.
                 </p>
               </div>
 

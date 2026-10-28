@@ -529,7 +529,7 @@ export default function ToolPreviewLayout({
             
             <div className="mt-3 pt-3 border-t border-gray-100 flex items-start gap-2 text-[12px] leading-tight text-green-800 bg-green-50 p-3 rounded-xl border border-green-200 flex-shrink-0 shadow-sm">
               <ShieldCheck className="w-5 h-5 flex-shrink-0 text-green-600 mt-0.5" />
-              <span><strong>Data Privacy:</strong> Your files are processed locally/safely and deleted automatically after 1 hour. We never store your sensitive documents on our servers.</span>
+              <span><strong>Data Privacy:</strong> Your files are processed 100% locally in your browser memory. Documents are never uploaded to or stored on our servers.</span>
             </div>
           </div>
         </div>
