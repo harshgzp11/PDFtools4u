@@ -335,6 +335,10 @@ Whether you need to **capitalize text online**, change uppercase to lowercase, p
     coverImage: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "dev-tools",
     published: true,
+    sources: [
+      { label: "W3C WebAssembly Core Specification", url: "https://www.w3.org/TR/wasm-core-1/" },
+      { label: "W3C Web Workers Specification", url: "https://www.w3.org/TR/workers/" }
+    ],
     customSchema: {
       "@context": "https://schema.org",
       "@graph": [
@@ -1144,7 +1148,8 @@ When applying for government exams like UPSC, SSC, or university admissions, one
 
 If your PDF is too large, the portal will simply reject it, causing panic right before the application deadline.
 
-> **Advisory Note:** Portal upload specifications reflect standard notification guidelines. Always verify the active official notification PDF for your specific examination cycle before final submission.
+> **Advisory & Document Focus:** This guide explains iterative compression techniques, dpi downsampling, and legibility trade-offs to reach exact file size ceilings like 100KB or 200KB. If you are specifically preparing educational marksheets, caste certificates, or category documents for competitive exams, see our dedicated [Government Exam Marksheet & Certificate Compression Guide](/blog/compress-marksheet-certificate-pdf-100kb) for portal-by-portal specifications.
+
 
 ### Why Are Portals So Strict?
 
@@ -2332,8 +2337,6 @@ No. Client-side merging connects the raw document streams without re-compressing
       ]
     },
     content: `
-## How to Rotate PDF Pages Permanently Online for Free (Step-by-Step)
-
 Have you ever opened a scanned document, a contract, or a presentation only to find that some pages are upside down or sideways? It is a frustrating but common issue. Fortunately, you do not need expensive software like Adobe Acrobat to fix it.
 
 In this guide, you will learn **how to rotate PDF pages permanently online for free** using [PDFtools4u](/rotate-pdf). Whether you need to fix a single upside-down page or rotate an entire multi-page document, the browser-based PDF tool keeps the process private and simple.
@@ -2478,6 +2481,23 @@ If the converted file is too large, reduce dimensions before lowering quality ag
 If the converter cannot open the file, confirm that the upload is the original .heic image and not a damaged email attachment or a thumbnail. Try the latest version of Chrome, Edge, Safari, or Firefox, and make sure the browser has enough free memory for large camera photos. For multiple images, convert them in smaller batches so the browser does not run out of memory.
 
 If colors look different after conversion, compare the result in another image viewer before deciding that the file is damaged. If a website still rejects the image, check whether it requires a specific color mode, maximum pixel dimensions, or a file size below a stated limit. Those portal rules matter more than the format conversion itself.
+
+### Frequently Asked Questions
+
+<details>
+<summary>Why can't older Windows computers open HEIC files natively?</summary>
+Windows does not include the HEIF/HEVC codec by default on older installations, requiring a paid extension from the Microsoft Store. Converting your iPhone images to standard JPG or PDF allows any Windows, Android, or Linux device to open the document without installing extra software.
+</details>
+
+<details>
+<summary>Does converting HEIC to JPG reduce image quality?</summary>
+HEIC uses higher-efficiency compression than JPEG at similar file sizes. Converting a HEIC image to high-quality JPG yields visually identical results for forms, ID photos, and printouts. However, because JPEG is inherently a lossy format, keep your original HEIC files on your phone or backup drive as master copies.
+</details>
+
+<details>
+<summary>Can I convert Apple Live Photos with this tool?</summary>
+Yes, but the converter extracts and converts only the primary still image from the container. It does not export the embedded 3-second companion video clip or audio track.
+</details>
     `
   },
   {
@@ -2493,6 +2513,12 @@ If colors look different after conversion, compare the result in another image v
     coverImage: "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "sign-pdf",
     published: true,
+    sources: [
+      { label: "Ministry of Electronics and Information Technology (IT Act 2000)", url: "https://www.meity.gov.in/content/information-technology-act-2000" },
+      { label: "Gazette Notification S.O. 4720(E) (First Schedule Amendment)", url: "https://www.meity.gov.in/static/uploads/2024/02/239378-Gazette-Notification-No.-S.O.-4720E-dt.-26.09.2022-for-First-Schedule-amendment-under-IT-Act-2000-published-on-06.10.2022.pdf" },
+      { label: "Bharatiya Sakshya Adhiniyam, 2023 (Section 63 Electronic Records)", url: "https://www.indiacode.nic.in/bitstream/123456789/20063/1/a2023-47.pdf" },
+      { label: "Controller of Certifying Authorities (CCA India)", url: "https://cca.gov.in/" }
+    ],
     customSchema: {
       "@context": "https://schema.org",
       "@graph": [
@@ -2579,7 +2605,7 @@ If colors look different after conversion, compare the result in another image v
               "name": "Is it legal to sign a PDF online without printing?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes. Electronic signatures hold legal validity in most worldwide jurisdictions—including under the US ESIGN Act, UETA, and the EU eIDAS framework—for general business contracts, rental agreements, and standard paperwork."
+                "text": "In many jurisdictions—including under the US ESIGN Act, EU eIDAS regulations, and Section 10A of India's Information Technology Act, 2000—parties can enter into valid commercial and personal agreements using electronic signatures. However, legal validity depends on the document classification and applicable portal regulations. Under Section 1(4) and the First Schedule of India's IT Act (as amended in 2022), electronic signatures cannot be used for wills, trusts, or powers of attorney and negotiable instruments outside entities regulated by RBI, SEBI, IRDAI, PFRDA, or NHB. Specific statutory or court filings may require certificate-backed digital signatures (such as Class 3 DSC or Aadhaar eSign)."
               }
             },
             {
@@ -2681,19 +2707,32 @@ Click the **Export Document** button in the top toolbar. Your browser compiles t
 
 > **Crucial Post-Signing Security Tip:** Before circulating an e-signed contract, it is best practice to run it through our **[Flatten PDF Tool](/flatten-pdf)**. Read our guide on **[how to flatten a PDF form before submitting it](/blog/flatten-pdf-form-before-submitting)** to learn how flattening locks signature overlays and form fields into the base canvas, preventing unauthorized third parties from editing or copying your signature.
 
-## Technical Breakdown: Electronic Signatures vs. Digital Signatures
+## Technical Breakdown: Drawn Marks, Electronic Signatures, and Digital Signatures
 
-It is helpful to understand the regulatory and practical differences between the two primary ways files are approved digitally:
+Understanding how documents are signed and recognized digitally requires distinguishing between three distinct concepts:
 
-| Feature | Electronic Signature (e-Signature) | Digital Signature (Cryptographic PKI) |
-|---|---|---|
-| **Primary Definition** | A visual mark, typed cursive name, or drawn image placed on an electronic document to signify intent to sign. | A specific signature type backed by a Public Key Infrastructure (PKI) digital certificate that cryptographically seals document bytes. |
-| **Ease of Creation** | **Extremely High.** Created instantly on browser utilities like PDFTools4U without third-party tokens or setup. | **Moderate to Low.** Requires purchasing personal digital certificates from official Certifying Authorities (CAs). |
-| **Best Used For** | NDAs, employment agreements, rental contracts, vendor invoices, permission slips, school forms, and everyday approvals. | High-stakes government tenders, judicial filings, regulatory submissions, and cross-border corporate acquisitions. |
-| **Processing Speed** | **Instantaneous** (seconds). | Slower; requires cryptographic token verification and software authentication. |
-| **Legal Validity** | Recognized under US ESIGN Act, UETA, and EU eIDAS for general commercial transactions. | Required where statutory laws explicitly mandate PKI-backed signatures. |
+| Level | Definition & Mechanism | Legal Recognition & Evidentiary Nuance | Common Use Cases |
+|---|---|---|---|
+| **Drawn Signature Image** | A graphic overlay (drawn with stylus/mouse, typed in cursive font, or uploaded PNG) placed on a PDF canvas. | Practical for internal approvals, routine receipts, and acknowledgment slips. It provides visual indication of consent but does not contain cryptographic proof or non-repudiation metadata by itself. | Internal team memos, informal approvals, school permission forms, and routine order receipts. |
+| **Electronic Signature (e-Signature)** | An electronic process, symbol, or logical association attached to a contract indicating intent to sign (e.g. under US ESIGN/UETA, EU eIDAS simple electronic signatures, or Section 10A of India's IT Act 2000 for electronic contracts). | Valid for general commercial contracts where parties agree to electronic execution. In a dispute, proving authenticity relies on corroborating evidence (e.g., email exchange records, IP/timestamp logs, and audit trails under electronic evidence rules—primarily **Section 63 of the Bharatiya Sakshya Adhiniyam, 2023**, with Section 65B of the repealed Indian Evidence Act, 1872 applying under statutory savings to legal proceedings initiated prior to July 1, 2024). | Standard commercial agreements, non-disclosure agreements (NDAs), freelance work orders, vendor invoices, and lease renewals. |
+| **Certificate-Backed Digital Signature** | A signature created using an asymmetric cryptosystem and hash function backed by an official Digital Signature Certificate (DSC) issued by a licensed Certifying Authority (under Section 3 and Section 3A of India's IT Act) or Aadhaar eSign. | Provides cryptographic non-repudiation and automated tamper detection. Required where statutory provisions, court rules, or regulatory portals specifically mandate certified digital signatures. | High-value government tenders, corporate filings with MCA, tax audit submissions, judicial e-filings, and regulatory compliance. |
 
-For over 90% of day-to-day business, freelance, and personal transactions, standard electronic signatures are fully legally compliant, binding, and preferred for their frictionless delivery.
+### Legal Framework & Statutory Exclusions in India
+
+While Section 10A of India's **[Information Technology Act, 2000](https://www.meity.gov.in/content/information-technology-act-2000)** grants general validity to contracts formed electronically, the Act does not apply uniformly to all categories of documentation.
+
+Under **Section 1(4) and the First Schedule of the IT Act, 2000** (as amended vide **[MeitY Notification S.O. 4720(E)](https://www.meity.gov.in/static/uploads/2024/02/239378-Gazette-Notification-No.-S.O.-4720E-dt.-26.09.2022-for-First-Schedule-amendment-under-IT-Act-2000-published-on-06.10.2022.pdf)** dated September 26, 2022), electronic signatures cannot be used for the following excluded instruments:
+
+1. **Negotiable instruments (other than a cheque)** as defined in section 13 of the Negotiable Instruments Act, 1881—**other than** those issued in favour of or endorsed by an entity regulated by the Reserve Bank of India (RBI), National Housing Bank (NHB), Securities and Exchange Board of India (SEBI), Insurance Regulatory and Development Authority of India (IRDAI), or Pension Fund Regulatory and Development Authority (PFRDA). Cheques and instruments involving these specified financial regulators are therefore eligible for digital execution.
+2. **A power-of-attorney** as defined in section 1A of the Powers-of-Attorney Act, 1882—**provided that** this exclusion does not apply to a power-of-attorney empowering an entity regulated by the RBI, NHB, SEBI, IRDAI, or PFRDA to act for, on behalf of, and in the name of the person executing it.
+3. **A trust** as defined in section 3 of the Indian Trusts Act, 1882.
+4. **A will** as defined in clause (h) of section 2 of the Indian Succession Act, 1925, including any other testamentary disposition.
+
+*(Note on Immovable Property: Entry 5 of the First Schedule, which previously excluded contracts for the sale or conveyance of immovable property, was omitted by Notification S.O. 4720(E). However, deeds transferring title or interest in immovable property generally remain subject to formal physical execution and mandatory registration requirements under the Registration Act, 1908 and respective state Stamp Acts.)*
+
+Furthermore, filing requirements depend on the applicable portal, procedural rules, and filing type. Certain statutory filings (such as corporate filings with the Ministry of Corporate Affairs or high-value public procurement tenders) specifically mandate Class 3 Digital Signature Certificates issued under the **[Controller of Certifying Authorities (CCA)](https://cca.gov.in/)** or Aadhaar eSign. However, many citizen-facing portals and routine administrative workflows accept uploaded or attached signed documents without requiring a token-based DSC. Always check the specific rules of the recipient or portal before signing.
+
+> **Legal Disclaimer:** The information presented in this guide is for general educational and workflow purposes only and does not constitute formal legal advice. Requirements for signature validity, admissibility, and execution format depend on jurisdiction, document classification, and governing rules. Consult a licensed legal professional for binding guidance on specific transactions.
 
 ## Additional Workflow Tips for Preparing Perfect PDFs
 
@@ -2712,7 +2751,9 @@ Often, signing a document is just one stage of your paperwork pipeline. You can 
 <details>
 <summary>Is it legal to sign a PDF online without printing?</summary>
 
-Yes. In most jurisdictions globally—including the United States (ESIGN Act and UETA), the European Union (eIDAS regulation), the United Kingdom, Canada, and India (Information Technology Act for general electronic agreements)—electronic signatures carry the same legal weight as traditional wet-ink pen signatures for commercial and personal contracts.
+In many jurisdictions—including under the US ESIGN Act, EU eIDAS regulations, and Section 10A of India's Information Technology Act, 2000—parties can enter into valid commercial and personal agreements using electronic signatures. However, legal validity depends on the document classification and governing rules.
+
+For example, under Section 1(4) and the First Schedule of India's IT Act (as amended vide Notification S.O. 4720(E) in 2022), electronic execution does not apply to wills, trusts, or powers of attorney and negotiable instruments (other than cheques) that fall outside entities regulated by RBI, SEBI, IRDAI, PFRDA, or NHB. While contracts relating to immovable property were omitted from the First Schedule in 2022, property deeds generally remain subject to formal physical execution and mandatory registration under the Registration Act, 1908. Furthermore, specific statutory filings and judicial procedures may require certificate-backed digital signatures (such as Class 3 DSC or Aadhaar eSign) rather than an image of a signature. Always confirm specific requirements for formal or regulatory paperwork.
 
 </details>
 
@@ -2857,13 +2898,14 @@ Recruitment servers enforce strict automated image validation scripts:
 
 Here is the complete specification cheat sheet and a step-by-step guide to resizing your photograph and signature to exact dimensions directly in your browser.
 
-> **Advisory Note:** Portal upload specifications reflect standard notification guidelines. Always verify the active official notification PDF for your specific examination cycle before final submission.
+> **Important Advisory — Live Camera Capture vs. Uploaded Photo Files:**  
+> Examination procedures and digital capture workflows vary across recruitment bodies and exam cycles. On the Staff Selection Commission ([SSC Portal](https://ssc.gov.in/)), many recent application modules utilize **live camera capture** (via webcam or official mobile app) for applicant photographs, whereas scanned **signature uploads** (typically 10 KB – 20 KB in JPG format) remain a standard file-upload step. Conversely, bodies like UPSC and IBPS continue to require uploaded photograph files adhering to designated pixel and KB limits. Because requirements and submission workflows can change between recruitment notifications, applicants must always verify the active official notification for their specific exam before preparing documents.
 
 ### Official Photo & Signature Specifications (SSC, UPSC, Banking, Defense)
 
 | Exam / Portal | Document Type | Allowed Size (KB) | Prescribed Dimensions / Aspect Ratio | Format & Rules |
 |---|---|---|---|---|
-| SSC (CGL, CHSL, MTS, GD) | Photograph | 20 KB – 50 KB | 3.5 cm × 4.5 cm (approx. 200 × 230 px) | JPG/JPEG, Plain white/light background, no spectacles/cap |
+| SSC (CGL, CHSL, MTS, GD) | Photograph | 20 KB – 50 KB (when file upload applies) | 3.5 cm × 4.5 cm (approx. 200 × 230 px) | JPG/JPEG. Note: Many active SSC modules use live camera capture instead of file upload. Always check active notice. |
 | SSC (CGL, CHSL, MTS, GD) | Signature | 10 KB – 20 KB | 4.0 cm × 2.0 cm (140 × 60 px) | JPG/JPEG, Black ink on white paper, horizontal layout |
 | UPSC (Civil Services, NDA, CDS) | Photograph | 20 KB – 300 KB | 350 × 350 px to 1000 × 1000 px | JPG, 3/4th face coverage (75% frame), plain white background |
 | UPSC (Civil Services, NDA, CDS) | Signature | 20 KB – 100 KB | 350 × 350 px to 1000 × 1000 px | JPG, Black ink, vertical triple signature or single clean scan |
@@ -3003,6 +3045,8 @@ Filling out online application forms for Indian government exams (UPSC, SSC CGL/
 Exam servers enforce strict, non-negotiable file size limits. If your caste certificate is 305 KB instead of under 300 KB, or your marksheet is blurry after compression, the application portal will reject the file instantly.
 
 To avoid last-minute form submission errors, here is the complete reference guide to exam file size specifications and how to compress your PDFs directly on your device.
+
+> **Technical Settings Note:** For general guidance on configuring compression sliders, downsampling ratios, and resolving arbitrary "file too large" errors across multi-purpose documents, see our [General PDF Compression to 100KB/200KB Guide](/blog/compress-pdf-to-100kb-200kb).
 
 > **Advisory Note:** Portal upload specifications reflect standard notification guidelines. Always verify the active official notification PDF for your specific examination cycle before final submission.
 
@@ -3352,7 +3396,7 @@ Password formats differ by bank, employer, and statement date. The examples abov
     lastUpdated: "August 28, 2026",
     reviewedDate: "September 19, 2026",
     sources: [
-      { label: "Google Classroom Help", url: "https://support.google.com/edu/classroom/" },
+      { label: "Google Classroom Help", url: "https://support.google.com/edu/classroom" },
       { label: "Canvas Student Guide", url: "https://community.canvaslms.com/t5/Student-Guide/tkb-p/student" }
     ],
     author: "PDFTools4U Team",
@@ -3495,6 +3539,9 @@ No. Document-focused compression prioritizes sharp edge contrast for handwriting
     coverImage: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "dev-tools",
     published: true,
+    sources: [
+      { label: "IETF RFC 8259 (JSON Data Interchange Format)", url: "https://www.rfc-editor.org/rfc/rfc8259" }
+    ],
     customSchema: {
       "@context": "https://schema.org",
       "@graph": [
@@ -3833,6 +3880,9 @@ No. The conversion creates a visual snapshot of your calculated values, formatti
     published: true,
     targetToolUrl: "html-to-pdf",
     coverImage: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&q=80&w=1000",
+    sources: [
+      { label: "W3C CSS Paged Media Module Level 3", url: "https://www.w3.org/TR/css-page-3/" }
+    ],
     customSchema: {
       "@context": "https://schema.org",
       "@graph": [
@@ -3947,7 +3997,7 @@ If your HTML template references assets hosted on external domains without expli
 
 ## How to Convert HTML to PDF with CSS Online Free (In-Browser)
 
-Using [PDFTools4U](https://www.pdftools4u.in/html-to-pdf), you can execute a true client side html to pdf conversion. The rendering engine parses the DOM directly inside your browser's temporary memory (RAM) using HTML5 canvas and WebAssembly, ensuring your input HTML code and document contents are compiled directly in your browser memory without being uploaded to our servers.
+Using [PDFTools4U](/html-to-pdf), you can execute a true client side html to pdf conversion. The rendering engine parses the DOM directly inside your browser's temporary memory (RAM) using HTML5 canvas and WebAssembly, ensuring your input HTML code and document contents are compiled directly in your browser memory without being uploaded to our servers.
 
 \`\`\`plaintext
 [Input Code / File] ──────► [Local DOM Render] ──────► [Vector PDF Output]
@@ -4090,6 +4140,9 @@ Because our tool runs locally in your browser for privacy, third-party URLs cann
     targetToolUrl: "html-to-pdf",
     published: true,
     coverImage: "https://images.unsplash.com/photo-1586281380117-5a60ae2050cc?auto=format&fit=crop&q=80&w=1000",
+    sources: [
+      { label: "W3C CSS Paged Media Module Level 3", url: "https://www.w3.org/TR/css-page-3/" }
+    ],
     customSchema: {
       "@context": "https://schema.org",
       "@graph": [
@@ -4364,7 +4417,7 @@ Yes. Because PDFtools4u processes files locally inside your browser memory (RAM)
           "step": [
             { "@type": "HowToStep", "name": "Load PDF File Locally", "text": "Navigate to the client side pdf redaction tool on PDFTools4U and drop your document directly into the local browser interface." },
             { "@type": "HowToStep", "name": "Mark Sensitive Text Areas", "text": "Use the interactive selection box to highlight and black out sensitive text in pdf documents, such as financial records or PAN numbers." },
-            { "@type": "HowToStep", "name": "Apply Redaction & Download", "text": "Click Apply Redaction to strip the underlying text bytes, flatten document layers, and instantly download your permanently sanitized PDF." }
+            { "@type": "HowToStep", "name": "Apply Redaction & Download", "text": "Click Apply Redaction to flatten pages with redactions into high-resolution raster images with permanent black pixel overwrites, leaving clean pages as original vector PDF." }
           ]
         },
         {
@@ -4374,7 +4427,7 @@ Yes. Because PDFtools4u processes files locally inside your browser memory (RAM)
             {
               "@type": "Question",
               "name": "Can someone remove the black boxes from a PDF redacted on PDFTools4U?",
-              "acceptedAnswer": { "@type": "Answer", "text": "No. Unlike superficial drawing overlays, our client-side converter strips the underlying text bytes from the file structure and flattens the visual canvas, making the original text permanently unrecoverable." }
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Unlike superficial drawing overlays, our client-side tool flattens any redacted page into a high-resolution raster image with permanent black pixel overwrites, completely discarding the original vector text streams so the erased content is permanently unrecoverable." }
             },
             {
               "@type": "Question",
@@ -4389,7 +4442,7 @@ Yes. Because PDFtools4u processes files locally inside your browser memory (RAM)
             {
               "@type": "Question",
               "name": "Does redacting a PDF reduce its visual resolution?",
-              "acceptedAnswer": { "@type": "Answer", "text": "No. The redaction workflow maintains perfect vector sharpness across all un-redacted text fields while ensuring the targeted sensitive boundaries are burned into the document structure as flat visual blocks." }
+              "acceptedAnswer": { "@type": "Answer", "text": "Pages containing redactions are rendered at high resolution (2x render scale) and flattened into a high-DPI image layer, burning the solid blocks directly into the raster to permanently remove underlying text streams. Pages without redactions remain untouched as original vector PDF pages." }
             }
           ]
         }
@@ -4434,11 +4487,11 @@ Use the interactive selection box to highlight the exact text areas you need to 
 
 ### Step 3: Apply Redaction & Flatten Document Layers
 
-Click **Apply Redaction**. The local script strips the underlying vector text streams from the exact coordinates selected, flattens the visual canvas, and burns solid black blocks directly into the document structure.
+Click **Apply Redaction**. The tool renders each page containing a redaction to a high-resolution (2x scale) canvas, permanently overwriting the selected pixel areas with solid black rectangles before converting that entire page into a flattened image layer. Because the original page's underlying text stream and vector objects are completely replaced by this rasterized image, the covered data is permanently eliminated and cannot be selected, searched, or recovered. Pages without redactions remain untouched as original vector PDF pages.
 
 ### Step 4: Download Your Sanitized PDF
 
-Save your newly secured PDF instantly. The output document contains zero hidden text objects, zero un-redactable layers, and absolute data protection.
+Save your newly secured PDF instantly. The output document contains no hidden text objects or un-redacted layers in the marked zones, locking the sanitized content into the file structure.
 
 ---
 
@@ -4482,7 +4535,7 @@ Once your confidential document is sanitized by our [client side pdf redaction t
 
 <details>
 <summary>Can someone remove the black boxes from a PDF redacted on PDFTools4U?</summary>
-No. Unlike standard drawing tools that place a black box on top of the text, our converter strips the underlying text bytes from the file structure and flattens the visual canvas. The original text no longer exists within the document file, making it impossible to undo.
+No. Unlike standard drawing tools that place a superficial shape overlay on top of text, our tool renders any page with redactions to a high-resolution canvas, permanently overwrites the selected pixels with solid black, and replaces that page with a flattened raster image. The original vector text stream for that page is completely discarded, making it impossible to uncover or undo.
 </details>
 
 <details>
@@ -4497,7 +4550,7 @@ No. Because the underlying text objects are completely erased during the redacti
 
 <details>
 <summary>Does redacting a PDF reduce its visual resolution?</summary>
-No. The redaction process maintains sharp vector text quality across all un-redacted portions of the document while ensuring the redacted areas are permanently rendered as solid, unmodifiable visual blocks.
+Pages containing redactions are rendered at high resolution (2x render scale) and flattened into a high-DPI image layer, burning the solid blocks directly into the raster to permanently purge underlying text streams. Pages without redactions remain untouched as original vector PDF pages.
 </details>
 `
   },
@@ -5098,64 +5151,64 @@ Yes. Once the initial tool layout loads in your active browser window, the core 
         ]
       },
       content: `
-  Whether you search for **convert PPTX to PDF online**, **convert PPTX to PDF free**, or **convert PPTX presentation to PDF**, first decide whether you need a readable text-and-image extraction or a close visual copy of the original slides. Those are different outcomes. The PDFTools4U browser tool currently extracts selected content from a \`.pptx\` file and rebuilds it into PDF pages; it is not a full PowerPoint rendering engine.
+Whether you search for **convert PPTX to PDF online**, **convert PPTX to PDF free**, or **convert PPTX presentation to PDF**, first decide whether you need a readable text-and-image extraction or a close visual copy of the original slides. Those are different outcomes. The PDFTools4U browser tool currently extracts selected content from a \`.pptx\` file and rebuilds it into PDF pages; it is not a full PowerPoint rendering engine.
 
-  This guide explains what the current **client side PPTX to PDF** workflow does, how to **extract text from PPTX to PDF**, and what to check before sharing the result. If exact typography, positioning, animations, or print layout matter, use your presentation application's native PDF export instead.
+This guide explains what the current **client side PPTX to PDF** workflow does, how to **extract text from PPTX to PDF**, and what to check before sharing the result. If exact typography, positioning, animations, or print layout matter, use your presentation application's native PDF export instead.
 
-  ## What the browser-based PPTX converter does
+## What the browser-based PPTX converter does
 
-  A \`.pptx\` file is a ZIP package containing XML slide descriptions and related media. The current tool uses browser JavaScript libraries to read that package, parse slide text, locate some embedded images, and assemble a new PDF. It does not use WebAssembly for this conversion.
+A \`.pptx\` file is a ZIP package containing XML slide descriptions and related media. The current tool uses browser JavaScript libraries to read that package, parse slide text, locate some embedded images, and assemble a new PDF. It does not use WebAssembly for this conversion.
 
-  The current implementation has important limits:
+The current implementation has important limits:
 
-  - The upload control accepts \`.pptx\`; it does not advertise support for legacy \`.ppt\` files.
-  - For slides with embedded images, the current conversion places the first extracted image on the PDF page. It does not also lay out that slide's extracted text.
-  - For slides without images, extracted text is rebuilt as a title and paragraphs in a simple flow. It does not preserve PowerPoint's original text-box positions, fonts, columns, charts, SmartArt, shapes, or slide master.
-  - The generated PDF uses landscape A4 page settings in the current code. Check the page size and output rather than relying on the interface's widescreen label.
-  - Animations, transitions, audio, and video are not represented in a static PDF.
+- The upload control accepts \`.pptx\`; it does not advertise support for legacy \`.ppt\` files.
+- For slides with embedded images, the current conversion places the first extracted image on the PDF page. It does not also lay out that slide's extracted text.
+- For slides without images, extracted text is rebuilt as a title and paragraphs in a simple flow. It does not preserve PowerPoint's original text-box positions, fonts, columns, charts, SmartArt, shapes, or slide master.
+- The generated PDF uses landscape A4 page settings in the current code. Check the page size and output rather than relying on the interface's widescreen label.
+- Animations, transitions, audio, and video are not represented in a static PDF.
 
-  This can be useful when you want a basic, readable extraction, but the result may omit content or differ substantially from the deck. Always inspect every page.
+This can be useful when you want a basic, readable extraction, but the result may omit content or differ substantially from the deck. Always inspect every page.
 
-  ## How to convert a PPTX to PDF free in the browser
+## How to convert a PPTX to PDF free in the browser
 
-  1. Open the [PowerPoint to PDF tool](/ppt-to-pdf).
-  2. Select a \`.pptx\` file from your device. The tool analyzes the slides and shows a preview.
-  3. Review the previews, then select **Convert to PDF**.
-  4. Download the generated PDF and check its text, images, order, page dimensions, and readability.
+1. Open the [PowerPoint to PDF tool](/ppt-to-pdf).
+2. Select a \`.pptx\` file from your device. The tool analyzes the slides and shows a preview.
+3. Review the previews, then select **Convert to PDF**.
+4. Download the generated PDF and check its text, images, order, page dimensions, and readability.
 
-  For exact slide appearance, export the original presentation to PDF using PowerPoint or Google Slides and compare the result. Those applications have access to the presentation's full layout and rendering model.
+For exact slide appearance, export the original presentation to PDF using PowerPoint or Google Slides and compare the result. Those applications have access to the presentation's full layout and rendering model.
 
-  ## File processing and privacy context
+## File processing and privacy context
 
-  If you are comparing a **powerpoint to pdf converter without server upload**, distinguish the selected-file conversion from other requests a website may make. The current PPTX parser and PDF builder operate in the browser for the selected presentation-processing workflow; they are not implemented as a server-side conversion endpoint. That does not mean the entire website is offline or makes no network requests: the page loads application assets and may make analytics or performance requests. Read the [Privacy Policy](/privacy-policy) for the site's current disclosures. If you cannot verify that a sensitive file is handled in a way your organization permits, do not use it with an online tool.
+If you are comparing a **powerpoint to pdf converter without server upload**, distinguish the selected-file conversion from other requests a website may make. The current PPTX parser and PDF builder operate in the browser for the selected presentation-processing workflow; they are not implemented as a server-side conversion endpoint. That does not mean the entire website is offline or makes no network requests: the page loads application assets and may make analytics or performance requests. Read the [Privacy Policy](/privacy-policy) for the site's current disclosures. If you cannot verify that a sensitive file is handled in a way your organization permits, do not use it with an online tool.
 
-  ## When to choose another export method
+## When to choose another export method
 
-  Use the browser tool when you want to try a quick extraction and are prepared to review the output. Use native PowerPoint or Google Slides PDF export when you need to preserve slide design, precise object positioning, charts, or print-ready output. A PDF is static, so it cannot retain transitions or playable media; keep the original presentation for those features.
+Use the browser tool when you want to try a quick extraction and are prepared to review the output. Use native PowerPoint or Google Slides PDF export when you need to preserve slide design, precise object positioning, charts, or print-ready output. A PDF is static, so it cannot retain transitions or playable media; keep the original presentation for those features.
 
-  ## Related document tools
+## Related document tools
 
-  - [Convert a PDF back to PowerPoint](/pdf-to-ppt) when you need to extract content from an existing PDF presentation.
-  - [Merge PDF files](/pdf-merge) to combine a reviewed deck with supporting documents.
-  - [Compress a PDF](/compress-pdf) if the exported file is too large to share.
+- [Convert a PDF back to PowerPoint](/pdf-to-ppt) when you need to extract content from an existing PDF presentation.
+- [Merge PDF files](/pdf-merge) to combine a reviewed deck with supporting documents.
+- [Compress a PDF](/compress-pdf) if the exported file is too large to share.
 
-  ## Frequently asked questions
+## Frequently asked questions
 
-  ### Does this tool preserve exact PowerPoint slide layouts?
+### Does this tool preserve exact PowerPoint slide layouts?
 
-  No. It rebuilds pages from extracted text and selected embedded images rather than rendering each slide as PowerPoint does. Elements can be omitted or reflowed; verify the downloaded PDF.
+No. It rebuilds pages from extracted text and selected embedded images rather than rendering each slide as PowerPoint does. Elements can be omitted or reflowed; verify the downloaded PDF.
 
-  ### Is the selected presentation uploaded to a conversion server?
+### Is the selected presentation uploaded to a conversion server?
 
-  The current tool's selected-file parsing and PDF generation are implemented in browser JavaScript rather than through a PDFtools4u server conversion endpoint. The website separately loads assets and may make analytics requests. See the [Privacy Policy](/privacy-policy) and avoid entering sensitive files if the site's data practices do not meet your requirements.
+The current tool's selected-file parsing and PDF generation are implemented in browser JavaScript rather than through a PDFtools4u server conversion endpoint. The website separately loads assets and may make analytics requests. See the [Privacy Policy](/privacy-policy) and avoid entering sensitive files if the site's data practices do not meet your requirements.
 
-  ### Can I convert older \`.ppt\` files?
+### Can I convert older \`.ppt\` files?
 
-  The current upload control is for \`.pptx\` files. Open an older presentation in PowerPoint or another compatible application and save it as \`.pptx\` first, or use that application's PDF export.
+The current upload control is for \`.pptx\` files. Open an older presentation in PowerPoint or another compatible application and save it as \`.pptx\` first, or use that application's PDF export.
 
-  ### How do I preserve the original slide design?
+### How do I preserve the original slide design?
 
-  Use native PDF export in PowerPoint or Google Slides, then review the PDF against the original presentation. The browser extraction tool is not intended for pixel-matched output.
+Use native PDF export in PowerPoint or Google Slides, then review the PDF against the original presentation. The browser extraction tool is not intended for pixel-matched output.
   `
     },
   {
