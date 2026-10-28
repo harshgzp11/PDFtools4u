@@ -552,7 +552,7 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
             <button
               key={domain.title}
               onClick={() => setActiveTab(domain.title)}
-              className={`px-6 py-3 rounded-xl font-bold text-base transition-all ${
+              className={`px-6 py-3 rounded-xl font-bold text-base transition-all cursor-pointer ${
                 activeTab === domain.title 
                   ? `${domain.bg} ${domain.color} ${domain.border} border-2 shadow-sm scale-105` 
                   : `bg-white text-gray-500 border-2 border-gray-200 hover:bg-gray-50 hover:text-gray-800`
@@ -563,44 +563,54 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
           ))}
         </div>
 
-        {/* Smallpdf-style categorized columns */}
-        <div className="bg-white border border-gray-200 rounded-2xl p-6 md:p-10 shadow-sm" key={activeTab}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-8 gap-y-10 animate-in fade-in duration-300">
-            {activeDomain.categories.map((category, idx) => (
-              <div key={idx} className="flex flex-col">
-                <h3 className="font-bold text-gray-400 text-xs tracking-wider uppercase mb-4 pb-2 border-b border-gray-100">
-                  {category.name}
-                </h3>
-                <ul className="space-y-1">
-                  {category.tools.map(tool => {
-                    const Icon = tool.icon;
-                    return (
-                      <li key={tool.id}>
-                        <button
-                          onClick={(e) => {
-                            if (tool.comingSoon) { e.preventDefault(); return; }
-                            onSelectTool(tool.id);
-                          }}
-                          className={`w-full text-left flex items-center justify-between gap-2.5 py-2 px-2 -mx-2 rounded-lg transition-colors ${tool.comingSoon ? 'opacity-60 cursor-default' : 'hover:bg-gray-50 group'}`}
-                        >
-                          <div className="flex items-center gap-2.5">
-                            <Icon className={`w-4 h-4 flex-shrink-0 ${tool.color} transition-transform ${tool.comingSoon ? '' : 'group-hover:scale-110'}`} />
-                            <span className={`text-sm font-medium transition-colors truncate ${tool.comingSoon ? 'text-gray-500' : 'text-gray-700 group-hover:text-gray-900'}`}>
-                              {tool.name}
-                            </span>
-                          </div>
-                          {tool.comingSoon && (
-                            <span className="text-[9px] font-bold uppercase tracking-wider bg-gray-100 text-gray-400 px-1.5 py-0.5 rounded">Soon</span>
-                          )}
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
+        {/* Categorized columns rendered for all domains (display toggled for active tab) so crawlers discover all tools */}
+        {DOMAINS.map(domain => {
+          const isActive = activeTab === domain.title;
+          return (
+            <div
+              key={domain.title}
+              style={{ display: isActive ? 'block' : 'none' }}
+              className="bg-white border border-gray-200 rounded-2xl p-6 md:p-10 shadow-sm"
+            >
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-8 gap-y-10 animate-in fade-in duration-300">
+                {domain.categories.map((category, idx) => (
+                  <div key={idx} className="flex flex-col">
+                    <h3 className="font-bold text-gray-400 text-xs tracking-wider uppercase mb-4 pb-2 border-b border-gray-100">
+                      {category.name}
+                    </h3>
+                    <ul className="space-y-1">
+                      {category.tools.map(tool => {
+                        const Icon = tool.icon;
+                        return (
+                          <li key={tool.id}>
+                            <a
+                              href={`/${tool.id}`}
+                              onClick={(e) => {
+                                if (tool.comingSoon) { e.preventDefault(); return; }
+                                handleLinkClick(e, tool.id);
+                              }}
+                              className={`w-full text-left flex items-center justify-between gap-2.5 py-2 px-2 -mx-2 rounded-lg transition-colors cursor-pointer ${tool.comingSoon ? 'opacity-60 cursor-default' : 'hover:bg-gray-50 group'}`}
+                            >
+                              <div className="flex items-center gap-2.5">
+                                <Icon className={`w-4 h-4 flex-shrink-0 ${tool.color} transition-transform ${tool.comingSoon ? '' : 'group-hover:scale-110'}`} />
+                                <span className={`text-sm font-medium transition-colors truncate ${tool.comingSoon ? 'text-gray-500' : 'text-gray-700 group-hover:text-gray-900'}`}>
+                                  {tool.name}
+                                </span>
+                              </div>
+                              {tool.comingSoon && (
+                                <span className="text-[9px] font-bold uppercase tracking-wider bg-gray-100 text-gray-400 px-1.5 py-0.5 rounded">Soon</span>
+                              )}
+                            </a>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
+          );
+        })}
       </section>
     </div>
   );

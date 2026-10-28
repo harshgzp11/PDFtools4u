@@ -17,7 +17,6 @@ export default function SiteDirectory({ onSelectTool }) {
   return (
     <section 
       className="max-w-7xl mx-auto px-4 md:px-8 pt-20 pb-10 mt-20 border-t border-gray-200"
-      style={{ contentVisibility: 'auto', containIntrinsicSize: '1px 400px' }}
     >
       <h3 className="text-2xl font-bold text-gray-900 mb-8">All Tools & Resources</h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">

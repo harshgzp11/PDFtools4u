@@ -5290,7 +5290,7 @@ This **visual PDF page organizer free** workflow changes page order by assemblin
 
 For a two-pass scan, first identify the actual reading order from the page contents. Select a few recognizable pages—such as the first paragraph of a section or a page with a continuous table—and use them to establish the order before moving the remaining thumbnails. If pages are upside down, rotate them in the organizer or use [Rotate PDF](/rotate-pdf) to correct selected pages.
 
-For a PDF where only some pages are needed, use [Split PDF](/pdf-split) to extract a range or selected pages. For a document that is already separated into files, start with [Merge PDF](/merge-pdf), then arrange the merged pages in the organizer. To remove unwanted pages, use [Remove pages](/remove-pages). If the finished file is too large to share, use [Compress PDF](/compress-pdf).
+For a PDF where only some pages are needed, use [Split PDF](/pdf-split) to extract a range or selected pages. For a document that is already separated into files, start with [Merge PDF](/pdf-merge), then arrange the merged pages in the organizer. To remove unwanted pages, use [Remove pages](/delete-pdf-pages). If the finished file is too large to share, use [Compress PDF](/compress-pdf).
 
 ## What to check before exporting
 

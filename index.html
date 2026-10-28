@@ -29,24 +29,7 @@
     <meta name="twitter:image" content="https://www.pdftools4u.in/images/og-card.png" />
     <meta name="google-site-verification" content="E1bZLNmMZdaOzfd59xEzPCmHoaLDnShXvdNJGVRlDbU" />
     
-    <script>
-      window.addEventListener('error', function(event) {
-        try {
-          var errStr = (event.error && event.error.stack) ? event.error.stack : (event.message || String(event));
-          document.body.innerHTML = '<div style="color: red; padding: 20px; font-size: 20px; white-space: pre-wrap;">' + errStr + '</div>';
-        } catch (e) {
-          console.error("Error in error handler", e);
-        }
-      });
-      window.addEventListener('unhandledrejection', function(event) {
-        try {
-          var reasonStr = (event.reason && event.reason.stack) ? event.reason.stack : String(event.reason);
-          document.body.innerHTML = '<div style="color: red; padding: 20px; font-size: 20px; white-space: pre-wrap;">' + reasonStr + '</div>';
-        } catch (e) {
-          console.error("Error in rejection handler", e);
-        }
-      });
-    </script>
+
   </head>
   <body>
     <div id="root"></div>

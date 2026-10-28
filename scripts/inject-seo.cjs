@@ -205,10 +205,10 @@ function generateStaticRoutes() {
   if (rootHtml.includes('<link rel="canonical"')) {
     rootHtml = rootHtml.replace(
       /<link\s+rel=["']canonical["']\s+href=["'][^>]+["']\s*\/?>/g,
-      `<link rel="canonical" href="${BASE_URL}/" />`
+      `<link rel="canonical" href="${BASE_URL}" />`
     );
   } else {
-    rootHtml = rootHtml.replace('</head>', `  <link rel="canonical" href="${BASE_URL}/" />\n  </head>`);
+    rootHtml = rootHtml.replace('</head>', `  <link rel="canonical" href="${BASE_URL}" />\n  </head>`);
   }
   
   fs.writeFileSync(INDEX_PATH, rootHtml);

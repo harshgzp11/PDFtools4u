@@ -85,14 +85,14 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
   return (
     <div className="w-full mx-auto mt-16 px-4 pb-24 space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
       
-      {/* H1 — Critical for SEO. Styled as a visible, elegant heading. */}
-      {headMeta?.h1 && (
-        <h1 className="sr-only">{headMeta.h1}</h1>
-      )}
-
-      {/* Introduction & Overview */}
+      {/* Introduction & Overview with visible semantic H1 */}
       <div className="text-center space-y-4">
-        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">{content.title}</h2>
+        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+          {headMeta?.h1 || content.title}
+        </h1>
+        {headMeta?.h1 && content.title && headMeta.h1 !== content.title && (
+          <h2 className="text-xl font-bold text-gray-800 tracking-tight">{content.title}</h2>
+        )}
         <p className="text-lg text-gray-600 mx-auto leading-relaxed max-w-3xl">
           {content.description}
         </p>
@@ -326,7 +326,7 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
                     <span className="text-blue-500 font-bold mt-0.5">�</span>
                     <div>
                       <a
-                        href={`https://pdftools4u.in/${relId}`}
+                        href={`/${relId}`}
                         onClick={(e) => {
                           if (onSelectTool) {
                             e.preventDefault();

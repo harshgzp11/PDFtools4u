@@ -161,7 +161,7 @@ export default function TermsOfService() {
                   }} 
                   className="text-blue-600 hover:underline cursor-pointer"
                 >
-                  https://pdftools4u.in/contact
+                  https://www.pdftools4u.in/contact
                 </a>
               </li>
             </ul>
