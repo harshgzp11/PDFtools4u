@@ -1,9 +1,8 @@
-import { trackEvent } from '../lib/analytics';
-import React, { useState, useEffect } from 'react';
-import { FileSpreadsheet, FileOutput, Columns, LayoutList, TableProperties } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { FileSpreadsheet, FileOutput, Columns, LayoutList, TableProperties, FileText, Minimize2 } from 'lucide-react';
 import { toast } from 'sonner';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
-import { trackError } from '../lib/analytics';
+import { trackEvent, trackError } from '../lib/analytics';
 
 export default function ExcelToPdf() {
   const [file, setFile] = useState(null);
@@ -15,8 +14,26 @@ export default function ExcelToPdf() {
   const [sheetNames, setSheetNames] = useState([]);
   const [activeSheet, setActiveSheet] = useState('');
   
-  const [sheetData, setSheetData] = useState([]);
-  const [orientation, setOrientation] = useState('auto');
+  const [previewSheetData, setPreviewSheetData] = useState([]);
+  const [totalRowCount, setTotalRowCount] = useState(0);
+  const [orientation, setOrientation] = useState('auto'); // 'auto' | 'portrait' | 'landscape'
+  const [pageSize, setPageSize] = useState('a4'); // 'a4' | 'letter'
+  const [fitToWidth, setFitToWidth] = useState(true);
+
+  // Resource lifecycle & parsed data cache
+  const parsedSheetsCacheRef = useRef(new Map());
+  const objectUrlRef = useRef(null);
+
+  useEffect(() => {
+    const objUrlRef = objectUrlRef;
+    const cacheRef = parsedSheetsCacheRef;
+    return () => {
+      if (objUrlRef.current) {
+        URL.revokeObjectURL(objUrlRef.current);
+      }
+      cacheRef.current.clear();
+    };
+  }, []);
 
   useEffect(() => {
     if (window.__sharedFile) {
@@ -28,33 +45,45 @@ export default function ExcelToPdf() {
   const handleFile = async (newFile) => {
     if (!newFile) return;
     
-    const validTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel', 'text/csv'];
     const validExtensions = ['.xlsx', '.xls', '.csv'];
-    
-    const hasValidExt = validExtensions.some(ext => newFile.name.toLowerCase().endsWith(ext));
+    const hasValidExt = validExtensions.some(ext => newFile.name?.toLowerCase().endsWith(ext));
+    const hasValidType = newFile.type && (
+      newFile.type.includes('spreadsheet') ||
+      newFile.type.includes('excel') ||
+      newFile.type.includes('csv') ||
+      newFile.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+      newFile.type === 'application/vnd.ms-excel' ||
+      newFile.type === 'text/csv'
+    );
     
     if (newFile.size > 25 * 1024 * 1024) {
       toast.error("File is too large. Maximum supported size is 25MB for browser conversion.");
       return;
     }
     
-    if (validTypes.includes(newFile.type) || hasValidExt) {
+    if (hasValidExt || hasValidType) {
+      if (objectUrlRef.current) {
+        URL.revokeObjectURL(objectUrlRef.current);
+        objectUrlRef.current = null;
+      }
+      parsedSheetsCacheRef.current.clear();
       setFile(newFile);
       setSuccessData(null);
       setIsParsing(true);
       setTimeout(() => {
         parseExcelFile(newFile);
-      }, 100);
+      }, 50);
     } else {
-      toast.error("Please upload a valid Excel or CSV file (.xlsx, .xls, .csv).");
+      toast.error("Please upload a valid spreadsheet file (.xlsx, .xls, .csv).");
     }
   };
 
   const parseExcelFile = async (currentFile) => {
     try {
+      parsedSheetsCacheRef.current.clear();
       const arrayBuffer = await currentFile.arrayBuffer();
       const XLSX = await import('xlsx');
-      const wb = XLSX.read(arrayBuffer, { type: 'array' });
+      const wb = XLSX.read(arrayBuffer, { type: 'array', cellDates: true });
       
       if (!wb.SheetNames || wb.SheetNames.length === 0) {
         toast.error("This file contains no sheets.");
@@ -64,7 +93,11 @@ export default function ExcelToPdf() {
       
       setWorkbook(wb);
       setSheetNames(wb.SheetNames);
-      loadSheetData(wb, wb.SheetNames[0]);
+      
+      // Default to "All Sheets" if workbook has multiple sheets, otherwise first sheet
+      const defaultSheet = wb.SheetNames.length > 1 ? '__ALL_SHEETS__' : wb.SheetNames[0];
+      setActiveSheet(defaultSheet);
+      loadSheetData(wb, defaultSheet);
     } catch (err) {
       trackError('Excel To Pdf', 'processing_error');
       console.error(err);
@@ -75,33 +108,36 @@ export default function ExcelToPdf() {
     }
   };
 
-  const loadSheetData = async (wb, sheetName) => {
-    setActiveSheet(sheetName);
-    const ws = wb.Sheets[sheetName];
-    if (!ws) {
-      setSheetData([]);
-      return;
+  // Parses raw sheet data into clean formatted strings, caching by sheetName to avoid redundant JSON transformations
+  const extractFormattedSheetData = (ws, XLSX, sheetName = null) => {
+    if (!ws) return { title: null, head: [], body: [], maxCols: 0, rawRows: [] };
+
+    if (sheetName && parsedSheetsCacheRef.current.has(sheetName)) {
+      return parsedSheetsCacheRef.current.get(sheetName);
     }
-    
-    const XLSX = await import('xlsx');
-    const rawData = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
-    
+
+    const rawData = XLSX.utils.sheet_to_json(ws, { 
+      header: 1, 
+      raw: false, 
+      dateNF: 'yyyy-mm-dd',
+      defval: '' 
+    });
+
     if (!rawData || rawData.length === 0) {
-       toast.error(`Sheet "${sheetName}" is empty.`);
-       setSheetData([]);
-       return;
+      const emptyResult = { title: null, head: [], body: [], maxCols: 0, rawRows: [] };
+      if (sheetName) parsedSheetsCacheRef.current.set(sheetName, emptyResult);
+      return emptyResult;
     }
 
     // Find maximum column count across all rows in the sheet
     const maxCols = Math.max(...rawData.map(r => (Array.isArray(r) ? r.length : 0)), 0);
-
     if (maxCols === 0) {
-       toast.error(`Sheet "${sheetName}" is empty.`);
-       setSheetData([]);
-       return;
+      const emptyResult = { title: null, head: [], body: [], maxCols: 0, rawRows: [] };
+      if (sheetName) parsedSheetsCacheRef.current.set(sheetName, emptyResult);
+      return emptyResult;
     }
 
-    // Normalize all rows to a uniform length of maxCols with safe string cell values
+    // Normalize rows to uniform length with clean strings
     const normalizedData = rawData.map(row => {
       const cleanRow = [];
       for (let i = 0; i < maxCols; i++) {
@@ -111,7 +147,59 @@ export default function ExcelToPdf() {
       return cleanRow;
     });
 
-    setSheetData(normalizedData);
+    // Detect if Row 0 is a Title Banner preceding table headers
+    let title = null;
+    let dataStartRow = 0;
+
+    const row0NonEmpty = normalizedData[0].filter(c => c.trim().length > 0);
+    if (row0NonEmpty.length === 1 && maxCols >= 2) {
+      // Row 0 has only 1 populated cell while table has 2+ columns -> Title banner
+      title = row0NonEmpty[0].trim();
+      dataStartRow = 1;
+
+      // Skip blank rows immediately after title
+      while (
+        dataStartRow < normalizedData.length &&
+        normalizedData[dataStartRow].every(c => c.trim().length === 0)
+      ) {
+        dataStartRow++;
+      }
+    }
+
+    const remainingRows = normalizedData.slice(dataStartRow).filter(r => r.some(c => c.trim().length > 0));
+    const head = remainingRows.length > 0 ? [remainingRows[0]] : [];
+    const body = remainingRows.length > 1 ? remainingRows.slice(1) : [];
+
+    const result = {
+      title,
+      head,
+      body,
+      maxCols,
+      rawRows: normalizedData
+    };
+
+    if (sheetName) {
+      parsedSheetsCacheRef.current.set(sheetName, result);
+    }
+    return result;
+  };
+
+  const loadSheetData = async (wb, targetSheet) => {
+    setActiveSheet(targetSheet);
+    const sheetToPreview = targetSheet === '__ALL_SHEETS__' ? wb.SheetNames[0] : targetSheet;
+    const ws = wb.Sheets[sheetToPreview];
+    
+    if (!ws) {
+      setPreviewSheetData([]);
+      setTotalRowCount(0);
+      return;
+    }
+
+    const XLSX = await import('xlsx');
+    const { rawRows } = extractFormattedSheetData(ws, XLSX, sheetToPreview);
+    // Keep preview state lightweight by holding only first 25 rows
+    setPreviewSheetData(rawRows.slice(0, 25));
+    setTotalRowCount(rawRows.length);
   };
 
   const handleSheetChange = (e) => {
@@ -122,90 +210,199 @@ export default function ExcelToPdf() {
   };
 
   const convertToPdf = async () => {
-    if (sheetData.length === 0) {
-      toast.error("No valid data to convert in this sheet.");
+    if (!workbook) {
+      toast.error("No spreadsheet loaded.");
       return;
     }
     
-    trackEvent('tool_executed', { tool_name: 'Excel to PDF' });
+    trackEvent('tool_executed', { 
+      tool_name: 'Excel to PDF',
+      sheet_mode: activeSheet === '__ALL_SHEETS__' ? 'all' : 'single',
+      page_size: pageSize,
+      orientation
+    });
     setIsProcessing(true);
     
     try {
-      const maxCols = sheetData.length > 0 ? sheetData[0].length : 0;
-      const targetOrientation = orientation === 'auto'
-        ? (maxCols > 6 ? 'landscape' : 'portrait')
-        : orientation;
-
+      const XLSX = await import('xlsx');
       const { default: jsPDF } = await import('jspdf');
       const { default: autoTable } = await import('jspdf-autotable');
-      const doc = new jsPDF({
-        orientation: targetOrientation,
-        unit: 'pt',
-        format: 'a4'
-      });
-      
-      const head = sheetData.length > 0 ? [sheetData[0]] : [];
-      const body = sheetData.length > 1 ? sheetData.slice(1) : [];
 
-      autoTable(doc, {
-        head: head,
-        body: body,
-        showHead: 'firstPage',
-        startY: 20,
-        theme: 'grid',
-        styles: {
-          fontSize: 9,
-          cellPadding: 6,
-          textColor: [30, 30, 30],
-          overflow: 'linebreak',
-          lineWidth: 0.75,
-          lineColor: [211, 211, 211] // #d3d3d3 Standard Excel grey gridlines
-        },
-        headStyles: {
-          fillColor: [243, 244, 246], // Excel header grey
-          textColor: [31, 41, 55],
-          fontStyle: 'bold',
-          lineWidth: 0.75,
-          lineColor: [211, 211, 211]
-        },
-        alternateRowStyles: {
-          fillColor: [255, 255, 255]
-        },
-        tableLineWidth: 0.75,
-        tableLineColor: [211, 211, 211],
-        pageBreak: 'auto',
-        rowPageBreak: 'avoid',
-        margin: { top: 20, right: 20, bottom: 20, left: 20 }
+      const sheetsToProcess = activeSheet === '__ALL_SHEETS__'
+        ? workbook.SheetNames
+        : [activeSheet];
+
+      // Measure maximum columns across all sheets to be converted to guide orientation
+      let globalMaxCols = 0;
+      sheetsToProcess.forEach(name => {
+        const ws = workbook.Sheets[name];
+        if (ws) {
+          const { maxCols } = extractFormattedSheetData(ws, XLSX, name);
+          if (maxCols > globalMaxCols) globalMaxCols = maxCols;
+        }
       });
-      
+
+      const initialOrientation = orientation === 'auto'
+        ? (globalMaxCols > 6 ? 'landscape' : 'portrait')
+        : orientation;
+
+      const doc = new jsPDF({
+        orientation: initialOrientation,
+        unit: 'pt',
+        format: pageSize
+      });
+
+      let pagesRendered = 0;
+
+      for (let sIdx = 0; sIdx < sheetsToProcess.length; sIdx++) {
+        const sheetName = sheetsToProcess[sIdx];
+        const ws = workbook.Sheets[sheetName];
+        if (!ws) continue;
+
+        const { title, head, body, maxCols } = extractFormattedSheetData(ws, XLSX, sheetName);
+        if (head.length === 0 && body.length === 0) continue;
+
+        // If not the first page of the document, add a page break for the next sheet
+        if (pagesRendered > 0) {
+          const sheetOrientation = orientation === 'auto'
+            ? (maxCols > 6 ? 'landscape' : 'portrait')
+            : orientation;
+          doc.addPage(pageSize, sheetOrientation);
+        }
+
+        pagesRendered++;
+
+        // Determine dynamic scaling parameters based on column count and fitToWidth
+        let dynamicFontSize = 9;
+        let dynamicCellPadding = 6;
+
+        if (fitToWidth) {
+          if (maxCols > 15) {
+            dynamicFontSize = 6;
+            dynamicCellPadding = 2;
+          } else if (maxCols > 10) {
+            dynamicFontSize = 7;
+            dynamicCellPadding = 3;
+          } else if (maxCols > 6) {
+            dynamicFontSize = 8;
+            dynamicCellPadding = 4;
+          }
+        }
+
+        let startY = 25;
+
+        // Render Sheet Title Banner
+        if (activeSheet === '__ALL_SHEETS__' || title) {
+          doc.setFontSize(13);
+          doc.setFont('helvetica', 'bold');
+          doc.setTextColor(30, 41, 59);
+
+          const bannerText = title
+            ? `${sheetName}: ${title}`
+            : (activeSheet === '__ALL_SHEETS__' ? `Worksheet: ${sheetName}` : sheetName);
+
+          doc.text(bannerText, 20, startY);
+          startY += 18;
+
+          // Draw a subtle line underneath the sheet title banner
+          doc.setDrawColor(226, 232, 240);
+          doc.setLineWidth(0.75);
+          const pageWidth = doc.internal.pageSize.getWidth();
+          doc.line(20, startY - 6, pageWidth - 20, startY - 6);
+          startY += 6;
+        }
+
+        autoTable(doc, {
+          head: head,
+          body: body,
+          showHead: 'everyPage', // Repeat column headers on every subsequent page
+          startY: startY,
+          theme: 'grid',
+          styles: {
+            fontSize: dynamicFontSize,
+            cellPadding: dynamicCellPadding,
+            textColor: [30, 30, 30],
+            overflow: 'linebreak',
+            lineWidth: 0.5,
+            lineColor: [211, 211, 211]
+          },
+          headStyles: {
+            fillColor: [241, 245, 249],
+            textColor: [15, 23, 42],
+            fontStyle: 'bold',
+            lineWidth: 0.5,
+            lineColor: [203, 213, 225]
+          },
+          alternateRowStyles: {
+            fillColor: [255, 255, 255]
+          },
+          tableLineWidth: 0.5,
+          tableLineColor: [211, 211, 211],
+          pageBreak: 'auto',
+          rowPageBreak: 'avoid',
+          margin: { top: 25, right: 20, bottom: 25, left: 20 }
+        });
+      }
+
+      if (pagesRendered === 0) {
+        toast.error("No valid table data found across selected worksheets.");
+        setIsProcessing(false);
+        return;
+      }
+
+      if (objectUrlRef.current) {
+        URL.revokeObjectURL(objectUrlRef.current);
+      }
       const blob = doc.output('blob');
       const url = URL.createObjectURL(blob);
+      objectUrlRef.current = url;
       
+      const baseName = file.name.replace(/\.[^/.]+$/, "");
+      const outputFilename = activeSheet === '__ALL_SHEETS__'
+        ? `${baseName}_All_Sheets.pdf`
+        : `${baseName}_${activeSheet}.pdf`;
+
       setSuccessData({
         originalSize: file.size,
         outputSize: blob.size,
         url,
-        filename: `${file.name.replace(/\.[^/.]+$/, "")}_${activeSheet}.pdf`,
+        filename: outputFilename,
         title: 'PDF Created Successfully!',
-        subtitle: 'Your spreadsheet has been elegantly converted to PDF format with professional page layout.'
+        subtitle: activeSheet === '__ALL_SHEETS__'
+          ? `All worksheets in your workbook have been converted into a unified, paginated PDF.`
+          : `Sheet "${activeSheet}" has been elegantly converted to PDF format with professional layout.`
       });
       toast.success("Conversion successful!");
     } catch (err) {
       trackError('Excel To Pdf', 'processing_error');
       console.error("ExcelToPdf conversion error:", err);
-      toast.error("An error occurred while generating the PDF.");
+      const isMemory = err instanceof RangeError || 
+        err.message?.toLowerCase().includes('memory') || 
+        err.message?.toLowerCase().includes('call stack') ||
+        err.message?.toLowerCase().includes('allocation');
+      if (isMemory) {
+        toast.error("Memory limit reached during PDF generation. Please try converting sheets individually or reducing row counts.");
+      } else {
+        toast.error("An error occurred while generating the PDF document.");
+      }
     } finally {
       setIsProcessing(false);
     }
   };
 
   const resetTool = () => {
+    if (objectUrlRef.current) {
+      URL.revokeObjectURL(objectUrlRef.current);
+      objectUrlRef.current = null;
+    }
+    parsedSheetsCacheRef.current.clear();
     setFile(null);
     setSuccessData(null);
     setWorkbook(null);
     setSheetNames([]);
     setActiveSheet('');
-    setSheetData([]);
+    setPreviewSheetData([]);
+    setTotalRowCount(0);
     setOrientation('auto');
     setIsProcessing(false);
     setIsParsing(false);
@@ -214,10 +411,17 @@ export default function ExcelToPdf() {
   const customPreviewNode = (
     <div className="w-full h-full flex flex-col bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
        <div className="bg-gray-50 border-b border-gray-200 px-4 py-3 flex items-center justify-between shadow-sm z-10">
-         <h4 className="font-bold text-gray-700 flex items-center gap-2">
-           <TableProperties className="w-5 h-5 text-green-600"/>
-           Data Preview (First 20 Rows)
+         <h4 className="font-bold text-gray-700 flex items-center gap-2 text-sm">
+           <TableProperties className="w-4 h-4 text-green-600"/>
+           <span>
+             Data Preview: {activeSheet === '__ALL_SHEETS__' ? `${sheetNames[0]} (First Sheet)` : activeSheet}
+           </span>
          </h4>
+         {activeSheet === '__ALL_SHEETS__' && (
+           <span className="text-xs bg-green-100 text-green-800 font-bold px-2.5 py-0.5 rounded-full">
+             {sheetNames.length} Sheets Total
+           </span>
+         )}
        </div>
        
        <div className="flex-1 overflow-auto p-4 bg-slate-50 relative">
@@ -226,13 +430,12 @@ export default function ExcelToPdf() {
              <div className="w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full animate-spin mb-4"></div>
              Parsing spreadsheet, please wait...
            </div>
-         ) : sheetData.length > 0 ? (
-           <table className="excel-pdf-table w-full border-collapse bg-white shadow-sm text-sm text-left">
+         ) : previewSheetData.length > 0 ? (
+           <table className="excel-pdf-table w-full border-collapse bg-white shadow-sm text-xs text-left">
              <thead>
                <tr>
                  <th className="border border-gray-300 bg-gray-100 p-2 text-gray-500 font-semibold w-10 text-center select-none sticky top-0 left-0 z-30 shadow-[1px_1px_0_0_#d1d5db]"></th>
-                 
-                 {sheetData[0].map((headerText, i) => (
+                 {previewSheetData[0].map((headerText, i) => (
                    <th key={i} className="border border-gray-300 bg-gray-100 p-2 text-gray-700 font-bold whitespace-nowrap sticky top-0 z-20 shadow-[0_1px_0_0_#d1d5db]">
                      {headerText !== undefined && headerText !== null ? String(headerText) : ''}
                    </th>
@@ -240,38 +443,29 @@ export default function ExcelToPdf() {
                </tr>
              </thead>
              <tbody>
-               {sheetData.slice(1, 21).map((row, rowIndex) => {
-                 const maxCols = sheetData[0].length;
-                 const cells = [];
-                 for(let i=0; i<maxCols; i++){
-                    cells.push(row[i]);
-                 }
-
-                 return (
-                   <tr key={rowIndex} className="hover:bg-green-50/50 transition-colors">
-                     <td className="border border-gray-300 bg-gray-50 p-2 text-gray-400 font-semibold text-center select-none sticky left-0 z-10 shadow-[1px_0_0_0_#d1d5db]">
-                       {rowIndex + 1}
+               {previewSheetData.slice(1, 21).map((row, rowIndex) => (
+                 <tr key={rowIndex} className="hover:bg-green-50/50 transition-colors">
+                   <td className="border border-gray-300 bg-gray-50 p-2 text-gray-400 font-semibold text-center select-none sticky left-0 z-10 shadow-[1px_0_0_0_#d1d5db]">
+                     {rowIndex + 1}
+                   </td>
+                   {row.map((cellText, cellIndex) => (
+                     <td key={cellIndex} className="border border-gray-200 p-2 text-gray-600 whitespace-nowrap max-w-[200px] overflow-hidden text-ellipsis">
+                       {cellText !== undefined && cellText !== null ? String(cellText) : ''}
                      </td>
-                     
-                     {cells.map((cellText, cellIndex) => (
-                       <td key={cellIndex} className="border border-gray-200 p-2 text-gray-600 whitespace-nowrap max-w-[200px] overflow-hidden text-ellipsis">
-                         {cellText !== undefined && cellText !== null ? String(cellText) : ''}
-                       </td>
-                     ))}
-                   </tr>
-                 );
-               })}
+                   ))}
+                 </tr>
+               ))}
              </tbody>
            </table>
          ) : (
            <div className="h-full flex items-center justify-center text-gray-400 italic">
-             No data to preview in this sheet.
+             No preview data available for this sheet.
            </div>
          )}
          
-         {sheetData.length > 21 && (
-           <div className="text-center py-4 text-sm font-medium text-gray-400 border-t border-dashed border-gray-300 mt-4">
-             Showing 20 of {sheetData.length - 1} rows...
+         {totalRowCount > 21 && (
+           <div className="text-center py-4 text-xs font-medium text-gray-400 border-t border-dashed border-gray-300 mt-4">
+             Showing first 20 rows of {totalRowCount - 1} rows...
            </div>
          )}
        </div>
@@ -282,7 +476,7 @@ export default function ExcelToPdf() {
     <div className="space-y-3">
       <button 
         onClick={convertToPdf} 
-        disabled={isProcessing || !file || sheetData.length === 0}
+        disabled={isProcessing || !file || previewSheetData.length === 0}
         className="w-full px-6 py-4 bg-green-600 border border-transparent rounded-xl shadow-lg text-lg font-bold text-white hover:bg-green-700 disabled:opacity-50 flex items-center justify-center gap-3 transition-all hover:shadow-xl hover:-translate-y-1"
       >
         {isProcessing ? 'Converting...' : (
@@ -306,19 +500,23 @@ export default function ExcelToPdf() {
       accept=".xlsx, .xls, .csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, text/csv"
       customPreviewNode={file && !successData ? customPreviewNode : null}
     >
-      <div className="space-y-6">
+      <div className="space-y-5">
         
+        {/* Sheet Selection */}
         {sheetNames.length > 0 && (
           <div className="space-y-2">
             <label className="block text-sm font-bold text-gray-700 flex items-center gap-2">
               <LayoutList className="w-4 h-4 text-green-600" />
-              Select Sheet
+              Sheets to Convert
             </label>
             <select
               value={activeSheet}
               onChange={handleSheetChange}
               className="w-full p-3 border border-gray-300 rounded-xl bg-white shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-shadow text-gray-700 font-medium cursor-pointer"
             >
+              {sheetNames.length > 1 && (
+                <option value="__ALL_SHEETS__">All Sheets ({sheetNames.length} Sheets)</option>
+              )}
               {sheetNames.map(name => (
                 <option key={name} value={name}>{name}</option>
               ))}
@@ -326,10 +524,11 @@ export default function ExcelToPdf() {
           </div>
         )}
 
+        {/* Orientation Selector */}
         <div className="space-y-2">
           <label className="block text-sm font-bold text-gray-700 flex items-center gap-2">
             <Columns className="w-4 h-4 text-green-600" />
-            PDF Page Orientation
+            Page Orientation
           </label>
           <div className="flex bg-gray-100 p-1 rounded-xl shadow-inner">
             <button
@@ -363,9 +562,53 @@ export default function ExcelToPdf() {
               Landscape
             </button>
           </div>
-          <p className="text-xs text-gray-500 ml-1">
-            * Auto mode dynamically chooses Landscape for tables with &gt; 6 columns to prevent text clipping.
-          </p>
+        </div>
+
+        {/* Page Size & Layout Toggles */}
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs font-bold text-gray-700 mb-1 flex items-center gap-1.5">
+              <FileText className="w-3.5 h-3.5 text-green-600" />
+              Page Size
+            </label>
+            <select
+              value={pageSize}
+              onChange={(e) => setPageSize(e.target.value)}
+              className="w-full p-2.5 border border-gray-300 rounded-xl bg-white text-xs font-semibold text-gray-700"
+            >
+              <option value="a4">A4 (Standard)</option>
+              <option value="letter">US Letter</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-gray-700 mb-1 flex items-center gap-1.5">
+              <Minimize2 className="w-3.5 h-3.5 text-green-600" />
+              Fit to Width
+            </label>
+            <button
+              type="button"
+              onClick={() => setFitToWidth(!fitToWidth)}
+              className={`w-full p-2.5 rounded-xl border text-xs font-bold transition-all ${
+                fitToWidth 
+                  ? 'bg-green-50 border-green-300 text-green-800' 
+                  : 'bg-gray-50 border-gray-300 text-gray-600'
+              }`}
+            >
+              {fitToWidth ? 'Auto-Scaled' : 'Standard'}
+            </button>
+          </div>
+        </div>
+
+        <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs text-gray-600 space-y-1.5">
+          <div className="flex justify-between font-medium">
+            <span>Repeated Headers:</span>
+            <span className="text-green-700 font-bold">Every Page</span>
+          </div>
+          <div className="flex justify-between font-medium">
+            <span>Formatting:</span>
+            <span className="text-green-700 font-bold">Preserved (Dates/Numbers)</span>
+          </div>
         </div>
 
       </div>

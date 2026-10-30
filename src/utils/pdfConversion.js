@@ -37,13 +37,11 @@ const loadPdfDocument = async (fileObj) => {
     throw new Error("The selected file is empty or corrupted.");
   }
 
-  // Attempt 1: Standard load with Uint8Array copy and cMaps
+  // Attempt 1: Standard load with Uint8Array copy
   try {
     const _pdfjsLib = await initPdfJs();
     const loadingTask = _pdfjsLib.getDocument({
       data: new Uint8Array(arrayBuffer.slice(0)),
-      cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/cmaps/',
-      cMapPacked: true,
     });
     return await loadingTask.promise;
   } catch (err1) {
@@ -397,155 +395,422 @@ export const convertPdfToPpt = async (file, onProgress) => {
 };
 
 /**
- * Converts a PDF file to an Excel (.xlsx) file using Sequential Row Mapping with Auto-Sized Columns.
- * @param {File} file - The PDF file to extract tables from
- * @param {Function} onProgress - Progress callback function (0 to 100)
- * @returns {Promise<Blob>} - The resulting Excel (.xlsx) Blob
+ * Extracts structured table rows from PDF page items using coordinate-based clustering.
+ * Preserves empty cells, aligns irregular columns, and stitches multiline wrapped text.
+ * @param {Array} rawItems - PDF textContent items
+ * @param {number} pageHeight - Page viewport height
+ * @param {number} pageWidth - Page viewport width
+ * @returns {Array<Array<string>>}
  */
-export const convertPdfToExcel = async (file, onProgress) => {
+export const extractTableFromPageItems = (rawItems, pageHeight = 842, _pageWidth = 595) => {
+  if (!rawItems || rawItems.length === 0) return [];
+
+  const validItems = rawItems
+    .filter(it => it.str && it.str.trim().length > 0)
+    .map(it => {
+      const x0 = it.transform[4];
+      const y0 = it.transform[5];
+      const fontSize = Math.abs(it.transform[0]) || Math.abs(it.transform[3]) || it.height || 10;
+      const width = it.width || (it.str.length * fontSize * 0.55);
+      return {
+        text: it.str,
+        x0,
+        x1: x0 + width,
+        y0,
+        yTop: y0 + fontSize,
+        fontSize,
+        width
+      };
+    });
+
+  if (validItems.length === 0) return [];
+
+  // Filter running header (extreme top 28pt) and running footer (extreme bottom 28pt) if isolated
+  const contentItems = validItems.filter(it => {
+    const isExtremeTop = it.y0 > pageHeight - 28;
+    const isExtremeBottom = it.y0 < 28;
+    return !(isExtremeTop || isExtremeBottom);
+  });
+
+  const workingItems = contentItems.length > 0 ? contentItems : validItems;
+
+  // Adaptive Baseline Y-clustering for physical line grouping
+  workingItems.sort((a, b) => b.y0 - a.y0);
+
+  const physicalLines = [];
+  workingItems.forEach(item => {
+    let matchedLine = physicalLines.find(line => {
+      const lineY = line.y;
+      const threshold = Math.max(3, item.fontSize * 0.45);
+      return Math.abs(lineY - item.y0) <= threshold;
+    });
+
+    if (!matchedLine) {
+      matchedLine = { y: item.y0, fontSize: item.fontSize, items: [] };
+      physicalLines.push(matchedLine);
+    }
+    matchedLine.items.push(item);
+  });
+
+  physicalLines.sort((a, b) => b.y - a.y);
+
+  // In each line, sort left to right and merge adjacent tokens based on proportional word spacing
+  physicalLines.forEach(line => {
+    line.items.sort((a, b) => a.x0 - b.x0);
+    const merged = [];
+    line.items.forEach(it => {
+      if (merged.length === 0) {
+        merged.push({ ...it });
+      } else {
+        const prev = merged[merged.length - 1];
+        const gap = it.x0 - prev.x1;
+        const maxMergeGap = Math.max(3.5, prev.fontSize * 0.45);
+        if (gap <= maxMergeGap && gap >= -2) {
+          const sep = gap > 0.8 ? ' ' : '';
+          prev.text = prev.text + sep + it.text;
+          prev.x1 = Math.max(prev.x1, it.x1);
+          prev.width = prev.x1 - prev.x0;
+        } else {
+          merged.push({ ...it });
+        }
+      }
+    });
+    line.items = merged;
+  });
+
+  // Separate document title banners (single-item line at top followed by multi-item lines)
+  const nonTitleLines = [];
+  const titleLines = [];
+
+  physicalLines.forEach((line, idx) => {
+    if (line.items.length === 1 && idx === 0 && physicalLines.length > 1) {
+      titleLines.push(line.items[0].text.trim());
+    } else {
+      nonTitleLines.push(line);
+    }
+  });
+
+  if (nonTitleLines.length === 0) {
+    return titleLines.map(t => [t]);
+  }
+
+  // Partition lines into distinct table regions based on vertical gap and structure discontinuities
+  const regions = [];
+  let currentRegion = [];
+
+  for (let i = 0; i < nonTitleLines.length; i++) {
+    const line = nonTitleLines[i];
+    if (currentRegion.length === 0) {
+      currentRegion.push(line);
+      continue;
+    }
+
+    const prevLine = currentRegion[currentRegion.length - 1];
+    const verticalGap = prevLine.y - line.y;
+
+    const regionGaps = [];
+    for (let j = 0; j < currentRegion.length - 1; j++) {
+      regionGaps.push(currentRegion[j].y - currentRegion[j + 1].y);
+    }
+    const medianGap = regionGaps.length > 0
+      ? regionGaps.sort((a, b) => a - b)[Math.floor(regionGaps.length / 2)]
+      : 15;
+
+    // A distinct table region boundary:
+    // 1) Vertical gap >= 32pt or >= 2.5x median row gap
+    // 2) Significant shift in item count between rows
+    const isLargeGap = verticalGap >= Math.max(32, medianGap * 2.5);
+    const isItemCountShift = Math.abs(line.items.length - prevLine.items.length) >= 2;
+
+    if (isLargeGap || (verticalGap >= 28 && isItemCountShift)) {
+      regions.push(currentRegion);
+      currentRegion = [line];
+    } else {
+      currentRegion.push(line);
+    }
+  }
+  if (currentRegion.length > 0) {
+    regions.push(currentRegion);
+  }
+
+  // Helper to extract rows and column clusters for a single table region
+  const extractSingleRegion = (tableLines, startRowOffset) => {
+    const allX0s = [];
+    tableLines.forEach(line => {
+      line.items.forEach(it => {
+        allX0s.push({ x0: it.x0, x1: it.x1, text: it.text });
+      });
+    });
+
+    const sortedX0 = allX0s.map(it => it.x0).sort((a, b) => a - b);
+    const colClusters = [];
+    const CLUSTER_TOLERANCE = 14;
+
+    sortedX0.forEach(x => {
+      const cluster = colClusters.find(c => Math.abs(c.mean - x) <= CLUSTER_TOLERANCE);
+      if (cluster) {
+        cluster.points.push(x);
+        cluster.mean = cluster.points.reduce((sum, v) => sum + v, 0) / cluster.points.length;
+      } else {
+        colClusters.push({ mean: x, points: [x] });
+      }
+    });
+
+    colClusters.sort((a, b) => a.mean - b.mean);
+
+    const boundaries = [];
+    for (let i = 0; i < colClusters.length - 1; i++) {
+      boundaries.push((colClusters[i].mean + colClusters[i + 1].mean) / 2);
+    }
+
+    const numCols = Math.max(1, colClusters.length);
+
+    const getColIndex = (item) => {
+      const x = item.x0;
+      for (let i = 0; i < boundaries.length; i++) {
+        if (x < boundaries[i]) return i;
+      }
+      return boundaries.length;
+    };
+
+    const regionRows = [];
+    const regionMerges = [];
+    let prevRow = null;
+    let prevLineY = null;
+
+    tableLines.forEach(line => {
+      // Check if line is a merged section heading spanning multiple columns
+      if (line.items.length === 1 && numCols > 1) {
+        const it = line.items[0];
+        const lineGap = prevLineY !== null ? Math.abs(prevLineY - line.y) : 999;
+        if (lineGap > (line.fontSize * 1.45)) {
+          const row = Array(numCols).fill('');
+          row[0] = it.text.trim();
+          const rIdx = startRowOffset + regionRows.length;
+          regionMerges.push({ s: { r: rIdx, c: 0 }, e: { r: rIdx, c: numCols - 1 } });
+          regionRows.push(row);
+          prevRow = row;
+          prevLineY = line.y;
+          return;
+        }
+      }
+
+      const currentCells = Array(numCols).fill('');
+      const occupiedCols = new Set();
+
+      line.items.forEach(it => {
+        const colIdx = getColIndex(it);
+        if (currentCells[colIdx] === '') {
+          currentCells[colIdx] = it.text.trim();
+        } else {
+          currentCells[colIdx] += ' ' + it.text.trim();
+        }
+        occupiedCols.add(colIdx);
+      });
+
+      const lineGap = prevLineY !== null ? Math.abs(prevLineY - line.y) : 999;
+      const isContinuation = prevRow &&
+        lineGap <= (line.fontSize * 1.45) &&
+        Array.from(occupiedCols).every(c => prevRow[c] !== '');
+
+      if (isContinuation && prevRow) {
+        occupiedCols.forEach(c => {
+          prevRow[c] += (prevRow[c] ? ' ' : '') + currentCells[c];
+        });
+      } else {
+        regionRows.push(currentCells);
+        prevRow = currentCells;
+      }
+      prevLineY = line.y;
+    });
+
+    return { rows: regionRows, merges: regionMerges, numCols };
+  };
+
+  const finalRows = [];
+  const allMerges = [];
+
+  // Add leading document title banners
+  if (titleLines.length > 0) {
+    titleLines.forEach(t => {
+      const rIdx = finalRows.length;
+      finalRows.push([t]);
+      allMerges.push({ s: { r: rIdx, c: 0 }, e: { r: rIdx, c: 3 } });
+    });
+  }
+
+  // Process each table region independently
+  regions.forEach((regLines, rIdx) => {
+    if (rIdx > 0 && finalRows.length > 0) {
+      finalRows.push([]);
+    }
+    const { rows, merges } = extractSingleRegion(regLines, finalRows.length);
+    finalRows.push(...rows);
+    allMerges.push(...merges);
+  });
+
+  finalRows.merges = allMerges;
+  return finalRows;
+};
+
+export const convertPdfToExcel = async (file, onProgress, options = {}) => {
   if (!file) throw new Error("No file provided");
   if (onProgress) onProgress(0);
 
-  const pdf = await loadPdfDocument(file);
-  const numPages = pdf.numPages;
+  const format = options.format || 'xlsx';
+  const multiSheetMode = options.multiSheetMode || 'single';
 
-  const allTableRows = [];
-  let totalExtractedItems = 0;
+  let loadingTask = null;
+  let pdf = null;
 
-  const ROW_Y_TOLERANCE = 5; // Y-tolerance in PDF points (+/- 5px)
-  const MERGE_GAP_X_THRESHOLD = 6; // Proximity merge gap (<= 6px)
+  try {
+    const arrayBuffer = await file.arrayBuffer();
+    const _pdfjsLib = await initPdfJs();
+    loadingTask = _pdfjsLib.getDocument({
+      data: new Uint8Array(arrayBuffer)
+    });
+    pdf = await loadingTask.promise;
 
-  for (let pageNum = 1; pageNum <= numPages; pageNum++) {
-    const page = await pdf.getPage(pageNum);
-    const textContent = await page.getTextContent();
+    const numPages = pdf.numPages;
+    const perPageTables = [];
+    let totalExtractedItems = 0;
 
-    // Filter out items without non-whitespace content
-    const items = (textContent.items || []).filter(item => item.str && item.str.trim().length > 0);
+    for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+      if (options.signal?.aborted) {
+        throw new DOMException('Conversion cancelled by user', 'AbortError');
+      }
+      const page = await pdf.getPage(pageNum);
+      const textContent = await page.getTextContent();
+      const viewport = page.getViewport({ scale: 1.0 });
 
-    if (items.length > 0) {
-      totalExtractedItems += items.length;
+      const rawItems = (textContent.items || []).filter(item => item.str && item.str.trim().length > 0);
+      totalExtractedItems += rawItems.length;
 
-      // 1. Group text items into rows based on Y-coordinate (transform[5])
-      const rows = [];
-      items.forEach(item => {
-        const x = item.transform[4];
-        const y = item.transform[5];
+      const pageRows = extractTableFromPageItems(rawItems, viewport.height, viewport.width);
+      perPageTables.push({ pageNum, rows: pageRows, merges: pageRows.merges || [] });
 
-        let foundRow = rows.find(r => Math.abs(r.y - y) <= ROW_Y_TOLERANCE);
-        if (!foundRow) {
-          foundRow = { y, items: [] };
-          rows.push(foundRow);
-        }
-        foundRow.items.push({ text: item.str, x, y, width: item.width || 0 });
-      });
-
-      // 2. Sort rows top to bottom (descending Y in PDF coordinates)
-      rows.sort((a, b) => b.y - a.y);
-
-      // 3. Process each row: Sort left to right by X, apply Proximity Merging (<= 6px), and map sequentially
-      rows.forEach(row => {
-        // Sort items within row from left to right by X-coordinate
-        row.items.sort((a, b) => a.x - b.x);
-
-        const mergedItems = [];
-        row.items.forEach(item => {
-          if (mergedItems.length === 0) {
-            mergedItems.push({ ...item });
-          } else {
-            const prevItem = mergedItems[mergedItems.length - 1];
-            const prevRightX = prevItem.x + (prevItem.width || 0);
-            const gap = item.x - prevRightX;
-
-            // Proximity Merging (<= 6px)
-            if (gap <= MERGE_GAP_X_THRESHOLD) {
-              const prevText = prevItem.text;
-              const currText = item.text;
-
-              let separator = '';
-
-              // 1. Lower threshold: Any gap larger than 1px is a space.
-              if (gap > 1) {
-                separator = ' ';
-              }
-
-              // 2. The CamelCase Safety Net (e.g. "Result" + "Status" -> "Result Status")
-              const lastChar = prevText.slice(-1);
-              const nextChar = currText.charAt(0);
-              const isCamelCaseSmash = /[a-z]/.test(lastChar) && /[A-Z]/.test(nextChar);
-
-              if (isCamelCaseSmash) {
-                separator = ' ';
-              }
-
-              // 3. The "of" Safety Net (Fixes "Year ofPassing")
-              if (prevText.trim().toLowerCase().endsWith('of')) {
-                separator = ' ';
-              }
-
-              // 4. Protect email/URL kerning when gap <= 1px
-              if (gap <= 1) {
-                const isSymbolJunction =
-                  prevText.trim().endsWith('@') || currText.trim().startsWith('@') ||
-                  prevText.trim().endsWith('.') || currText.trim().startsWith('.') ||
-                  prevText.trim().endsWith('/') || currText.trim().startsWith('/') ||
-                  prevText.trim().endsWith('-') || currText.trim().startsWith('-') ||
-                  prevText.trim().endsWith('_') || currText.trim().startsWith('_') ||
-                  prevText.trim().endsWith(':') || currText.trim().startsWith(':');
-
-                if (isSymbolJunction) {
-                  separator = '';
-                }
-              }
-
-              // Prevent double spaces
-              if (/\s$/.test(prevText) || /^\s/.test(currText)) {
-                separator = '';
-              }
-
-              prevItem.text = prevText + separator + currText;
-              const newRightX = Math.max(prevRightX, item.x + (item.width || 0));
-              prevItem.width = newRightX - prevItem.x;
-            } else {
-              mergedItems.push({ ...item });
-            }
-          }
-        });
-
-        // 4. Sequential Row Mapping
-        const rowCells = mergedItems.map(item => item.text.trim()).filter(text => text.length > 0);
-        if (rowCells.length > 0) {
-          allTableRows.push(rowCells);
-        }
-      });
+      if (onProgress) onProgress(Math.round((pageNum / numPages) * 75));
+      await yieldToMain();
     }
 
-    onProgress(Math.round((pageNum / numPages) * 100));
-    await yieldToMain();
-  }
+    if (totalExtractedItems === 0) {
+      throw new Error(
+        "This PDF appears to be a scanned image or photograph without selectable text. " +
+        "To extract tables from scanned documents, please run it through our PDF OCR tool first."
+      );
+    }
 
-  if (totalExtractedItems === 0 || allTableRows.length === 0) {
-    throw new Error("No tabular text could be extracted. The PDF might be a scanned image or composed of vectors.");
-  }
+    if (options.signal?.aborted) {
+      throw new DOMException('Conversion cancelled by user', 'AbortError');
+    }
 
-  // Create Excel workbook and worksheet using SheetJS (XLSX)
-  const XLSX = await import('xlsx');
-  const worksheet = XLSX.utils.aoa_to_sheet(allTableRows);
+    const XLSX = await import('xlsx');
+    const workbook = XLSX.utils.book_new();
 
-  // Auto-size column widths based on maximum cell string length
-  const colWidths = [];
-  allTableRows.forEach(row => {
-    row.forEach((cell, i) => {
-      const cellLength = cell ? cell.toString().length : 0;
-      if (!colWidths[i] || colWidths[i].wch < cellLength + 2) {
-        colWidths[i] = { wch: cellLength + 2 };
+    if (multiSheetMode === 'per-page' && numPages > 1) {
+      perPageTables.forEach(({ pageNum, rows, merges }) => {
+        const sheetData = rows.length > 0 ? rows : [['(No table content on this page)']];
+        const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
+
+        if (merges && merges.length > 0) {
+          worksheet['!merges'] = merges;
+        }
+
+        const colWidths = [];
+        sheetData.forEach(row => {
+          row.forEach((cell, i) => {
+            const cellLength = cell ? String(cell).length : 0;
+            if (!colWidths[i] || colWidths[i].wch < cellLength + 2) {
+              colWidths[i] = { wch: Math.min(60, Math.max(10, cellLength + 2)) };
+            }
+          });
+        });
+        worksheet['!cols'] = colWidths;
+
+        XLSX.utils.book_append_sheet(workbook, worksheet, `Page ${pageNum}`);
+      });
+    } else {
+      const continuousRows = [];
+      const continuousMerges = [];
+
+      perPageTables.forEach(({ pageNum, rows, merges }) => {
+        if (rows.length === 0) return;
+
+        const rowOffset = continuousRows.length;
+
+        if (continuousRows.length > 0 && pageNum > 1) {
+          const firstRow = rows[0];
+          const masterHeader = continuousRows[0];
+          const isRepeatedHeader =
+            firstRow.length === masterHeader.length &&
+            firstRow.filter((val, idx) => val && String(val).toLowerCase() === String(masterHeader[idx] || '').toLowerCase()).length >= Math.ceil(firstRow.length * 0.7);
+
+          if (isRepeatedHeader) {
+            continuousRows.push(...rows.slice(1));
+            if (merges && merges.length > 0) {
+              merges.forEach(m => {
+                if (m.s.r > 0) {
+                  continuousMerges.push({
+                    s: { r: m.s.r - 1 + rowOffset, c: m.s.c },
+                    e: { r: m.e.r - 1 + rowOffset, c: m.e.c }
+                  });
+                }
+              });
+            }
+            return;
+          }
+        }
+
+        continuousRows.push(...rows);
+        if (merges && merges.length > 0) {
+          merges.forEach(m => {
+            continuousMerges.push({
+              s: { r: m.s.r + rowOffset, c: m.s.c },
+              e: { r: m.e.r + rowOffset, c: m.e.c }
+            });
+          });
+        }
+      });
+
+      const finalRows = continuousRows.length > 0 ? continuousRows : [['(No table data extracted)']];
+      const worksheet = XLSX.utils.aoa_to_sheet(finalRows);
+
+      if (continuousMerges.length > 0) {
+        worksheet['!merges'] = continuousMerges;
       }
-    });
-  });
-  worksheet['!cols'] = colWidths;
 
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+      const colWidths = [];
+      finalRows.forEach(row => {
+        row.forEach((cell, i) => {
+          const cellLength = cell ? String(cell).length : 0;
+          if (!colWidths[i] || colWidths[i].wch < cellLength + 2) {
+            colWidths[i] = { wch: Math.min(60, Math.max(10, cellLength + 2)) };
+          }
+        });
+      });
+      worksheet['!cols'] = colWidths;
 
-  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-  return new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    }
+
+    if (onProgress) onProgress(90);
+
+    if (format === 'csv') {
+      const firstSheetName = workbook.SheetNames[0];
+      const csvContent = XLSX.utils.sheet_to_csv(workbook.Sheets[firstSheetName]);
+      if (onProgress) onProgress(100);
+      return new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    }
+
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    if (onProgress) onProgress(100);
+    return new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  } finally {
+    if (pdf && typeof pdf.cleanup === 'function') {
+      try { await pdf.cleanup(); } catch {}
+    }
+    if (loadingTask && typeof loadingTask.destroy === 'function') {
+      try { await loadingTask.destroy(); } catch {}
+    }
+  }
 };

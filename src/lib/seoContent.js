@@ -267,7 +267,7 @@ export const SEO_CONTENT = {
     "faq": [
       {
         "q": "How do I convert a scanned bank statement PDF to Excel?",
-        "a": "Upload your scanned statement, enable table recognition, and download a fully editable spreadsheet with structured rows and columns."
+        "a": "Scanned documents require optical character recognition. For scanned papers or photo PDFs, run your document through our PDF OCR tool first to recognize selectable text, or use our digital table extractor directly for computer-generated statements and vector tables."
       },
       {
         "q": "Does this tool work with multi-page accounting statements?",
@@ -748,7 +748,7 @@ export const SEO_CONTENT = {
     "description": "Transform Excel spreadsheets into neat, paginated PDF documents while keeping your tables intact.",
     "howTo": [
       "Upload Spreadsheet: Drag and drop your .xls or .xlsx file into the upload area.",
-      "Configure Page Fitting: Choose orientation (landscape/portrait) and 'Fit to Single Page' settings.",
+      "Configure Page Fitting: Choose orientation (landscape/portrait), page size (A4/Letter), and 'Fit to Width' auto-scaling.",
       "Click Convert: Select 'Convert to PDF' to render spreadsheet tables.",
       "Download: Save your neatly formatted PDF table ready for viewing or printing."
     ],
@@ -760,7 +760,7 @@ export const SEO_CONTENT = {
     "faq": [
       {
         "q": "How do I stop Excel columns from getting cut off on the PDF page?",
-        "a": "Select our landscape orientation and 'Fit All Columns to One Page' options during conversion."
+        "a": "Select landscape orientation and enable the 'Fit to Width' option, which dynamically adjusts font sizes and cell padding to ensure wide tables fit without column clipping."
       },
       {
         "q": "Does this converter preserve formulas and numerical data?",
