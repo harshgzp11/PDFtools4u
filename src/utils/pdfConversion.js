@@ -394,6 +394,53 @@ export const convertPdfToPpt = async (file, onProgress) => {
   return blob;
 };
 
+const NAMED_HTML_ENTITIES = {
+  '&amp;': '&',
+  '&lt;': '<',
+  '&gt;': '>',
+  '&quot;': '"',
+  '&apos;': "'",
+  '&nbsp;': ' ',
+  '&copy;': '©',
+  '&reg;': '®',
+  '&trade;': '™',
+  '&euro;': '€',
+  '&pound;': '£',
+  '&yen;': '¥',
+  '&cent;': '¢',
+  '&ndash;': '–',
+  '&mdash;': '—',
+  '&hellip;': '…'
+};
+
+/**
+ * Decodes common named and numeric HTML entities into their unicode representations.
+ * Preserves normal text, raw ampersands (e.g. "A & B"), and avoids double decoding.
+ * @param {string} str
+ * @returns {string}
+ */
+export const decodeHtmlEntities = (str) => {
+  if (!str || typeof str !== 'string' || !str.includes('&')) return str;
+  return str.replace(/&(?:[a-zA-Z]+|#\d+|#[xX][0-9a-fA-F]+);/g, (entity) => {
+    const lower = entity.toLowerCase();
+    if (NAMED_HTML_ENTITIES[lower] !== undefined) {
+      return NAMED_HTML_ENTITIES[lower];
+    }
+    if (entity.startsWith('&#x') || entity.startsWith('&#X')) {
+      const code = parseInt(entity.slice(3, -1), 16);
+      if (!isNaN(code) && code >= 0 && code <= 0x10FFFF) {
+        return code === 160 ? ' ' : String.fromCodePoint(code);
+      }
+    } else if (entity.startsWith('&#')) {
+      const code = parseInt(entity.slice(2, -1), 10);
+      if (!isNaN(code) && code >= 0 && code <= 0x10FFFF) {
+        return code === 160 ? ' ' : String.fromCodePoint(code);
+      }
+    }
+    return entity;
+  });
+};
+
 /**
  * Extracts structured table rows from PDF page items using coordinate-based clustering.
  * Preserves empty cells, aligns irregular columns, and stitches multiline wrapped text.
@@ -421,40 +468,48 @@ export const extractTableFromPageItems = (rawItems, pageHeight = 842, _pageWidth
         fontSize,
         width
       };
+    })
+    .filter(it => {
+      const t = it.text.trim();
+      if (!t) return false;
+
+      // Detect generic page number patterns (e.g., "Page 1", "1 of 5", "p. 3")
+      const isPageNumPattern = /^(?:page\s+)?(?:p\.?\s*)?\d+(?:\s*(?:of|\/|-)\s*\d+)?$/i.test(t);
+
+      // Extreme edge margin zone (bottom < 26pt, top > pageHeight - 20pt)
+      const isExtremeMargin = it.y0 < 26 || it.y0 > (pageHeight - 20);
+
+      if (isExtremeMargin) {
+        // Page numbers in extreme margins are always non-table furniture
+        if (isPageNumPattern || /page\b/i.test(t)) return false;
+        // Generic running footers / margin notes in the unprintable bottom margin (< 26pt)
+        if (it.y0 < 26) return false;
+      }
+
+      // Page numbers in the secondary margin zone (< 35pt or > pageHeight - 35pt)
+      if ((it.y0 < 35 || it.y0 > pageHeight - 35) && isPageNumPattern) {
+        return false;
+      }
+
+      return true;
     });
 
   if (validItems.length === 0) return [];
 
-  // Filter running header (extreme top 28pt) and running footer (extreme bottom 28pt) if isolated
-  const contentItems = validItems.filter(it => {
-    const isExtremeTop = it.y0 > pageHeight - 28;
-    const isExtremeBottom = it.y0 < 28;
-    return !(isExtremeTop || isExtremeBottom);
-  });
-
-  const workingItems = contentItems.length > 0 ? contentItems : validItems;
-
-  // Adaptive Baseline Y-clustering for physical line grouping
-  workingItems.sort((a, b) => b.y0 - a.y0);
-
+  // Group into physical text lines (tolerance ~ 3pt)
+  validItems.sort((a, b) => b.y0 - a.y0);
   const physicalLines = [];
-  workingItems.forEach(item => {
-    let matchedLine = physicalLines.find(line => {
-      const lineY = line.y;
-      const threshold = Math.max(3, item.fontSize * 0.45);
-      return Math.abs(lineY - item.y0) <= threshold;
-    });
-
-    if (!matchedLine) {
-      matchedLine = { y: item.y0, fontSize: item.fontSize, items: [] };
-      physicalLines.push(matchedLine);
+  validItems.forEach(item => {
+    let matched = physicalLines.find(l => Math.abs(l.y - item.y0) <= Math.max(3, item.fontSize * 0.35));
+    if (!matched) {
+      matched = { y: item.y0, fontSize: item.fontSize, items: [] };
+      physicalLines.push(matched);
     }
-    matchedLine.items.push(item);
+    matched.items.push(item);
   });
-
   physicalLines.sort((a, b) => b.y - a.y);
 
-  // In each line, sort left to right and merge adjacent tokens based on proportional word spacing
+  // In each line, sort left to right and merge adjacent tokens with space preservation
   physicalLines.forEach(line => {
     line.items.sort((a, b) => a.x0 - b.x0);
     const merged = [];
@@ -466,7 +521,8 @@ export const extractTableFromPageItems = (rawItems, pageHeight = 842, _pageWidth
         const gap = it.x0 - prev.x1;
         const maxMergeGap = Math.max(3.5, prev.fontSize * 0.45);
         if (gap <= maxMergeGap && gap >= -2) {
-          const sep = gap > 0.8 ? ' ' : '';
+          const hasSpace = prev.text.endsWith(' ') || it.text.startsWith(' ');
+          const sep = !hasSpace && gap >= 0.4 ? ' ' : '';
           prev.text = prev.text + sep + it.text;
           prev.x1 = Math.max(prev.x1, it.x1);
           prev.width = prev.x1 - prev.x0;
@@ -478,28 +534,12 @@ export const extractTableFromPageItems = (rawItems, pageHeight = 842, _pageWidth
     line.items = merged;
   });
 
-  // Separate document title banners (single-item line at top followed by multi-item lines)
-  const nonTitleLines = [];
-  const titleLines = [];
-
-  physicalLines.forEach((line, idx) => {
-    if (line.items.length === 1 && idx === 0 && physicalLines.length > 1) {
-      titleLines.push(line.items[0].text.trim());
-    } else {
-      nonTitleLines.push(line);
-    }
-  });
-
-  if (nonTitleLines.length === 0) {
-    return titleLines.map(t => [t]);
-  }
-
-  // Partition lines into distinct table regions based on vertical gap and structure discontinuities
+  // Partition lines into distinct table regions based on vertical gap
   const regions = [];
   let currentRegion = [];
 
-  for (let i = 0; i < nonTitleLines.length; i++) {
-    const line = nonTitleLines[i];
+  for (let i = 0; i < physicalLines.length; i++) {
+    const line = physicalLines[i];
     if (currentRegion.length === 0) {
       currentRegion.push(line);
       continue;
@@ -514,15 +554,12 @@ export const extractTableFromPageItems = (rawItems, pageHeight = 842, _pageWidth
     }
     const medianGap = regionGaps.length > 0
       ? regionGaps.sort((a, b) => a - b)[Math.floor(regionGaps.length / 2)]
-      : 15;
+      : 14;
 
-    // A distinct table region boundary:
-    // 1) Vertical gap >= 32pt or >= 2.5x median row gap
-    // 2) Significant shift in item count between rows
-    const isLargeGap = verticalGap >= Math.max(32, medianGap * 2.5);
-    const isItemCountShift = Math.abs(line.items.length - prevLine.items.length) >= 2;
+    // Table region boundary when vertical gap is large (>= 25pt or >= 2.0x median)
+    const isLargeGap = verticalGap >= Math.max(25, medianGap * 2.0);
 
-    if (isLargeGap || (verticalGap >= 28 && isItemCountShift)) {
+    if (isLargeGap) {
       regions.push(currentRegion);
       currentRegion = [line];
     } else {
@@ -533,124 +570,141 @@ export const extractTableFromPageItems = (rawItems, pageHeight = 842, _pageWidth
     regions.push(currentRegion);
   }
 
-  // Helper to extract rows and column clusters for a single table region
-  const extractSingleRegion = (tableLines, startRowOffset) => {
-    const allX0s = [];
-    tableLines.forEach(line => {
-      line.items.forEach(it => {
-        allX0s.push({ x0: it.x0, x1: it.x1, text: it.text });
-      });
+  const allFinalRows = [];
+  const allMerges = [];
+
+  regions.forEach((regLines, regIdx) => {
+    // Separate cell items from full-width title/caption banners (> 220pt)
+    const cellItems = [];
+    regLines.forEach(l => {
+      if (!(l.items.length === 1 && l.items[0].width > 220)) {
+        l.items.forEach(it => cellItems.push(it));
+      }
     });
 
-    const sortedX0 = allX0s.map(it => it.x0).sort((a, b) => a - b);
+    if (cellItems.length === 0) {
+      regLines.forEach(l => {
+        allFinalRows.push([decodeHtmlEntities(l.items.map(it => it.text.trim()).join(' '))]);
+      });
+      return;
+    }
+
+    // Determine column clusters from cell items
+    const allX0s = cellItems.map(it => it.x0).sort((a, b) => a - b);
     const colClusters = [];
     const CLUSTER_TOLERANCE = 14;
 
-    sortedX0.forEach(x => {
+    allX0s.forEach(x => {
       const cluster = colClusters.find(c => Math.abs(c.mean - x) <= CLUSTER_TOLERANCE);
       if (cluster) {
         cluster.points.push(x);
-        cluster.mean = cluster.points.reduce((sum, v) => sum + v, 0) / cluster.points.length;
+        cluster.mean = cluster.points.reduce((s, v) => s + v, 0) / cluster.points.length;
       } else {
         colClusters.push({ mean: x, points: [x] });
       }
     });
-
     colClusters.sort((a, b) => a.mean - b.mean);
 
     const boundaries = [];
-    for (let i = 0; i < colClusters.length - 1; i++) {
-      boundaries.push((colClusters[i].mean + colClusters[i + 1].mean) / 2);
+    for (let c = 0; c < colClusters.length - 1; c++) {
+      boundaries.push((colClusters[c].mean + colClusters[c + 1].mean) / 2);
     }
 
     const numCols = Math.max(1, colClusters.length);
 
     const getColIndex = (item) => {
       const x = item.x0;
-      for (let i = 0; i < boundaries.length; i++) {
-        if (x < boundaries[i]) return i;
+      for (let b = 0; b < boundaries.length; b++) {
+        if (x < boundaries[b]) return b;
       }
       return boundaries.length;
     };
 
-    const regionRows = [];
-    const regionMerges = [];
-    let prevRow = null;
-    let prevLineY = null;
+    // Cluster lines into logical records
+    const logicalRecords = [];
+    let currentRecordLines = [];
 
-    tableLines.forEach(line => {
-      // Check if line is a merged section heading spanning multiple columns
-      if (line.items.length === 1 && numCols > 1) {
-        const it = line.items[0];
-        const lineGap = prevLineY !== null ? Math.abs(prevLineY - line.y) : 999;
-        if (lineGap > (line.fontSize * 1.45)) {
-          const row = Array(numCols).fill('');
-          row[0] = it.text.trim();
-          const rIdx = startRowOffset + regionRows.length;
-          regionMerges.push({ s: { r: rIdx, c: 0 }, e: { r: rIdx, c: numCols - 1 } });
-          regionRows.push(row);
-          prevRow = row;
-          prevLineY = line.y;
-          return;
+    regLines.forEach(line => {
+      const isBanner = line.items.length === 1 && line.items[0].width > 220;
+
+      if (isBanner) {
+        if (currentRecordLines.length > 0) {
+          logicalRecords.push({ isBanner: false, lines: currentRecordLines });
+          currentRecordLines = [];
         }
+        logicalRecords.push({ isBanner: true, text: line.items[0].text.trim() });
+        return;
       }
 
-      const currentCells = Array(numCols).fill('');
-      const occupiedCols = new Set();
+      if (currentRecordLines.length === 0) {
+        currentRecordLines.push(line);
+        return;
+      }
 
-      line.items.forEach(it => {
-        const colIdx = getColIndex(it);
-        if (currentCells[colIdx] === '') {
-          currentCells[colIdx] = it.text.trim();
-        } else {
-          currentCells[colIdx] += ' ' + it.text.trim();
-        }
-        occupiedCols.add(colIdx);
+      const prevLine = currentRecordLines[currentRecordLines.length - 1];
+      const gap = prevLine.y - line.y;
+      
+      // Intra-row wrap step is proportional to font size: <= fontSize * 1.25
+      const effectiveFontSize = Math.max(6, Math.min(line.fontSize, prevLine.fontSize));
+      const isIntraRowWrap = gap <= (effectiveFontSize * 1.25);
+
+      if (isIntraRowWrap) {
+        currentRecordLines.push(line);
+      } else {
+        logicalRecords.push({ isBanner: false, lines: currentRecordLines });
+        currentRecordLines = [line];
+      }
+    });
+
+    if (currentRecordLines.length > 0) {
+      logicalRecords.push({ isBanner: false, lines: currentRecordLines });
+    }
+
+    // Buffer row between independent regions (only if previous region was not a single banner)
+    const prevWasBanner = allFinalRows.length === 1 && allFinalRows[0].length === 1;
+    if (regIdx > 0 && allFinalRows.length > 0 && !prevWasBanner) {
+      allFinalRows.push([]);
+    }
+
+    // Convert logical records to table rows
+    logicalRecords.forEach(rec => {
+      if (rec.isBanner) {
+        const rIdx = allFinalRows.length;
+        const bannerRow = Array(numCols).fill('');
+        bannerRow[0] = decodeHtmlEntities(rec.text);
+        allFinalRows.push(bannerRow);
+        allMerges.push({ s: { r: rIdx, c: 0 }, e: { r: rIdx, c: numCols - 1 } });
+        return;
+      }
+
+      const cells = Array(numCols).fill('');
+      rec.lines.sort((a, b) => b.y - a.y);
+
+      rec.lines.forEach(l => {
+        l.items.forEach(it => {
+          const col = getColIndex(it);
+          if (cells[col] === '') {
+            cells[col] = it.text.trim();
+          } else {
+            cells[col] += ' ' + it.text.trim();
+          }
+        });
       });
 
-      const lineGap = prevLineY !== null ? Math.abs(prevLineY - line.y) : 999;
-      const isContinuation = prevRow &&
-        lineGap <= (line.fontSize * 1.45) &&
-        Array.from(occupiedCols).every(c => prevRow[c] !== '');
-
-      if (isContinuation && prevRow) {
-        occupiedCols.forEach(c => {
-          prevRow[c] += (prevRow[c] ? ' ' : '') + currentCells[c];
-        });
-      } else {
-        regionRows.push(currentCells);
-        prevRow = currentCells;
+      if (cells.some(c => c.length > 0)) {
+        const decodedCells = cells.map(c => decodeHtmlEntities(c));
+        const rIdx = allFinalRows.length;
+        // Detect full-width section headers inside table (col 0 populated, all other cols empty)
+        if (decodedCells[0] && decodedCells.slice(1).every(c => c === '') && numCols > 1 && (rec.lines[0].items[0].width > 120 || rec.lines.length === 1)) {
+          allMerges.push({ s: { r: rIdx, c: 0 }, e: { r: rIdx, c: numCols - 1 } });
+        }
+        allFinalRows.push(decodedCells);
       }
-      prevLineY = line.y;
     });
-
-    return { rows: regionRows, merges: regionMerges, numCols };
-  };
-
-  const finalRows = [];
-  const allMerges = [];
-
-  // Add leading document title banners
-  if (titleLines.length > 0) {
-    titleLines.forEach(t => {
-      const rIdx = finalRows.length;
-      finalRows.push([t]);
-      allMerges.push({ s: { r: rIdx, c: 0 }, e: { r: rIdx, c: 3 } });
-    });
-  }
-
-  // Process each table region independently
-  regions.forEach((regLines, rIdx) => {
-    if (rIdx > 0 && finalRows.length > 0) {
-      finalRows.push([]);
-    }
-    const { rows, merges } = extractSingleRegion(regLines, finalRows.length);
-    finalRows.push(...rows);
-    allMerges.push(...merges);
   });
 
-  finalRows.merges = allMerges;
-  return finalRows;
+  allFinalRows.merges = allMerges;
+  return allFinalRows;
 };
 
 export const convertPdfToExcel = async (file, onProgress, options = {}) => {
@@ -738,36 +792,37 @@ export const convertPdfToExcel = async (file, onProgress, options = {}) => {
 
         const rowOffset = continuousRows.length;
 
+        let rowsToAppend = rows;
+        let isRepeatedHeader = false;
+
         if (continuousRows.length > 0 && pageNum > 1) {
           const firstRow = rows[0];
-          const masterHeader = continuousRows[0];
-          const isRepeatedHeader =
-            firstRow.length === masterHeader.length &&
-            firstRow.filter((val, idx) => val && String(val).toLowerCase() === String(masterHeader[idx] || '').toLowerCase()).length >= Math.ceil(firstRow.length * 0.7);
+          isRepeatedHeader = continuousRows.some(priorRow => {
+            if (priorRow.length !== firstRow.length || firstRow.length < 2) return false;
+            const matches = firstRow.filter((val, idx) => {
+              const v1 = String(val || '').trim().toLowerCase();
+              const v2 = String(priorRow[idx] || '').trim().toLowerCase();
+              return v1.length > 0 && v1 === v2;
+            }).length;
+            return matches >= Math.ceil(firstRow.length * 0.7);
+          });
 
           if (isRepeatedHeader) {
-            continuousRows.push(...rows.slice(1));
-            if (merges && merges.length > 0) {
-              merges.forEach(m => {
-                if (m.s.r > 0) {
-                  continuousMerges.push({
-                    s: { r: m.s.r - 1 + rowOffset, c: m.s.c },
-                    e: { r: m.e.r - 1 + rowOffset, c: m.e.c }
-                  });
-                }
-              });
-            }
-            return;
+            rowsToAppend = rows.slice(1);
           }
         }
 
-        continuousRows.push(...rows);
+        continuousRows.push(...rowsToAppend);
+
         if (merges && merges.length > 0) {
+          const shift = isRepeatedHeader ? -1 : 0;
           merges.forEach(m => {
-            continuousMerges.push({
-              s: { r: m.s.r + rowOffset, c: m.s.c },
-              e: { r: m.e.r + rowOffset, c: m.e.c }
-            });
+            if (!isRepeatedHeader || m.s.r > 0) {
+              continuousMerges.push({
+                s: { r: m.s.r + shift + rowOffset, c: m.s.c },
+                e: { r: m.e.r + shift + rowOffset, c: m.e.c }
+              });
+            }
           });
         }
       });

@@ -18,7 +18,7 @@ export default function ExcelToPdf() {
   const [totalRowCount, setTotalRowCount] = useState(0);
   const [orientation, setOrientation] = useState('auto'); // 'auto' | 'portrait' | 'landscape'
   const [pageSize, setPageSize] = useState('a4'); // 'a4' | 'letter'
-  const [fitToWidth, setFitToWidth] = useState(true);
+  const [wideTableMode, setWideTableMode] = useState('paginate'); // 'paginate' | 'fit'
 
   // Resource lifecycle & parsed data cache
   const parsedSheetsCacheRef = useRef(new Map());
@@ -147,28 +147,25 @@ export default function ExcelToPdf() {
       return cleanRow;
     });
 
-    // Detect if Row 0 is a Title Banner preceding table headers
-    let title = null;
-    let dataStartRow = 0;
+    // Detect leading Title / Subtitle / Banner rows preceding the table headers
+    const titles = [];
+    let headerRowIdx = 0;
 
-    const row0NonEmpty = normalizedData[0].filter(c => c.trim().length > 0);
-    if (row0NonEmpty.length === 1 && maxCols >= 2) {
-      // Row 0 has only 1 populated cell while table has 2+ columns -> Title banner
-      title = row0NonEmpty[0].trim();
-      dataStartRow = 1;
-
-      // Skip blank rows immediately after title
-      while (
-        dataStartRow < normalizedData.length &&
-        normalizedData[dataStartRow].every(c => c.trim().length === 0)
-      ) {
-        dataStartRow++;
+    for (let r = 0; r < normalizedData.length; r++) {
+      const populated = normalizedData[r].filter(c => c.trim().length > 0);
+      if (populated.length === 0) continue;
+      // If only 1 cell is populated while sheet has 3+ columns, it's a title/subtitle banner
+      if (populated.length === 1 && maxCols >= 3) {
+        titles.push(populated[0].trim());
+      } else {
+        headerRowIdx = r;
+        break;
       }
     }
 
-    const remainingRows = normalizedData.slice(dataStartRow).filter(r => r.some(c => c.trim().length > 0));
-    const head = remainingRows.length > 0 ? [remainingRows[0]] : [];
-    const body = remainingRows.length > 1 ? remainingRows.slice(1) : [];
+    const head = normalizedData[headerRowIdx] ? [normalizedData[headerRowIdx]] : [];
+    const body = normalizedData.slice(headerRowIdx + 1).filter(r => r.some(c => c.trim().length > 0));
+    const title = titles.length > 0 ? titles.join(' — ') : null;
 
     const result = {
       title,
@@ -232,18 +229,21 @@ export default function ExcelToPdf() {
         ? workbook.SheetNames
         : [activeSheet];
 
-      // Measure maximum columns across all sheets to be converted to guide orientation
-      let globalMaxCols = 0;
-      sheetsToProcess.forEach(name => {
+      // Determine initial orientation from the first sheet to be processed
+      let firstSheetCols = 0;
+      for (const name of sheetsToProcess) {
         const ws = workbook.Sheets[name];
         if (ws) {
-          const { maxCols } = extractFormattedSheetData(ws, XLSX, name);
-          if (maxCols > globalMaxCols) globalMaxCols = maxCols;
+          const { maxCols, head, body } = extractFormattedSheetData(ws, XLSX, name);
+          if (head.length > 0 || body.length > 0) {
+            firstSheetCols = maxCols;
+            break;
+          }
         }
-      });
+      }
 
       const initialOrientation = orientation === 'auto'
-        ? (globalMaxCols > 6 ? 'landscape' : 'portrait')
+        ? (firstSheetCols > 6 ? 'landscape' : 'portrait')
         : orientation;
 
       const doc = new jsPDF({
@@ -262,86 +262,136 @@ export default function ExcelToPdf() {
         const { title, head, body, maxCols } = extractFormattedSheetData(ws, XLSX, sheetName);
         if (head.length === 0 && body.length === 0) continue;
 
-        // If not the first page of the document, add a page break for the next sheet
-        if (pagesRendered > 0) {
-          const sheetOrientation = orientation === 'auto'
-            ? (maxCols > 6 ? 'landscape' : 'portrait')
-            : orientation;
-          doc.addPage(pageSize, sheetOrientation);
-        }
+        const currentOrientation = orientation === 'auto'
+          ? (maxCols > 6 ? 'landscape' : 'portrait')
+          : orientation;
 
-        pagesRendered++;
+        const needsHorizontalSplit = wideTableMode === 'paginate' && maxCols > (currentOrientation === 'landscape' ? 12 : 8);
+        const baseChunkCols = currentOrientation === 'landscape' ? 11 : 7;
+        const maxChunkColsWithAnchor = currentOrientation === 'landscape' ? 12 : 8;
 
-        // Determine dynamic scaling parameters based on column count and fitToWidth
-        let dynamicFontSize = 9;
-        let dynamicCellPadding = 6;
+        const chunks = [];
+        if (!needsHorizontalSplit || head[0].length <= baseChunkCols) {
+          chunks.push({
+            colIndices: head[0].map((_, i) => i),
+            chunkTitle: null
+          });
+        } else {
+          const totalCols = head[0].length;
+          chunks.push({
+            colIndices: Array.from({ length: Math.min(baseChunkCols, totalCols) }, (_, i) => i),
+            chunkTitle: `Part 1 (Cols 1-${Math.min(baseChunkCols, totalCols)})`
+          });
+          let startCol = baseChunkCols;
+          let partNum = 2;
+          while (startCol < totalCols) {
+            const remaining = totalCols - startCol;
+            let takeCols = baseChunkCols - 1;
+            // If remaining columns + Col 0 anchor fit within maxChunkColsWithAnchor, combine them
+            // into this segment rather than creating an orphaned 1-2 column tail segment
+            if (1 + remaining <= maxChunkColsWithAnchor) {
+              takeCols = remaining;
+            } else if (remaining - takeCols <= 1 && 1 + remaining <= maxChunkColsWithAnchor + 1) {
+              takeCols = remaining;
+            }
 
-        if (fitToWidth) {
-          if (maxCols > 15) {
-            dynamicFontSize = 6;
-            dynamicCellPadding = 2;
-          } else if (maxCols > 10) {
-            dynamicFontSize = 7;
-            dynamicCellPadding = 3;
-          } else if (maxCols > 6) {
-            dynamicFontSize = 8;
-            dynamicCellPadding = 4;
+            const endCol = Math.min(startCol + takeCols, totalCols);
+            // Col 0 anchor + remaining cols to maintain row identity
+            const cols = [0];
+            for (let c = startCol; c < endCol; c++) cols.push(c);
+            chunks.push({
+              colIndices: cols,
+              chunkTitle: `Part ${partNum} (Cols 1 & ${startCol + 1}-${endCol})`
+            });
+            startCol = endCol;
+            partNum++;
           }
         }
 
-        let startY = 25;
+        for (let cIdx = 0; cIdx < chunks.length; cIdx++) {
+          const chunk = chunks[cIdx];
+          if (pagesRendered > 0) {
+            doc.addPage(pageSize, currentOrientation);
+          }
+          pagesRendered++;
 
-        // Render Sheet Title Banner
-        if (activeSheet === '__ALL_SHEETS__' || title) {
-          doc.setFontSize(13);
-          doc.setFont('helvetica', 'bold');
-          doc.setTextColor(30, 41, 59);
+          let startY = 25;
 
-          const bannerText = title
-            ? `${sheetName}: ${title}`
-            : (activeSheet === '__ALL_SHEETS__' ? `Worksheet: ${sheetName}` : sheetName);
+          // Render Sheet Title Banner
+          if (activeSheet === '__ALL_SHEETS__' || title) {
+            doc.setFontSize(11);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(30, 41, 59);
 
-          doc.text(bannerText, 20, startY);
-          startY += 18;
+            const prefix = chunk.chunkTitle 
+              ? `${sheetName} [${chunk.chunkTitle}]` 
+              : (activeSheet === '__ALL_SHEETS__' ? `Worksheet: ${sheetName}` : sheetName);
+            const bannerText = title ? `${prefix}: ${title}` : prefix;
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const textLines = doc.splitTextToSize(bannerText, pageWidth - 40);
 
-          // Draw a subtle line underneath the sheet title banner
-          doc.setDrawColor(226, 232, 240);
-          doc.setLineWidth(0.75);
-          const pageWidth = doc.internal.pageSize.getWidth();
-          doc.line(20, startY - 6, pageWidth - 20, startY - 6);
-          startY += 6;
+            doc.text(textLines, 20, startY);
+            startY += textLines.length * 13 + 6;
+
+            doc.setDrawColor(226, 232, 240);
+            doc.setLineWidth(0.75);
+            doc.line(20, startY - 4, pageWidth - 20, startY - 4);
+            startY += 6;
+          }
+
+          const chunkHead = [chunk.colIndices.map(i => head[0][i])];
+          const chunkBody = body.map(row => chunk.colIndices.map(i => row[i] || ''));
+
+          let dynamicFontSize = 8.5;
+          let dynamicCellPadding = 4;
+
+          if (wideTableMode === 'fit') {
+            if (maxCols > 15) {
+              dynamicFontSize = 6;
+              dynamicCellPadding = 2;
+            } else if (maxCols > 10) {
+              dynamicFontSize = 7;
+              dynamicCellPadding = 3;
+            } else if (maxCols > 6) {
+              dynamicFontSize = 8;
+              dynamicCellPadding = 4;
+            }
+          } else if (chunk.colIndices.length > 11) {
+            dynamicFontSize = 8.0;
+            dynamicCellPadding = 3.5;
+          }
+
+          autoTable(doc, {
+            head: chunkHead,
+            body: chunkBody,
+            showHead: 'everyPage',
+            startY: startY,
+            theme: 'grid',
+            styles: {
+              fontSize: dynamicFontSize,
+              cellPadding: dynamicCellPadding,
+              textColor: [30, 30, 30],
+              overflow: 'linebreak',
+              lineWidth: 0.5,
+              lineColor: [211, 211, 211]
+            },
+            headStyles: {
+              fillColor: [241, 245, 249],
+              textColor: [15, 23, 42],
+              fontStyle: 'bold',
+              lineWidth: 0.5,
+              lineColor: [203, 213, 225]
+            },
+            alternateRowStyles: {
+              fillColor: [255, 255, 255]
+            },
+            tableLineWidth: 0.5,
+            tableLineColor: [211, 211, 211],
+            pageBreak: 'auto',
+            rowPageBreak: 'avoid',
+            margin: { top: 25, right: 20, bottom: 25, left: 20 }
+          });
         }
-
-        autoTable(doc, {
-          head: head,
-          body: body,
-          showHead: 'everyPage', // Repeat column headers on every subsequent page
-          startY: startY,
-          theme: 'grid',
-          styles: {
-            fontSize: dynamicFontSize,
-            cellPadding: dynamicCellPadding,
-            textColor: [30, 30, 30],
-            overflow: 'linebreak',
-            lineWidth: 0.5,
-            lineColor: [211, 211, 211]
-          },
-          headStyles: {
-            fillColor: [241, 245, 249],
-            textColor: [15, 23, 42],
-            fontStyle: 'bold',
-            lineWidth: 0.5,
-            lineColor: [203, 213, 225]
-          },
-          alternateRowStyles: {
-            fillColor: [255, 255, 255]
-          },
-          tableLineWidth: 0.5,
-          tableLineColor: [211, 211, 211],
-          pageBreak: 'auto',
-          rowPageBreak: 'avoid',
-          margin: { top: 25, right: 20, bottom: 25, left: 20 }
-        });
       }
 
       if (pagesRendered === 0) {
@@ -584,18 +634,18 @@ export default function ExcelToPdf() {
           <div>
             <label className="block text-xs font-bold text-gray-700 mb-1 flex items-center gap-1.5">
               <Minimize2 className="w-3.5 h-3.5 text-green-600" />
-              Fit to Width
+              Wide Tables
             </label>
             <button
               type="button"
-              onClick={() => setFitToWidth(!fitToWidth)}
+              onClick={() => setWideTableMode(wideTableMode === 'paginate' ? 'fit' : 'paginate')}
               className={`w-full p-2.5 rounded-xl border text-xs font-bold transition-all ${
-                fitToWidth 
+                wideTableMode === 'paginate' 
                   ? 'bg-green-50 border-green-300 text-green-800' 
                   : 'bg-gray-50 border-gray-300 text-gray-600'
               }`}
             >
-              {fitToWidth ? 'Auto-Scaled' : 'Standard'}
+              {wideTableMode === 'paginate' ? 'Split (Readable)' : 'Fit to Width'}
             </button>
           </div>
         </div>

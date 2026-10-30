@@ -20,7 +20,7 @@ const autoTableModule = await import(autoTablePath);
 const autoTable = autoTableModule.default || autoTableModule;
 
 // Import our extraction logic from pdfConversion.js
-const { extractTableFromPageItems, convertPdfToExcel } = await import(pathToFileURL(path.join(projectRoot, 'src', 'utils', 'pdfConversion.js')).href);
+const { extractTableFromPageItems, convertPdfToExcel, decodeHtmlEntities } = await import(pathToFileURL(path.join(projectRoot, 'src', 'utils', 'pdfConversion.js')).href);
 
 let passedCount = 0;
 let totalCount = 0;
@@ -261,6 +261,102 @@ await runAsyncTest('Test 1.8: Merged Category / Section Heading Detection', asyn
   assert.strictEqual(rows.merges[0].e.c, 3, 'Merge spans all 4 cols');
 });
 
+await runAsyncTest('Test 1.10: Complex PDF Benchmark (75 TX IDs, 7 Cols, SP-001..SP-004, Furniture Filtered)', async () => {
+  const pdfPath = 'C:\\Users\\Harsh Srivastava\\Downloads\\PDFTools4U_Complex_PDF_Test.pdf';
+  if (!fs.existsSync(pdfPath)) {
+    console.log('    [SKIP] Benchmark PDF file not found at expected path');
+    return;
+  }
+  const pdfBuffer = fs.readFileSync(pdfPath);
+  const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(pdfBuffer) }).promise;
+
+  const pageTables = [];
+  for (let p = 1; p <= pdf.numPages; p++) {
+    const page = await pdf.getPage(p);
+    const textContent = await page.getTextContent();
+    const v = page.getViewport({ scale: 1.0 });
+    const rows = extractTableFromPageItems(textContent.items, v.height, v.width);
+    pageTables.push({ pageNum: p, rows });
+  }
+
+  // Verify Page 1 Table C
+  const p1Rows = pageTables[0].rows;
+  const sp1 = p1Rows.find(r => r[0] === 'SP-001');
+  const sp2 = p1Rows.find(r => r[0] === 'SP-002');
+  const sp3 = p1Rows.find(r => r.some(c => String(c).includes('Cedar')));
+  const sp4 = p1Rows.find(r => r[0] === 'SP-004');
+
+  assert.ok(sp1 && sp1[1] === 'Aster Labs' && sp1[3] === '$12,500.00', 'SP-001 extracted accurately');
+  assert.ok(sp2 && sp2[1] === 'Blue Finch Ltd.' && sp2[2].includes('Migration support') && sp2[3] === '', 'SP-002 multiline description stitched');
+  assert.ok(sp3 && sp3[0] === '' && sp3[2].includes('Security assessment') && sp3[3] === '$3,875.25', 'SP-003 sparse cells preserved');
+  assert.strictEqual(sp3[1], 'Cedar & Co.', 'Cedar & Co. HTML entity &amp; decoded cleanly');
+  assert.ok(sp4 && sp4[1] === 'Delta Works' && sp4[3] === '$0.00', 'SP-004 zero value preserved');
+
+  // Verify Table D: All 75 Transaction IDs
+  const p2Rows = pageTables[1].rows;
+  const p3Rows = pageTables[2].rows;
+  const allTxRows = [...p2Rows, ...p3Rows].filter(r => r.some(c => /^TX-\d{4}$/.test(String(c).trim())));
+  assert.strictEqual(allTxRows.length, 75, 'All 75 transaction IDs extracted');
+
+  for (let i = 1; i <= 75; i++) {
+    const expectedId = `TX-${String(i).padStart(4, '0')}`;
+    assert.strictEqual(allTxRows[i - 1][0], expectedId, `Record ${i} ID match`);
+    assert.strictEqual(allTxRows[i - 1].length, 7, `Record ${expectedId} 7 columns`);
+  }
+
+  // Verify TX-0008, TX-0019, TX-0037, TX-0058
+  const tx8 = allTxRows.find(r => r[0] === 'TX-0008');
+  assert.ok(tx8[3].includes('Monthly subscription fee') && tx8[4] === '' && tx8[5] === '$1,084.68' && tx8[6] === 'Yes', 'TX-0008 accurate columns');
+
+  const tx19 = allTxRows.find(r => r[0] === 'TX-0019');
+  assert.ok(tx19[3].includes('International transfer fee') && tx19[4] === '$1,267.79' && tx19[5] === '' && tx19[6] === 'Yes', 'TX-0019 accurate columns');
+
+  const tx37 = allTxRows.find(r => r[0] === 'TX-0037');
+  assert.ok(tx37[3].includes('Data migration services') && tx37[4] === '$15,070.82' && tx37[5] === '', 'TX-0037 accurate columns');
+
+  const tx58 = allTxRows.find(r => r[0] === 'TX-0058');
+  assert.ok(tx58[3].includes('Credit adjustment following') && tx58[4] === '$10,295.21' && tx58[5] === '', 'TX-0058 accurate columns');
+
+  // Verify zero page furniture
+  const allRowsFlat = pageTables.flatMap(p => p.rows);
+  allRowsFlat.forEach(r => {
+    const line = r.join(' ');
+    assert.ok(!line.includes('PDFTools4U synthetic conversion QA document'), 'Running footer excluded');
+    assert.ok(!/^Page \d+$/i.test(line.trim()), 'Page number excluded');
+  });
+});
+
+runTest('Test 1.11: HTML Entity Decoding in Table Cells & Strings', () => {
+  // Test Cedar & Co.
+  assert.strictEqual(decodeHtmlEntities('Cedar &amp; Co.'), 'Cedar & Co.');
+
+  // Test A & B Technologies (preserving raw unencoded ampersands)
+  assert.strictEqual(decodeHtmlEntities('A & B Technologies'), 'A & B Technologies');
+  assert.strictEqual(decodeHtmlEntities('AT&T and R&D Systems'), 'AT&T and R&D Systems');
+
+  // Test less-than and greater-than symbols
+  assert.strictEqual(decodeHtmlEntities('&lt;100&gt; and &lt;= 50'), '<100> and <= 50');
+
+  // Test quotation marks and apostrophes
+  assert.strictEqual(decodeHtmlEntities('&quot;Hello World&quot;'), '"Hello World"');
+  assert.strictEqual(decodeHtmlEntities('&apos;Single Quotes&apos;'), "'Single Quotes'");
+  assert.strictEqual(decodeHtmlEntities('&#39;Numeric Apostrophe&#39;'), "'Numeric Apostrophe'");
+  assert.strictEqual(decodeHtmlEntities('&#x27;Hex Apostrophe&#x27;'), "'Hex Apostrophe'");
+
+  // Test non-breaking spaces
+  assert.strictEqual(decodeHtmlEntities('Non&nbsp;Breaking&#160;Space'), 'Non Breaking Space');
+
+  // Test numeric and hex HTML entities
+  assert.strictEqual(decodeHtmlEntities('&#x26; Ampersand'), '& Ampersand');
+  assert.strictEqual(decodeHtmlEntities('Copyright &#169; 2026'), 'Copyright © 2026');
+
+  // Test no double-decoding
+  assert.strictEqual(decodeHtmlEntities('&amp;amp;'), '&amp;');
+
+  // Test normal text preservation
+  assert.strictEqual(decodeHtmlEntities('Regular text without entities 100% $50'), 'Regular text without entities 100% $50');
+});
+
 await runAsyncTest('Test 1.9: Conversion Cancellation via AbortSignal', async () => {
   const doc = new jsPDF();
   autoTable(doc, {
@@ -422,6 +518,227 @@ await runAsyncTest('Test 2.5: Multi-Page Long Table Repeating Headers', async ()
   const pdfOutput = doc.output('arraybuffer');
   const loadedPdf = await pdfjsLib.getDocument({ data: new Uint8Array(pdfOutput) }).promise;
   assert.ok(loadedPdf.numPages > 1, `80-row table should span across multiple pages. Got: ${loadedPdf.numPages}`);
+});
+
+await runAsyncTest('Test 2.7: Complex Excel Benchmark End-to-End PDF Generation (4 Sheets, 120 Transactions, 22 Cols, 0 Blank Pages)', async () => {
+  const excelPath = 'C:\\Users\\Harsh Srivastava\\Downloads\\PDFTools4U_Complex_Excel_Test.xlsx';
+  if (!fs.existsSync(excelPath)) {
+    console.log('    [SKIP] Benchmark Excel file not found at expected path');
+    return;
+  }
+  const buf = fs.readFileSync(excelPath);
+  const wb = XLSX.read(buf, { type: 'buffer', cellDates: true });
+
+  assert.strictEqual(wb.SheetNames.length, 4, 'Workbook contains exactly 4 worksheets');
+  assert.ok(wb.SheetNames.includes('Executive Summary'));
+  assert.ok(wb.SheetNames.includes('Transactions_120x14'));
+  assert.ok(wb.SheetNames.includes('WideData_22Cols'));
+  assert.ok(wb.SheetNames.includes('EdgeCases_Merged_Sparse'));
+
+  // Helper matching extractFormattedSheetData from ExcelToPdf.jsx
+  function extractFormattedSheetData(ws) {
+    const rawData = XLSX.utils.sheet_to_json(ws, { 
+      header: 1, 
+      raw: false, 
+      dateNF: 'yyyy-mm-dd',
+      defval: '' 
+    });
+
+    const maxCols = Math.max(...rawData.map(r => (Array.isArray(r) ? r.length : 0)), 0);
+    const normalizedData = rawData.map(row => {
+      const cleanRow = [];
+      for (let i = 0; i < maxCols; i++) {
+        const cell = Array.isArray(row) ? row[i] : '';
+        cleanRow.push(cell !== undefined && cell !== null ? String(cell) : '');
+      }
+      return cleanRow;
+    });
+
+    const titles = [];
+    let headerRowIdx = 0;
+    for (let r = 0; r < normalizedData.length; r++) {
+      const populated = normalizedData[r].filter(c => c.trim().length > 0);
+      if (populated.length === 0) continue;
+      if (populated.length === 1 && maxCols >= 3) {
+        titles.push(populated[0].trim());
+      } else {
+        headerRowIdx = r;
+        break;
+      }
+    }
+
+    const head = normalizedData[headerRowIdx] ? [normalizedData[headerRowIdx]] : [];
+    const body = normalizedData.slice(headerRowIdx + 1).filter(r => r.some(c => c.trim().length > 0));
+    const title = titles.length > 0 ? titles.join(' — ') : null;
+
+    return { title, head, body, maxCols };
+  }
+
+  // Execute the exact PDF generation loop from ExcelToPdf.jsx
+  const sheetsToProcess = wb.SheetNames;
+  let firstSheetCols = 0;
+  for (const name of sheetsToProcess) {
+    const ws = wb.Sheets[name];
+    if (ws) {
+      const { maxCols, head, body } = extractFormattedSheetData(ws);
+      if (head.length > 0 || body.length > 0) {
+        firstSheetCols = maxCols;
+        break;
+      }
+    }
+  }
+
+  const orientation = 'auto';
+  const pageSize = 'a4';
+  const wideTableMode = 'paginate';
+  const activeSheet = '__ALL_SHEETS__';
+
+  const initialOrientation = orientation === 'auto'
+    ? (firstSheetCols > 6 ? 'landscape' : 'portrait')
+    : orientation;
+
+  const doc = new jsPDF({
+    orientation: initialOrientation,
+    unit: 'pt',
+    format: pageSize
+  });
+
+  let pagesRendered = 0;
+
+  for (let sIdx = 0; sIdx < sheetsToProcess.length; sIdx++) {
+    const sheetName = sheetsToProcess[sIdx];
+    const ws = wb.Sheets[sheetName];
+    if (!ws) continue;
+
+    const { title, head, body, maxCols } = extractFormattedSheetData(ws);
+    if (head.length === 0 && body.length === 0) continue;
+
+    const currentOrientation = orientation === 'auto'
+      ? (maxCols > 6 ? 'landscape' : 'portrait')
+      : orientation;
+
+    const needsHorizontalSplit = wideTableMode === 'paginate' && maxCols > (currentOrientation === 'landscape' ? 12 : 8);
+    const baseChunkCols = currentOrientation === 'landscape' ? 11 : 7;
+    const maxChunkColsWithAnchor = currentOrientation === 'landscape' ? 12 : 8;
+
+    const chunks = [];
+    if (!needsHorizontalSplit || head[0].length <= baseChunkCols) {
+      chunks.push({
+        colIndices: head[0].map((_, i) => i),
+        chunkTitle: null
+      });
+    } else {
+      const totalCols = head[0].length;
+      chunks.push({
+        colIndices: Array.from({ length: Math.min(baseChunkCols, totalCols) }, (_, i) => i),
+        chunkTitle: `Part 1 (Cols 1-${Math.min(baseChunkCols, totalCols)})`
+      });
+      let startCol = baseChunkCols;
+      let partNum = 2;
+      while (startCol < totalCols) {
+        const remaining = totalCols - startCol;
+        let takeCols = baseChunkCols - 1;
+        if (1 + remaining <= maxChunkColsWithAnchor) {
+          takeCols = remaining;
+        } else if (remaining - takeCols <= 1 && 1 + remaining <= maxChunkColsWithAnchor + 1) {
+          takeCols = remaining;
+        }
+
+        const endCol = Math.min(startCol + takeCols, totalCols);
+        const cols = [0];
+        for (let c = startCol; c < endCol; c++) cols.push(c);
+        chunks.push({
+          colIndices: cols,
+          chunkTitle: `Part ${partNum} (Cols 1 & ${startCol + 1}-${endCol})`
+        });
+        startCol = endCol;
+        partNum++;
+      }
+    }
+
+    for (let cIdx = 0; cIdx < chunks.length; cIdx++) {
+      const chunk = chunks[cIdx];
+      if (pagesRendered > 0) {
+        doc.addPage(pageSize, currentOrientation);
+      }
+      pagesRendered++;
+
+      let startY = 25;
+      if (activeSheet === '__ALL_SHEETS__' || title) {
+        doc.setFontSize(11);
+        const prefix = chunk.chunkTitle 
+          ? `${sheetName} [${chunk.chunkTitle}]` 
+          : (activeSheet === '__ALL_SHEETS__' ? `Worksheet: ${sheetName}` : sheetName);
+        const bannerText = title ? `${prefix}: ${title}` : prefix;
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const textLines = doc.splitTextToSize(bannerText, pageWidth - 40);
+
+        doc.text(textLines, 20, startY);
+        startY += textLines.length * 13 + 6;
+      }
+
+      const chunkHead = [chunk.colIndices.map(i => head[0][i])];
+      const chunkBody = body.map(row => chunk.colIndices.map(i => row[i] || ''));
+
+      let dynamicFontSize = 8.5;
+      let dynamicCellPadding = 4;
+      if (chunk.colIndices.length > 11) {
+        dynamicFontSize = 8.0;
+        dynamicCellPadding = 3.5;
+      }
+
+      autoTable(doc, {
+        head: chunkHead,
+        body: chunkBody,
+        showHead: 'everyPage',
+        startY: startY,
+        theme: 'grid',
+        styles: { fontSize: dynamicFontSize, cellPadding: dynamicCellPadding, overflow: 'linebreak' },
+        margin: { top: 25, right: 20, bottom: 25, left: 20 }
+      });
+    }
+  }
+
+  const pdfOutput = doc.output('arraybuffer');
+  assert.ok(pdfOutput.byteLength > 100000, 'Complete PDF should have substantial byte size');
+
+  const loadedPdf = await pdfjsLib.getDocument({ data: new Uint8Array(pdfOutput) }).promise;
+  assert.strictEqual(loadedPdf.numPages, 19, `Expected exactly 19 pages without blank pages, got ${loadedPdf.numPages}`);
+
+  let blankPageCount = 0;
+  const allPageText = [];
+
+  for (let p = 1; p <= loadedPdf.numPages; p++) {
+    const page = await loadedPdf.getPage(p);
+    const textContent = await page.getTextContent();
+    const text = textContent.items.map(it => it.str).join(' ').trim();
+    allPageText.push(text);
+    if (text.length === 0) blankPageCount++;
+  }
+
+  // Verify zero blank pages
+  assert.strictEqual(blankPageCount, 0, 'Generated PDF must contain ZERO unintended blank pages');
+
+  // Verify all 4 worksheets
+  const fullText = allPageText.join(' ');
+  assert.ok(fullText.includes('Executive Summary'), 'Executive Summary present');
+  assert.ok(fullText.includes('Transactions_120x14'), 'Transactions_120x14 present');
+  assert.ok(fullText.includes('WideData_22Cols'), 'WideData_22Cols present');
+  assert.ok(fullText.includes('EdgeCases_Merged_Sparse'), 'EdgeCases_Merged_Sparse present');
+
+  // Verify all 120 transaction records in PDF
+  for (let i = 1; i <= 120; i++) {
+    const expectedId = `LED-${String(i).padStart(5, '0')}`;
+    assert.ok(fullText.includes(expectedId), `Transaction ${expectedId} must be present in PDF`);
+  }
+
+  // Verify wide table columns & optimized pagination (Part 1 and Part 2 only, no orphaned Part 3)
+  assert.ok(fullText.includes('Part 1 (Cols 1-11)'), 'Wide table Part 1 chunk rendered');
+  assert.ok(fullText.includes('Part 2 (Cols 1 & 12-22)'), 'Wide table Part 2 chunk rendered with Col 22 absorbed');
+  assert.ok(!fullText.includes('Part 3'), 'Orphaned single-column Part 3 chunk eliminated');
+  assert.ok(fullText.includes('WID-0001'), 'Wide table record WID-0001 present');
+  assert.ok(fullText.includes('WID-0045'), 'Wide table record WID-0045 present');
+  assert.ok(fullText.includes('Audit Flag'), 'Wide table Col 22 Audit Flag present');
 });
 
 runTest('Test 2.6: Excel Sheet Caching & Lightweight Preview Slicing', () => {
