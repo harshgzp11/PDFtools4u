@@ -35,6 +35,10 @@ export default function PdfConverterHub() {
     } else if (['xlsx', 'xls', 'csv'].includes(ext) || type.includes('sheet') || type.includes('excel')) {
       setFileType('excel');
     } else if (['pptx', 'ppt'].includes(ext) || type.includes('presentation') || type.includes('powerpoint')) {
+      if (ext === 'ppt') {
+        alert("Legacy binary PowerPoint (.ppt) format is not supported in the browser. Please open the presentation in PowerPoint, Google Slides, or LibreOffice and save it as modern .pptx before converting.");
+        return;
+      }
       setFileType('ppt');
     } else if (['txt', 'text', 'log', 'md'].includes(ext) || type.startsWith('text/')) {
       setFileType('txt');
@@ -116,7 +120,6 @@ export default function PdfConverterHub() {
             <span className="px-3.5 py-1 bg-emerald-100 text-emerald-700 font-bold rounded-full text-xs sm:text-sm">XLSX</span>
             <span className="px-3.5 py-1 bg-green-100 text-green-700 font-bold rounded-full text-xs sm:text-sm">XLS</span>
             <span className="px-3.5 py-1 bg-orange-100 text-orange-700 font-bold rounded-full text-xs sm:text-sm">PPTX</span>
-            <span className="px-3.5 py-1 bg-amber-100 text-amber-700 font-bold rounded-full text-xs sm:text-sm">PPT</span>
             <span className="px-3.5 py-1 bg-yellow-100 text-yellow-800 font-bold rounded-full text-xs sm:text-sm">JPG</span>
             <span className="px-3.5 py-1 bg-lime-100 text-lime-800 font-bold rounded-full text-xs sm:text-sm">PNG</span>
             <span className="px-3.5 py-1 bg-purple-100 text-purple-700 font-bold rounded-full text-xs sm:text-sm">WEBP</span>

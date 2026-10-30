@@ -780,60 +780,80 @@ export const convertPdfToImages = async (file, format = 'jpeg', onProgress) => {
 };
 
 /**
- * Converts a PDF file to a native PPTX file (images on slides)
- * @param {File} file 
+ * Converts a PDF file to a native PPTX presentation (high-fidelity layout preservation).
+ * Dynamically detects PDF page aspect ratio (A4 portrait, letter, landscape) to eliminate pillarboxing.
+ * @param {File|Blob|ArrayBuffer} file 
  * @param {Function} onProgress 
  */
 export const convertPdfToPpt = async (file, onProgress) => {
   if (!file) throw new Error("No file provided");
-  onProgress(0);
+  if (onProgress) onProgress(0);
 
   const pptxgen = (await import('pptxgenjs')).default;
-  const arrayBuffer = await file.arrayBuffer();
+  const arrayBuffer = await (file.arrayBuffer ? file.arrayBuffer() : readArrayBuffer(file));
   const _pdfjsLib = await initPdfJs();
   const pdf = await _pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
   const numPages = pdf.numPages;
-  
+
+  if (numPages === 0) {
+    throw new Error("The PDF document contains no pages.");
+  }
+
+  // Inspect page 1 dimensions to set presentation slide layout matching source document
+  const page1 = await pdf.getPage(1);
+  const vp1 = page1.getViewport({ scale: 1.0 });
+  const slideWidthInches = Math.max(4, Number((vp1.width / 72).toFixed(2)));
+  const slideHeightInches = Math.max(3, Number((vp1.height / 72).toFixed(2)));
+
   const pres = new pptxgen();
-  const SLIDE_W = 10;
-  const SLIDE_H = 5.625;
-  
+  pres.defineLayout({
+    name: 'MATCH_PDF_LAYOUT',
+    width: slideWidthInches,
+    height: slideHeightInches,
+  });
+  pres.layout = 'MATCH_PDF_LAYOUT';
+
   for (let i = 1; i <= numPages; i++) {
     const page = await pdf.getPage(i);
-    const viewport = page.getViewport({ scale: 1.5 }); // Keep scale low for memory
-    
+    const vpPage = page.getViewport({ scale: 1.0 });
+    const pageWInches = vpPage.width / 72;
+    const pageHInches = vpPage.height / 72;
+
+    // Use scale 2.0 (144 DPI) for sharp, high-fidelity visual rendering
+    const viewport = page.getViewport({ scale: 2.0 });
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     canvas.width = viewport.width;
     canvas.height = viewport.height;
-    
+
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
+
     await page.render({ canvasContext: ctx, viewport }).promise;
-    
-    const imgData = canvas.toDataURL('image/jpeg', 0.8);
-    
-    const scale = Math.min(SLIDE_W / viewport.width, SLIDE_H / viewport.height);
-    const finalW = viewport.width * scale;
-    const finalH = viewport.height * scale;
-    const xOffset = (SLIDE_W - finalW) / 2;
-    const yOffset = (SLIDE_H - finalH) / 2;
-    
+
+    const imgData = canvas.toDataURL('image/jpeg', 0.85);
+
+    // Scale proportionally to fit slide dimensions without stretching
+    const scaleFactor = Math.min(slideWidthInches / pageWInches, slideHeightInches / pageHInches);
+    const finalW = pageWInches * scaleFactor;
+    const finalH = pageHInches * scaleFactor;
+    const xOffset = (slideWidthInches - finalW) / 2;
+    const yOffset = (slideHeightInches - finalH) / 2;
+
     const slide = pres.addSlide();
     slide.addImage({ data: imgData, x: xOffset, y: yOffset, w: finalW, h: finalH });
-    
-    // Explicit Memory Cleanup
+
+    // Explicit Memory Cleanup to prevent memory spikes on multi-page documents
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     canvas.width = 0;
     canvas.height = 0;
-    
-    onProgress(Math.round((i / numPages) * 100));
-    
+
+    if (onProgress) onProgress(Math.round((i / numPages) * 100));
+
     // Yield to main thread
     await yieldToMain();
   }
-  
+
   const blob = await pres.write({ outputType: 'blob' });
   return blob;
 };

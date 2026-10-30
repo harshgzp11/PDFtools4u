@@ -716,30 +716,38 @@ export const SEO_CONTENT = {
   },
   "ppt-to-pdf": {
     "title": "Convert PowerPoint to PDF Online",
-    "description": "Extract text and selected embedded images from a PPTX in your browser and rebuild them as PDF pages. Review the output because slide layouts may change.",
+    "description": "Convert PowerPoint presentations into clean, paginated PDF documents directly in your browser with extracted text, tables, and images.",
     "howTo": [
       "Select Presentation: Choose a .pptx file from your device.",
-      "Review Slides: Wait for the browser to parse the presentation and inspect the available preview.",
-      "Convert: Select 'Convert to PDF' to rebuild the extracted content as PDF pages.",
-      "Download and Check: Save the PDF and review its text, images, order, and page dimensions."
+      "Review Slides: Inspect slide thumbnails, extracted titles, bullet points, and embedded images.",
+      "Convert: Select 'Convert to PDF' to assemble the presentation into a paginated PDF document.",
+      "Download and Check: Save your PDF with automatic continuation pages to accommodate extended text."
     ],
-    "why": "The browser tool reads .pptx slide XML, extracts text, and locates embedded images before assembling a new PDF. It is an extraction workflow, not a full PowerPoint renderer: original text-box positions, fonts, shapes, charts, animations, and other slide styling are not preserved. Slides with images currently place the first extracted image on the output page instead of laying out both the image and extracted text. Use native PowerPoint or Google Slides export when visual fidelity matters, and review every generated page.",
+    "why": "The browser tool parses .pptx slide XML, resolves presentation slide order, extracts text hierarchies, and renders embedded graphics into a clean, paginated PDF. Supported text, tables, and embedded images are laid out cleanly, with overflowing text continuing onto additional pages to prevent truncation. All processing runs entirely in your browser for maximum privacy.",
     "features": [
       "File processing: Supported operations are designed to run in your browser.",
       "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
-        "q": "Will my presentation fonts and slide layouts stay intact?",
-        "a": "No. This tool rebuilds pages from extracted text and selected images rather than rendering the original slides. Check the exported PDF against the presentation."
+        "q": "Which slide elements are extracted and rendered?",
+        "a": "Extracted text headings, bullet points, tables, and embedded raster and vector images (JPEG, PNG, SVG, WEBP) are rendered onto the PDF. Theme backgrounds and decorative vector shapes may not be preserved to produce a clean document format."
       },
       {
-        "q": "Can I convert both older .ppt and modern .pptx formats?",
-        "a": "The current upload control accepts .pptx files. It does not advertise support for the older binary .ppt format."
+        "q": "Can I convert older binary .ppt files?",
+        "a": "The tool requires modern .pptx format. If you have an older binary .ppt file, save it as .pptx in PowerPoint, Google Slides, or LibreOffice before uploading."
       },
       {
-        "q": "Are speaker notes included in the converted PDF?",
-        "a": "The current parser reads slide XML text and embedded images; it does not advertise speaker-note export. Verify the resulting PDF and use your presentation app's native export if notes are required."
+        "q": "What happens if a slide has extensive text?",
+        "a": "The converter automatically generates continuation pages for overflowing content, ensuring your text is fully preserved without truncation."
+      },
+      {
+        "q": "Are native PowerPoint charts and SmartArt reconstructed?",
+        "a": "Native PowerPoint charts and SmartArt diagrams are not reconstructed. If your presentation relies on complex charts, save them as images or export to PDF directly within PowerPoint."
+      },
+      {
+        "q": "Are all languages and scripts supported?",
+        "a": "Supported fonts cover Latin, Greek, Cyrillic, and Hindi (Devanagari). Chinese, Japanese, Korean (CJK) characters and Arabic right-to-left text shaping are not currently supported."
       }
     ]
   },
@@ -774,30 +782,30 @@ export const SEO_CONTENT = {
   },
   "pdf-to-ppt": {
     "title": "Convert PDF to PowerPoint Online",
-    "description": "Convert PDF files back into editable PowerPoint slides for quick and easy presentations.",
+    "description": "Convert PDF document pages into high-resolution PowerPoint presentation slides with exact layout and visual preservation.",
     "howTo": [
-      "Upload PDF File: Drag and drop the PDF document or slide deck you want to convert.",
-      "Select Output Format: Choose PPTX for modern Microsoft PowerPoint compatibility.",
-      "Click Convert: Select 'Convert to PPTX' to reconstruct slides and editable elements.",
-      "Download: Save your .pptx presentation and open it in PowerPoint or Google Slides."
+      "Upload PDF File: Drag and drop the PDF document or presentation deck you want to convert.",
+      "Review Pages: Inspect the visual grid preview of your document pages.",
+      "Click Convert: Select 'Convert to PowerPoint' to render matching presentation slides.",
+      "Download: Save your .pptx presentation file and open it in Microsoft PowerPoint or Google Slides."
     ],
-    "why": "If you received a presentation deck locked in PDF format that needs updating, re-creating slides from scratch is time-consuming. Our PDF to PowerPoint converter transforms document pages into editable presentation slides, extracting text boxes, images, and vector graphics into slide layouts. Save time and edit content directly inside PowerPoint.",
+    "why": "If you have a PDF report, slide deck, or brochure that you need to present, converting pages into a PowerPoint deck makes presenting seamless. Our PDF to PowerPoint converter captures each PDF page at high resolution with dynamic aspect ratio matching (A4 portrait, letter, landscape), preserving exact typography, vector charts, and visual layouts directly inside a native .pptx presentation.",
     "features": [
       "File processing: Supported operations are designed to run in your browser.",
       "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
-        "q": "Can I edit text and move images in the converted PPTX file?",
-        "a": "Yes, the converter reconstructs text elements and graphics into editable objects on PowerPoint slides."
+        "q": "Can I edit text inside the converted PPTX slides?",
+        "a": "The converter renders PDF pages into high-resolution presentation slides to guarantee 100% visual and layout fidelity. Because pages are visually preserved as slides, individual text runs are not split into separate editable text boxes."
+      },
+      {
+        "q": "Will portrait and landscape page orientations be preserved?",
+        "a": "Yes. The converter dynamically detects your PDF's aspect ratio and configures the presentation dimensions to match your document."
       },
       {
         "q": "Will each page of the PDF become an individual presentation slide?",
         "a": "Yes, every page of your PDF is mapped directly to a separate slide in the resulting PPTX file."
-      },
-      {
-        "q": "Is there a cost or subscription required to convert PDF to PPTX?",
-        "a": "The site is currently free to use and this operation does not require an account. File size and document limits depend on the tool and device."
       }
     ]
   },

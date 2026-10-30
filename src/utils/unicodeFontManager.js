@@ -67,6 +67,7 @@ export async function ensureUnicodeFonts(doc, fullText = '') {
     try {
       doc.addFileToVFS('DejaVuSans.ttf', dejavuB64);
       doc.addFont('DejaVuSans.ttf', 'DejaVuSans', 'normal');
+      doc.addFont('DejaVuSans.ttf', 'DejaVuSans', 'bold');
       primaryFont = 'DejaVuSans';
     } catch {
       // Font might already be registered in this document
@@ -81,6 +82,7 @@ export async function ensureUnicodeFonts(doc, fullText = '') {
       try {
         doc.addFileToVFS('NotoSansDevanagari.ttf', devanagariB64);
         doc.addFont('NotoSansDevanagari.ttf', 'NotoSansDevanagari', 'normal');
+        doc.addFont('NotoSansDevanagari.ttf', 'NotoSansDevanagari', 'bold');
         hasDevanagari = true;
       } catch {
         hasDevanagari = true;

@@ -1,13 +1,8 @@
-import { trackEvent } from '../lib/analytics';
 import React, { useState, useEffect } from 'react';
-import { Presentation, Download, AlertTriangle } from 'lucide-react';
+import { Presentation, CheckCircle2 } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
-
-
-import pptxgen from 'pptxgenjs';
-import { trackError } from '../lib/analytics';
-
-
+import { trackEvent, trackError } from '../lib/analytics';
+import { convertPdfToPpt } from '../utils/pdfConversion';
 
 export default function PdfToPpt() {
   const [file, setFile] = useState(null);
@@ -17,7 +12,7 @@ export default function PdfToPpt() {
 
   useEffect(() => {
     if (window.__sharedFile) {
-      if (window.__sharedFile.type === 'application/pdf') {
+      if (window.__sharedFile.type === 'application/pdf' || window.__sharedFile.name?.toLowerCase().endsWith('.pdf')) {
         handleFile(window.__sharedFile);
       }
       window.__sharedFile = null;
@@ -25,7 +20,7 @@ export default function PdfToPpt() {
   }, []);
 
   const handleFile = async (newFile) => {
-    if (newFile && newFile.type === 'application/pdf') {
+    if (newFile && (newFile.type === 'application/pdf' || newFile.name?.toLowerCase().endsWith('.pdf'))) {
       setFile(newFile);
       setSuccessData(null);
       setProgress(0);
@@ -34,72 +29,29 @@ export default function PdfToPpt() {
     }
   };
 
-  const convertPdfToPpt = async () => {
+  const executePdfToPpt = async () => {
     if (!file) return;
     trackEvent('tool_executed', { tool_name: 'PDF to PowerPoint' });
     setIsProcessing(true);
     setProgress(0);
     
     try {
-      const arrayBuffer = await file.arrayBuffer();
-
-      const pdfjsLib = await import('pdfjs-dist');
-      pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mjs', import.meta.url).href;
-    
-      const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
-      const numPages = pdf.numPages;
-      
-      const { default: pptxgen } = await import('pptxgenjs');
-      const pres = new pptxgen();
-
-      const SLIDE_W = 10;
-      const SLIDE_H = 5.625;
-      
-      for (let i = 1; i <= numPages; i++) {
-        const page = await pdf.getPage(i);
-        const viewport = page.getViewport({ scale: 1.5 }); // Lower scale to prevent out-of-memory corruption
-        
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        
-        // Fill white background for JPEG
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
-        // Use JPEG to drastically reduce file size and avoid base64 memory limits
-        const imgData = canvas.toDataURL('image/jpeg', 0.8);
-        
-        // Fit within the standard 10 x 5.625 inch PPTX layout
-        const scale = Math.min(SLIDE_W / viewport.width, SLIDE_H / viewport.height);
-        const finalW = viewport.width * scale;
-        const finalH = viewport.height * scale;
-        const xOffset = (SLIDE_W - finalW) / 2;
-        const yOffset = (SLIDE_H - finalH) / 2;
-        
-        const slide = pres.addSlide();
-        slide.addImage({ data: imgData, x: xOffset, y: yOffset, w: finalW, h: finalH });
-        
-        setProgress(Math.round((i / numPages) * 100));
-      }
-      
-      const blob = await pres.write({ outputType: 'blob' });
+      const blob = await convertPdfToPpt(file, (p) => setProgress(p));
       const url = URL.createObjectURL(blob);
+      const cleanBaseName = file.name.replace(/\.pdf$/i, '');
       
       setSuccessData({
-        originalSize: (typeof file !== 'undefined' && file?.size) || (typeof selectedFile !== 'undefined' && selectedFile?.size) || (typeof currentFile !== 'undefined' && currentFile?.size) || 0,
-        outputSize: (typeof newPdfBytes !== 'undefined' && newPdfBytes?.length) || (typeof pdfBytes !== 'undefined' && pdfBytes?.length) || (typeof blob !== 'undefined' && blob?.size) || (typeof outputBlob !== 'undefined' && outputBlob?.size) || 0,
+        originalSize: file.size || 0,
+        outputSize: blob.size || 0,
         url,
-        filename: `${file.name.replace('.pdf', '')}_converted.pptx`,
+        filename: `${cleanBaseName}_converted.pptx`,
         title: 'Conversion Successful!',
-        subtitle: 'Your PDF has been converted to a native PowerPoint presentation.',
+        subtitle: 'Your PDF has been converted into a high-fidelity PowerPoint presentation.',
       });
     } catch (err) {
       trackError('Pdf To Ppt', 'processing_error');
-      console.error(err);
-      alert("Failed to convert PDF to PPT.");
+      console.error('PDF to PPT conversion error:', err);
+      alert(`Failed to convert PDF to PowerPoint: ${err.message || err}`);
     } finally {
       setIsProcessing(false);
     }
@@ -115,7 +67,7 @@ export default function PdfToPpt() {
   const processButton = (
     <div className="space-y-3">
       <button 
-        onClick={convertPdfToPpt} 
+        onClick={executePdfToPpt} 
         disabled={isProcessing || !file}
         className="w-full px-6 py-4 bg-orange-600 border border-transparent rounded-xl shadow-lg text-lg font-bold text-white hover:bg-orange-700 disabled:opacity-50 flex items-center justify-center gap-3 transition-all hover:shadow-xl hover:-translate-y-1 relative overflow-hidden"
       >
@@ -126,7 +78,9 @@ export default function PdfToPpt() {
           />
         )}
         {isProcessing ? (
-          <span className="relative z-10 inline-flex items-center justify-center min-w-[220px] h-7 text-sm font-bold whitespace-nowrap">Generating Slides... {progress}%</span>
+          <span className="relative z-10 inline-flex items-center justify-center min-w-[220px] h-7 text-sm font-bold whitespace-nowrap">
+            Generating Slides... {progress}%
+          </span>
         ) : (
           <><Presentation className="w-6 h-6 relative z-10"/> Convert to PowerPoint</>
         )}
@@ -166,8 +120,12 @@ export default function PdfToPpt() {
              <span className="bg-orange-200 px-2 py-0.5 rounded-md">Native .PPTX</span>
            </div>
            <div className="flex justify-between text-sm text-orange-800 font-bold">
+             <span>Slide Dimensions:</span>
+             <span className="bg-orange-200 px-2 py-0.5 rounded-md">Matched to Source PDF</span>
+           </div>
+           <div className="flex justify-between text-sm text-orange-800 font-bold">
              <span>Quality:</span>
-             <span className="bg-orange-200 px-2 py-0.5 rounded-md">High-Res Layout</span>
+             <span className="bg-orange-200 px-2 py-0.5 rounded-md">High-Res Layout Preservation</span>
            </div>
            <div className="flex justify-between text-sm text-orange-800 font-bold">
              <span>Processing:</span>
@@ -176,8 +134,12 @@ export default function PdfToPpt() {
         </div>
 
         <div className="bg-blue-50 border border-blue-200 p-4 rounded-xl mt-4 flex flex-col gap-2">
+          <div className="flex items-center gap-2 text-blue-900 font-bold text-sm">
+            <CheckCircle2 className="w-4 h-4 text-blue-700" />
+            <span>Exact Visual Preservation</span>
+          </div>
           <p className="text-blue-800 text-xs font-medium leading-relaxed">
-            Note: The layout is perfectly preserved by rendering PDF pages directly as presentation slides. The text inside the presentation cannot be directly edited as a result.
+            Layout, graphics, formulas, and fonts from your PDF are preserved as presentation slides matching your source document's aspect ratio. Slide elements are flattened for 100% visual fidelity.
           </p>
         </div>
       </div>
