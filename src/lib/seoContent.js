@@ -399,7 +399,7 @@ export const SEO_CONTENT = {
     "title": "Convert Word to PDF Online",
     "description": "Instantly convert Microsoft Word (DOCX) files to PDF while strictly preserving your original formatting and layout.",
     "howTo": [
-      "Upload Word Document: Drag and drop your .doc or .docx file into the upload box.",
+      "Upload Word Document: Drag and drop your .docx file into the upload box.",
       "Select Conversion Mode: Choose standard layout preservation for optimal document fidelity.",
       "Click Convert: Select 'Convert to PDF' to transform your document format instantly.",
       "Download: Save your newly generated PDF file ready for distribution or printing."
@@ -412,11 +412,11 @@ export const SEO_CONTENT = {
     "faq": [
       {
         "q": "Will my document layout or font style change after converting from Word to PDF?",
-        "a": "No, our conversion engine accurately preserves text formatting, margins, font structures, tables, and embedded graphics."
+        "a": "Our vector conversion engine accurately preserves text characters, currency symbols, headings, bullet lists, and structured tables with selectable text."
       },
       {
         "q": "Can I convert both old .doc and modern .docx Word formats?",
-        "a": "Yes, the converter supports legacy Microsoft Word .doc files as well as modern .docx file formats."
+        "a": "Our engine is specifically optimized for modern Microsoft Word .docx files to guarantee selectable vector text, structured tables, and complete character preservation. Legacy binary .doc files can be saved as .docx before uploading."
       },
       {
         "q": "Is there any file size limit or cost to convert Word files?",

@@ -1,8 +1,12 @@
 let pdfjsLib = null;
 async function initPdfJs() {
   if (!pdfjsLib) {
-    pdfjsLib = await import('pdfjs-dist');
-    pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mjs', import.meta.url).href;
+    if (typeof window === 'undefined') {
+      pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
+    } else {
+      pdfjsLib = await import('pdfjs-dist');
+      pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mjs', import.meta.url).href;
+    }
   }
   return pdfjsLib;
 }
@@ -11,6 +15,12 @@ const yieldToMain = () => new Promise(resolve => setTimeout(resolve, 0));
 
 const readArrayBuffer = (fileObj) => {
   return new Promise((resolve, reject) => {
+    if (typeof FileReader === 'undefined') {
+      if (typeof Buffer !== 'undefined' && Buffer.isBuffer(fileObj)) {
+        return resolve(fileObj.buffer.slice(fileObj.byteOffset, fileObj.byteOffset + fileObj.byteLength));
+      }
+      return reject(new Error("FileReader not available in current environment."));
+    }
     const reader = new FileReader();
     reader.onload = (e) => {
       if (e.target && e.target.result) resolve(e.target.result);
@@ -23,9 +33,19 @@ const readArrayBuffer = (fileObj) => {
 
 const loadPdfDocument = async (fileObj) => {
   let arrayBuffer;
-  try {
-    arrayBuffer = await fileObj.arrayBuffer();
-  } catch {
+  if (fileObj instanceof ArrayBuffer) {
+    arrayBuffer = fileObj;
+  } else if (fileObj instanceof Uint8Array) {
+    arrayBuffer = fileObj.buffer.slice(fileObj.byteOffset, fileObj.byteOffset + fileObj.byteLength);
+  } else if (typeof Buffer !== 'undefined' && Buffer.isBuffer(fileObj)) {
+    arrayBuffer = fileObj.buffer.slice(fileObj.byteOffset, fileObj.byteOffset + fileObj.byteLength);
+  } else if (fileObj && typeof fileObj.arrayBuffer === 'function') {
+    try {
+      arrayBuffer = await fileObj.arrayBuffer();
+    } catch {
+      arrayBuffer = await readArrayBuffer(fileObj);
+    }
+  } else {
     arrayBuffer = await readArrayBuffer(fileObj);
   }
 
@@ -79,166 +99,486 @@ export const convertPdfToDocx = async (file, mode = 'text', onProgress) => {
   if (!file) throw new Error("No file provided");
   if (onProgress) onProgress(0);
   
-  const { Document, Packer, Paragraph, TextRun, AlignmentType, ImageRun, HeadingLevel } = await import('docx');
+  const {
+    Document,
+    Packer,
+    Paragraph,
+    TextRun,
+    HeadingLevel,
+    Table,
+    TableRow,
+    TableCell,
+    WidthType,
+    AlignmentType,
+    ImageRun,
+    PageOrientation
+  } = await import('docx');
 
   const pdfDoc = await loadPdfDocument(file);
   const numPages = pdfDoc.numPages;
-  
-  const docParagraphs = [];
-  const commonHeadings = [
-    'Personal Details', 'Educational Details', '10th Details', 
-    '12th Details', 'Graduation Details', 'Father\'s Details', 
-    'Mother\'s Details', 'Declaration', 'Address For Correspondence', 'Upload Documents', 'Application Form'
-  ];
+  const isVisual = mode === 'visual';
 
-  for (let i = 1; i <= numPages; i++) {
-    const page = await pdfDoc.getPage(i);
+  // VISUAL MODE: Fit pages cleanly into printable margins without overflow
+  if (isVisual) {
+    const docSections = [];
 
-    // Page Divider
-    if (numPages > 1) {
-      docParagraphs.push(
-        new Paragraph({
-          text: `--- Page ${i} ---`,
-          heading: HeadingLevel.HEADING_3,
-          spacing: { before: 200, after: 100 },
-        })
+    for (let i = 1; i <= numPages; i++) {
+      const page = await pdfDoc.getPage(i);
+      const viewport = page.getViewport({ scale: 2.0 });
+      const isLandscape = viewport.width > viewport.height;
+
+      // In A4: Portrait is 595.28 x 841.89 pt (11906 x 16838 dxa)
+      // Landscape is 841.89 x 595.28 pt (16838 x 11906 dxa)
+      const marginPt = 36; // 0.5 inch margins = 720 dxa
+      const marginDxa = 720;
+      const targetPageWidthPt = isLandscape ? 841.89 : 595.28;
+      const targetPageHeightPt = isLandscape ? 595.28 : 841.89;
+
+      const printableWidthPt = targetPageWidthPt - (marginPt * 2);
+      const printableHeightPt = targetPageHeightPt - (marginPt * 2);
+
+      const scaleFactor = Math.min(
+        printableWidthPt / (viewport.width / 2.0),
+        printableHeightPt / (viewport.height / 2.0)
       );
+
+      const finalImgWidthPt = (viewport.width / 2.0) * scaleFactor;
+      const finalImgHeightPt = (viewport.height / 2.0) * scaleFactor;
+
+      let imageBuffer = null;
+      if (typeof document !== 'undefined' && document.createElement) {
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        context.fillStyle = '#ffffff';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        await page.render({ canvasContext: context, viewport }).promise;
+
+        const base64Data = canvas.toDataURL('image/png').replace(/^data:image\/png;base64,/, '');
+        imageBuffer = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        canvas.width = 0;
+        canvas.height = 0;
+      }
+
+      const sectionChildren = [];
+      if (imageBuffer) {
+        sectionChildren.push(
+          new Paragraph({
+            alignment: AlignmentType.CENTER,
+            children: [
+              new ImageRun({
+                data: imageBuffer,
+                transformation: {
+                  width: finalImgWidthPt,
+                  height: finalImgHeightPt,
+                },
+              }),
+            ],
+          })
+        );
+      }
+
+      docSections.push({
+        properties: {
+          page: {
+            size: {
+              orientation: isLandscape ? PageOrientation.LANDSCAPE : PageOrientation.PORTRAIT,
+              width: isLandscape ? 16838 : 11906,
+              height: isLandscape ? 11906 : 16838,
+            },
+            margin: { top: marginDxa, right: marginDxa, bottom: marginDxa, left: marginDxa },
+          },
+        },
+        children: sectionChildren,
+      });
+
+      if (onProgress) onProgress(Math.round((i / numPages) * 90));
+      await yieldToMain();
     }
 
-    if (mode === 'visual') {
-      // ==========================================
-      // MODE: VISUAL LAYOUT (Canvas Rendering)
-      // ==========================================
-      const viewport = page.getViewport({ scale: 2.0 });
-      const canvas = document.createElement('canvas');
-      const context = canvas.getContext('2d');
-      canvas.height = viewport.height;
-      canvas.width = viewport.width;
+    const doc = new Document({ sections: docSections });
+    if (onProgress) onProgress(100);
+    if (typeof Blob !== 'undefined') {
+      return await Packer.toBlob(doc);
+    }
+    return await Packer.toBuffer(doc);
+  }
 
-      context.fillStyle = '#ffffff';
-      context.fillRect(0, 0, canvas.width, canvas.height);
+  // EDITABLE TEXT MODE
+  const clusterItemsIntoLines = (items) => {
+    if (!items || items.length === 0) return [];
+    const valid = items.filter(it => it.str && it.str.trim().length > 0);
+    if (valid.length === 0) return [];
 
-      await page.render({ canvasContext: context, viewport: viewport }).promise;
-      
-      const base64Data = canvas.toDataURL('image/png').replace(/^data:image\/png;base64,/, "");
-      const imageBuffer = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+    valid.sort((a, b) => b.transform[5] - a.transform[5]);
 
-      docParagraphs.push(
-        new Paragraph({
-          alignment: AlignmentType.CENTER,
-          children: [
-            new ImageRun({
-              data: imageBuffer,
-              transformation: {
-                width: 595, // Standard A4 pt width
-                height: 595 * (viewport.height / viewport.width),
-              },
-            }),
-          ],
-          spacing: { after: 200 },
-        })
-      );
+    const lines = [];
+    valid.forEach(item => {
+      const y = item.transform[5];
+      const x = item.transform[4];
+      const width = item.width || (item.str.length * 6);
+      const height = item.height || 10;
+      const fontName = (item.fontName || '').toLowerCase();
+      const isBold = fontName.includes('bold') || fontName.includes('black') || fontName.includes('heavy') || fontName.includes('b');
+      const isItalic = fontName.includes('italic') || fontName.includes('oblique') || fontName.includes('i');
 
-      context.clearRect(0, 0, canvas.width, canvas.height);
-      canvas.width = 0;
-      canvas.height = 0;
-    } else {
-      // ==========================================
-      // MODE: EDITABLE TEXT (Heuristic X-Axis Math)
-      // ==========================================
-      let pageTextExtracted = false;
+      const line = lines.find(l => Math.abs(l.y - y) <= Math.max(5.0, l.fontSize * 0.45));
+      if (line) {
+        line.items.push({ x, y, width, height, str: item.str, isBold, isItalic, fontSize: height, fontName });
+        if (height > line.fontSize) {
+          line.fontSize = height;
+          line.y = y;
+        }
+      } else {
+        lines.push({
+          y,
+          fontSize: height,
+          items: [{ x, y, width, height, str: item.str, isBold, isItalic, fontSize: height, fontName }]
+        });
+      }
+    });
 
-      try {
-        const textContent = await page.getTextContent();
-        if (textContent && textContent.items && textContent.items.length > 0) {
-          const validItems = textContent.items.filter(item => item.str && item.str.trim() !== '');
-          
-          if (validItems.length > 0) {
-            let linesMap = {};
-            validItems.forEach((item) => {
-              const y = Math.round(item.transform[5] / 5) * 5; 
-              if (!linesMap[y]) linesMap[y] = [];
-              
-              const startX = item.transform[4];
-              const itemWidth = item.width || (item.str ? item.str.length * 6 : 0);
-              linesMap[y].push({ 
-                text: item.str, 
-                startX,
-                endX: startX + itemWidth 
-              });
-            });
+    lines.sort((a, b) => b.y - a.y);
 
-            const sortedYs = Object.keys(linesMap).sort((a, b) => Number(b) - Number(a));
+    lines.forEach(l => {
+      l.items.sort((a, b) => a.x - b.x);
+      let text = '';
+      let lastEndX = null;
 
-            sortedYs.forEach((y) => {
-              const lineItems = linesMap[y].sort((a, b) => a.startX - b.startX);
-              
-              let formattedLine = [];
-              let lastEndX = null;
+      const baseFontSize = l.fontSize;
+      const baselineItem = l.items.reduce((prev, curr) => (curr.fontSize > prev.fontSize ? curr : prev), l.items[0]);
+      const baseY = baselineItem ? baselineItem.y : l.y;
 
-              lineItems.forEach((item) => {
-                if (lastEndX !== null) {
-                  const gap = item.startX - lastEndX;
-                  
-                  if (gap > 40) {
-                    formattedLine.push(new TextRun({ text: '\t', font: 'Calibri', size: 22 }));
-                  } else if (gap > 5) {
-                    formattedLine.push(new TextRun({ text: ' ', font: 'Calibri', size: 22 }));
-                  }
-                }
-                
-                formattedLine.push(new TextRun({ text: item.text.trim(), font: 'Calibri', size: 22 }));
-                lastEndX = item.endX;
-              });
+      l.items.forEach(it => {
+        // Detect superscript / subscript based on relative font size and baseline vertical displacement
+        if (it.fontSize <= baseFontSize * 0.85) {
+          if (it.y > baseY + 1.2) {
+            it.isSuperscript = true;
+          } else if (it.y < baseY - 1.2) {
+            it.isSubscript = true;
+          }
+        }
 
-              const rawString = lineItems.map(i => i.text).join(' ').trim();
-              if (rawString.length === 0) return;
+        if (lastEndX !== null) {
+          const gap = it.x - lastEndX;
+          if (gap > 3.5) text += ' ';
+        }
+        text += it.str;
+        lastEndX = it.x + it.width;
+      });
+      l.text = text.trim();
+      l.minX = l.items[0].x;
+      l.maxX = l.items[l.items.length - 1].x + l.items[l.items.length - 1].width;
+    });
 
-              const isHeading = commonHeadings.some(h => rawString.toLowerCase() === h.toLowerCase() || rawString.toLowerCase().includes(h.toLowerCase()));
+    return lines;
+  };
 
-              docParagraphs.push(
+  const computeBodyFontSize = (allLines) => {
+    if (allLines.length === 0) return 10;
+    const sizeFreq = {};
+    allLines.forEach(l => {
+      const sz = Math.round(l.fontSize * 2) / 2;
+      sizeFreq[sz] = (sizeFreq[sz] || 0) + 1;
+    });
+    let maxCount = 0;
+    let bodySize = 10;
+    Object.keys(sizeFreq).forEach(sz => {
+      if (sizeFreq[sz] > maxCount) {
+        maxCount = sizeFreq[sz];
+        bodySize = Number(sz);
+      }
+    });
+    return bodySize;
+  };
+
+  const structureLines = (lines, bodySize) => {
+    const blocks = [];
+    let i = 0;
+
+    while (i < lines.length) {
+      const line = lines[i];
+
+      const isBig = line.fontSize >= bodySize * 1.2;
+      const isBoldHeading = line.fontSize >= bodySize * 1.05 && line.items.some(it => it.isBold);
+      const isShort = line.text.length < 120;
+      const isNotSentence = !/[.!?]$/.test(line.text.trim());
+
+      if ((isBig || isBoldHeading) && isShort && isNotSentence) {
+        let headingLevel = HeadingLevel.HEADING_2;
+        if (line.fontSize >= bodySize * 1.45 || line.fontSize >= 15) {
+          headingLevel = HeadingLevel.HEADING_1;
+        } else if (line.fontSize <= bodySize * 1.1) {
+          headingLevel = HeadingLevel.HEADING_3;
+        }
+
+        blocks.push({
+          type: 'heading',
+          level: headingLevel,
+          text: line.text,
+          fontSize: line.fontSize,
+        });
+        i++;
+        continue;
+      }
+
+      const isTableCandidate = (l) => {
+        if (l.items.length < 2) return false;
+        let gaps = 0;
+        for (let j = 0; j < l.items.length - 1; j++) {
+          const gap = l.items[j + 1].x - (l.items[j].x + l.items[j].width);
+          if (gap > 22) gaps++;
+        }
+        return gaps >= 1 && l.items.length >= 2;
+      };
+
+      if (isTableCandidate(line)) {
+        const tableLines = [line];
+        let k = i + 1;
+        while (k < lines.length) {
+          const nextLine = lines[k];
+          const gapY = tableLines[tableLines.length - 1].y - nextLine.y;
+          if (gapY < 35 && (isTableCandidate(nextLine) || (tableLines.length >= 2 && nextLine.items.length >= 1 && gapY < 18))) {
+            tableLines.push(nextLine);
+            k++;
+          } else {
+            break;
+          }
+        }
+
+        if (tableLines.length >= 2) {
+          blocks.push({
+            type: 'table',
+            lines: tableLines,
+          });
+          i = k;
+          continue;
+        }
+      }
+
+      const paraLines = [line];
+      let m = i + 1;
+      while (m < lines.length) {
+        const nextLine = lines[m];
+        const prevLine = paraLines[paraLines.length - 1];
+        const gapY = prevLine.y - nextLine.y;
+
+        const isNextHeading = (nextLine.fontSize >= bodySize * 1.2 || (nextLine.fontSize >= bodySize * 1.05 && nextLine.items.some(it => it.isBold))) && nextLine.text.length < 120 && !/[.!?]$/.test(nextLine.text.trim());
+        const isNextTable = isTableCandidate(nextLine);
+
+        if (gapY >= -2 && gapY <= (prevLine.fontSize * 1.6) && !isNextHeading && !isNextTable) {
+          paraLines.push(nextLine);
+          m++;
+        } else {
+          break;
+        }
+      }
+
+      blocks.push({
+        type: 'paragraph',
+        lines: paraLines,
+      });
+      i = m;
+    }
+
+    return blocks;
+  };
+
+  const partitionAdaptiveColumns = (items, pageWidth = 595.28) => {
+    if (!items || items.length < 8) return null;
+
+    const minGx = pageWidth * 0.25;
+    const maxGx = pageWidth * 0.75;
+    const gutterWidth = 14;
+
+    let bestGutter = null;
+    let maxScore = -Infinity;
+
+    for (let gx = minGx; gx <= maxGx; gx += 4) {
+      const leftBound = gx - gutterWidth / 2;
+      const rightBound = gx + gutterWidth / 2;
+
+      let leftCount = 0;
+      let rightCount = 0;
+      let crossingCount = 0;
+      let totalLeftWords = 0;
+      let totalRightWords = 0;
+
+      items.forEach(it => {
+        const x = it.transform[4];
+        const w = it.width || (it.str.length * 6);
+        const words = (it.str || '').trim().split(/\s+/).length;
+        if (x < leftBound && (x + w) > rightBound) {
+          crossingCount++;
+        } else if ((x + w) <= rightBound) {
+          leftCount++;
+          totalLeftWords += words;
+        } else if (x >= leftBound) {
+          rightCount++;
+          totalRightWords += words;
+        }
+      });
+
+      if (leftCount >= 4 && rightCount >= 4 && totalLeftWords >= 8 && totalRightWords >= 8) {
+        const score = (leftCount + rightCount) * 2 - (crossingCount * 3);
+        if (score > maxScore) {
+          maxScore = score;
+          bestGutter = { gx, leftBound, rightBound, leftCount, rightCount, crossingCount };
+        }
+      }
+    }
+
+    if (!bestGutter) return null;
+
+    const { leftBound, rightBound } = bestGutter;
+    const crossingItems = [];
+    const columnItems = [];
+
+    items.forEach(it => {
+      const x = it.transform[4];
+      const w = it.width || (it.str.length * 6);
+      if (x < leftBound && (x + w) > rightBound) {
+        crossingItems.push(it);
+      } else {
+        columnItems.push(it);
+      }
+    });
+
+    crossingItems.sort((a, b) => b.transform[5] - a.transform[5]);
+    const yBoundaries = [Infinity, ...crossingItems.map(it => it.transform[5]), -Infinity];
+
+    const orderedLines = [];
+
+    for (let b = 0; b < yBoundaries.length - 1; b++) {
+      const topY = yBoundaries[b];
+      const bottomY = yBoundaries[b + 1];
+
+      const sliceItems = columnItems.filter(it => {
+        const y = it.transform[5];
+        return y < topY - 3 && y > bottomY + 3;
+      });
+
+      if (sliceItems.length > 0) {
+        const leftColItems = sliceItems.filter(it => (it.transform[4] + (it.width || 0)) <= rightBound);
+        const rightColItems = sliceItems.filter(it => it.transform[4] >= leftBound);
+
+        const leftLines = clusterItemsIntoLines(leftColItems);
+        const rightLines = clusterItemsIntoLines(rightColItems);
+
+        orderedLines.push(...leftLines);
+        orderedLines.push(...rightLines);
+      }
+
+      if (b < crossingItems.length) {
+        const crossingLines = clusterItemsIntoLines([crossingItems[b]]);
+        orderedLines.push(...crossingLines);
+      }
+    }
+
+    return orderedLines;
+  };
+
+  let allPagesLines = [];
+  for (let p = 1; p <= numPages; p++) {
+    const page = await pdfDoc.getPage(p);
+    const viewport = page.getViewport({ scale: 1.0 });
+    const textContent = await page.getTextContent();
+    const adaptiveLines = partitionAdaptiveColumns(textContent.items, viewport.width || 595.28);
+    const pageLines = adaptiveLines || clusterItemsIntoLines(textContent.items);
+    allPagesLines.push(pageLines);
+    if (onProgress) onProgress(Math.round((p / numPages) * 35));
+    await yieldToMain();
+  }
+
+  const allLinesFlat = allPagesLines.flat();
+  const bodySize = computeBodyFontSize(allLinesFlat);
+
+  const docChildren = [];
+
+  for (let p = 0; p < numPages; p++) {
+    const pageLines = allPagesLines[p];
+    let isFirstBlockOnPage = (p > 0);
+
+    const totalChars = pageLines.reduce((sum, l) => sum + (l.text ? l.text.length : 0), 0);
+
+    if (pageLines.length === 0 || totalChars < 15) {
+      // Scanned or image-only page: Attempt client-side OCR if available
+      let ocrRecognized = false;
+      const page = await pdfDoc.getPage(p + 1);
+
+      if (typeof document !== 'undefined' && document.createElement) {
+        try {
+          const { createWorker } = await import('tesseract.js');
+          const worker = await createWorker('eng', 1, {
+            logger: m => {
+              if (m.status === 'recognizing text' && onProgress) {
+                onProgress(35 + Math.round(((p + (m.progress || 0)) / numPages) * 55));
+              }
+            }
+          });
+
+          const viewport = page.getViewport({ scale: 2.0 });
+          const canvas = document.createElement('canvas');
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          const context = canvas.getContext('2d');
+          context.fillStyle = '#ffffff';
+          context.fillRect(0, 0, canvas.width, canvas.height);
+          await page.render({ canvasContext: context, viewport }).promise;
+
+          const ret = await worker.recognize(canvas);
+          await worker.terminate();
+          canvas.width = 0;
+          canvas.height = 0;
+
+          const ocrText = ret?.data?.text ? ret.data.text.trim() : '';
+          if (ocrText.length > 10) {
+            const ocrParagraphs = ocrText.split(/\n\s*\n/).filter(t => t.trim().length > 0);
+            ocrParagraphs.forEach((para, paraIdx) => {
+              docChildren.push(
                 new Paragraph({
-                  text: isHeading ? rawString : undefined,
-                  heading: isHeading ? HeadingLevel.HEADING_2 : undefined,
-                  children: isHeading ? undefined : formattedLine,
-                  spacing: isHeading ? { before: 240, after: 120 } : { after: 100 },
+                  children: [new TextRun({ text: decodeHtmlEntities(para.trim()), size: Math.round(bodySize * 2) })],
+                  spacing: { after: 140 },
+                  pageBreakBefore: paraIdx === 0 && isFirstBlockOnPage,
                 })
               );
             });
-
-            pageTextExtracted = true;
+            ocrRecognized = true;
           }
+        } catch (ocrErr) {
+          console.warn(`Page ${p + 1} OCR attempt note:`, ocrErr);
         }
-      } catch (textErr) {
-        console.warn(`Text extraction fallback for page ${i}:`, textErr);
       }
 
-      // Fallback for scanned/empty text pages in 'text' mode
-      if (!pageTextExtracted) {
+      // If OCR was unavailable or returned empty, fallback to embedded page image
+      if (!ocrRecognized) {
         try {
           const viewport = page.getViewport({ scale: 2.0 });
           const canvas = document.createElement('canvas');
           const context = canvas.getContext('2d');
-          canvas.height = viewport.height;
           canvas.width = viewport.width;
-
+          canvas.height = viewport.height;
           context.fillStyle = '#ffffff';
           context.fillRect(0, 0, canvas.width, canvas.height);
+          await page.render({ canvasContext: context, viewport }).promise;
 
-          await page.render({ canvasContext: context, viewport: viewport }).promise;
-          
           const base64Data = canvas.toDataURL('image/png').replace(/^data:image\/png;base64,/, "");
           const imageBuffer = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+          canvas.width = 0;
+          canvas.height = 0;
 
-          docParagraphs.push(
+          docChildren.push(
             new Paragraph({
               alignment: AlignmentType.CENTER,
+              pageBreakBefore: isFirstBlockOnPage,
               children: [
                 new ImageRun({
                   data: imageBuffer,
                   transformation: {
-                    width: 595,
-                    height: 595 * (viewport.height / viewport.width),
+                    width: 523,
+                    height: 523 * (viewport.height / viewport.width),
                   },
                 }),
               ],
@@ -246,34 +586,138 @@ export const convertPdfToDocx = async (file, mode = 'text', onProgress) => {
             })
           );
         } catch (imgErr) {
-          console.error(`Page ${i} image fallback error:`, imgErr);
+          console.error(`Page ${p + 1} image fallback error:`, imgErr);
         }
       }
+
+      continue;
     }
 
-    if (onProgress) onProgress(Math.round((i / numPages) * 70));
+    const blocks = structureLines(pageLines, bodySize);
+
+    blocks.forEach(block => {
+      const pageBreakBefore = isFirstBlockOnPage;
+      if (isFirstBlockOnPage) isFirstBlockOnPage = false;
+
+      if (block.type === 'heading') {
+        docChildren.push(
+          new Paragraph({
+            text: decodeHtmlEntities(block.text),
+            heading: block.level,
+            spacing: { before: 240, after: 120 },
+            pageBreakBefore,
+          })
+        );
+      } else if (block.type === 'paragraph') {
+        const runs = [];
+        block.lines.forEach((l, lIdx) => {
+          l.items.forEach((it, itIdx) => {
+            runs.push(
+              new TextRun({
+                text: decodeHtmlEntities(it.str) + (itIdx < l.items.length - 1 ? ' ' : ''),
+                bold: it.isBold,
+                italics: it.isItalic,
+                superScript: !!it.isSuperscript,
+                subScript: !!it.isSubscript,
+                size: Math.round(it.fontSize * 2),
+              })
+            );
+          });
+          if (lIdx < block.lines.length - 1) {
+            runs.push(new TextRun({ text: ' ' }));
+          }
+        });
+
+        docChildren.push(
+          new Paragraph({
+            children: runs,
+            spacing: { after: 140 },
+            pageBreakBefore,
+          })
+        );
+      } else if (block.type === 'table') {
+        const allX = [];
+        block.lines.forEach(l => l.items.forEach(it => allX.push(it.x)));
+        allX.sort((a, b) => a - b);
+
+        const colClusters = [];
+        allX.forEach(x => {
+          const c = colClusters.find(cl => Math.abs(cl.avg - x) < 30);
+          if (c) {
+            c.points.push(x);
+            c.avg = c.points.reduce((a, b) => a + b, 0) / c.points.length;
+          } else {
+            colClusters.push({ avg: x, points: [x] });
+          }
+        });
+        colClusters.sort((a, b) => a.avg - b.avg);
+        const numCols = Math.max(1, colClusters.length);
+
+        const tableRows = [];
+        block.lines.forEach(l => {
+          const cells = Array(numCols).fill('');
+          l.items.forEach(it => {
+            let bestCol = 0;
+            let minDist = Infinity;
+            colClusters.forEach((cl, cIdx) => {
+              const d = Math.abs(cl.avg - it.x);
+              if (d < minDist) {
+                minDist = d;
+                bestCol = cIdx;
+              }
+            });
+            cells[bestCol] = cells[bestCol] ? cells[bestCol] + ' ' + it.str : it.str;
+          });
+
+          const rowCells = cells.map(cellText => {
+            return new TableCell({
+              children: [
+                new Paragraph({
+                  children: [new TextRun({ text: decodeHtmlEntities(cellText.trim()), size: Math.round(bodySize * 2) })],
+                  spacing: { before: 40, after: 40 },
+                }),
+              ],
+            });
+          });
+
+          tableRows.push(new TableRow({ children: rowCells }));
+        });
+
+        const docxTable = new Table({
+          rows: tableRows,
+          width: { size: 100, type: WidthType.PERCENTAGE },
+        });
+
+        if (pageBreakBefore) {
+          docChildren.push(new Paragraph({ pageBreakBefore: true }));
+        }
+        docChildren.push(docxTable);
+        docChildren.push(new Paragraph({ spacing: { after: 140 } }));
+      }
+    });
+
+    if (onProgress) onProgress(35 + Math.round(((p + 1) / numPages) * 55));
     await yieldToMain();
   }
-
-  if (onProgress) onProgress(80);
 
   const doc = new Document({
     sections: [
       {
         properties: {
           page: {
-            margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 }, // 1 inch margins
+            margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 },
           },
         },
-        children: docParagraphs,
+        children: docChildren,
       },
     ],
   });
 
-  const blob = await Packer.toBlob(doc);
-  onProgress(100);
-  
-  return blob;
+  if (onProgress) onProgress(100);
+  if (typeof Blob !== 'undefined') {
+    return await Packer.toBlob(doc);
+  }
+  return await Packer.toBuffer(doc);
 };
 
 /**

@@ -108,7 +108,7 @@ export const DOMAINS = [
       {
         name: "WORD & TEXT (DOCX, DOC, TXT)",
         tools: [
-          { id: 'word-to-pdf', name: 'WORD to PDF', description: 'Convert Word document (.docx, .doc) to PDF.', icon: FileCode2, color: 'text-red-500', bg: 'bg-red-50' },
+          { id: 'word-to-pdf', name: 'WORD to PDF', description: 'Convert Word document (.docx) to PDF.', icon: FileCode2, color: 'text-red-500', bg: 'bg-red-50' },
           { id: 'pdf-to-word', name: 'PDF to WORD', description: 'Convert PDF to editable Word document (.docx).', icon: FileText, color: 'text-blue-500', bg: 'bg-blue-50' },
           { id: 'docx-to-text', name: 'DOCX to Text', description: 'Extract raw text from Word documents.', icon: FileText, color: 'text-sky-500', bg: 'bg-sky-50' },
           { id: 'docx-to-html', name: 'DOCX to HTML', description: 'Convert Word documents to clean HTML code.', icon: Code, color: 'text-green-500', bg: 'bg-green-50' },

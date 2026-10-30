@@ -1,20 +1,20 @@
 import { trackEvent } from '../lib/analytics';
 import React, { useState, useEffect, useRef } from 'react';
-import { FileText } from 'lucide-react';
+import { FileText, Printer } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import * as docx from 'docx-preview';
 import mammoth from 'mammoth';
-import { jsPDF } from 'jspdf';
-import { safeHtml2Canvas } from '../utils/canvasUtils';
+import { convertDocxToPdf } from '../utils/wordConversion';
 import { trackError } from '../lib/analytics';
 
 export default function WordToPdf() {
   const [file, setFile] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [isLoadingPreview, setIsLoadingPreview] = useState(false);
   const [successData, setSuccessData] = useState(null);
 
-  const docxContainerRef  = useRef(null);
+  const docxContainerRef = useRef(null);
 
   useEffect(() => {
     if (window.__sharedFile) {
@@ -30,21 +30,6 @@ export default function WordToPdf() {
     return name.endsWith('.docx') || candidate?.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
   };
 
-  const sanitizeWordHtml = (htmlString) => {
-    if (!htmlString) return '<p>No content found in document.</p>';
-
-    let rawHtml = htmlString;
-    rawHtml = rawHtml.replace(/\$|&#36;|&dollar;/gi, '');
-    rawHtml = rawHtml.replace(/~|&#126;/gi, ' ');
-
-    // Standardize all rogue bullets to a single, easily identifiable character (•)
-    let cleanHtml = rawHtml
-      .replace(/>(\s|&nbsp;)*[Oo·◦▪◆](\s|&nbsp;)+/g, '>• ')
-      .replace(/>(\s|&nbsp;)*[Oo·◦▪◆](?=[0-9])/g, '>• ');
-
-    return cleanHtml;
-  };
-
   const getWordThemeCss = () => `
     <style>
       .docx-pdf-wrapper {
@@ -58,20 +43,18 @@ export default function WordToPdf() {
         width: 100%;
       }
       .docx-pdf-wrapper h1, .docx-pdf-wrapper h2, .docx-pdf-wrapper h3, .docx-pdf-wrapper h4, .docx-pdf-wrapper h5, .docx-pdf-wrapper h6 {
-        color: #2F5496; /* Microsoft Word Blue */
+        color: #2F5496;
         font-weight: bold;
         margin-top: 18pt;
         margin-bottom: 6pt;
-        page-break-after: avoid;
       }
       .docx-pdf-wrapper table {
         border-collapse: collapse;
         width: 100%;
         margin-bottom: 12pt;
-        page-break-inside: avoid;
       }
       .docx-pdf-wrapper th, .docx-pdf-wrapper td {
-        border: 1px solid #000000;
+        border: 1px solid #d1d5db;
         padding: 6px;
         text-align: left;
       }
@@ -81,8 +64,6 @@ export default function WordToPdf() {
         margin-bottom: 12pt;
       }
       .docx-pdf-wrapper li {
-        list-style-type: disc;
-        list-style-position: outside; /* Enforces the hanging indent */
         margin-bottom: 4px;
       }
       .docx-pdf-wrapper p {
@@ -93,41 +74,24 @@ export default function WordToPdf() {
   `;
 
   const wrapWithWordTheme = (htmlContent) => {
-    let clean = htmlContent || '';
-    // Brute-force global strip of MathJax/KaTeX artifacts
-    clean = clean.replace(/\$/g, ''); // Nukes all rogue dollar signs
-    clean = clean.replace(/~/g, ' '); // Replaces rogue tildes with standard spaces
-
     return `
       ${getWordThemeCss()}
       <div class="docx-pdf-wrapper docx-pdf-container">
-        ${clean}
+        ${htmlContent || ''}
       </div>
     `;
   };
 
-  const mammothOptions = {
-    styleMap: [
-      "p[style-name='List Bullet'] => ul > li:fresh",
-      "p[style-name='List Bullet 2'] => ul > li:fresh",
-      "p[style-name='List Bullet 3'] => ul > li:fresh"
-    ],
-    convertImage: mammoth.images.imgElement((image) =>
-      image.read('base64').then((imageBuffer) => ({
-        src: `data:${image.contentType};base64,${imageBuffer}`
-      }))
-    )
-  };
-
   const handleFile = async (newFile) => {
     if (!isDocxFile(newFile)) {
-      alert("Please upload a modern Word document (.docx). Legacy .doc files are not supported in the browser.");
+      alert("Please upload a Microsoft Word document (.docx). Only modern .docx files are supported.");
       return;
     }
 
     setFile(newFile);
     setSuccessData(null);
     setIsLoadingPreview(true);
+    setProgress(0);
 
     setTimeout(async () => {
       if (!docxContainerRef.current) {
@@ -149,20 +113,18 @@ export default function WordToPdf() {
           });
           usedDocxPreview = true;
         } catch (docxErr) {
-      trackError('Word To Pdf', 'processing_error');
-          console.warn("docx-preview parsing notice, attempting mammoth fallback:", docxErr);
+          trackError('Word To Pdf', 'processing_error');
+          console.warn("docx-preview notice, attempting mammoth preview fallback:", docxErr);
         }
 
         if (!usedDocxPreview) {
           const result = await mammoth.convertToHtml({
             arrayBuffer,
-            ...mammothOptions
           });
-          const cleaned = sanitizeWordHtml(result.value);
-          container.innerHTML = wrapWithWordTheme(cleaned);
+          container.innerHTML = wrapWithWordTheme(result.value);
         }
       } catch (err) {
-      trackError('Word To Pdf', 'processing_error');
+        trackError('Word To Pdf', 'processing_error');
         console.error("Document preview error:", err);
       } finally {
         setIsLoadingPreview(false);
@@ -174,196 +136,37 @@ export default function WordToPdf() {
     if (!file) return;
     trackEvent('tool_executed', { tool_name: 'Word to PDF' });
     setIsProcessing(true);
+    setProgress(0);
 
     try {
-      const arrayBuffer = await file.arrayBuffer();
-
-      const result = await mammoth.convertToHtml({
-        arrayBuffer,
-        ...mammothOptions
+      const pdfBlob = await convertDocxToPdf(file, {
+        onProgress: (p) => setProgress(p),
       });
 
-      let rawHtml = result.value || '<p>No content found.</p>';
-      rawHtml = rawHtml.replace(/\$|&#36;|&dollar;/gi, '').replace(/~|&#126;/gi, ' ');
-
-      const domParserDiv = document.createElement('div');
-      domParserDiv.innerHTML = rawHtml;
-
-      const BULLET_PATTERN = /^(\s|&nbsp;)*[•oO·◦▪◆▫■□–—\u2022\u25aa\u25cf\u25cb\u25a0\u25a1\u2013\u2014](\s|&nbsp;)+/;
-
-      domParserDiv.querySelectorAll('li').forEach(li => {
-        const walker = document.createTreeWalker(li, NodeFilter.SHOW_TEXT, null, false);
-        let node;
-        while ((node = walker.nextNode())) {
-          if (node.nodeValue && BULLET_PATTERN.test(node.nodeValue)) {
-            node.nodeValue = node.nodeValue.replace(BULLET_PATTERN, '');
-            break;
-          }
-        }
-      });
-
-      domParserDiv.querySelectorAll('p').forEach(p => {
-        if (!p.closest('li')) {
-          const walker = document.createTreeWalker(p, NodeFilter.SHOW_TEXT, null, false);
-          let node;
-          while ((node = walker.nextNode())) {
-            if (node.nodeValue && BULLET_PATTERN.test(node.nodeValue)) {
-              node.nodeValue = node.nodeValue.replace(BULLET_PATTERN, '');
-              p.style.display = 'list-item';
-              p.style.listStyleType = 'disc';
-              p.style.listStylePosition = 'outside';
-              p.style.marginLeft = '24px';
-              p.style.marginBottom = '4pt';
-              break;
-            }
-          }
-        }
-      });
-
-      const perfectedHtml = domParserDiv.innerHTML;
       const pdfFilename = file.name.replace(/\.docx?$/i, '') + '.pdf';
+      const objectUrl = URL.createObjectURL(pdfBlob);
 
-      const printCss = `
-        <style>
-          * { box-sizing: border-box; }
-          body {
-            margin: 0;
-            background: #ffffff;
-            color: #000;
-            font-family: 'Calibri', 'Arial', sans-serif;
-          }
-          .docx-pdf-wrapper {
-            width: 100%;
-            max-width: 100%;
-            padding: 18mm 16mm;
-            font-size: 11pt;
-            line-height: 1.5;
-            color: #000;
-            background: #fff;
-          }
-          .docx-pdf-wrapper h1, .docx-pdf-wrapper h2, .docx-pdf-wrapper h3,
-          .docx-pdf-wrapper h4, .docx-pdf-wrapper h5, .docx-pdf-wrapper h6 {
-            color: #2F5496;
-            font-weight: bold;
-            margin-top: 18pt;
-            margin-bottom: 6pt;
-            page-break-after: avoid;
-          }
-          .docx-pdf-wrapper table {
-            table-layout: fixed;
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 12pt;
-          }
-          .docx-pdf-wrapper th, .docx-pdf-wrapper td {
-            border: 1px solid #000;
-            padding: 6px;
-            text-align: left;
-          }
-          .docx-pdf-wrapper tr { page-break-inside: avoid; }
-          .docx-pdf-wrapper li { page-break-inside: avoid; list-style-position: outside !important; margin-bottom: 4px; }
-          .docx-pdf-wrapper ul, .docx-pdf-wrapper ol { padding-left: 24px; margin-top: 0; margin-bottom: 12pt; }
-          .docx-pdf-wrapper ul { list-style-type: disc; }
-          .docx-pdf-wrapper ul ul { list-style-type: circle; }
-          .docx-pdf-wrapper ul ul ul { list-style-type: square; }
-          .docx-pdf-wrapper p { margin-top: 0; margin-bottom: 6pt; }
-        </style>
-      `;
+      // Trigger automatic download
+      const link = document.createElement('a');
+      link.href = objectUrl;
+      link.download = pdfFilename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
-      const renderTarget = document.createElement('div');
-      renderTarget.style.position = 'fixed';
-      renderTarget.style.left = '-99999px';
-      renderTarget.style.top = '0';
-      renderTarget.style.width = '794px';
-      renderTarget.style.background = '#ffffff';
-      renderTarget.style.zIndex = '0';
-      renderTarget.innerHTML = `${printCss}<div class="docx-pdf-wrapper">${perfectedHtml}</div>`;
-      document.body.appendChild(renderTarget);
-
-      try {
-        await new Promise((resolve) => setTimeout(resolve, 300));
-
-        const canvas = await safeHtml2Canvas(renderTarget, {
-          scale: 2,
-          useCORS: true,
-          allowTaint: true,
-          backgroundColor: '#ffffff',
-          logging: false,
-          windowWidth: 794,
-          windowHeight: Math.max(renderTarget.scrollHeight, 1123),
-          scrollX: 0,
-          scrollY: 0,
-        });
-
-        const pdf = new jsPDF({
-          orientation: 'portrait',
-          unit: 'mm',
-          format: 'a4',
-        });
-
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        const pageHeight = pdf.internal.pageSize.getHeight();
-        const margin = 10;
-        const contentWidth = pageWidth - margin * 2;
-        const contentHeight = (canvas.height * contentWidth) / canvas.width;
-        const pageContentHeight = pageHeight - margin * 2;
-        const totalPages = Math.max(1, Math.ceil(contentHeight / pageContentHeight));
-
-        const addCanvasPage = (sourceCanvas, yOffset, pageNumber) => {
-          const pageCanvas = document.createElement('canvas');
-          pageCanvas.width = sourceCanvas.width;
-          const sliceHeight = Math.min(pageContentHeight * (sourceCanvas.width / contentWidth), sourceCanvas.height - yOffset);
-          pageCanvas.height = sliceHeight;
-
-          const ctx = pageCanvas.getContext('2d');
-          ctx.fillStyle = '#ffffff';
-          ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
-          ctx.drawImage(
-            sourceCanvas,
-            0,
-            yOffset,
-            sourceCanvas.width,
-            sliceHeight,
-            0,
-            0,
-            sourceCanvas.width,
-            sliceHeight
-          );
-
-          const imgData = pageCanvas.toDataURL('image/jpeg', 0.98);
-          const renderedSliceHeight = (sliceHeight * contentWidth) / sourceCanvas.width;
-
-          if (pageNumber > 1) pdf.addPage();
-          pdf.addImage(imgData, 'JPEG', margin, margin, contentWidth, renderedSliceHeight, undefined, 'FAST');
-        };
-
-        for (let pageNumber = 1; pageNumber <= totalPages; pageNumber += 1) {
-          const sourceY = (pageNumber - 1) * pageContentHeight * (canvas.width / contentWidth);
-          addCanvasPage(canvas, sourceY, pageNumber);
-        }
-
-        const pdfBlob = pdf.output('blob');
-        const objectUrl = URL.createObjectURL(pdfBlob);
-
-        setSuccessData({
-          originalSize: file.size,
-          outputSize: pdfBlob.size,
-          url: objectUrl,
-          filename: pdfFilename,
-          title: 'PDF Ready',
-          subtitle: 'Your Word document was converted into a downloadable PDF file.',
-        });
-      } finally {
-        if (renderTarget && renderTarget.parentNode) {
-          renderTarget.parentNode.removeChild(renderTarget);
-        }
-      }
-
-      setIsProcessing(false);
+      setSuccessData({
+        originalSize: file.size,
+        outputSize: pdfBlob.size,
+        url: objectUrl,
+        filename: pdfFilename,
+        title: 'PDF Ready',
+        subtitle: 'Your Word document was converted into a crisp vector PDF with selectable text.',
+      });
     } catch (err) {
       trackError('Word To Pdf', 'processing_error');
       console.error('Word to PDF Error:', err);
       alert(`Conversion error: ${err.message || 'Failed to process document'}`);
+    } finally {
       setIsProcessing(false);
     }
   };
@@ -376,16 +179,45 @@ export default function WordToPdf() {
     setSuccessData(null);
     setIsProcessing(false);
     setIsLoadingPreview(false);
+    setProgress(0);
+  };
+
+  const handleBrowserPrint = () => {
+    window.print();
   };
 
   const processButton = (
-    <button 
-      onClick={convertWordToPdf} 
-      disabled={isProcessing || !file || isLoadingPreview}
-      className="w-full px-4 py-3 bg-blue-600 border border-transparent rounded-xl shadow-md text-base font-bold text-white hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center gap-2 transition-all hover:shadow-lg hover:-translate-y-0.5 relative overflow-hidden"
-    >
-      {isProcessing ? 'Preparing Print Dialog...' : <><FileText className="w-5 h-5"/> Convert to PDF</>}
-    </button>
+    <div className="space-y-3">
+      <button
+        onClick={convertWordToPdf}
+        disabled={isProcessing || !file || isLoadingPreview}
+        className="w-full px-6 py-4 bg-blue-600 border border-transparent rounded-xl shadow-lg text-lg font-bold text-white hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center gap-3 transition-all hover:shadow-xl hover:-translate-y-1 relative overflow-hidden"
+      >
+        {isProcessing && (
+          <div
+            className="absolute left-0 top-0 bottom-0 bg-blue-500/30 transition-all duration-300"
+            style={{ width: `${progress}%` }}
+          />
+        )}
+        {isProcessing ? (
+          <span className="relative z-10 inline-flex items-center justify-center min-w-[200px] h-7 text-sm font-bold whitespace-nowrap">
+            Converting to PDF... {progress}%
+          </span>
+        ) : (
+          <><FileText className="w-6 h-6 relative z-10"/> Convert to PDF</>
+        )}
+      </button>
+
+      {file && !isProcessing && (
+        <button
+          onClick={handleBrowserPrint}
+          className="w-full px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-medium text-sm flex items-center justify-center gap-2 border border-slate-300 transition-colors"
+          title="Print preview directly using browser's native print-to-PDF engine"
+        >
+          <Printer className="w-4 h-4" /> Print / Save via Browser
+        </button>
+      )}
+    </div>
   );
 
   const previewNode = (
@@ -409,7 +241,7 @@ export default function WordToPdf() {
 
       {!file && (
         <div className="text-center text-gray-400 py-32 font-medium text-lg">
-          Upload a Word document to preview and convert to PDF
+          Upload a Word document (.docx) to preview and convert to PDF
         </div>
       )}
     </div>
@@ -418,7 +250,7 @@ export default function WordToPdf() {
   return (
     <ToolPreviewLayout
       title="Word to PDF"
-      description="Convert your Microsoft Word documents (.docx) into standard PDF format instantly with high fidelity."
+      description="Convert your Microsoft Word documents (.docx) into standard PDF format with selectable vector text."
       icon={FileText}
       accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
       file={file}
@@ -428,15 +260,25 @@ export default function WordToPdf() {
       successData={successData}
       processButton={processButton}
       customPreviewNode={previewNode}
-    />
+    >
+      <div className="space-y-4">
+        <div className="bg-blue-50 border border-blue-200 p-4 rounded-xl">
+          <p className="text-blue-900 text-sm font-medium flex gap-2 items-start">
+            <span className="text-lg">✨</span>
+            <span>
+              <strong>True Vector Text:</strong> Generated PDFs retain 100% copyable, searchable vector text and structured tables without raster blur.
+            </span>
+          </p>
+        </div>
+        <div className="bg-green-50 border border-green-200 p-4 rounded-xl">
+          <p className="text-green-800 text-sm font-medium flex gap-2 items-start">
+            <span className="text-lg">🔒</span>
+            <span>
+              <strong>Client-Side Privacy:</strong> Documents are converted securely within your browser without uploading to external servers.
+            </span>
+          </p>
+        </div>
+      </div>
+    </ToolPreviewLayout>
   );
 }
-
-
-
-
-
-
-
-
-

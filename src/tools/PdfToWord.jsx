@@ -45,16 +45,13 @@ export default function PdfToWord() {
           if (!arrayBuffer || arrayBuffer.byteLength === 0) return;
           
           const bufferCopy = arrayBuffer.slice(0);
+          const pdfjsLib = await import('pdfjs-dist');
+          pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mjs', import.meta.url).href;
+
           let pdf;
           try {
-
-      const pdfjsLib = await import('pdfjs-dist');
-      pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mjs', import.meta.url).href;
-    
             pdf = await pdfjsLib.getDocument({
               data: new Uint8Array(bufferCopy),
-              cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.0.379/cmaps/',
-              cMapPacked: true,
             }).promise;
           } catch {
             pdf = await pdfjsLib.getDocument({
@@ -69,13 +66,13 @@ export default function PdfToWord() {
             const page = await pdf.getPage(i);
             const textContent = await page.getTextContent();
             
-            const items = textContent.items;
+            const items = textContent.items.filter(it => it.str && it.str.trim());
             let pageText = "";
             if (items.length > 0) {
               const rows = [];
               items.forEach(item => {
                 const y = item.transform[5];
-                let foundRow = rows.find(r => Math.abs(r.y - y) < 5);
+                let foundRow = rows.find(r => Math.abs(r.y - y) < 4);
                 if (!foundRow) {
                   foundRow = { y, items: [] };
                   rows.push(foundRow);
@@ -85,7 +82,16 @@ export default function PdfToWord() {
               rows.sort((a, b) => b.y - a.y);
               rows.forEach(row => {
                 row.items.sort((a, b) => a.transform[4] - b.transform[4]);
-                pageText += row.items.map(item => item.str).join(' ').trim() + "\n";
+                let lineText = '';
+                let lastEndX = null;
+                row.items.forEach(it => {
+                  if (lastEndX !== null && (it.transform[4] - lastEndX > 3)) {
+                    lineText += ' ';
+                  }
+                  lineText += it.str;
+                  lastEndX = it.transform[4] + (it.width || 6);
+                });
+                pageText += lineText.trim() + "\n";
               });
             }
             
@@ -94,9 +100,9 @@ export default function PdfToWord() {
             }
           }
           
-          setPreviewText(fullText.trim() || "No text detected. Scanned image pages will be converted into high-resolution pages in Word.");
+          setPreviewText(fullText.trim() || "No text detected. Scanned image pages will be converted using OCR or high-resolution visual mode in Word.");
         } catch (err) {
-      trackError('Pdf To Word', 'processing_error');
+          trackError('Pdf To Word', 'processing_error');
           console.error("Preview extraction notice:", err);
         }
       };
@@ -141,14 +147,14 @@ export default function PdfToWord() {
       document.body.removeChild(link);
 
       setSuccessData({
-        originalSize: (typeof file !== 'undefined' && file?.size) || (typeof selectedFile !== 'undefined' && selectedFile?.size) || (typeof currentFile !== 'undefined' && currentFile?.size) || 0,
-        outputSize: (typeof newPdfBytes !== 'undefined' && newPdfBytes?.length) || (typeof pdfBytes !== 'undefined' && pdfBytes?.length) || (typeof blob !== 'undefined' && blob?.size) || (typeof outputBlob !== 'undefined' && outputBlob?.size) || 0,
+        originalSize: file?.size || 0,
+        outputSize: blob?.size || 0,
         url: downloadUrl,
         filename: outputFilename,
         title: 'Conversion Complete',
         subtitle: exportMode === 'visual' 
           ? 'Your visual layout PDF has been converted into high-resolution Word pages.' 
-          : 'Your PDF text has been successfully structured into an editable Word document.',
+          : 'Your PDF has been successfully structured into an editable Word document with preserved paragraphs and tables.',
       });
     } catch (err) {
       trackError('Pdf To Word', 'processing_error');

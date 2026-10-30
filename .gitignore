@@ -109,3 +109,5 @@ audit2.txt
 audit.txt
 problems.txt
 blog_draft.txt
+
+*.traineddata
