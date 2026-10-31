@@ -8,7 +8,8 @@
     "build": "node scripts/generate-sitemap.cjs && vite build && node scripts/inject-seo.cjs && node scripts/prerender-routes.mjs",
     "lint": "oxlint",
     "test:ppt": "node tests/ppt-pdf-conversion.test.mjs",
-    "test": "node tests/ppt-pdf-conversion.test.mjs && node tests/conversion-engines.test.mjs && node tests/word-pdf-engines.test.mjs",
+    "test:redact": "node tests/redact-pdf-audit.test.mjs",
+    "test": "node tests/ppt-pdf-conversion.test.mjs && node tests/conversion-engines.test.mjs && node tests/word-pdf-engines.test.mjs && node tests/redact-pdf-audit.test.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

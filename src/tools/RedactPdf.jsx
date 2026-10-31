@@ -8,6 +8,7 @@ export default function RedactPdf() {
       title="Redact PDF"
       description="Permanently blackout sensitive text, images, and data from your PDF documents. Redact private information instantly directly in your browser."
       allowedTools={['select', 'hand', 'redact']}
+      isRedactMode={true}
     />
   );
 }

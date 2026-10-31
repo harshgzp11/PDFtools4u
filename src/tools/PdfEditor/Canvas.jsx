@@ -20,7 +20,7 @@ export default function Canvas({
 }) {
   const containerRef = useRef(null);
   const drawCanvasRef = useRef(null);
-  
+
   // Drawing state
   const [isDrawing, setIsDrawing] = useState(false);
   const [currentPath, setCurrentPath] = useState([]);
@@ -34,17 +34,17 @@ export default function Canvas({
   // Handles adding text on click (shapes are now drag-to-draw)
   const handleContainerClick = (e) => {
     if (['select', 'pencil', 'highlighter', 'eraser', 'hand', 'rect', 'circle', 'redact'].includes(activeTool)) return;
-    
+
     const rect = e.currentTarget.getBoundingClientRect();
     const x = (e.clientX - rect.left) / zoom;
     const y = (e.clientY - rect.top) / zoom;
-    
+
     if (activeTool === 'text') {
-      const newOverlay = { 
-        id: generateId(), 
-        type: 'text', 
-        x, 
-        y, 
+      const newOverlay = {
+        id: generateId(),
+        type: 'text',
+        x,
+        y,
         color: toolConfig.color,
         text: 'New Text',
         fontSize: toolConfig.size || 24,
@@ -55,16 +55,16 @@ export default function Canvas({
       const newOverlays = { ...overlays };
       if (!newOverlays[activePageId]) newOverlays[activePageId] = [];
       newOverlays[activePageId] = [...newOverlays[activePageId], newOverlay];
-      
+
       setOverlays(newOverlays);
       pushHistory();
-      setActiveTool('select'); 
+      setActiveTool('select');
     } else if (activeTool === 'signature') {
-      const newOverlay = { 
-        id: generateId(), 
-        type: 'signature', 
-        x, 
-        y, 
+      const newOverlay = {
+        id: generateId(),
+        type: 'signature',
+        x,
+        y,
         color: '#ef4444',
         text: 'APPROVED',
         w: 200,
@@ -74,10 +74,10 @@ export default function Canvas({
       const newOverlays = { ...overlays };
       if (!newOverlays[activePageId]) newOverlays[activePageId] = [];
       newOverlays[activePageId] = [...newOverlays[activePageId], newOverlay];
-      
+
       setOverlays(newOverlays);
       pushHistory();
-      setActiveTool('select'); 
+      setActiveTool('select');
     }
   };
 
@@ -95,7 +95,7 @@ export default function Canvas({
       setPanStart({ x: e.clientX, y: e.clientY });
       return;
     }
-    
+
     if (['pencil', 'highlighter'].includes(activeTool)) {
       e.preventDefault();
       const { x, y } = getEventPos(e);
@@ -119,12 +119,12 @@ export default function Canvas({
     }
 
     if (!isDrawing) return;
-    
+
     if (['pencil', 'highlighter'].includes(activeTool)) {
       e.preventDefault();
       const { x, y } = getEventPos(e);
       setCurrentPath(prev => [...prev, { x, y }]);
-      
+
       // Live render path
       const ctx = drawCanvasRef.current.getContext('2d');
       ctx.lineTo(x, y);
@@ -133,19 +133,99 @@ export default function Canvas({
       e.preventDefault();
       const { x, y } = getEventPos(e);
       setCurrentShape(prev => ({ ...prev, currentX: x, currentY: y }));
-      
+
       // Live render shape on temporary canvas
       const ctx = drawCanvasRef.current.getContext('2d');
       ctx.clearRect(0, 0, drawCanvasRef.current.width, drawCanvasRef.current.height);
-      
+
       const xOrigin = Math.min(currentShape.startX, x);
       const yOrigin = Math.min(currentShape.startY, y);
       const w = Math.abs(x - currentShape.startX);
       const h = Math.abs(y - currentShape.startY);
-      
+
       ctx.strokeStyle = activeTool === 'redact' ? '#000000' : toolConfig.color;
       ctx.lineWidth = toolConfig.strokeWidth;
-      
+
+      if (activeTool === 'rect' || activeTool === 'redact') {
+        ctx.strokeRect(xOrigin, yOrigin, w, h);
+        if (activeTool === 'redact') {
+          ctx.fillStyle = 'rgba(0,0,0,1)';
+          ctx.fillRect(xOrigin, yOrigin, w, h);
+        }
+      } else if (activeTool === 'circle') {
+        ctx.beginPath();
+        ctx.ellipse(xOrigin + w/2, yOrigin + h/2, w/2, h/2, 0, 0, 2 * Math.PI);
+        ctx.stroke();
+      }
+    }
+  };
+
+  const getTouchPos = (e) => {
+    const touch = e.touches[0] || e.changedTouches[0];
+    if (!touch || !drawCanvasRef.current) return { x: 0, y: 0 };
+    const rect = drawCanvasRef.current.getBoundingClientRect();
+    return {
+      x: (touch.clientX - rect.left) / zoom,
+      y: (touch.clientY - rect.top) / zoom
+    };
+  };
+
+  const onTouchStart = (e) => {
+    if (activeTool === 'hand') {
+      const touch = e.touches[0];
+      if (touch) {
+        setIsPanning(true);
+        setPanStart({ x: touch.clientX, y: touch.clientY });
+      }
+      return;
+    }
+    if (['pencil', 'highlighter'].includes(activeTool)) {
+      if (e.cancelable) e.preventDefault();
+      const { x, y } = getTouchPos(e);
+      setIsDrawing(true);
+      setCurrentPath([{ x, y }]);
+    } else if (['rect', 'circle', 'redact'].includes(activeTool)) {
+      if (e.cancelable) e.preventDefault();
+      const { x, y } = getTouchPos(e);
+      setIsDrawing(true);
+      setCurrentShape({ startX: x, startY: y, currentX: x, currentY: y });
+    }
+  };
+
+  const onTouchMove = (e) => {
+    if (isPanning && activeTool === 'hand' && containerRef.current?.parentElement) {
+      const touch = e.touches[0];
+      if (touch) {
+        const dx = touch.clientX - panStart.x;
+        const dy = touch.clientY - panStart.y;
+        containerRef.current.parentElement.scrollBy(-dx, -dy);
+        setPanStart({ x: touch.clientX, y: touch.clientY });
+      }
+      return;
+    }
+    if (!isDrawing) return;
+    if (e.cancelable) e.preventDefault();
+
+    if (['pencil', 'highlighter'].includes(activeTool)) {
+      const { x, y } = getTouchPos(e);
+      setCurrentPath(prev => [...prev, { x, y }]);
+      const ctx = drawCanvasRef.current.getContext('2d');
+      ctx.lineTo(x, y);
+      ctx.stroke();
+    } else if (['rect', 'circle', 'redact'].includes(activeTool) && currentShape) {
+      const { x, y } = getTouchPos(e);
+      setCurrentShape(prev => ({ ...prev, currentX: x, currentY: y }));
+
+      const ctx = drawCanvasRef.current.getContext('2d');
+      ctx.clearRect(0, 0, drawCanvasRef.current.width, drawCanvasRef.current.height);
+      const xOrigin = Math.min(currentShape.startX, x);
+      const yOrigin = Math.min(currentShape.startY, y);
+      const w = Math.abs(x - currentShape.startX);
+      const h = Math.abs(y - currentShape.startY);
+
+      ctx.strokeStyle = activeTool === 'redact' ? '#000000' : toolConfig.color;
+      ctx.lineWidth = toolConfig.strokeWidth;
+
       if (activeTool === 'rect' || activeTool === 'redact') {
         ctx.strokeRect(xOrigin, yOrigin, w, h);
         if (activeTool === 'redact') {
@@ -168,10 +248,10 @@ export default function Canvas({
 
     if (!isDrawing) return;
     setIsDrawing(false);
-    
+
     if (['pencil', 'highlighter'].includes(activeTool) && currentPath?.length > 1) {
       const svgPath = currentPath.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
-      
+
       const newOverlay = {
         id: generateId(),
         type: activeTool === 'highlighter' ? 'highlight_path' : 'path',
@@ -186,13 +266,13 @@ export default function Canvas({
       const newOverlays = { ...overlays };
       if (!newOverlays[activePageId]) newOverlays[activePageId] = [];
       newOverlays[activePageId] = [...newOverlays[activePageId], newOverlay];
-      
+
       setOverlays(newOverlays);
       pushHistory();
     } else if (['rect', 'circle', 'redact'].includes(activeTool) && currentShape) {
       const w = Math.abs(currentShape.currentX - currentShape.startX);
       const h = Math.abs(currentShape.currentY - currentShape.startY);
-      
+
       // Don't create if too small (accidental click)
       if (w > 5 && h > 5) {
         const newOverlay = {
@@ -205,18 +285,20 @@ export default function Canvas({
           w,
           h
         };
-        
+
         const newOverlays = { ...overlays };
         if (!newOverlays[activePageId]) newOverlays[activePageId] = [];
         newOverlays[activePageId] = [...newOverlays[activePageId], newOverlay];
-        
+
         setOverlays(newOverlays);
         pushHistory();
       }
       setCurrentShape(null);
-      setActiveTool('select');
+      if (activeTool !== 'redact') {
+        setActiveTool('select');
+      }
     }
-    
+
     setCurrentPath([]);
     const ctx = drawCanvasRef.current.getContext('2d');
     ctx.clearRect(0, 0, drawCanvasRef.current.width, drawCanvasRef.current.height);
@@ -248,7 +330,9 @@ export default function Canvas({
         const availableWidth = container.clientWidth - 80; // Comfortable padding
         if (availableWidth > 0) {
           // Convert PDF points (72dpi) to CSS pixels (96dpi: 1pt = 1.333px)
-          const cssPageWidth = activePage.width * (96 / 72);
+          const isRot = activePage.rotation === 90 || activePage.rotation === 270;
+          const curW = isRot ? activePage.height : activePage.width;
+          const cssPageWidth = curW * (96 / 72);
           const fitZoom = availableWidth / cssPageWidth;
           // Cap at 1.05 max so pages render at comfortable paper size
           const clampedZoom = Math.min(1.05, Math.max(0.5, Number(fitZoom.toFixed(2))));
@@ -270,30 +354,33 @@ export default function Canvas({
   const activePage = pages[activePageIndex];
   if (!activePage) return null;
 
+  const isRotated90or270 = activePage.rotation === 90 || activePage.rotation === 270;
+  const effectiveWidth = isRotated90or270 ? activePage.height : activePage.width;
+  const effectiveHeight = isRotated90or270 ? activePage.width : activePage.height;
+
   const pageOverlays = overlays[activePageId] || [];
 
   return (
     <div className="flex-1 bg-[#e5e7eb] overflow-auto custom-scrollbar relative flex flex-col items-center justify-start p-6 pb-24">
-      
+
       {/* Sizing Wrapper: Layout box matches scaled size so scrollbars only appear when zoomed in too much */}
-      <div 
-        style={{ 
-          width: activePage.width * zoom, 
-          height: activePage.height * zoom 
-        }} 
+      <div
+        style={{
+          width: effectiveWidth * zoom,
+          height: effectiveHeight * zoom}}
         className="shrink-0 relative flex items-center justify-center my-auto transition-all duration-200"
       >
-        <div 
+        <div
           ref={containerRef}
           className={`relative bg-white shadow-2xl transition-transform duration-200 origin-top-left ${
-            activeTool === 'hand' ? (isPanning ? 'cursor-grabbing' : 'cursor-grab') 
+            activeTool === 'hand' ? (isPanning ? 'cursor-grabbing' : 'cursor-grab')
             : activeTool === 'eraser' ? 'cursor-not-allowed'
-            : ['pencil', 'highlighter'].includes(activeTool) ? 'cursor-crosshair'
+            : ['pencil', 'highlighter', 'rect', 'circle', 'redact'].includes(activeTool) ? 'cursor-crosshair'
             : 'cursor-default'
           }`}
-          style={{ 
-            width: activePage.width, 
-            height: activePage.height,
+          style={{
+            width: effectiveWidth,
+            height: effectiveHeight,
             transform: `scale(${zoom})`
           }}
           onClick={handleContainerClick}
@@ -301,31 +388,34 @@ export default function Canvas({
           onMouseMove={onMouseMove}
           onMouseUp={onMouseUp}
           onMouseLeave={onMouseUp}
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onMouseUp}
         >
-        <PageCanvasRenderer 
-          pdfJsDoc={pdfJsDoc} 
-          pageIndex={activePage.originalIndex + 1} 
-          width={activePage.width} 
-          height={activePage.height}
-          rotation={activePage.rotation}
+        <PageCanvasRenderer
+          pdfJsDoc={pdfJsDoc}
+          pageIndex={activePage.originalIndex + 1}
+          width={effectiveWidth}
+          height={effectiveHeight}
+          userRotation={activePage.rotation}
         />
 
         {/* Temporary Canvas for Active Drawing */}
-        <canvas 
+        <canvas
           ref={drawCanvasRef}
-          width={activePage.width}
-          height={activePage.height}
-          className={`absolute inset-0 z-10 ${['pencil', 'highlighter'].includes(activeTool) ? 'pointer-events-auto' : 'pointer-events-none'}`}
+          width={effectiveWidth}
+          height={effectiveHeight}
+          className={`absolute inset-0 z-10 ${['pencil', 'highlighter', 'rect', 'circle', 'redact'].includes(activeTool) ? 'pointer-events-auto' : 'pointer-events-none'}`}
         />
-        
+
         {/* Rendered Overlays Layer */}
         {pageOverlays.map((overlay, idx) => (
           <div
             key={overlay.id}
             className={`absolute group z-20 ${['select', 'eraser'].includes(activeTool) ? 'pointer-events-auto' : 'pointer-events-none'} ${activeTool === 'select' && overlay.type !== 'path' && overlay.type !== 'highlight_path' ? 'hover:outline hover:outline-2 hover:outline-blue-400 cursor-move' : ''}`}
-            style={{ 
-              left: ['path', 'highlight_path'].includes(overlay.type) ? 0 : overlay.x, 
-              top: ['path', 'highlight_path'].includes(overlay.type) ? 0 : overlay.y, 
+            style={{
+              left: ['path', 'highlight_path'].includes(overlay.type) ? 0 : overlay.x,
+              top: ['path', 'highlight_path'].includes(overlay.type) ? 0 : overlay.y,
               width: overlay.w ? `${overlay.w}px` : ['path', 'highlight_path'].includes(overlay.type) ? '100%' : 'auto',
               height: overlay.h ? `${overlay.h}px` : ['path', 'highlight_path'].includes(overlay.type) ? '100%' : 'auto',
               color: overlay.color,
@@ -380,11 +470,11 @@ export default function Canvas({
                 style={{ fontSize: `${overlay.fontSize}px`, color: overlay.color, fontWeight: 'bold' }}
               />
             )}
-            
+
             {overlay.type === 'rect' && (
               <div className="w-full h-full" style={{ border: `${overlay.strokeWidth}px solid ${overlay.color}` }}></div>
             )}
-            
+
             {overlay.type === 'circle' && (
               <div className="w-full h-full rounded-full" style={{ border: `${overlay.strokeWidth}px solid ${overlay.color}` }}></div>
             )}
@@ -392,7 +482,7 @@ export default function Canvas({
             {overlay.type === 'image' && (
               <img src={overlay.src} alt="overlay" className="w-full h-full object-cover rounded-md pointer-events-none" />
             )}
-            
+
             {overlay.type === 'signature' && (
               <div className="w-full h-full flex items-center justify-center border-4 border-red-500 rounded-lg transform -rotate-12 pointer-events-none">
                 <span className="text-red-500 font-bold text-3xl uppercase tracking-widest">{overlay.text}</span>
@@ -412,9 +502,10 @@ export default function Canvas({
             )}
 
             {/* Delete button */}
-            {activeTool === 'select' && (
-              <button 
-                className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-md"
+            {(activeTool === 'select' || overlay.type === 'redact') && (
+              <button
+                className="absolute -top-3 -right-3 bg-red-600 hover:bg-red-700 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-md cursor-pointer pointer-events-auto"
+                title="Delete"
                 onClick={(e) => {
                   e.stopPropagation();
                   const newOverlays = { ...overlays };
@@ -433,19 +524,19 @@ export default function Canvas({
 
       {/* Floating Pagination Footer */}
       <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-900/90 backdrop-blur-md rounded-full shadow-2xl px-6 py-2.5 flex items-center gap-6 z-50">
-        <button 
+        <button
           onClick={() => setActivePageIndex(Math.max(0, activePageIndex - 1))}
           disabled={activePageIndex === 0}
           className="text-white disabled:opacity-30 hover:text-blue-400 transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
-        
+
         <div className="text-white font-medium text-sm tracking-widest">
           {activePageIndex + 1} / {pages.length}
         </div>
-        
-        <button 
+
+        <button
           onClick={() => setActivePageIndex(Math.min(pages.length - 1, activePageIndex + 1))}
           disabled={activePageIndex === pages.length - 1}
           className="text-white disabled:opacity-30 hover:text-blue-400 transition-colors"
@@ -458,7 +549,7 @@ export default function Canvas({
   );
 }
 
-function PageCanvasRenderer({ pdfJsDoc, pageIndex, width, height, rotation }) {
+function PageCanvasRenderer({ pdfJsDoc, pageIndex, width, height, userRotation }) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -467,17 +558,18 @@ function PageCanvasRenderer({ pdfJsDoc, pageIndex, width, height, rotation }) {
 
     const renderPage = async () => {
       if (!pdfJsDoc || !canvasRef.current) return;
-      
+
       try {
         const page = await pdfJsDoc.getPage(pageIndex);
-        const viewport = page.getViewport({ scale: 1.5 }); 
-        
+        const totalRotation = (page.rotate + (userRotation || 0)) % 360;
+        const viewport = page.getViewport({ scale: 1.5, rotation: totalRotation });
         const canvas = canvasRef.current;
+        if (!canvas) return;
         const ctx = canvas.getContext('2d');
-        
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        
+
+        canvas.width = Math.ceil(viewport.width);
+        canvas.height = Math.ceil(viewport.height);
+
         canvas.style.width = '100%';
         canvas.style.height = '100%';
 
@@ -485,10 +577,10 @@ function PageCanvasRenderer({ pdfJsDoc, pageIndex, width, height, rotation }) {
           canvasContext: ctx,
           viewport: viewport
         });
-        
+
         await renderTask.promise;
       } catch (err) {
-      trackError('Canvas', 'processing_error');
+        trackError('Canvas', 'processing_error');
         if (err.name !== 'RenderingCancelledException') {
           console.error("Error rendering page", err);
         }
@@ -503,14 +595,11 @@ function PageCanvasRenderer({ pdfJsDoc, pageIndex, width, height, rotation }) {
         renderTask.cancel();
       }
     };
-  }, [pdfJsDoc, pageIndex]);
+  }, [pdfJsDoc, pageIndex, userRotation]);
 
   return (
-    <div 
-      className="absolute inset-0 z-0 bg-white shadow-[0_0_1px_rgba(0,0,0,0.5)] pointer-events-none transition-transform duration-300"
-      style={{ transform: `rotate(${rotation}deg)` }}
-    >
-        <canvas ref={canvasRef} className="w-full h-full object-contain" />
+    <div className="absolute inset-0 z-0 bg-white shadow-[0_0_1px_rgba(0,0,0,0.5)] pointer-events-none">
+      <canvas ref={canvasRef} className="w-full h-full object-contain" />
     </div>
   );
 }

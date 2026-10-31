@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 export default function GridView({ 
   pages, setPages, 
   setActivePageIndex, setViewMode, 
-  pushHistory, viewMode 
+  pushHistory, viewMode, onRotatePage
 }) {
   const handleEdit = (idx) => {
     setActivePageIndex(idx);
@@ -35,10 +35,14 @@ export default function GridView({
 
   const handleRotate = (e, index) => {
     e.stopPropagation();
-    const newPages = [...pages];
-    newPages[index] = { ...newPages[index], rotation: (newPages[index].rotation + 90) % 360 };
-    setPages(newPages);
-    pushHistory();
+    if (onRotatePage) {
+      onRotatePage(index);
+    } else {
+      const newPages = [...pages];
+      newPages[index] = { ...newPages[index], rotation: (newPages[index].rotation + 90) % 360 };
+      setPages(newPages);
+      pushHistory();
+    }
   };
 
   return (

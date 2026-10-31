@@ -3,7 +3,7 @@ import { Trash2, Copy, RotateCw, Plus, FileArchive, ArrowLeftRight, Files, Edit3
 import { generateId } from './utils';
 import { toast } from 'sonner';
 
-export default function Sidebar({ pages, setPages, activePageIndex, setActivePageIndex, pushHistory, onTogglePanel, setViewMode, viewMode }) {
+export default function Sidebar({ pages, setPages, activePageIndex, setActivePageIndex, pushHistory, onTogglePanel, setViewMode, viewMode, isRedactMode = false, onRotatePage }) {
   const navigate = (path) => {
     window.history.pushState({}, "", path);
     window.dispatchEvent(new PopStateEvent('popstate'));
@@ -65,15 +65,20 @@ export default function Sidebar({ pages, setPages, activePageIndex, setActivePag
 
   const handleRotate = (e, index) => {
     e.stopPropagation();
-    const newPages = [...pages];
-    newPages[index] = { ...newPages[index], rotation: (newPages[index].rotation + 90) % 360 };
-    setPages(newPages);
-    pushHistory();
+    if (onRotatePage) {
+      onRotatePage(index);
+    } else {
+      const newPages = [...pages];
+      newPages[index] = { ...newPages[index], rotation: (newPages[index].rotation + 90) % 360 };
+      setPages(newPages);
+      pushHistory();
+    }
   };
 
   return (
     <div className="flex h-full shrink-0 relative z-10">
       {/* Global Navigation Strip */}
+      {!isRedactMode && (
       <div className="w-16 bg-[#0f172a] h-full flex flex-col items-center py-4 gap-6 z-20 shadow-xl hidden md:flex">
          <button onClick={() => onTogglePanel('compress')} className="text-gray-400 hover:text-white transition-colors" title="Compress"><FileArchive className="w-5 h-5" /></button>
          <button onClick={() => onTogglePanel('convert')} className="text-gray-400 hover:text-white transition-colors" title="Convert"><ArrowLeftRight className="w-5 h-5" /></button>
@@ -83,6 +88,8 @@ export default function Sidebar({ pages, setPages, activePageIndex, setActivePag
          <div className="flex-1"></div>
          <button onClick={() => onTogglePanel('ai')} className="text-purple-400 hover:text-purple-300 transition-colors" title="AI Tools"><Sparkles className="w-5 h-5" /></button>
       </div>
+
+      )}
 
       {/* Pages Sidebar - Only visible in edit mode */}
       {viewMode === 'edit' && (
