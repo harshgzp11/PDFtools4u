@@ -9,7 +9,8 @@
     "lint": "oxlint",
     "test:ppt": "node tests/ppt-pdf-conversion.test.mjs",
     "test:redact": "node tests/redact-pdf-audit.test.mjs",
-    "test": "node tests/ppt-pdf-conversion.test.mjs && node tests/conversion-engines.test.mjs && node tests/word-pdf-engines.test.mjs && node tests/redact-pdf-audit.test.mjs",
+    "test:split": "node tests/pdf-splitter.test.mjs",
+    "test": "node tests/ppt-pdf-conversion.test.mjs && node tests/conversion-engines.test.mjs && node tests/word-pdf-engines.test.mjs && node tests/redact-pdf-audit.test.mjs && node tests/pdf-splitter.test.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

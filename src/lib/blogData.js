@@ -2102,7 +2102,7 @@ PDFTools4U runs entirely on your local machine:
 
 <details>
 <summary>Can I split non-consecutive pages into a single new PDF?</summary>
-Yes. You can enter comma-separated numbers and ranges (e.g., 1, 3, 5-8) to merge disparate sections into one new document.
+In the Split PDF tool, comma-separated page groups create separate output PDF files inside a ZIP archive (for example, entering "1, 3, 7" generates three individual 1-page PDFs, while "1-3, 5-7" generates two multi-page PDFs). If your goal is to extract non-consecutive pages and combine them into a single new PDF document, use our [Extract PDF Pages](/extract-pdf-pages) tool.
 </details>
 
 <details>
