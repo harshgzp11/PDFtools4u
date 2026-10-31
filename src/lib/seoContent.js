@@ -132,33 +132,51 @@ export const SEO_CONTENT = {
     }
   },
   "compress-pdf": {
-    "title": "Compress PDF Files Online for Free",
-    "description": "Easily reduce PDF file sizes without losing quality. Optimize documents to 100kb or 200kb, making it perfect for strict form uploads.",
+    "title": "Compress PDF Files Online — Private In-Browser Optimization",
+    "description": "Reduce PDF file sizes by selectively optimizing eligible image streams while preserving text, vector graphics, bookmarks, and document structure. Runs 100% locally in your browser.",
     "howTo": [
-      "Upload or drag and drop your PDF file into the compressor.",
-      "Select your preferred compression level (High, Recommended, or Low).",
-      "Click the 'Compress PDF' button to start instant reduction.",
-      "Download your compressed PDF file ready for portal upload."
+      "Upload Your PDF: Drag and drop or select your PDF document to load it securely into local browser memory.",
+      "Select a Compression Preset: Choose between Extreme, High, Balanced (Recommended), or High Quality based on your image fidelity needs.",
+      "Inspect Preflight Estimates: Review the preflight summary showing detected image streams and estimated size reduction before compressing.",
+      "Compress & Download: Click 'Compress PDF' to selectively optimize image streams and save your optimized document instantly."
     ],
-    "why": "Use the PDF compressor to reduce a file's size in your browser. The achieved size and visual quality depend on the source PDF and compression settings; check the downloaded file against the requirements of the destination portal before submitting it. Supported file processing is designed to run locally rather than upload the selected PDF to PDFtools4u servers. The site separately requests assets and analytics as explained in the Privacy Policy. This tool is currently free to use without an account.",
+    "why": "### Understanding In-Place Selective Stream Optimization\n\nUnlike traditional PDF compressors that destructively convert entire document pages into low-resolution raster images—destroying selectable text, vector graphics, form fields, and bookmarks in the process—PDFTools4U uses **In-Place Selective Stream Optimization (IPSSO)**. This modern architecture leaves the document object graph intact and specifically targets only the embedded raster images that cause excessive file size.\n\n### What Stays Untouched During Compression\n- **Selectable Text & Fonts:** Font descriptors, glyph mappings, and text content streams remain native vector objects, ensuring text stays razor-sharp and searchable.\n- **Vector Graphics & Layouts:** Lines, shapes, tables, borders, and page geometry are completely untouched.\n- **Interactive Features:** Form fields, annotations, bookmarks, hyperlinks, and document metadata are preserved in their original structure.\n- **Non-Compressible Streams:** Unsupported image formats, uncommon color spaces, and already-optimized streams are safely skipped rather than degraded.\n\n### Transparent Trade-offs Across Presets\nCompression presets govern how aggressively embedded raster images are downsampled and recompressed:\n- **Extreme Compression:** Downsamples images to a maximum dimension of 800px at 40% JPEG quality. Best for reaching strict email or portal limits where maximum size reduction is required and visual softness is acceptable.\n- **High Compression:** Downsamples images to a maximum dimension of 1000px at 55% JPEG quality. Delivers significant size reduction while preserving comfortable readability for everyday documents.\n- **Balanced (Recommended):** Downsamples images to a maximum dimension of 1400px at 68% JPEG quality. Provides an optimal compromise between compact file size and crisp photographic image clarity.\n- **High Quality:** Limits downsampling to a maximum dimension of 2000px at 82% JPEG quality. Applies conservative image optimization to preserve high-fidelity photographs and detailed technical illustrations.\n\n### Document-Level Non-Inflation Safeguard\nNot every PDF can or should be compressed. If your document consists purely of vector artwork, native text, or images that are already heavily compressed, attempting to recompress them could actually increase file size. Our engine monitors stream sizes individually and includes an automatic **document-level non-inflation safeguard**: if compression would result in a larger file, the compressor automatically retains your original document bytes unchanged.\n\n### Digital Signatures and Password-Protected Files\n- **Digitally Signed PDFs:** Recompressing any stream inside a digitally signed PDF alters its cryptographic digest, invalidating the existing signature. When compressible images are detected in a signed document, the tool displays an explicit warning and requires confirmation. However, if no images are modified and the original bytes are retained unchanged, the signature remains valid.\n- **Encrypted / Locked PDFs:** Password-protected or AES-128 encrypted PDFs cannot be modified while locked. If your document is encrypted, use our [Unlock PDF](/unlock-pdf) tool to remove the password before compressing.\n\n### 100% Private Client-Side Processing\nAll document analysis, image recompression, and PDF stream reconstruction occur locally inside your device's browser memory using Web Workers and HTML5 OffscreenCanvas. Your confidential files, contracts, marksheets, and financial statements are never transmitted to or stored on any external server.",
     "features": [
-      "Compression settings: Choose an available level and check the resulting file size.",
-      "Review output: Compression may affect image quality; inspect the exported PDF before using it.",
-      "Browser-based processing: Supported operations are designed to process the selected file locally.",
-      "Free to use: Current availability and features may change."
+      "Selective Stream Optimization: Recompresses eligible embedded raster images while preserving text and vector objects.",
+      "No Destructive Rasterization: Keeps text selectable and vector drawings crisp without converting pages to flat images.",
+      "Document-Level Safeguard: Automatically retains original bytes if compression would increase overall file size.",
+      "Four Balanced Presets: Choose the right balance of image dimensions and visual quality (Extreme, High, Balanced, High Quality).",
+      "Cryptographic Signature Protection: Detects digital signatures and confirms when original signed bytes remain intact.",
+      "100% Private & Local: All processing runs inside your browser sandbox with zero server uploads."
     ],
     "faq": [
       {
-        "q": "How can I compress a PDF to under 100KB or 200KB for exam forms?",
-        "a": "Choose a compression level, download the result, and check its actual size. The tool cannot guarantee a target size or acceptance by an external portal; portal limits can change, so check the current official instructions."
+        "q": "How does this PDF compressor reduce file size without rasterizing pages?",
+        "a": "Our engine uses In-Place Selective Stream Optimization (IPSSO). Rather than converting entire pages into flat images (which destroys text clarity and document structure), it inspects the internal PDF structure and only recompresses eligible raster image streams. Text, vectors, fonts, forms, and bookmarks remain native objects."
       },
       {
-        "q": "Will compressing my PDF reduce the quality of text or signatures?",
-        "a": "Compression can change image quality, especially at stronger settings. Open and inspect the exported file before submitting or sharing it."
+        "q": "Why did my PDF file size not decrease after compression?",
+        "a": "Compression reduces size by recompressing embedded raster images. If your PDF consists primarily of vector drawings, text, pre-compressed JPEG images, or scans that are already highly optimized, there may be no compressible data. If recompression would increase file size, our built-in non-inflation safeguard retains your original file unchanged."
       },
       {
-        "q": "Is it safe to compress confidential PDFs like Form 16 or bank statements?",
-        "a": "Supported compression is designed to run in your browser rather than upload the selected file to PDFtools4u servers. The site still makes separate requests for assets and analytics. Review the Privacy Policy and inspect Network requests for this tool if you need to verify its current behaviour."
+        "q": "What are the differences between the four compression presets?",
+        "a": "Presets adjust the maximum image dimensions and compression quality: Extreme scales images down to 800px at 40% quality for maximum size reduction; High scales to 1000px at 55% quality; Balanced (Recommended) scales to 1400px at 68% quality for everyday viewing; and High Quality limits scaling to 2000px at 82% quality to preserve maximum photographic fidelity. Text and vector content are unaffected across all presets."
+      },
+      {
+        "q": "Will compressing a digitally signed PDF invalidate the signature?",
+        "a": "Any modification to a digitally signed document—including recompressing embedded images—invalidates its cryptographic signature. If your signed PDF has compressible images, the tool warns you and requires confirmation before proceeding. If the document has no eligible images to compress, the tool leaves the file completely untouched and retains the original bytes, keeping your existing digital signature intact."
+      },
+      {
+        "q": "Can I compress a password-protected or encrypted PDF?",
+        "a": "Encrypted PDFs (including standard AES-128 protected documents such as bank statements or tax forms) cannot have their internal streams modified while locked. Use our Unlock PDF tool to remove the password first, and then compress the unlocked document."
+      },
+      {
+        "q": "Can I guarantee a specific file size like under 100KB or 200KB for government forms?",
+        "a": "No compression tool can honestly guarantee an arbitrary target size (such as 100KB or 200KB) across all documents. Output size depends directly on the number of pages, embedded assets, and document content. We recommend testing the High or Extreme preset and verifying the final output size against your portal's requirements."
+      },
+      {
+        "q": "Are my confidential documents uploaded to a remote server?",
+        "a": "No. All compression operations run 100% locally on your device within your web browser using Web Workers and JavaScript. Your documents and data are never transmitted or stored on any server."
       }
     ]
   },

@@ -26,7 +26,7 @@ export const DOMAINS = [
       {
         name: "OPTIMIZE PDF",
         tools: [
-          { id: 'compress-pdf', name: 'Compress PDF', description: 'Reduce PDF file size without losing quality.', icon: Minimize, color: 'text-green-500', bg: 'bg-green-50' },
+          { id: 'compress-pdf', name: 'Compress PDF', description: 'Reduce PDF file size by selectively optimizing images in your browser.', icon: Minimize, color: 'text-green-500', bg: 'bg-green-50' },
           { id: 'flatten-pdf', name: 'Flatten PDF', description: 'Make forms and annotations uneditable.', icon: Layers3, color: 'text-green-500', bg: 'bg-green-50' },
           { id: 'pdf-ocr', name: 'OCR PDF', description: 'Make scanned PDF documents searchable.', icon: ScanText, color: 'text-green-500', bg: 'bg-green-50' },
         ]

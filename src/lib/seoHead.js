@@ -8,10 +8,10 @@ export const SEO_HEAD = {
   // PDF ORGANIZE TOOLS
   // ═══════════════════════════════════════════
   'compress-pdf': {
-    title: 'Compress PDF Online — Adjust File Size | PDFtools4u',
-    description: 'Compress a PDF and check the downloaded file size and quality. Options and results depend on the source document and settings. Free browser-based tool.',
-    h1: 'Compress PDF Files Online — Adjust File Size',
-    keywords: ['compress pdf to 100kb', 'compress pdf to 200kb', 'reduce pdf size online free', 'compress form 16 pdf under 500kb', 'pdf compressor for sarkari exam'],
+    title: 'Compress PDF Online Free — Reduce PDF File Size | PDFtools4u',
+    description: 'Compress PDF files online for free. Selectively optimize embedded images while preserving text, vectors, and layout locally in your browser with zero uploads.',
+    h1: 'Compress PDF Online — Reduce PDF File Size',
+    keywords: ['compress pdf online free', 'reduce pdf size', 'compress pdf to 100kb', 'compress pdf to 200kb', 'client side pdf compression', 'compress form 16 pdf under 500kb'],
   },
   'pdf-merge': {
     title: 'Merge PDF Files Online Free — Combine PDFs Instantly | PDFtools4u',
