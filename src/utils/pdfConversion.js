@@ -721,62 +721,229 @@ export const convertPdfToDocx = async (file, mode = 'text', onProgress) => {
 };
 
 /**
- * Converts a PDF file to a ZIP of images (JPG or PNG)
- * @param {File} file 
- * @param {string} format 'jpeg' or 'png'
- * @param {Function} onProgress 
+ * Quickly checks if a PDF document is encrypted / requires a password.
+ * @param {File|Blob|ArrayBuffer} file
+ * @returns {Promise<boolean>}
  */
-export const convertPdfToImages = async (file, format = 'jpeg', onProgress) => {
-  if (!file) throw new Error("No file provided");
-  onProgress(0);
+export const isPdfEncrypted = async (file) => {
+  if (!file) return false;
+  try {
+    const _pdfjsLib = await initPdfJs();
+    let arrayBuffer;
+    if (file instanceof ArrayBuffer) {
+      arrayBuffer = file;
+    } else if (ArrayBuffer.isView(file)) {
+      arrayBuffer = file.buffer.slice(file.byteOffset, file.byteOffset + file.byteLength);
+    } else if (typeof Buffer !== 'undefined' && Buffer.isBuffer(file)) {
+      arrayBuffer = file.buffer.slice(file.byteOffset, file.byteOffset + file.byteLength);
+    } else if (file && typeof file.arrayBuffer === 'function') {
+      try {
+        arrayBuffer = await file.arrayBuffer();
+      } catch {
+        arrayBuffer = await readArrayBuffer(file);
+      }
+    } else {
+      arrayBuffer = await readArrayBuffer(file);
+    }
 
-  const JSZip = (await import('jszip')).default;
-  const arrayBuffer = await file.arrayBuffer();
+    const loadingTask = _pdfjsLib.getDocument({
+      data: new Uint8Array(arrayBuffer)
+    });
+    await loadingTask.promise;
+    return false;
+  } catch (err) {
+    if (err && (err.name === 'PasswordException' || String(err.message || '').includes('password') || String(err.message || '').includes('Password') || String(err.message || '').includes('PASSWORD_REQUIRED'))) {
+      return true;
+    }
+    return false;
+  }
+};
+
+/**
+ * Converts a PDF file to images (JPG or PNG).
+ * Returns { blob, filename, isZip, numPages, format, mimeType }.
+ * For 1-page PDF: returns the individual image blob directly with .jpg/.png extension.
+ * For multi-page PDF: returns a JSZip blob containing zero-padded page images (e.g. page-01.jpg).
+ *
+ * @param {File|Blob|ArrayBuffer} file 
+ * @param {Object|string} [options={}] - Options object or format string ('jpeg' | 'png')
+ * @param {string} [options.format='jpeg'] - 'jpeg' or 'png'
+ * @param {string|number} [options.dpi='medium'] - 'low' (1.5x / ~108 DPI), 'medium' (2.0x / ~144 DPI), 'high' (3.0x / ~216 DPI)
+ * @param {string} [options.password] - Optional password for encrypted PDFs
+ * @param {Function} [onProgress] - Progress callback (0-100)
+ */
+export const convertPdfToImages = async (file, options = {}, onProgress = () => {}) => {
+  if (!file) throw new Error("No file provided");
+
+  // Backwards compatibility if format passed as string
+  let format = 'jpeg';
+  let dpi = 'medium';
+  let password = undefined;
+  let progressCb = onProgress;
+
+  if (typeof options === 'string') {
+    format = options;
+  } else if (typeof options === 'object') {
+    format = options.format || 'jpeg';
+    dpi = options.dpi || 'medium';
+    password = options.password;
+    if (typeof options.onProgress === 'function') progressCb = options.onProgress;
+  }
+  if (typeof progressCb === 'function') progressCb(0);
+
+  // Map DPI to scale
+  let scale = 2.0; // Default ~144 DPI
+  if (typeof dpi === 'number') {
+    scale = dpi;
+  } else if (dpi === 'low') {
+    scale = 1.5; // ~108 DPI
+  } else if (dpi === 'medium') {
+    scale = 2.0; // ~144 DPI
+  } else if (dpi === 'high') {
+    scale = 3.0; // ~216 DPI
+  }
+
   const _pdfjsLib = await initPdfJs();
-  const pdf = await _pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
+  let arrayBuffer;
+  if (file instanceof ArrayBuffer) {
+    arrayBuffer = file;
+  } else if (ArrayBuffer.isView(file)) {
+    arrayBuffer = file.buffer.slice(file.byteOffset, file.byteOffset + file.byteLength);
+  } else if (typeof Buffer !== 'undefined' && Buffer.isBuffer(file)) {
+    arrayBuffer = file.buffer.slice(file.byteOffset, file.byteOffset + file.byteLength);
+  } else if (file && typeof file.arrayBuffer === 'function') {
+    try {
+      arrayBuffer = await file.arrayBuffer();
+    } catch {
+      arrayBuffer = await readArrayBuffer(file);
+    }
+  } else {
+    arrayBuffer = await readArrayBuffer(file);
+  }
+
+  let pdf;
+  try {
+    const loadingTask = _pdfjsLib.getDocument({
+      data: new Uint8Array(arrayBuffer),
+      password: password
+    });
+    pdf = await loadingTask.promise;
+  } catch (err) {
+    if (err && err.name === 'PasswordException') {
+      const pErr = new Error("PASSWORD_REQUIRED: This document is password-protected.");
+      pErr.name = 'PasswordException';
+      throw pErr;
+    }
+    throw err;
+  }
+
   const numPages = pdf.numPages;
-  
-  const zip = new JSZip();
-  const folderName = `${file.name.replace('.pdf', '')}_images`;
-  const folder = zip.folder(folderName);
-  
-  for (let i = 1; i <= numPages; i++) {
-    const page = await pdf.getPage(i);
-    const viewport = page.getViewport({ scale: 2.0 });
-    
+  const rawName = file.name || 'document';
+  const cleanBaseName = rawName.replace(/\.[^/.]+$/, "") || 'document';
+  const ext = format === 'png' ? 'png' : 'jpg';
+  const mimeType = format === 'png' ? 'image/png' : 'image/jpeg';
+  const quality = format === 'jpeg' ? 0.92 : undefined;
+
+  // Single-page PDF: Direct image download (no ZIP)
+  if (numPages === 1) {
+    const page = await pdf.getPage(1);
+    let pageViewport = page.getViewport({ scale });
+
+    // Safety clamp: avoid exceeding 16 megapixels (e.g. 4096 x 4096)
+    const maxDimension = 4096;
+    if (pageViewport.width > maxDimension || pageViewport.height > maxDimension) {
+      const clampFactor = maxDimension / Math.max(pageViewport.width, pageViewport.height);
+      pageViewport = page.getViewport({ scale: scale * clampFactor });
+    }
+
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-    
-    // Fill white background for JPEG
+    canvas.width = Math.round(pageViewport.width);
+    canvas.height = Math.round(pageViewport.height);
+
     if (format === 'jpeg') {
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
-    
-    await page.render({ canvasContext: ctx, viewport }).promise;
-    
-    const mimeType = format === 'png' ? 'image/png' : 'image/jpeg';
-    const quality = format === 'jpeg' ? 0.9 : undefined;
-    
+
+    await page.render({ canvasContext: ctx, viewport: pageViewport }).promise;
+    if (typeof progressCb === 'function') progressCb(100);
+
+    const blob = await new Promise((resolve) => {
+      canvas.toBlob((b) => resolve(b), mimeType, quality);
+    });
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    canvas.width = 0;
+    canvas.height = 0;
+
+    return {
+      blob,
+      filename: `${cleanBaseName}.${ext}`,
+      isZip: false,
+      numPages: 1,
+      format,
+      mimeType
+    };
+  }
+
+  // Multi-page PDF: Generate ZIP archive
+  const JSZip = (await import('jszip')).default;
+  const zip = new JSZip();
+  const folderName = `${cleanBaseName}_images`;
+  const folder = zip.folder(folderName);
+  const padLength = Math.max(2, String(numPages).length);
+
+  for (let i = 1; i <= numPages; i++) {
+    const page = await pdf.getPage(i);
+    let pageViewport = page.getViewport({ scale });
+
+    // Safety clamp
+    const maxDimension = 4096;
+    if (pageViewport.width > maxDimension || pageViewport.height > maxDimension) {
+      const clampFactor = maxDimension / Math.max(pageViewport.width, pageViewport.height);
+      pageViewport = page.getViewport({ scale: scale * clampFactor });
+    }
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = Math.round(pageViewport.width);
+    canvas.height = Math.round(pageViewport.height);
+
+    if (format === 'jpeg') {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    await page.render({ canvasContext: ctx, viewport: pageViewport }).promise;
+
     const dataUrl = canvas.toDataURL(mimeType, quality);
     const base64Data = dataUrl.split(',')[1];
-    folder.file(`page-${i}.${format === 'jpeg' ? 'jpg' : 'png'}`, base64Data, { base64: true });
-    
+    const pageNumPadded = String(i).padStart(padLength, '0');
+    folder.file(`page-${pageNumPadded}.${ext}`, base64Data, { base64: true });
+
     // Explicit Memory Cleanup
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     canvas.width = 0;
     canvas.height = 0;
-    
-    onProgress(Math.round((i / numPages) * 100));
-    
+
+    if (typeof progressCb === 'function') {
+      progressCb(Math.round((i / numPages) * 100));
+    }
+
     // Yield to main thread to keep UI responsive
     await yieldToMain();
   }
-  
+
   const content = await zip.generateAsync({ type: "blob" });
-  return content;
+  return {
+    blob: content,
+    filename: `${cleanBaseName}_images.zip`,
+    isZip: true,
+    numPages,
+    format,
+    mimeType: 'application/zip'
+  };
 };
 
 /**

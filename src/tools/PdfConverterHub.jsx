@@ -209,7 +209,7 @@ export default function PdfConverterHub() {
                 />
                 <ConversionOption 
                   icon={ImageIcon} color="text-yellow-500" bg="bg-yellow-50"
-                  title="Image" subtitle="(.jpg / .png / .webp)" 
+                  title="Image" subtitle="(.jpg / .png)" 
                   onClick={() => handleConversionSelect('pdf-to-jpg')}
                 />
                 <ConversionOption 

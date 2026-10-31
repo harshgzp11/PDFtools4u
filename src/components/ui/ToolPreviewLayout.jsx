@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   RefreshCw, CheckCircle, Download, ArrowLeft, Share2, ShieldCheck,
   ZoomIn, ZoomOut, RotateCcw,
-  PanelLeft, PanelLeftClose, ChevronUp, ChevronDown, Layers 
+  PanelLeft, PanelLeftClose, ChevronUp, ChevronDown, Layers,
+  Lock, FileText
 } from 'lucide-react';
 import { toast } from 'sonner';
 import DragDropZone from './DragDropZone';
@@ -32,6 +33,7 @@ export default function ToolPreviewLayout({
   const [previewImage, setPreviewImage] = useState(null);
   const [thumbnails, setThumbnails] = useState([]);
   const [isLoadingPreview, setIsLoadingPreview] = useState(false);
+  const [previewError, setPreviewError] = useState(null);
   const [processingStartTime, setProcessingStartTime] = useState(null);
 
   // Viewer controls & sidebar state
@@ -110,11 +112,12 @@ export default function ToolPreviewLayout({
 
     const loadPreview = async () => {
       setIsLoadingPreview(true);
+      setPreviewError(null);
       setActivePage(1);
       setZoom(1.0);
       pageRefs.current = [];
       try {
-        if (file.type === 'application/pdf') {
+        if (file.type === 'application/pdf' || /\.pdf$/i.test(file.name || '')) {
           if (gridMode) {
             const thumbs = await getPdfThumbnails(file, gridQuality);
             setThumbnails(thumbs);
@@ -126,12 +129,13 @@ export default function ToolPreviewLayout({
               setPreviewImage(thumbs[0].dataUrl);
             }
           }
-        } else if (file.type.startsWith('image/')) {
+        } else if (file.type && file.type.startsWith('image/')) {
           setPreviewImage(URL.createObjectURL(file));
           setThumbnails([]);
         }
       } catch (error) {
         console.error("Error loading preview:", error);
+        setPreviewError(error);
       } finally {
         setIsLoadingPreview(false);
       }
@@ -287,6 +291,25 @@ export default function ToolPreviewLayout({
     const pageItems = thumbnails.length > 0 
       ? thumbnails 
       : (previewImage ? [{ id: 'page-0', dataUrl: previewImage }] : []);
+
+    if (pageItems.length === 0) {
+      const isEncrypted = previewError && (previewError.name === 'PasswordException' || String(previewError.message || '').includes('password') || String(previewError.message || '').includes('Password'));
+      return (
+        <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center bg-slate-50 select-none">
+          <div className={`p-5 rounded-2xl mb-4 shadow-sm ${isEncrypted ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'}`}>
+            {isEncrypted ? <Lock className="w-10 h-10" /> : <FileText className="w-10 h-10" />}
+          </div>
+          <h4 className="text-lg font-bold text-gray-900 mb-1">
+            {isEncrypted ? 'Password-Protected PDF' : (file?.name || 'Document')}
+          </h4>
+          <p className="text-sm text-gray-500 max-w-sm">
+            {isEncrypted 
+              ? 'This document is encrypted. Enter its password in the configuration panel to decrypt and convert.' 
+              : 'Visual preview is not available for this file. You can configure options and proceed with conversion.'}
+          </p>
+        </div>
+      );
+    }
 
     return (
       <div className="w-full h-full flex flex-col min-h-0 bg-white select-none">
@@ -492,7 +515,7 @@ export default function ToolPreviewLayout({
         </div>
       )}
 
-      {file && (previewImage || gridMode || customPreviewNode) && !successData && !isLoadingPreview && (
+      {file && !successData && !isLoadingPreview && (
         <div className="flex flex-col lg:flex-row gap-4 w-full" style={{minHeight: '620px', maxHeight: '880px', height: 'min(880px, calc(100vh - 180px))'}}>
           {/* Interactive Preview Canvas with Sidebar */}
           <div className="w-full lg:w-2/3 bg-white rounded-2xl border border-gray-200 h-full min-h-0 overflow-hidden flex flex-col shadow-sm">

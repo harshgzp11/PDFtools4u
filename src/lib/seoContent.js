@@ -368,16 +368,16 @@ export const SEO_CONTENT = {
   },
   "jpg-to-pdf": {
     "title": "Convert JPG to PDF Online",
-    "description": "Convert and combine your JPG or PNG images into a single, high-quality PDF online for free. Perfect for compiling documents and exam photos.",
+    "description": "Convert and combine your JPG, PNG, and WebP images into a single, high-quality PDF online. Automatic EXIF orientation correction ensures mobile photos remain upright.",
     "howTo": [
-      "Upload Images: Select or drag and drop one or multiple JPG/PNG image files.",
+      "Upload Images: Select or drag and drop one or multiple JPG, PNG, or WebP image files.",
       "Arrange Sequence: Drag thumbnail images to reorder them in your desired page sequence.",
-      "Adjust Settings: Customize page orientation (portrait/landscape), page size, and margins.",
-      "Convert & Download: Click 'Convert to PDF' and save your compiled document instantly."
+      "Adjust Settings: Choose page sizing (Fit Image, A4, or US Letter), orientation, and margins.",
+      "Convert & Download: Click 'Convert to PDF' and download your compiled document."
     ],
-    "why": "Combine selected JPG or PNG images into a PDF, arrange their order, and choose the available page settings. Review the resulting document before sharing or submitting it; the output depends on your source images and selected options.",
+    "why": "Combine selected JPG, PNG, or WebP images into a PDF, arrange their order, and choose your preferred page settings. Automatic EXIF orientation detection ensures camera photos taken on mobile phones never appear sideways in your document.",
     "features": [
-      "File processing: Supported image-to-PDF operations are designed to run in your browser.",
+      "File processing: Supported image-to-PDF operations run entirely in your browser with zero server uploads.",
       "Separate requests: The site also loads scripts, assets, and analytics; see the Privacy Policy for details."
     ],
     "faq": [
@@ -387,11 +387,11 @@ export const SEO_CONTENT = {
       },
       {
         "q": "How do I convert mobile photos to PDF for portal uploads?",
-        "a": "Upload your phone's camera photos directly from your browser, select standard A4 page fitting, and convert to PDF in one click."
+        "a": "Upload your phone's camera photos directly from your browser. Our engine reads camera EXIF tags so your photos always stay correctly oriented."
       },
       {
         "q": "Will converting JPG to PDF reduce photo quality or resolution?",
-        "a": "No, our tool preserves the original image clarity and pixel sharpness without adding unwanted compression artifacts."
+        "a": "No, our tool embeds your images with high fidelity while cleanly normalizing dimensions and backgrounds."
       }
     ]
   },
@@ -1009,16 +1009,16 @@ export const SEO_CONTENT = {
   },
   "pdf-to-png": {
     "title": "Convert PDF to PNG Online",
-    "description": "Extract pages from your PDF and convert them into high-quality, transparent PNG images.",
+    "description": "Extract pages from your PDF and convert them into high-quality PNG images with selectable resolution.",
     "howTo": [
       "Upload PDF: Drag and drop your PDF document into the converter upload area.",
-      "Select Image Quality: Choose standard resolution or high-DPI output for ultra-clear graphics.",
+      "Select Resolution: Choose Draft (~108 DPI), Standard (~144 DPI), or High (~216 DPI) output.",
       "Click Convert: Select 'Convert to PNG' to extract all document pages into image format.",
-      "Download Images: Save individual PNG files or download all pages together in a single ZIP archive."
+      "Download Images: Save your individual PNG image directly or download multi-page documents as an organized ZIP archive."
     ],
-    "why": "PNG uses lossless compression for image data, while JPG is a lossy format. Converting a PDF page to PNG rasterizes it, so output resolution and transparency depend on the converter settings and source document. Review the exported image at its intended size.",
+    "why": "PNG uses lossless compression for image data, making it ideal for text, charts, and diagrams where sharp pixel clarity is essential. Review the exported image at its intended resolution.",
     "features": [
-      "File processing: Supported operations are designed to run in your browser.",
+      "File processing: Supported operations are designed to run entirely in your browser.",
       "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
@@ -1028,40 +1028,40 @@ export const SEO_CONTENT = {
       },
       {
         "q": "Can I convert password-protected PDFs to PNG images?",
-        "a": "Use our Unlock PDF tool first to strip encryption before extracting high-resolution PNG pages."
+        "a": "Yes, our converter prompts you for the document password to decrypt and convert secured files."
       },
       {
         "q": "Are multi-page PDFs exported as separate PNG files?",
-        "a": "Yes, each page of your PDF is converted into an individual PNG image file for easy downloading and organization."
+        "a": "Yes, each page of your PDF is converted into an individual PNG image file, packaged inside a ZIP archive."
       }
     ]
   },
   "png-to-pdf": {
     "title": "Convert PNG to PDF Online",
-    "description": "Combine multiple transparent PNG images into a single, cohesive PDF document with ease.",
+    "description": "Combine multiple PNG images into a single, cohesive PDF document with clean white backgrounds and customizable page sizing.",
     "howTo": [
       "Upload PNG Images: Select or drag and drop one or multiple PNG graphics into the converter.",
       "Arrange Sequence: Drag image thumbnails to organize pages in your preferred sequence.",
-      "Configure Page Layout: Adjust page orientation, margin spacing, and standard page fitting (A4/Letter).",
+      "Configure Page Layout: Choose Fit Image, A4, or US Letter, with custom margin spacing.",
       "Convert & Download: Click 'Convert to PDF' to generate and save your compiled document."
     ],
-    "why": "Transmitting multiple individual screenshot PNG files or graphic design proofs via email can look disorganized. Our PNG to PDF converter compiles transparent graphics, screenshots, and artwork into a single professional PDF document in seconds. Preserve crisp graphics, vector text, and clean backgrounds without watermarks or account registration.",
+    "why": "Transmitting multiple individual screenshot PNG files or graphic design proofs via email can look disorganized. Our PNG to PDF converter compiles graphics, screenshots, and artwork into a single professional PDF document in seconds. Preserve sharp image details, crisp text, and clean backgrounds without watermarks or account registration.",
     "features": [
-      "File processing: Supported operations are designed to run in your browser.",
+      "File processing: Supported operations are designed to run entirely in your browser.",
       "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
     ],
     "faq": [
       {
         "q": "Can I combine transparent PNG graphics into a single PDF document?",
-        "a": "Yes, the converter handles transparency layers cleanly without adding black backgrounds or compression noise."
+        "a": "Yes, transparent PNG graphics are composited onto clean document backgrounds without black borders or visual noise."
       },
       {
-        "q": "How do I fit large PNG screenshots onto standard A4 PDF pages?",
-        "a": "Select 'Fit to Page' in the conversion settings to automatically scale wide screenshots onto A4 pages."
+        "q": "How do I fit large PNG screenshots onto standard PDF pages?",
+        "a": "Select 'Fit Image' to preserve exact screenshot proportions, or select A4 / US Letter with Auto-orientation to fit page bounds."
       },
       {
         "q": "Is there a limit on how many PNG files I can convert at once?",
-        "a": "No, you can upload and batch-convert as many PNG images as your browser memory can process."
+        "a": "You can upload and batch-convert multiple PNG images within your browser memory limits."
       }
     ]
   },
@@ -1288,21 +1288,21 @@ export const SEO_CONTENT = {
   },
   "pdf-to-jpg": {
     "title": "Convert PDF to JPG Images Online",
-    "description": "Convert your PDF pages into high-quality JPG images instantly and for free.",
+    "description": "Convert your PDF pages into high-quality JPG images with selectable DPI resolution and instant single-image or ZIP downloads.",
     "howTo": [
       "Upload PDF: Drag and drop your PDF document.",
-      "Select Quality: Choose your desired output resolution.",
-      "Download JPGs: Download individual page images or a complete ZIP file."
+      "Select Resolution: Choose Draft (~108 DPI), Standard (~144 DPI), or High (~216 DPI).",
+      "Download JPGs: Download individual page images directly or as a complete ZIP archive for multi-page documents."
     ],
     "why": "If you need to share a document on social media, embed a page in a presentation, or send a preview without requiring a PDF reader, converting PDF pages to JPG images is the easiest solution.",
     "features": [
-      "Browser-based processing: Supported operations run in the page; see the Privacy Policy for separate site requests.",
-      "High Resolution: Output crisp, clean images."
+      "Browser-based processing: Supported operations run in the page without uploading your files to any external server.",
+      "Selectable Resolution: Output crisp, clean images with selectable DPI quality."
     ],
     "faq": [
       {
         "q": "Will every page be converted to a separate JPG?",
-        "a": "Yes, our tool extracts each PDF page as an individual high-quality JPG image."
+        "a": "Yes, single-page PDFs download directly as a JPG image, while multi-page PDFs are neatly packaged into an organized ZIP archive."
       }
     ]
   },
