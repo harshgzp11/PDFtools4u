@@ -444,30 +444,38 @@ export const SEO_CONTENT = {
   },
   "protect-pdf": {
     "title": "Password Protect PDF Files Online",
-    "description": "Secure your confidential PDF documents by adding strong password protection and encryption for free.",
+    "description": "Secure your PDF documents with standard 128-bit AES password encryption and customizable permissions directly in your browser.",
     "howTo": [
-      "Upload PDF: Drag and drop the PDF document you want to encrypt.",
-      "Set Password: Enter and confirm a strong, custom password for your file.",
-      "Select Permissions: Choose to restrict opening, editing, printing, or content copying.",
-      "Encrypt & Download: Click 'Protect PDF' to download your newly encrypted file."
+      "Upload PDF: Select or drag and drop the PDF file you wish to encrypt.",
+      "Set Password: Enter and confirm your document open password.",
+      "Configure Permissions: Optionally restrict printing, text extraction, or editing, and set a distinct permissions password.",
+      "Encrypt & Download: Click 'Protect PDF Now' to generate your AES-encrypted PDF and download it locally."
     ],
-    "why": "Use the password-protection tool to apply the available PDF encryption options. Encryption strength and permissions depend on the selected settings and resulting file; test the exported document in a compatible PDF reader before sharing sensitive information.",
+    "why": "Password-protecting sensitive contracts, financial records, and confidential PDFs ensures only authorized recipients can view document contents. Our browser-based encryption engine applies standard ISO 32000-1 AES-128 encryption directly on your device, ensuring your document bytes and passwords are never transmitted to external servers.",
     "features": [
-      "File processing: Supported operations are designed to run in your browser.",
-      "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."
+      "File processing: All encryption operations execute client-side directly within your browser.",
+      "Data handling: Files and passwords are never uploaded to remote servers or stored in cloud databases."
     ],
     "faq": [
       {
-        "q": "How strong is the PDF password encryption provided by this tool?",
-        "a": "Encryption options depend on the tool and source document. Check the selected settings and test the resulting PDF in a compatible reader before relying on its protection."
+        "q": "How is my PDF encrypted by this tool?",
+        "a": "Documents are encrypted using ISO 32000-1 Standard Security Handler Revision 4 (128-bit AES in CBC mode). All document streams and strings are encrypted using an AES cipher key derived from your open password."
       },
       {
-        "q": "Can I prevent recipients from printing or editing my PDF?",
-        "a": "Yes, you can set specific permission flags to restrict printing, text extraction, and content editing."
+        "q": "Can I prevent recipients from printing, copying, or editing my PDF?",
+        "a": "Yes. You can configure permission restrictions to limit printing, content copying, and editing. These permissions are enforced by compliant PDF readers such as Adobe Acrobat, Microsoft Edge, and Chrome. When permissions are restricted, a separate secure owner key is used so recipients cannot bypass restrictions."
       },
       {
-        "q": "Is it safe to encrypt sensitive files like tax documents online?",
-        "a": "Yes, processing happens locally in your browser, ensuring no unencrypted copy is stored anywhere on external servers."
+        "q": "Are permission restrictions equivalent to absolute DRM?",
+        "a": "No. While document open passwords provide robust cryptographic AES encryption, permission flags (such as copy or print restrictions) are enforced by compliant PDF readers rather than cryptographic DRM hardware locks."
+      },
+      {
+        "q": "What happens if my PDF is already password-protected?",
+        "a": "If your input document is already encrypted, you must first decrypt it using the Unlock PDF tool before applying new encryption settings."
+      },
+      {
+        "q": "What happens if my PDF contains cryptographic digital signatures?",
+        "a": "Applying encryption modifies the document's binary stream, which alters the byte ranges and invalidates existing cryptographic digital signatures."
       }
     ]
   },
