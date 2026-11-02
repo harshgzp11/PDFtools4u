@@ -2,10 +2,11 @@ import fs from 'fs';
 import path from 'path';
 import assert from 'assert';
 import { fileURLToPath } from 'url';
-import { spawn } from 'child_process';
+import { spawn, execSync } from 'child_process';
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
 import { PDFDocument, StandardFonts, PDFName, PDFString, degrees } from 'pdf-lib';
 import { createCanvas } from '@napi-rs/canvas';
+import { getTestArtifactsDir, getManagedBrowserProfileDir, shutdownAndCleanupProfile, cleanupDirSync } from './helpers/testEnvironment.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,12 +19,11 @@ class ChromeCDP {
     this.ws = null;
     this.msgId = 0;
     this.callbacks = new Map();
+    this.profileDir = getManagedBrowserProfileDir('qa-chrome-profile-stage5');
   }
 
   async launch() {
     const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-    const profileDir = path.resolve(projectRoot, 'scratch', 'qa-chrome-profile-stage5');
-    if (!fs.existsSync(profileDir)) fs.mkdirSync(profileDir, { recursive: true });
 
     this.proc = spawn(chromePath, [
       '--headless=new',
@@ -32,7 +32,7 @@ class ChromeCDP {
       '--window-size=1280,960',
       '--no-first-run',
       '--no-default-browser-check',
-      `--user-data-dir=${profileDir}`,
+      `--user-data-dir=${this.profileDir}`,
       'about:blank'
     ]);
 
@@ -160,12 +160,9 @@ class ChromeCDP {
   }
 
   async close() {
-    if (this.ws) {
-      try { this.ws.close(); } catch {}
-    }
-    if (this.proc) {
-      try { this.proc.kill(); } catch {}
-    }
+    await shutdownAndCleanupProfile(this.proc, this.profileDir, this.ws);
+    this.proc = null;
+    this.ws = null;
   }
 }
 
@@ -200,8 +197,7 @@ async function runStage5BrowserSuite() {
   console.log('  Testing UI Rotation, Fail-Closed Security, and Zero Object Leaks');
   console.log('================================================================\n');
 
-  const scratchDir = path.join(projectRoot, 'scratch', 'stage5_browser');
-  if (!fs.existsSync(scratchDir)) fs.mkdirSync(scratchDir, { recursive: true });
+  const scratchDir = getTestArtifactsDir('redact-browser-stage5');
 
   console.log('Starting Vite preview server on port 5199...');
   const viteServer = spawn('npx.cmd', ['vite', 'preview', '--port', '5199', '--strictPort'], {
@@ -516,7 +512,16 @@ async function runStage5BrowserSuite() {
 
   } finally {
     await chrome.close();
-    viteServer.kill();
+    if (viteServer) {
+      try {
+        if (process.platform === 'win32') {
+          execSync(`taskkill /pid ${viteServer.pid} /t /f`, { stdio: 'ignore' });
+        } else {
+          viteServer.kill();
+        }
+      } catch (_) {}
+    }
+    cleanupDirSync(scratchDir);
   }
 }
 

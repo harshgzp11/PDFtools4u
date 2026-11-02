@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import { createCanvas } from '@napi-rs/canvas';
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
 import { PDFDocument, StandardFonts, rgb, degrees, PDFName, PDFArray, PDFDict, PDFString } from 'pdf-lib';
+import { getTestArtifactsDir, cleanupDirSync } from './helpers/testEnvironment.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -225,8 +226,8 @@ async function renderPageAndSamplePixels(pdfBytes, pageNum, region, renderScale 
 }
 
 async function runAllTests() {
-  const scratchDir = path.join(projectRoot, 'scratch');
-  if (!fs.existsSync(scratchDir)) fs.mkdirSync(scratchDir, { recursive: true });
+  const scratchDir = getTestArtifactsDir('redact-pdf-audit');
+  try {
 
   console.log('--- SECTION 1: CORE SECURITY & TEXT EXTRACTION VERIFICATION ---');
 
@@ -658,11 +659,16 @@ async function runAllTests() {
     console.log(`  STATUS: ${failedTests} TESTS FAILED! ❌`);
   }
   console.log('================================================================\n');
+  } finally {
+    cleanupDirSync(scratchDir);
+  }
 
-  if (failedTests > 0) process.exit(1);
+  if (failedTests > 0) {
+    process.exitCode = 1;
+  }
 }
 
 runAllTests().catch(err => {
   console.error('Fatal test error:', err);
-  process.exit(1);
+  process.exitCode = 1;
 });

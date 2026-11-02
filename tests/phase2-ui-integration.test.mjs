@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { spawn } from 'child_process';
 import { createRequire } from 'module';
+import { getTestArtifactsDir, getManagedBrowserProfileDir, shutdownAndCleanupProfile, cleanupDirSync, ensureDevServer } from './helpers/testEnvironment.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -31,12 +32,11 @@ class ChromeCDP {
     this.ws = null;
     this.msgId = 0;
     this.callbacks = new Map();
+    this.profileDir = getManagedBrowserProfileDir('qa-chrome-profile-phase2');
   }
 
   async launch() {
     const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-    const profileDir = path.resolve(projectRoot, 'scratch', 'qa-chrome-profile-phase2');
-    if (!fs.existsSync(profileDir)) fs.mkdirSync(profileDir, { recursive: true });
 
     this.proc = spawn(chromePath, [
       '--headless=new',
@@ -44,7 +44,7 @@ class ChromeCDP {
       '--disable-gpu',
       '--no-first-run',
       '--no-default-browser-check',
-      `--user-data-dir=${profileDir}`,
+      `--user-data-dir=${this.profileDir}`,
       'about:blank'
     ]);
 
@@ -117,8 +117,9 @@ class ChromeCDP {
   }
 
   async close() {
-    if (this.ws) this.ws.close();
-    if (this.proc) this.proc.kill('SIGKILL');
+    await shutdownAndCleanupProfile(this.proc, this.profileDir, this.ws);
+    this.proc = null;
+    this.ws = null;
   }
 }
 
@@ -152,12 +153,15 @@ async function runPhase2TestSuite() {
   console.log('  COMPRESS PDF PHASE 2: UI INTEGRATION & UX REBUILD VALIDATION');
   console.log('================================================================\n');
 
-  const chrome = new ChromeCDP();
-  await chrome.launch();
-  console.log('Connected to Google Chrome CDP for browser UI validation.\n');
-
-  const screenshotsDir = path.resolve(projectRoot, 'scratch', 'phase2-screenshots');
+  const artifactsDir = getTestArtifactsDir('phase2-ui-integration');
+  const screenshotsDir = path.join(artifactsDir, 'phase2-screenshots');
   if (!fs.existsSync(screenshotsDir)) fs.mkdirSync(screenshotsDir, { recursive: true });
+
+  const devServer = await ensureDevServer(5173, projectRoot);
+  const chrome = new ChromeCDP();
+  try {
+    await chrome.launch();
+    console.log('Connected to Google Chrome CDP for browser UI validation.\n');
 
   // Recompressor function bridge communicating with real Chrome browser canvas
   const browserRecompressor = async (rawBytes, opts) => {
@@ -226,7 +230,7 @@ async function runPhase2TestSuite() {
     p.drawText(`Typography and vector paths are 100% retained across non-destructive optimization.`, { x: 50, y: 720, size: 11, font: fText });
   }
   const textPdfBytes = await docText.save();
-  const textPdfPath = path.resolve(projectRoot, 'scratch', 'ui-test-text.pdf');
+  const textPdfPath = path.join(artifactsDir, 'ui-test-text.pdf');
   fs.writeFileSync(textPdfPath, textPdfBytes);
 
   // 2. High-resolution photo buffer in browser canvas
@@ -257,7 +261,7 @@ async function runPhase2TestSuite() {
   photoPage.drawText('Photographic Article With Embedded Image', { x: 50, y: 780, size: 14, font: fText });
   photoPage.drawImage(imgEmbed, { x: 50, y: 220, width: 495, height: 370 });
   const photoDocBytes = await docPhoto.save();
-  const photoPdfPath = path.resolve(projectRoot, 'scratch', 'ui-test-photo.pdf');
+  const photoPdfPath = path.join(artifactsDir, 'ui-test-photo.pdf');
   fs.writeFileSync(photoPdfPath, photoDocBytes);
 
   // 3. Digitally signed PDF
@@ -280,12 +284,12 @@ async function runPhase2TestSuite() {
   sigField.acroField.dict.set(PDFName.of('FT'), PDFName.of('Sig'));
   sigField.acroField.dict.set(PDFName.of('V'), sigRef);
   const signedBytes = await docSig.save();
-  const signedPdfPath = path.resolve(projectRoot, 'scratch', 'ui-test-signed.pdf');
+  const signedPdfPath = path.join(artifactsDir, 'ui-test-signed.pdf');
   fs.writeFileSync(signedPdfPath, signedBytes);
 
   // 4. Encrypted PDF
   const encBytes = new Uint8Array(fs.readFileSync(path.join(projectRoot, 'scratch', 'test-encrypted.pdf')));
-  const encPdfPath = path.resolve(projectRoot, 'scratch', 'ui-test-encrypted.pdf');
+  const encPdfPath = path.join(artifactsDir, 'ui-test-encrypted.pdf');
   fs.writeFileSync(encPdfPath, encBytes);
 
   console.log('Fixtures generated successfully.\n');
@@ -567,8 +571,11 @@ async function runPhase2TestSuite() {
   report('Test 8.6: PDF Editor route (/pdf-editor) loads cleanly without errors', editorActive === true);
 
   await chrome.captureScreenshot(path.join(screenshotsDir, '06-pdf-editor-initial.png'));
-
-  await chrome.close();
+  } finally {
+    await chrome.close();
+    devServer.stop();
+    cleanupDirSync(artifactsDir);
+  }
 
   console.log('\n================================================================');
   console.log(`  PHASE 2 INTEGRATION RESULTS: ${passedCount} / ${totalCount} PASSED`);

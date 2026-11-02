@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { spawn } from 'child_process';
 import { createRequire } from 'module';
+import { getTestArtifactsDir, getManagedBrowserProfileDir, shutdownAndCleanupProfile, cleanupDirSync, ensureDevServer } from './helpers/testEnvironment.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -30,12 +31,11 @@ class ChromeCDP {
     this.ws = null;
     this.msgId = 0;
     this.callbacks = new Map();
+    this.profileDir = getManagedBrowserProfileDir('qa-chrome-profile-targeted');
   }
 
   async launch() {
     const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-    const profileDir = path.resolve(projectRoot, 'scratch', 'qa-chrome-profile-targeted');
-    if (!fs.existsSync(profileDir)) fs.mkdirSync(profileDir, { recursive: true });
 
     this.proc = spawn(chromePath, [
       '--headless=new',
@@ -43,7 +43,7 @@ class ChromeCDP {
       '--disable-gpu',
       '--no-first-run',
       '--no-default-browser-check',
-      `--user-data-dir=${profileDir}`,
+      `--user-data-dir=${this.profileDir}`,
       'about:blank'
     ]);
 
@@ -128,8 +128,9 @@ class ChromeCDP {
   }
 
   async close() {
-    if (this.ws) this.ws.close();
-    if (this.proc) this.proc.kill('SIGKILL');
+    await shutdownAndCleanupProfile(this.proc, this.profileDir, this.ws);
+    this.proc = null;
+    this.ws = null;
   }
 }
 
@@ -152,12 +153,15 @@ async function runTargetedVerification() {
   console.log('  Scope: Non-Interruptible Serialization Stage & Explicit Byte Identity');
   console.log('================================================================\n');
 
-  const chrome = new ChromeCDP(9226);
-  await chrome.launch();
-  console.log('Connected to Google Chrome CDP on port 9226.\n');
-
-  const screenshotsDir = path.resolve(projectRoot, 'scratch', 'targeted-verification-screenshots');
+  const artifactsDir = getTestArtifactsDir('targeted-verification');
+  const screenshotsDir = path.join(artifactsDir, 'targeted-verification-screenshots');
   if (!fs.existsSync(screenshotsDir)) fs.mkdirSync(screenshotsDir, { recursive: true });
+
+  const devServer = await ensureDevServer(5173, projectRoot);
+  const chrome = new ChromeCDP(9226);
+  try {
+    await chrome.launch();
+    console.log('Connected to Google Chrome CDP on port 9226.\n');
 
   // Browser recompressor bridge for Node test context
   const browserRecompressor = async (rawBytes, opts) => {
@@ -221,7 +225,7 @@ async function runTargetedVerification() {
     p.drawText(`Targeted Verification Vector Document Page ${i + 1}`, { x: 50, y: 750, size: 14, font: fontHelv });
   }
   const textPdfBytes = await docText.save();
-  const textPdfPath = path.resolve(projectRoot, 'scratch', 'target-text.pdf');
+  const textPdfPath = path.join(artifactsDir, 'target-text.pdf');
   fs.writeFileSync(textPdfPath, textPdfBytes);
 
   // High-res photo
@@ -252,7 +256,7 @@ async function runTargetedVerification() {
   photoPage.drawText('Targeted Photographic Specimen', { x: 50, y: 780, size: 14, font: fontHelv });
   photoPage.drawImage(imgEmbed, { x: 50, y: 220, width: 495, height: 370 });
   const photoPdfBytes = await docPhoto.save();
-  const photoPdfPath = path.resolve(projectRoot, 'scratch', 'target-photo.pdf');
+  const photoPdfPath = path.join(artifactsDir, 'target-photo.pdf');
   fs.writeFileSync(photoPdfPath, photoPdfBytes);
 
   // Signed PDF (No images)
@@ -275,7 +279,7 @@ async function runTargetedVerification() {
   sigFieldNoop.acroField.dict.set(PDFName.of('FT'), PDFName.of('Sig'));
   sigFieldNoop.acroField.dict.set(PDFName.of('V'), sigRefNoop);
   const signedNoopBytes = await docSignedNoop.save({ useObjectStreams: false });
-  const signedNoopPath = path.resolve(projectRoot, 'scratch', 'target-signed-noop.pdf');
+  const signedNoopPath = path.join(artifactsDir, 'target-signed-noop.pdf');
   fs.writeFileSync(signedNoopPath, signedNoopBytes);
 
   // Signed PDF (With photo)
@@ -300,7 +304,7 @@ async function runTargetedVerification() {
   sigFieldPhoto.acroField.dict.set(PDFName.of('FT'), PDFName.of('Sig'));
   sigFieldPhoto.acroField.dict.set(PDFName.of('V'), sigRefPhoto);
   const signedPhotoBytes = await docSignedPhoto.save({ useObjectStreams: false });
-  const signedPhotoPath = path.resolve(projectRoot, 'scratch', 'target-signed-photo.pdf');
+  const signedPhotoPath = path.join(artifactsDir, 'target-signed-photo.pdf');
   fs.writeFileSync(signedPhotoPath, signedPhotoBytes);
 
   console.log('Fixtures generated.\n');
@@ -327,13 +331,17 @@ async function runTargetedVerification() {
     if (btn) btn.click();
   })()`);
 
-  // Wait 40ms into worker processing, then click Cancel
-  await new Promise(r => setTimeout(r, 40));
-  const cancelClicked = await chrome.eval(`(() => {
-    const btn = Array.from(document.querySelectorAll('button')).find(b => b.textContent.trim() === 'Cancel');
-    if (btn) { btn.click(); return true; }
-    return false;
-  })()`);
+  // Click Cancel as soon as worker processing begins
+  let cancelClicked = false;
+  for (let i = 0; i < 20; i++) {
+    cancelClicked = await chrome.eval(`(() => {
+      const btn = Array.from(document.querySelectorAll('button')).find(b => b.textContent.trim() === 'Cancel');
+      if (btn && !btn.disabled) { btn.click(); return true; }
+      return false;
+    })()`);
+    if (cancelClicked) break;
+    await new Promise(r => setTimeout(r, 20));
+  }
 
   await new Promise(r => setTimeout(r, 2000));
 
@@ -448,11 +456,16 @@ async function runTargetedVerification() {
       const btn = Array.from(document.querySelectorAll('button')).find(b => b.textContent.includes('Compress ('));
       if (btn) btn.click();
     })()`);
-    await new Promise(r => setTimeout(r, 30));
-    await chrome.eval(`(() => {
-      const btn = Array.from(document.querySelectorAll('button')).find(b => b.textContent.trim() === 'Cancel');
-      if (btn) btn.click();
-    })()`);
+    let editorCancelClicked = false;
+    for (let i = 0; i < 20; i++) {
+      editorCancelClicked = await chrome.eval(`(() => {
+        const btn = Array.from(document.querySelectorAll('button')).find(b => b.textContent.trim() === 'Cancel');
+        if (btn && !btn.disabled) { btn.click(); return true; }
+        return false;
+      })()`);
+      if (editorCancelClicked) break;
+      await new Promise(r => setTimeout(r, 20));
+    }
     await new Promise(r => setTimeout(r, 2000));
 
     const editorCancelState = await chrome.eval(`(() => {
@@ -653,8 +666,11 @@ async function runTargetedVerification() {
     warningAndBlock.hasWarning === true && warningAndBlock.isBlocked === true,
     `hasWarning: ${warningAndBlock.hasWarning}, isBlocked: ${warningAndBlock.isBlocked}`
   );
-
-  await chrome.close();
+  } finally {
+    await chrome.close();
+    devServer.stop();
+    cleanupDirSync(artifactsDir);
+  }
 
   console.log('\n================================================================');
   console.log(`  TARGETED VERIFICATION RESULTS: ${passedCount} / ${totalCount} PASSED`);

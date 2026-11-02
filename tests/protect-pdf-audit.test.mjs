@@ -9,15 +9,12 @@ import {
   protectPdfDocument,
   inspectPdf20AdvancedFeatures
 } from '../src/utils/pdfProtection.js';
+import { getTestArtifactsDir, cleanupDirSync } from './helpers/testEnvironment.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '..');
-const scratchDir = path.resolve(projectRoot, 'scratch');
-
-if (!fs.existsSync(scratchDir)) {
-  fs.mkdirSync(scratchDir, { recursive: true });
-}
+const scratchDir = getTestArtifactsDir('protect-pdf-audit');
 
 console.log('================================================================');
 console.log('  PDFTOOLS4U — PROTECT PDF PRODUCTION-GRADE AUDIT SUITE');
@@ -38,6 +35,7 @@ function check(desc, condition, extra = '') {
 }
 
 async function runAudit() {
+  try {
   // -------------------------------------------------------------
   // SECTION 1: PASSWORD EVALUATION & COMPLIANCE UNIT TESTS
   // -------------------------------------------------------------
@@ -579,13 +577,16 @@ print(json.dumps(out))
   console.log(`PASSED:             ${passCount}`);
   console.log(`FAILED:             ${failCount}`);
   console.log('================================================================');
+  } finally {
+    cleanupDirSync(scratchDir);
+  }
 
   if (failCount > 0) {
-    process.exit(1);
+    process.exitCode = 1;
   }
 }
 
 runAudit().catch(err => {
   console.error('Audit suite crashed with unexpected error:', err);
-  process.exit(1);
+  process.exitCode = 1;
 });

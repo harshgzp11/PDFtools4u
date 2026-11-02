@@ -92,8 +92,25 @@ blog_strategy.txt
 recommendation-pipeline-analysis.txt
 tool-blog-mapping.txt
 urls.txt
-scratch/
-scratch*
+scratch.*
+scratch/*
+!scratch/bench/
+!scratch/bench/**
+scratch_*
+scratch-*
+
+# Temporary browser automation & test artifacts
+test-results/
+playwright-report/
+Crashpad/
+GPUCache/
+ShaderCache/
+GrShaderCache/
+*.pma
+*.dmp
+sec_*_out.pdf
+test_*_out.pdf
+target-*.pdf
 
 # AI tooling folders
 .gemini/
@@ -111,3 +128,8 @@ problems.txt
 blog_draft.txt
 
 *.traineddata
+scratch/bench/doc_1mb.pdf
+scratch/bench/doc_5mb.pdf
+scratch/bench/doc_22mb.pdf
+scratch/bench/doc_25mb.pdf
+scratch/bench/doc_100kb.pdf

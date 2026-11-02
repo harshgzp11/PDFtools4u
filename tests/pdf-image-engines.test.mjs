@@ -1,8 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { spawn } from 'child_process';
+import { spawn, execSync } from 'child_process';
 import { createRequire } from 'module';
+import { getManagedBrowserProfileDir, shutdownAndCleanupProfile } from './helpers/testEnvironment.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,12 +21,11 @@ class ChromeRunner {
     this.ws = null;
     this.msgId = 0;
     this.callbacks = new Map();
+    this.profileDir = getManagedBrowserProfileDir('qa-chrome-profile-test');
   }
 
   async launch() {
     const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-    const profileDir = path.resolve(projectRoot, 'scratch', 'qa-chrome-profile-test');
-    if (!fs.existsSync(profileDir)) fs.mkdirSync(profileDir, { recursive: true });
 
     this.proc = spawn(chromePath, [
       '--headless=new',
@@ -33,7 +33,7 @@ class ChromeRunner {
       '--disable-gpu',
       '--no-first-run',
       '--no-default-browser-check',
-      `--user-data-dir=${profileDir}`,
+      `--user-data-dir=${this.profileDir}`,
       'about:blank'
     ]);
 
@@ -93,8 +93,9 @@ class ChromeRunner {
   }
 
   async close() {
-    if (this.ws) this.ws.close();
-    if (this.proc) this.proc.kill('SIGKILL');
+    await shutdownAndCleanupProfile(this.proc, this.profileDir, this.ws);
+    this.proc = null;
+    this.ws = null;
   }
 }
 
@@ -126,15 +127,16 @@ async function runAllTests() {
   }
 
   let viteProc = null;
-  if (!serverOk) {
-    console.log('Starting dev server on port 5173...');
-    viteProc = spawn('npx', ['vite', '--port', '5173'], { cwd: projectRoot, shell: true });
-    await new Promise(r => setTimeout(r, 2500));
-  }
-
   const chrome = new ChromeRunner();
-  await chrome.launch();
-  console.log('Google Chrome (Headless New) connected via CDP.\n');
+  try {
+    if (!serverOk) {
+      console.log('Starting dev server on port 5173...');
+      viteProc = spawn('npx', ['vite', '--port', '5173'], { cwd: projectRoot, shell: true });
+      await new Promise(r => setTimeout(r, 2500));
+    }
+
+    await chrome.launch();
+    console.log('Google Chrome (Headless New) connected via CDP.\n');
 
   await chrome.send('Page.navigate', { url: 'http://localhost:5173/pdf-to-jpg' });
   await new Promise(r => setTimeout(r, 1500));
@@ -451,14 +453,24 @@ async function runAllTests() {
   `);
   report('JPG24: Generated PDF binary validity', r24Pdf.isValid, `Valid PDF Blob: ${r24Pdf.size} bytes`);
 
+  } finally {
+    await chrome.close();
+    if (viteProc) {
+      try {
+        if (process.platform === 'win32') {
+          execSync(`taskkill /pid ${viteProc.pid} /t /f`, { stdio: 'ignore' });
+        } else {
+          viteProc.kill();
+        }
+      } catch (_) {}
+    }
+  }
+
   console.log('\n================================================================');
   console.log(`TOTAL TESTS: ${total}`);
   console.log(`PASSED:      ${passed}`);
   console.log(`FAILED:      ${total - passed}`);
   console.log('================================================================\n');
-
-  await chrome.close();
-  if (viteProc) viteProc.kill();
 }
 
 runAllTests().catch(err => {

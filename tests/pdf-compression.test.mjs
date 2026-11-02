@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { spawn } from 'child_process';
 import { createRequire } from 'module';
+import { getManagedBrowserProfileDir, shutdownAndCleanupProfile } from './helpers/testEnvironment.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -35,12 +36,11 @@ class ChromeCDP {
     this.ws = null;
     this.msgId = 0;
     this.callbacks = new Map();
+    this.profileDir = getManagedBrowserProfileDir('qa-chrome-profile-test-suite');
   }
 
   async launch() {
     const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-    const profileDir = path.resolve(projectRoot, 'scratch', 'qa-chrome-profile-test-suite');
-    if (!fs.existsSync(profileDir)) fs.mkdirSync(profileDir, { recursive: true });
 
     this.proc = spawn(chromePath, [
       '--headless=new',
@@ -48,7 +48,7 @@ class ChromeCDP {
       '--disable-gpu',
       '--no-first-run',
       '--no-default-browser-check',
-      `--user-data-dir=${profileDir}`,
+      `--user-data-dir=${this.profileDir}`,
       'about:blank'
     ]);
 
@@ -102,8 +102,9 @@ class ChromeCDP {
   }
 
   async close() {
-    if (this.ws) this.ws.close();
-    if (this.proc) this.proc.kill('SIGKILL');
+    await shutdownAndCleanupProfile(this.proc, this.profileDir, this.ws);
+    this.proc = null;
+    this.ws = null;
   }
 }
 
@@ -139,8 +140,9 @@ async function runTestSuite() {
   console.log('================================================================\n');
 
   const chrome = new ChromeCDP();
-  await chrome.launch();
-  console.log('Connected to Google Chrome CDP for real Worker & OffscreenCanvas tests.\n');
+  try {
+    await chrome.launch();
+    console.log('Connected to Google Chrome CDP for real Worker & OffscreenCanvas tests.\n');
 
   // Recompressor function bridge communicating with real Chrome browser canvas
   const browserRecompressor = async (rawBytes, opts) => {
@@ -683,8 +685,9 @@ async function runTestSuite() {
   };
   const compatBytes = await compressPdfToTarget(dummyFile, 0.1);
   report('Test 7.1: compressPdfToTarget compatibility function returns valid Uint8Array', compatBytes instanceof Uint8Array && compatBytes.length > 0);
-
-  await chrome.close();
+  } finally {
+    await chrome.close();
+  }
 
   console.log('\n================================================================');
   console.log(`  TEST RESULTS: ${passedCount} / ${totalCount} PASSED`);

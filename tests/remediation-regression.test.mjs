@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { spawn } from 'child_process';
 import { createRequire } from 'module';
+import { getTestArtifactsDir, getManagedBrowserProfileDir, shutdownAndCleanupProfile, cleanupDirSync, ensureDevServer } from './helpers/testEnvironment.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -30,12 +31,11 @@ class ChromeCDP {
     this.ws = null;
     this.msgId = 0;
     this.callbacks = new Map();
+    this.profileDir = getManagedBrowserProfileDir('qa-chrome-profile-remed');
   }
 
   async launch() {
     const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-    const profileDir = path.resolve(projectRoot, 'scratch', 'qa-chrome-profile-remed');
-    if (!fs.existsSync(profileDir)) fs.mkdirSync(profileDir, { recursive: true });
 
     this.proc = spawn(chromePath, [
       '--headless=new',
@@ -43,7 +43,7 @@ class ChromeCDP {
       '--disable-gpu',
       '--no-first-run',
       '--no-default-browser-check',
-      `--user-data-dir=${profileDir}`,
+      `--user-data-dir=${this.profileDir}`,
       'about:blank'
     ]);
 
@@ -128,8 +128,9 @@ class ChromeCDP {
   }
 
   async close() {
-    if (this.ws) this.ws.close();
-    if (this.proc) this.proc.kill('SIGKILL');
+    await shutdownAndCleanupProfile(this.proc, this.profileDir, this.ws);
+    this.proc = null;
+    this.ws = null;
   }
 }
 
@@ -152,12 +153,15 @@ async function runRemediationTestSuite() {
   console.log('  Target: Cancellation Race Condition, Preflight Abort & Signed Reassurance');
   console.log('================================================================\n');
 
-  const chrome = new ChromeCDP(9225);
-  await chrome.launch();
-  console.log('Connected to Google Chrome CDP on port 9225.\n');
-
-  const screenshotsDir = path.resolve(projectRoot, 'scratch', 'remediation-screenshots');
+  const artifactsDir = getTestArtifactsDir('remediation-regression');
+  const screenshotsDir = path.join(artifactsDir, 'remediation-screenshots');
   if (!fs.existsSync(screenshotsDir)) fs.mkdirSync(screenshotsDir, { recursive: true });
+
+  const devServer = await ensureDevServer(5173, projectRoot);
+  const chrome = new ChromeCDP(9225);
+  try {
+    await chrome.launch();
+    console.log('Connected to Google Chrome CDP on port 9225.\n');
 
   // Browser recompressor bridge for Node test context
   const browserRecompressor = async (rawBytes, opts) => {
@@ -222,7 +226,7 @@ async function runRemediationTestSuite() {
     p.drawText(`Remediation Vector Test Page ${i + 1}`, { x: 50, y: 750, size: 14, font: fontHelv });
   }
   const textPdfBytes = await docText.save();
-  const textPdfPath = path.resolve(projectRoot, 'scratch', 'remed-text.pdf');
+  const textPdfPath = path.join(artifactsDir, 'remed-text.pdf');
   fs.writeFileSync(textPdfPath, textPdfBytes);
 
   // 2. High-res Photo buffer
@@ -253,7 +257,7 @@ async function runRemediationTestSuite() {
   photoPage.drawText('Remediation Photographic Document', { x: 50, y: 780, size: 14, font: fontHelv });
   photoPage.drawImage(imgEmbed, { x: 50, y: 220, width: 495, height: 370 });
   const photoPdfBytes = await docPhoto.save();
-  const photoPdfPath = path.resolve(projectRoot, 'scratch', 'remed-photo.pdf');
+  const photoPdfPath = path.join(artifactsDir, 'remed-photo.pdf');
   fs.writeFileSync(photoPdfPath, photoPdfBytes);
 
   // 4. Signed PDF with NO eligible images (useObjectStreams: false for uncompressed dictionary)
@@ -276,7 +280,7 @@ async function runRemediationTestSuite() {
   sigFieldNoop.acroField.dict.set(PDFName.of('FT'), PDFName.of('Sig'));
   sigFieldNoop.acroField.dict.set(PDFName.of('V'), sigRefNoop);
   const signedNoopBytes = await docSignedNoop.save({ useObjectStreams: false });
-  const signedNoopPath = path.resolve(projectRoot, 'scratch', 'remed-signed-noop.pdf');
+  const signedNoopPath = path.join(artifactsDir, 'remed-signed-noop.pdf');
   fs.writeFileSync(signedNoopPath, signedNoopBytes);
 
   // 5. Signed PDF WITH compressible photo
@@ -301,7 +305,7 @@ async function runRemediationTestSuite() {
   sigFieldPhoto.acroField.dict.set(PDFName.of('FT'), PDFName.of('Sig'));
   sigFieldPhoto.acroField.dict.set(PDFName.of('V'), sigRefPhoto);
   const signedPhotoBytes = await docSignedPhoto.save({ useObjectStreams: false });
-  const signedPhotoPath = path.resolve(projectRoot, 'scratch', 'remed-signed-photo.pdf');
+  const signedPhotoPath = path.join(artifactsDir, 'remed-signed-photo.pdf');
   fs.writeFileSync(signedPhotoPath, signedPhotoBytes);
 
   console.log('Test fixtures created successfully.\n');
@@ -488,13 +492,18 @@ async function runRemediationTestSuite() {
           if (btn) btn.click();
         })()
       `);
-      await new Promise(r => setTimeout(r, 30));
-      await chrome.eval(`
-        (() => {
-          const btn = Array.from(document.querySelectorAll('button')).find(b => b.textContent.trim() === 'Cancel');
-          if (btn) btn.click();
-        })()
-      `);
+      let editorCancelClicked = false;
+      for (let i = 0; i < 20; i++) {
+        editorCancelClicked = await chrome.eval(`
+          (() => {
+            const btn = Array.from(document.querySelectorAll('button')).find(b => b.textContent.trim() === 'Cancel');
+            if (btn && !btn.disabled) { btn.click(); return true; }
+            return false;
+          })()
+        `);
+        if (editorCancelClicked) break;
+        await new Promise(r => setTimeout(r, 20));
+      }
       await new Promise(r => setTimeout(r, 2000));
 
       const editorRaceState = await chrome.eval(`
@@ -728,8 +737,11 @@ async function runRemediationTestSuite() {
     );
     await chrome.captureScreenshot(path.join(screenshotsDir, '05-signed-photo-compressed.png'));
   }
-
-  await chrome.close();
+  } finally {
+    await chrome.close();
+    devServer.stop();
+    cleanupDirSync(artifactsDir);
+  }
 
   console.log('\n================================================================');
   console.log(`  REMEDIATION TEST RESULTS: ${passedCount} / ${totalCount} PASSED`);
