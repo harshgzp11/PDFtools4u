@@ -299,30 +299,39 @@ export const SEO_CONTENT = {
   },
   "unlock-pdf": {
     "title": "Unlock Password-Protected PDF Files Online",
-    "description": "Permanently remove encryption and restrictions from your PDF documents.",
+    "description": "Permanently remove password encryption and permission restrictions from your PDF documents in your browser.",
     "howTo": [
-      "Upload Encrypted PDF: Select or drop your password-protected PDF document.",
-      "Enter Password (If Prompted): Provide the user/owner password to authenticate permissions.",
-      "Click Unlock: Select 'Remove Password' to strip away encryption layers.",
-      "Download: Save your unencrypted, fully accessible PDF document."
+      "Upload Encrypted PDF: Select or drop your password-protected PDF file.",
+      "Enter Document Password: Enter the authorized user or owner password (optional if only permissions are restricted).",
+      "Click Unlock: Select 'Unlock PDF Now' to strip the encryption dictionary and decrypt all streams.",
+      "Download Decrypted PDF: Save your unencrypted document that opens freely without requiring passwords."
     ],
-    "why": "Official files like bank statements and salary slips come encrypted with default passwords that prevent editing, printing, or uploading to official portal forms. Our unlock tool permanently removes restrictions so you can view, print, or convert your documents without re-entering passwords every time.",
+    "why": "Official documents such as bank statements, pay stubs, and tax forms often arrive encrypted with passwords that prevent printing, merging, or uploading to portals. Our Unlock PDF tool decrypts the document and permanently strips encryption dictionaries and restrictions so you can freely view, print, and process your files without re-entering passwords every time.",
     "features": [
-      "File processing: Supported decryption is designed to run in your browser.",
-      "Sensitive data: Avoid entering passwords for confidential documents unless you have reviewed the tool's current data practices."
+      "100% Private Client-Side Decryption: All cryptographic operations execute entirely in your local browser sandbox; files and passwords are never transmitted to any server.",
+      "Broad Encryption Compatibility: Supports ISO 32000 Standard Security Handlers including AES-128 (V=4, R=4), AES-256 (V=5, R=5/R=6), and legacy RC4 (40-bit and 128-bit).",
+      "Structure & Metadata Preservation: Preserves page geometry, orientations, annotations, embedded fonts, vector graphics, and AcroForm interactive fields while safely stripping encryption."
     ],
     "faq": [
       {
         "q": "How do I remove the password from a PDF permanently?",
-        "a": "Upload your document, type your password once, and download an unlocked PDF that opens freely."
+        "a": "Upload your password-protected PDF, enter the valid document password once, and download a completely decrypted PDF that opens freely on any device without prompting for a password."
       },
       {
-        "q": "Is it legal to remove passwords from my own PDF files?",
-        "a": "Yes, as long as you are the rightful owner of the document or have permission from the creator to access its content."
+        "q": "Does this tool crack or recover unknown PDF passwords?",
+        "a": "No. PDFTools4U is an authorized decryption tool, not a password cracker. You must supply the correct password to decrypt the document. We do not provide brute-force or dictionary cracking services."
+      },
+      {
+        "q": "What happens to digital signatures when a PDF is unlocked?",
+        "a": "Existing digital signatures are cryptographic hashes calculated over specific byte ranges of the encrypted file. Removing encryption dictionaries and serializing a decrypted document alters file byte offsets, which invalidates preexisting digital signatures."
+      },
+      {
+        "q": "Which types of PDF encryption are supported or unsupported?",
+        "a": "The tool supports Standard Security Handlers with password protection (AES-128, AES-256, and RC4). Documents protected by certificate-based public keys (PKCS#7) or enterprise DRM systems (such as Adobe LiveCycle/AEM Rights Management) cannot be unlocked in the browser."
       },
       {
         "q": "Will unlocking a PDF affect its contents or image quality?",
-        "a": "No, removing password protection only alters the security metadata while preserving all document text, vector shapes, and images."
+        "a": "No. Decryption extracts the original uncompressed or decrypted streams without re-compressing or resampling images. All vector shapes, text glyphs, form fields, and layouts remain identical to the original."
       }
     ]
   },

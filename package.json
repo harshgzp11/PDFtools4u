@@ -11,7 +11,8 @@
     "test:redact": "node tests/redact-pdf-audit.test.mjs",
     "test:split": "node tests/pdf-splitter.test.mjs",
     "test:protect": "node tests/protect-pdf-audit.test.mjs",
-    "test": "node tests/ppt-pdf-conversion.test.mjs && node tests/conversion-engines.test.mjs && node tests/word-pdf-engines.test.mjs && node tests/redact-pdf-audit.test.mjs && node tests/pdf-splitter.test.mjs && node tests/protect-pdf-audit.test.mjs",
+    "test:unlock": "node tests/unlock-pdf-audit.test.mjs",
+    "test": "node tests/ppt-pdf-conversion.test.mjs && node tests/conversion-engines.test.mjs && node tests/word-pdf-engines.test.mjs && node tests/redact-pdf-audit.test.mjs && node tests/pdf-splitter.test.mjs && node tests/protect-pdf-audit.test.mjs && node tests/unlock-pdf-audit.test.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

@@ -265,9 +265,7 @@ export default function ToolPreviewLayout({
     const link = document.createElement('a');
     link.href = successData.url;
     link.download = successData.filename || 'download';
-    document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);
   };
 
   const totalPages = thumbnails.length > 0 ? thumbnails.length : (previewImage ? 1 : 0);
@@ -299,7 +297,7 @@ export default function ToolPreviewLayout({
           <div className={`p-5 rounded-2xl mb-4 shadow-sm ${isEncrypted ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'}`}>
             {isEncrypted ? <Lock className="w-10 h-10" /> : <FileText className="w-10 h-10" />}
           </div>
-          <h4 className="text-lg font-bold text-gray-900 mb-1">
+          <h4 className="text-lg font-bold text-gray-900 mb-1" data-clarity-mask="true">
             {isEncrypted ? 'Password-Protected PDF' : (file?.name || 'Document')}
           </h4>
           <p className="text-sm text-gray-500 max-w-sm">
@@ -528,8 +526,8 @@ export default function ToolPreviewLayout({
               <div className="p-2 bg-blue-50 text-blue-600 rounded-lg flex-shrink-0">
                 <Icon className="w-5 h-5" />
               </div>
-              <div className="overflow-hidden">
-                <h3 className="text-sm font-bold text-gray-900 truncate" title={file.name}>{file.name}</h3>
+              <div className="overflow-hidden" data-clarity-mask="true">
+                <h3 className="text-sm font-bold text-gray-900 truncate">{file.name}</h3>
                 <p className="text-xs text-gray-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
               </div>
             </div>

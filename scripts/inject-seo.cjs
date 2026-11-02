@@ -134,11 +134,15 @@ function generateStaticRoutes() {
       `<meta property="og:description" content="${description}" />`
     );
 
-    // Replace OG URL (default is homepage)
-    html = html.replace(
-      /<meta\s+property=["']og:url["']\s+content=["'][^>]+["']\s*\/?>/,
-      `<meta property="og:url" content="${BASE_URL}${route}" />`
-    );
+    // Replace OG URL (default is homepage) or inject it
+    if (html.includes('property="og:url"')) {
+      html = html.replace(
+        /<meta\s+property=["']og:url["']\s+content=["'][^>]+["']\s*\/?>/,
+        `<meta property="og:url" content="${BASE_URL}${route}" />`
+      );
+    } else {
+      html = html.replace('</head>', `  <meta property="og:url" content="${BASE_URL}${route}" />\n  </head>`);
+    }
 
     // Replace Twitter Title
     html = html.replace(
