@@ -91,7 +91,7 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
           {headMeta?.h1 || content.title}
         </h1>
         {headMeta?.h1 && content.title && headMeta.h1 !== content.title && (
-          <h2 className="text-xl font-bold text-gray-800 tracking-tight">{content.title}</h2>
+          <p className="text-xl font-semibold text-gray-700 tracking-tight">{content.title}</p>
         )}
         <p className="text-lg text-gray-600 mx-auto leading-relaxed max-w-3xl">
           {content.description}
@@ -315,7 +315,7 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
           <div className="mt-8 p-6 bg-slate-50 border border-slate-200/80 rounded-2xl">
             <h4 className="text-base font-bold text-gray-900 mb-2">Related Document Management & Conversion Ecosystem</h4>
             <p className="text-sm text-gray-600 mb-4 leading-relaxed">
-              PDFtools4u processes files locally inside your browser with 100% client-side execution�cutting out server waiting queues and privacy risks. Explore these interconnected document management tools:
+              PDFtools4u processes files locally inside your browser with 100% client-side execution — cutting out server waiting queues and privacy risks. Explore these interconnected document management tools:
             </p>
             <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
               {relatedToolIds.map(relId => {
@@ -323,7 +323,7 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
                 if (!relInfo) return null;
                 return (
                   <li key={relId} className="flex items-start gap-2 bg-white p-3 rounded-xl border border-gray-100 shadow-xs">
-                    <span className="text-blue-500 font-bold mt-0.5">�</span>
+                    <span className="text-blue-500 font-bold mt-0.5">•</span>
                     <div>
                       <a
                         href={`/${relId}`}

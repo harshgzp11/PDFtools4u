@@ -12,6 +12,7 @@ export default function TextToDocx() {
   const [filename, setFilename] = useState('document');
 
   const generateDocx = async () => {
+    if (isProcessing) return;
     if (!text.trim()) {
       alert("Please enter some text first.");
       return;
@@ -21,6 +22,8 @@ export default function TextToDocx() {
     setIsProcessing(true);
     
     try {
+      const { Document, Packer, Paragraph, TextRun } = await import('docx');
+
       // Split text by newlines and create a paragraph for each
       const paragraphs = text.split('\n').map(line => {
         return new Paragraph({
@@ -36,7 +39,6 @@ export default function TextToDocx() {
         });
       });
 
-      const { Document, Packer, Paragraph, TextRun } = await import('docx');
       const doc = new Document({
         sections: [
           {
@@ -47,6 +49,9 @@ export default function TextToDocx() {
       });
 
       const blob = await Packer.toBlob(doc);
+      if (outputUrl) {
+        URL.revokeObjectURL(outputUrl);
+      }
       const url = URL.createObjectURL(blob);
       
       setOutputUrl(url);
@@ -61,6 +66,9 @@ export default function TextToDocx() {
   };
 
   const resetTool = () => {
+    if (outputUrl) {
+      URL.revokeObjectURL(outputUrl);
+    }
     setText('');
     setSuccess(false);
     setOutputUrl(null);
@@ -68,6 +76,9 @@ export default function TextToDocx() {
   };
 
   const startOver = () => {
+    if (outputUrl) {
+      URL.revokeObjectURL(outputUrl);
+    }
     setSuccess(false);
     setOutputUrl(null);
   };

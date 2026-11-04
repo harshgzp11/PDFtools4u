@@ -164,7 +164,7 @@ export const SEO_HEAD = {
   'pdf-annotator': {
     title: 'Free Online PDF Annotator | Draw & Write on PDFs (No Signup)',
     description: 'Annotate any PDF for free in your browser. Highlight text, draw, or add comments securely without uploading files to a server.',
-    h1: 'Free Online PDF Annotator � Draw, Write & Highlight (No Signup)',
+    h1: 'Free Online PDF Annotator — Draw, Write & Highlight (No Signup)',
     keywords: ['free online pdf annotator', 'draw on pdf no signup', 'write on pdf online', 'annotate pdf without upload', 'highlight pdf in browser'],
   },
   'pdf-form-filler': {
@@ -290,7 +290,7 @@ export const SEO_HEAD = {
   'txt-to-pdf': {
     title: 'Free TXT to PDF Converter Online | Convert Text to PDF (No Signup)',
     description: 'Convert plain text files (.txt) into clean PDF documents directly in your browser. Free, fast, and secure with no signup or server upload required.',
-    h1: 'TXT to PDF � Convert Plain Text to Formatted Documents',
+    h1: 'TXT to PDF — Convert Plain Text to Formatted Documents',
     keywords: ['txt to pdf converter free', 'text file to pdf', 'convert txt to pdf online', 'free txt to pdf no signup'],
   },
   'rtf-to-pdf': {

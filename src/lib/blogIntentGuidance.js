@@ -1,7 +1,7 @@
 export const BLOG_INTENT_GUIDANCE = {
   'compress-pdf-to-100kb-200kb': {
     heading: 'Choose the right PDF compression guide',
-    text: 'Use this guide for general UPSC, SSC, and exam-portal PDF size limits. For a Form 16, use the tax-document workflow; for certificates and marksheets, use the government-document workflow.',
+    text: 'Use this guide for general PDF compression techniques to meet exam-portal size limits. For a Form 16, use the tax-document workflow; for certificates and marksheets, use the government-document workflow.',
     related: [
       { id: 'compress-marksheet-certificate-pdf-100kb', label: 'Compress certificates and marksheets for exam forms' },
       { id: 'compress-form-16-pdf-under-500kb', label: 'Compress Form 16 below 500KB for ITR' }
@@ -11,7 +11,7 @@ export const BLOG_INTENT_GUIDANCE = {
     heading: 'Certificate and marksheet compression workflow',
     text: 'This guide focuses on certificates, caste documents, and marksheets where seals, signatures, and small printed text must remain readable. Use the general exam guide for broad 100KB or 200KB portal troubleshooting, or the Form 16 guide for tax documents.',
     related: [
-      { id: 'compress-pdf-to-100kb-200kb', label: 'Compare general 100KB and 200KB exam limits' },
+      { id: 'compress-pdf-to-100kb-200kb', label: 'General 100KB and 200KB compression techniques' },
       { id: 'compress-form-16-pdf-under-500kb', label: 'Prepare a Form 16 PDF for ITR upload' }
     ]
   },

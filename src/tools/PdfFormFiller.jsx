@@ -218,9 +218,9 @@ export default function PdfFormFiller() {
       ) : formFields.length === 0 && file ? (
         <div className="bg-amber-50 border border-amber-200 p-6 rounded-xl text-center space-y-2">
           <FileText className="w-10 h-10 text-amber-400 mx-auto" />
-          <h4 className="font-bold text-amber-800">No form fields detected</h4>
+          <h4 className="font-bold text-amber-800">No interactive form fields detected</h4>
           <p className="text-sm text-amber-700">
-            This PDF does not contain any interactive AcroForm fields. Please upload a fillable PDF form document.
+            This PDF does not contain interactive AcroForm fields (it is a flat or scanned document). To write text, checkmarks, or signatures on flat PDFs, use our <a href="/pdf-annotator" className="font-semibold underline hover:text-amber-900">PDF Annotator</a> or <a href="/edit-pdf" className="font-semibold underline hover:text-amber-900">Edit PDF</a> tool.
           </p>
         </div>
       ) : (
