@@ -118,6 +118,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.pdftools4u.in/png-to-pdf</loc>
+    <lastmod>2026-10-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.pdftools4u.in/word-to-pdf</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
@@ -154,8 +160,20 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.pdftools4u.in/pdf-to-png</loc>
+    <lastmod>2026-10-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.pdftools4u.in/pdf-to-word</loc>
     <lastmod>2026-10-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pdftools4u.in/pdf-to-text</loc>
+    <lastmod>2026-08-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>

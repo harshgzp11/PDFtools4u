@@ -17,15 +17,18 @@ export const RELATED_TOOLS = {
   'pdf-ocr': ['edit-pdf', 'pdf-split', 'compress-image', 'word-to-pdf'],
 
   // CONVERT TO PDF (FIXED: Workflow priority ordered ahead of reverse converters)
-  'jpg-to-pdf': ['compress-pdf', 'protect-pdf', 'pdf-merge', 'edit-pdf'],
+  'jpg-to-pdf': ['compress-pdf', 'protect-pdf', 'pdf-merge', 'png-to-pdf'],
+  'png-to-pdf': ['compress-pdf', 'pdf-merge', 'jpg-to-pdf', 'pdf-to-png'],
   'word-to-pdf': ['compress-pdf', 'protect-pdf', 'pdf-merge', 'pdf-to-word'],
   'ppt-to-pdf': ['compress-pdf', 'protect-pdf', 'pdf-merge', 'pdf-to-ppt'],
   'excel-to-pdf': ['compress-pdf', 'protect-pdf', 'pdf-merge', 'pdf-to-excel'],
   'txt-to-pdf': ['compress-pdf', 'protect-pdf', 'pdf-merge', 'docx-to-text'],
 
   // CONVERT FROM PDF
-  'pdf-to-jpg': ['compress-image', 'resize-image', 'image-crop', 'jpg-to-pdf'],
+  'pdf-to-jpg': ['compress-image', 'resize-image', 'pdf-to-png', 'jpg-to-pdf'],
+  'pdf-to-png': ['compress-image', 'resize-image', 'pdf-to-jpg', 'png-to-pdf'],
   'pdf-to-word': ['edit-pdf', 'pdf-split', 'word-to-pdf', 'docx-to-text'],
+  'pdf-to-text': ['pdf-ocr', 'docx-to-text', 'text-to-docx', 'pdf-to-word'],
   'pdf-to-excel': ['edit-pdf', 'pdf-split', 'excel-to-pdf', 'data-converter'],
   'pdf-to-ppt': ['edit-pdf', 'pdf-split', 'compress-pdf', 'ppt-to-pdf'],
   'pdf-converter': ['edit-pdf', 'pdf-split', 'compress-image', 'word-to-pdf'],

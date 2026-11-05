@@ -80,5 +80,28 @@ export const BLOG_INTENT_GUIDANCE = {
       { id: 'server-side-vs-client-side-processing', label: 'Why client-side processing keeps your legal files safe' }
     ]
   }
+,
+  'combine-multiple-marksheets-into-one-pdf': {
+    heading: 'Marksheet document preparation workflow',
+    text: 'Combine multiple semester marksheets when you need a consolidated academic PDF for admissions or employment. If your portal requires individual JPG image uploads instead of a merged PDF, use our marksheet conversion guide; if the merged file exceeds size limits, use our certificate compression workflow.',
+    related: [
+      { id: 'marksheet-pdf-to-jpg-converter', label: 'Convert marksheet PDF pages to high-resolution JPG' },
+      { id: 'compress-marksheet-certificate-pdf-100kb', label: 'Compress marksheets under 100KB without losing seals' }
+    ]
+  },
+  'convert-salary-slip-pdf-to-editable-word': {
+    heading: 'Salary slip and payslip workflow',
+    text: 'Use this guide to extract earnings, deductions, and tax tables from payslips into editable Word format. If your primary goal is removing the password before emailing or archiving, use our password-removal guide; for general documents, see our full PDF-to-Word guide.',
+    related: [
+      { id: 'remove-password-from-salary-slip-bank-statement', label: 'Remove password protection from salary slips and bank PDFs' },
+      { id: 'convert-pdf-to-editable-word-without-losing-formatting', label: 'General guide for converting PDFs to editable Word documents' }
+    ]
+  },
+  'pretty-print-clean-json-online': {
+    heading: 'Developer data formatting workflow',
+    text: 'Use this guide to clean, format, and validate messy JSON payloads. To convert JSON datasets into CSV tables for Excel, use our dedicated converter tool; for architectural privacy details, read our client-side processing guide.',
+    related: [
+      { id: 'server-side-vs-client-side-processing', label: 'Why client-side processing keeps your API data safe' }
+    ]
+  },
 };
-

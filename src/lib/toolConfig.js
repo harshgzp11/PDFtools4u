@@ -35,6 +35,7 @@ export const DOMAINS = [
         name: "CONVERT TO PDF",
         tools: [
           { id: 'jpg-to-pdf', name: 'JPG to PDF', description: 'Convert JPG images to PDF.', icon: ImagePlus, color: 'text-yellow-500', bg: 'bg-yellow-50' },
+          { id: 'png-to-pdf', name: 'PNG to PDF', description: 'Convert PNG images to PDF document.', icon: ImagePlus, color: 'text-amber-500', bg: 'bg-amber-50' },
           { id: 'word-to-pdf', name: 'WORD to PDF', description: 'Convert Word document to PDF.', icon: FileCode2, color: 'text-blue-500', bg: 'bg-blue-50' },
           { id: 'ppt-to-pdf', name: 'POWERPOINT to PDF', description: 'Convert PowerPoint to PDF.', icon: Presentation, color: 'text-orange-700', bg: 'bg-orange-50' },
           { id: 'excel-to-pdf', name: 'EXCEL to PDF', description: 'Convert Excel to PDF document.', icon: FileSpreadsheet, color: 'text-green-500', bg: 'bg-green-50' },
@@ -46,7 +47,9 @@ export const DOMAINS = [
         name: "CONVERT FROM PDF",
         tools: [
           { id: 'pdf-to-jpg', name: 'PDF to JPG', description: 'Convert PDF to JPG images.', icon: ImageIcon, color: 'text-yellow-500', bg: 'bg-yellow-50' },
+          { id: 'pdf-to-png', name: 'PDF to PNG', description: 'Convert PDF pages to PNG images.', icon: ImageIcon, color: 'text-yellow-600', bg: 'bg-yellow-50' },
           { id: 'pdf-to-word', name: 'PDF to WORD', description: 'Convert PDF to editable Word document.', icon: FileCode2, color: 'text-blue-500', bg: 'bg-blue-50' },
+          { id: 'pdf-to-text', name: 'PDF to Text', description: 'Extract plain text from PDF documents.', icon: FileText, color: 'text-indigo-500', bg: 'bg-indigo-50' },
           { id: 'pdf-to-ppt', name: 'PDF to POWERPOINT', description: 'Convert PDF to PowerPoint presentation.', icon: Presentation, color: 'text-orange-700', bg: 'bg-orange-50' },
           { id: 'pdf-to-excel', name: 'PDF to EXCEL', description: 'Convert PDF to Excel spreadsheet.', icon: FileSpreadsheet, color: 'text-green-500', bg: 'bg-green-50' },
           { id: 'pdf-converter', name: 'Universal Converter', description: 'Convert documents to and from PDF.', icon: ArrowLeftRight, color: 'text-blue-600', bg: 'bg-blue-50' },

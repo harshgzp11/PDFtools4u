@@ -315,7 +315,7 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
           <div className="mt-8 p-6 bg-slate-50 border border-slate-200/80 rounded-2xl">
             <h4 className="text-base font-bold text-gray-900 mb-2">Related Document Management & Conversion Ecosystem</h4>
             <p className="text-sm text-gray-600 mb-4 leading-relaxed">
-              PDFtools4u processes files locally inside your browser with 100% client-side execution — cutting out server waiting queues and privacy risks. Explore these interconnected document management tools:
+              PDFtools4u helps users prepare and process files. Supported operations are designed to run locally in your browser instead of uploading selected files to PDFtools4u servers. Explore these interconnected document management tools:
             </p>
             <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
               {relatedToolIds.map(relId => {
