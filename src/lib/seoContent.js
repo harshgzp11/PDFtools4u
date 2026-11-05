@@ -244,11 +244,11 @@ export const SEO_CONTENT = {
     "description": "Extract text, tables, and structures from your PDF into an editable Microsoft Word document.",
     "howTo": [
       "Upload PDF: Drag and drop your PDF file into the converter upload area.",
-      "Select Conversion Engine: Choose standard layout preservation or OCR for scanned files.",
+      "Select Conversion Engine: Choose standard document extraction or OCR for scanned files.",
       "Click Convert: Select 'Convert to Word' to process the document format.",
       "Download: Download your editable .docx file ready for editing in Microsoft Word."
     ],
-    "why": "Re-typing non-editable PDF documents wastes valuable hours. Our PDF to Word converter extracts text, tables, fonts, and paragraph structures into an editable Word document without ruining your layout. Perfect for freelancers editing client contracts, students revising assignment notes, and office workers updating legacy documents.",
+    "why": "Re-typing non-editable PDF documents wastes valuable hours. Our PDF to Word converter extracts text, tables, fonts, and paragraph structures into an editable Word document to help preserve structural text flow for quick editing. Perfect for freelancers editing client contracts, students revising assignment notes, and office workers updating legacy documents.",
     "features": [
       "File processing: Supported conversion is designed to run in your browser.",
       "Results: Conversion quality and layout depend on the source PDF, options, browser, and output format."
@@ -432,14 +432,14 @@ export const SEO_CONTENT = {
   },
   "word-to-pdf": {
     "title": "Convert Word to PDF Online",
-    "description": "Instantly convert Microsoft Word (DOCX) files to PDF while strictly preserving your original formatting and layout.",
+    "description": "Convert Microsoft Word (DOCX) files into clean, readable PDF documents directly in your browser.",
     "howTo": [
       "Upload Word Document: Drag and drop your .docx file into the upload box.",
-      "Select Conversion Mode: Choose standard layout preservation for optimal document fidelity.",
+      "Select Conversion Mode: Choose standard conversion for optimal document fidelity.",
       "Click Convert: Select 'Convert to PDF' to transform your document format instantly.",
       "Download: Save your newly generated PDF file ready for distribution or printing."
     ],
-    "why": "Sharing editable Word files across different devices often leads to broken formatting, missing fonts, and accidental edits. Converting your .docx files to PDF locks in your exact layout, typography, and page structure. Whether you are submitting a college research paper, a corporate business proposal, or an official resume, our free converter ensures your document looks identical on every screen.",
+    "why": "Sharing editable Word files across different devices often leads to broken formatting, missing fonts, and accidental edits. Converting your .docx files to PDF locks in typography and page structure to make sharing and printing consistent across devices. Whether you are submitting a college research paper, a corporate business proposal, or an official resume, our free converter ensures your document looks uniform on every screen.",
     "features": [
       "File processing: Supported operations are designed to run in your browser.",
       "Data handling: The site also makes separate requests for assets and analytics; see the Privacy Policy."

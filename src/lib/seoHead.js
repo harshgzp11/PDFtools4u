@@ -142,7 +142,7 @@ export const SEO_HEAD = {
   'pdf-to-word': {
     title: 'PDF to Word Converter Online Free — Convert PDF to DOCX | PDFtools4u',
     description: 'Convert PDF documents to editable Microsoft Word (.docx) files online for free. Rebuild paragraphs, headings, and tables with zero server uploads.',
-    h1: 'Convert PDF to Word — Editable DOCX Without Layout Breaks',
+    h1: 'Convert PDF to Word — Create Editable DOCX Files Online',
     keywords: ['pdf to word converter free', 'convert pdf to docx online', 'extract editable text from pdf', 'convert word to editable word', 'pdf to editable docx converter'],
   },
   'pdf-to-excel': {
