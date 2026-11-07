@@ -29,6 +29,7 @@ export default function ToolPreviewLayout({
   gridMode = false, // Automatically handle extracting all thumbnails and displaying them in a grid
   renderGridItem, // function(thumbnail, index) to render individual items in gridMode
   gridQuality = 0.5, // Resolution multiplier for grid thumbnails
+  customSuccessNode = null, // Optional: function({ successData, onReset, handleDownload, handleShare }) to customize result workspace
 }) {
   const [previewImage, setPreviewImage] = useState(null);
   const [thumbnails, setThumbnails] = useState([]);
@@ -600,45 +601,51 @@ export default function ToolPreviewLayout({
 
       {/* Success State Overlay */}
       {successData && (
-        <div className="flex flex-col items-center justify-center min-h-[60vh] bg-white border border-gray-200 rounded-2xl p-8 shadow-sm text-center animate-in zoom-in-95 duration-300">
-          <div className={`mx-auto w-16 h-16 ${successData.iconBgClass || 'bg-green-100'} rounded-full flex items-center justify-center mb-4`}>
-            {successData.icon ? (
-              <successData.icon className={`w-8 h-8 ${successData.iconColorClass || 'text-green-600'}`} />
-            ) : (
-              <CheckCircle className="w-8 h-8 text-green-600" />
-            )}
-          </div>
-          <h3 className="text-2xl font-extrabold text-gray-900 mb-2">{successData.title || 'Success!'}</h3>
-          <p className="text-gray-500 mb-8 text-sm">{successData.subtitle || 'Your file is ready.'}</p>
-          
-          {successData.statsComponent && (
-            <div className="mb-8 flex justify-center">
-              {successData.statsComponent}
+        customSuccessNode ? (
+          typeof customSuccessNode === 'function'
+            ? customSuccessNode({ successData, onReset, handleDownload, handleShare })
+            : customSuccessNode
+        ) : (
+          <div className="flex flex-col items-center justify-center min-h-[60vh] bg-white border border-gray-200 rounded-2xl p-8 shadow-sm text-center animate-in zoom-in-95 duration-300">
+            <div className={`mx-auto w-16 h-16 ${successData.iconBgClass || 'bg-green-100'} rounded-full flex items-center justify-center mb-4`}>
+              {successData.icon ? (
+                <successData.icon className={`w-8 h-8 ${successData.iconColorClass || 'text-green-600'}`} />
+              ) : (
+                <CheckCircle className="w-8 h-8 text-green-600" />
+              )}
             </div>
-          )}
+            <h3 className="text-2xl font-extrabold text-gray-900 mb-2">{successData.title || 'Success!'}</h3>
+            <p className="text-gray-500 mb-8 text-sm">{successData.subtitle || 'Your file is ready.'}</p>
 
-          {successData.url && (
-            <button
-              onClick={handleDownload}
-              className="mx-auto flex items-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-xl font-bold text-lg hover:bg-blue-700 transition-all shadow-md hover:shadow-lg mb-8"
-            >
-              <Download className="w-5 h-5" />
-              {successData.downloadText || 'Download File'}
-            </button>
-          )}
+            {successData.statsComponent && (
+              <div className="mb-8 flex justify-center">
+                {successData.statsComponent}
+              </div>
+            )}
 
-          <DownloadPageExtras />
+            {successData.url && (
+              <button
+                onClick={handleDownload}
+                className="mx-auto flex items-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-xl font-bold text-lg hover:bg-blue-700 transition-all shadow-md hover:shadow-lg mb-8"
+              >
+                <Download className="w-5 h-5" />
+                {successData.downloadText || 'Download File'}
+              </button>
+            )}
 
-          <div className="mt-8 pt-6 border-t border-gray-100 w-full flex items-center justify-center gap-4">
-            <button onClick={onReset} className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-900 font-medium py-1.5 px-3 rounded-md hover:bg-gray-100 transition-colors">
-              <ArrowLeft className="w-3.5 h-3.5" /> Start over
-            </button>
-            <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
-            <button onClick={handleShare} className="flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-800 font-medium py-1.5 px-3 rounded-md hover:bg-blue-50 transition-colors">
-              <Share2 className="w-3.5 h-3.5" /> {successData ? 'Share File' : 'Share Tool'}
-            </button>
+            <DownloadPageExtras />
+
+            <div className="mt-8 pt-6 border-t border-gray-100 w-full flex items-center justify-center gap-4">
+              <button onClick={onReset} className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-900 font-medium py-1.5 px-3 rounded-md hover:bg-gray-100 transition-colors">
+                <ArrowLeft className="w-3.5 h-3.5" /> Start over
+              </button>
+              <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+              <button onClick={handleShare} className="flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-800 font-medium py-1.5 px-3 rounded-md hover:bg-blue-50 transition-colors">
+                <Share2 className="w-3.5 h-3.5" /> {successData ? 'Share File' : 'Share Tool'}
+              </button>
+            </div>
           </div>
-        </div>
+        )
       )}
     </div>
   );

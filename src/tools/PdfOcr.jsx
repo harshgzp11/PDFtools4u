@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ScanText, AlertTriangle, XCircle } from 'lucide-react';
+import {
+  ScanText, AlertTriangle, XCircle, FileText, AlignLeft,
+  Copy, Check, Download, CheckCircle, RotateCcw, ArrowLeft, Share2
+} from 'lucide-react';
 import { toast } from 'sonner';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
+import DownloadPageExtras from '../components/ui/DownloadPageExtras';
 import { trackEvent, trackError } from '../lib/analytics';
 import {
   calculateAdaptiveScale,
@@ -9,7 +13,8 @@ import {
   cleanupPdfDocument,
   createOcrWorker,
   terminateOcrWorker,
-  validateOcrFile
+  validateOcrFile,
+  calculateTextStats
 } from '../utils/ocrEngine';
 import { normalizeImage } from '../utils/imageNormalization';
 
@@ -18,7 +23,13 @@ export default function PdfOcr() {
   const [fileType, setFileType] = useState(null); // 'pdf' | 'image' | null
   const [isProcessing, setIsProcessing] = useState(false);
   const [successData, setSuccessData] = useState(null);
-  
+
+  // Dual-Pipeline Extracted Text Result Workspace State
+  const [activeTab, setActiveTab] = useState('pdf'); // 'pdf' | 'text'
+  const [originalExtractedText, setOriginalExtractedText] = useState('');
+  const [editedText, setEditedText] = useState('');
+  const [isCopied, setIsCopied] = useState(false);
+
   const [actualProgress, setActualProgress] = useState({
     action: 'Initializing',
     currentPage: 0,
@@ -45,6 +56,7 @@ export default function PdfOcr() {
   const activeCanvasRef = useRef(null);
   const runIdRef = useRef(0);
   const abortControllerRef = useRef(null);
+  const copyTimeoutRef = useRef(null);
 
   useEffect(() => {
     if (window.__sharedFile) {
@@ -57,6 +69,10 @@ export default function PdfOcr() {
   useEffect(() => {
     return () => {
       runIdRef.current++;
+      if (copyTimeoutRef.current) {
+        clearTimeout(copyTimeoutRef.current);
+        copyTimeoutRef.current = null;
+      }
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
         abortControllerRef.current = null;
@@ -183,9 +199,18 @@ export default function PdfOcr() {
       objectUrlRef.current = null;
     }
 
+    if (copyTimeoutRef.current) {
+      clearTimeout(copyTimeoutRef.current);
+      copyTimeoutRef.current = null;
+    }
+
     setFile(newFile);
     setFileType(validation.type);
     setSuccessData(null);
+    setOriginalExtractedText('');
+    setEditedText('');
+    setActiveTab('pdf');
+    setIsCopied(false);
     setActualProgress({
       action: 'Initializing',
       currentPage: 0,
@@ -238,7 +263,16 @@ export default function PdfOcr() {
     }
 
     // Restore UI to idle configuration state
+    if (copyTimeoutRef.current) {
+      clearTimeout(copyTimeoutRef.current);
+      copyTimeoutRef.current = null;
+    }
     setIsProcessing(false);
+    setSuccessData(null);
+    setOriginalExtractedText('');
+    setEditedText('');
+    setActiveTab('pdf');
+    setIsCopied(false);
     setActualProgress({
       action: 'Cancelled',
       currentPage: 0,
@@ -381,6 +415,9 @@ export default function PdfOcr() {
         objectUrlRef.current = url;
 
         const baseName = file.name.replace(/\.[^/.]+$/, '');
+        setOriginalExtractedText(extractedText);
+        setEditedText(extractedText);
+
         setActualProgress(prev => ({
           ...prev,
           action: 'Complete',
@@ -393,7 +430,9 @@ export default function PdfOcr() {
             filename: `${baseName}_searchable.pdf`,
             title: 'Searchable PDF Ready!',
             subtitle: 'We successfully converted your image into a searchable, selectable PDF document.',
-            downloadText: 'Download PDF'
+            downloadText: 'Download PDF',
+            text: extractedText,
+            baseName: baseName
           }
         }));
       } else {
@@ -522,7 +561,8 @@ export default function PdfOcr() {
         worker = null;
         activeWorkerRef.current = null;
         
-        if (!fullText.trim()) {
+        const trimmedFullText = fullText.trim();
+        if (!trimmedFullText) {
           toast.error("OCR failed to detect any text in this document.");
           setIsProcessing(false);
           return;
@@ -540,6 +580,10 @@ export default function PdfOcr() {
         const url = URL.createObjectURL(blob);
         objectUrlRef.current = url;
         
+        const baseName = file.name.replace(/\.[^/.]+$/, '');
+        setOriginalExtractedText(trimmedFullText);
+        setEditedText(trimmedFullText);
+
         setActualProgress(prev => ({
           ...prev,
           action: 'Complete',
@@ -549,10 +593,12 @@ export default function PdfOcr() {
           isFinished: true,
           successPayload: {
             url,
-            filename: `${file.name.replace(/\.[^/.]+$/, '')}_searchable.pdf`,
+            filename: `${baseName}_searchable.pdf`,
             title: 'Searchable PDF Ready!',
             subtitle: 'We successfully made your scanned document searchable. You can now download the new PDF.',
-            downloadText: 'Download PDF'
+            downloadText: 'Download PDF',
+            text: trimmedFullText,
+            baseName: baseName
           }
         }));
       }
@@ -581,6 +627,10 @@ export default function PdfOcr() {
   };
 
   const resetTool = () => {
+    if (copyTimeoutRef.current) {
+      clearTimeout(copyTimeoutRef.current);
+      copyTimeoutRef.current = null;
+    }
     if (objectUrlRef.current) {
       URL.revokeObjectURL(objectUrlRef.current);
       objectUrlRef.current = null;
@@ -589,6 +639,10 @@ export default function PdfOcr() {
     setFileType(null);
     setSuccessData(null);
     setIsProcessing(false);
+    setOriginalExtractedText('');
+    setEditedText('');
+    setActiveTab('pdf');
+    setIsCopied(false);
     setActualProgress({
       action: 'Initializing',
       currentPage: 0,
@@ -685,6 +739,253 @@ export default function PdfOcr() {
     );
   };
 
+  const handleCopyText = async () => {
+    if (!editedText) {
+      toast.info("No text to copy.");
+      return;
+    }
+
+    let success = false;
+    if (navigator?.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(editedText);
+        success = true;
+      } catch {
+        // Fallback for non-secure context or permission denial
+      }
+    }
+
+    if (!success && typeof document !== 'undefined') {
+      const textArea = document.createElement("textarea");
+      textArea.value = editedText;
+      textArea.style.position = "fixed";
+      textArea.style.left = "-999999px";
+      textArea.style.top = "-999999px";
+      try {
+        document.body.appendChild(textArea);
+        try {
+          textArea.focus();
+          textArea.select();
+          success = document.execCommand('copy') === true;
+        } catch {
+          success = false;
+        }
+      } finally {
+        if (textArea.parentNode) {
+          textArea.parentNode.removeChild(textArea);
+        }
+      }
+    }
+
+    if (success) {
+      if (copyTimeoutRef.current) {
+        clearTimeout(copyTimeoutRef.current);
+      }
+      setIsCopied(true);
+      toast.success("Text copied to clipboard!");
+      copyTimeoutRef.current = setTimeout(() => {
+        setIsCopied(false);
+        copyTimeoutRef.current = null;
+      }, 2000);
+    } else {
+      toast.error("Failed to copy text. Please select and copy manually.");
+    }
+  };
+
+  const handleDownloadTxt = () => {
+    if (!editedText) {
+      toast.info("No text to download.");
+      return;
+    }
+
+    const baseName = (file?.name || 'document').replace(/\.[^/.]+$/, '');
+    const filename = `${baseName}_extracted_text.txt`;
+    const blob = new Blob([editedText], { type: 'text/plain;charset=utf-8' });
+    const downloadUrl = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = filename;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Lifecycle: Revoke temporary download Object URL after dispatch
+    setTimeout(() => {
+      try {
+        URL.revokeObjectURL(downloadUrl);
+      } catch {}
+    }, 1000);
+
+    trackEvent('file_downloaded', {
+      tool_name: 'PDF & Image OCR (TXT)',
+      file_type: 'txt',
+      file_size_kb: Math.round(blob.size / 1024)
+    });
+    toast.success("Downloaded text file.");
+  };
+
+  const renderResultWorkspace = ({ successData, onReset, handleDownload, handleShare }) => {
+    const stats = calculateTextStats(editedText);
+
+    return (
+      <div className="w-full bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-300">
+        {/* Dual-Tab Navigation */}
+        <div className="flex border-b border-gray-200 bg-gray-50/80 px-4 sm:px-6 pt-3 gap-2">
+          <button
+            type="button"
+            onClick={() => setActiveTab('pdf')}
+            className={`flex items-center gap-2 px-4 py-3 font-bold text-sm rounded-t-xl transition-all border-b-2 cursor-pointer ${
+              activeTab === 'pdf'
+                ? 'bg-white border-blue-600 text-blue-600 shadow-sm'
+                : 'border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/60'
+            }`}
+          >
+            <FileText className="w-4 h-4" />
+            <span>Searchable PDF</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('text')}
+            className={`flex items-center gap-2 px-4 py-3 font-bold text-sm rounded-t-xl transition-all border-b-2 cursor-pointer ${
+              activeTab === 'text'
+                ? 'bg-white border-blue-600 text-blue-600 shadow-sm'
+                : 'border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/60'
+            }`}
+          >
+            <AlignLeft className="w-4 h-4" />
+            <span>Extracted Text</span>
+            <span className="text-[11px] px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-semibold">
+              {stats.words} words
+            </span>
+          </button>
+        </div>
+
+        {/* Tab 1: Searchable PDF Output */}
+        {activeTab === 'pdf' && (
+          <div className="p-8 sm:p-12 text-center flex flex-col items-center justify-center min-h-[50vh]">
+            <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+              <CheckCircle className="w-8 h-8 text-green-600" />
+            </div>
+            <h3 className="text-2xl font-extrabold text-gray-900 mb-2">{successData.title || 'Searchable PDF Ready!'}</h3>
+            <p className="text-gray-500 mb-8 text-sm max-w-lg">{successData.subtitle || 'Your file is ready with an embedded, selectable text layer.'}</p>
+
+            {successData.url && (
+              <button
+                onClick={handleDownload}
+                className="mx-auto flex items-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-xl font-bold text-lg hover:bg-blue-700 transition-all shadow-md hover:shadow-lg mb-8 cursor-pointer"
+              >
+                <Download className="w-5 h-5" />
+                {successData.downloadText || 'Download PDF'}
+              </button>
+            )}
+
+            <DownloadPageExtras />
+
+            <div className="mt-8 pt-6 border-t border-gray-100 w-full flex items-center justify-center gap-4">
+              <button onClick={onReset} className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-900 font-medium py-1.5 px-3 rounded-md hover:bg-gray-100 transition-colors cursor-pointer">
+                <ArrowLeft className="w-3.5 h-3.5" /> Start over
+              </button>
+              <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+              <button onClick={handleShare} className="flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-800 font-medium py-1.5 px-3 rounded-md hover:bg-blue-50 transition-colors cursor-pointer">
+                <Share2 className="w-3.5 h-3.5" /> Share File
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Tab 2: Extracted Text Editor Workspace */}
+        {activeTab === 'text' && (
+          <div className="p-6 sm:p-8 flex flex-col text-left">
+            {/* Header & Action Toolbar */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-100 mb-4">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                  <AlignLeft className="w-5 h-5 text-blue-600" />
+                  Extracted Text
+                </h3>
+                <p className="text-xs text-gray-500">Edit, copy, or export the OCR-recognized text below.</p>
+              </div>
+
+              <div className="flex items-center gap-2 self-end sm:self-auto">
+                <button
+                  type="button"
+                  onClick={handleCopyText}
+                  className="flex items-center gap-1.5 px-3.5 py-2 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900 rounded-xl font-bold text-xs shadow-sm transition-all cursor-pointer"
+                  title="Copy current edited text to clipboard"
+                >
+                  {isCopied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
+                  <span>{isCopied ? 'Copied!' : 'Copy Text'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleDownloadTxt}
+                  className="flex items-center gap-1.5 px-3.5 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-xl font-bold text-xs shadow-sm transition-all cursor-pointer"
+                  title="Download current edited text as a .txt file"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Download TXT</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Editable Textarea */}
+            <div className="relative mb-3">
+              <label htmlFor="extracted-ocr-textarea" className="sr-only">Extracted OCR Text</label>
+              <textarea
+                id="extracted-ocr-textarea"
+                aria-label="Extracted OCR Text"
+                value={editedText}
+                onChange={(e) => setEditedText(e.target.value)}
+                placeholder="No text recognized."
+                rows={14}
+                className="w-full p-4 text-sm font-mono text-gray-800 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all leading-relaxed custom-scrollbar resize-y"
+              />
+            </div>
+
+            {/* Live Statistics & Quick Revert Footer */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-gray-500 py-2">
+              <div className="flex items-center gap-3 font-semibold">
+                <span className="flex items-center gap-1">
+                  <span className="text-gray-900 font-bold">{stats.words}</span> words
+                </span>
+                <span className="text-gray-300">•</span>
+                <span className="flex items-center gap-1">
+                  <span className="text-gray-900 font-bold">{stats.characters}</span> characters
+                </span>
+              </div>
+
+              {editedText !== originalExtractedText && (
+                <button
+                  type="button"
+                  onClick={() => setEditedText(originalExtractedText)}
+                  className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors cursor-pointer self-start sm:self-auto"
+                  title="Revert all edits back to the initial OCR output"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>Reset to Original OCR</span>
+                </button>
+              )}
+            </div>
+
+            {/* Bottom Navigation */}
+            <div className="mt-6 pt-5 border-t border-gray-100 w-full flex items-center justify-center gap-4">
+              <button onClick={onReset} className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-900 font-medium py-1.5 px-3 rounded-md hover:bg-gray-100 transition-colors cursor-pointer">
+                <ArrowLeft className="w-3.5 h-3.5" /> Start over
+              </button>
+              <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+              <button onClick={handleShare} className="flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-800 font-medium py-1.5 px-3 rounded-md hover:bg-blue-50 transition-colors cursor-pointer">
+                <Share2 className="w-3.5 h-3.5" /> Share Tool
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <ToolPreviewLayout
       title="PDF & Image OCR Extractor"
@@ -700,6 +1001,7 @@ export default function PdfOcr() {
       gridMode={fileType === 'pdf'}
       gridQuality={1.0}
       customPreviewNode={file && !successData ? renderCustomPreview : null}
+      customSuccessNode={successData ? renderResultWorkspace : null}
     >
       <div className="space-y-6">
         <div className="flex items-center justify-between border-b border-gray-100 pb-2">

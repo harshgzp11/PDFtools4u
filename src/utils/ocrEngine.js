@@ -239,3 +239,27 @@ export async function validateOcrFile(file) {
     error: 'Unsupported file format. Please upload a PDF or an image (JPG, PNG, WebP).'
   };
 }
+
+/**
+ * Calculates live word count and character count for text content.
+ *
+ * Word count convention:
+ * - Trim text.
+ * - Empty or whitespace-only strings return 0 words.
+ * - Non-empty whitespace-separated tokens are counted as words.
+ *
+ * Character count convention:
+ * - JavaScript string UTF-16 code units (matching textarea.value.length).
+ *
+ * @param {string} text
+ * @returns {{ words: number, characters: number }}
+ */
+export function calculateTextStats(text) {
+  if (!text || typeof text !== 'string') {
+    return { words: 0, characters: 0 };
+  }
+  const characters = text.length;
+  const trimmed = text.trim();
+  const words = trimmed.length === 0 ? 0 : trimmed.split(/\s+/).filter(Boolean).length;
+  return { words, characters };
+}

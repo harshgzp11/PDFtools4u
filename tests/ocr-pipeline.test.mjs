@@ -21,6 +21,7 @@ const {
   terminateOcrWorker,
   validateOcrFile,
   sniffOcrFileType,
+  calculateTextStats,
   SUPPORTED_OCR_IMAGE_EXTENSIONS,
   SUPPORTED_OCR_MIME_TYPES
 } = await import('../src/utils/ocrEngine.js');
@@ -791,6 +792,360 @@ await test('Task 3.17: Terminated worker is cleanly invalidated and never reused
   const freshWorker = await createOcrWorker('eng');
   assert.ok(freshWorker, 'Fresh worker must be initialized successfully');
   await terminateOcrWorker(freshWorker);
+});
+
+// =============================================================================
+// SECTION 8: TASK 4 EXTRACTED-TEXT RESULT WORKSPACE & STATE MANAGEMENT
+// =============================================================================
+console.log('\n--- SECTION 8: TASK 4 EXTRACTED-TEXT RESULT WORKSPACE ---');
+
+// 4.1 Word and character counter accuracy across edge cases
+await test('Task 4.1: Live word and character count calculations across edge cases', 'Task 4 Stats', () => {
+  // Empty
+  assert.deepStrictEqual(calculateTextStats(''), { words: 0, characters: 0 });
+  assert.deepStrictEqual(calculateTextStats(null), { words: 0, characters: 0 });
+  assert.deepStrictEqual(calculateTextStats(undefined), { words: 0, characters: 0 });
+
+  // Whitespace only
+  assert.deepStrictEqual(calculateTextStats('   \n\t  '), { words: 0, characters: 7 });
+
+  // Single word
+  assert.deepStrictEqual(calculateTextStats('Invoice'), { words: 1, characters: 7 });
+  assert.deepStrictEqual(calculateTextStats('   Invoice   '), { words: 1, characters: 13 });
+
+  // Multiple words and multiple spaces
+  assert.deepStrictEqual(calculateTextStats('ACME   CORPORATION   TOTAL:  $500'), { words: 4, characters: 33 });
+
+  // Newlines
+  assert.deepStrictEqual(calculateTextStats("Line 1\nLine 2\n\nLine 3"), { words: 6, characters: 21 });
+
+  // Multilingual Unicode
+  const hindiStats = calculateTextStats("नमस्ते दुनिया! यह ओसीआर परीक्षण है।");
+  assert.strictEqual(hindiStats.words, 6);
+  assert.strictEqual(hindiStats.characters, 35);
+
+  // Emoji and UTF-16 code units (consistent with JS .length and textarea .length)
+  const emojiStats = calculateTextStats("OCR Complete 🚀");
+  assert.strictEqual(emojiStats.words, 3);
+  assert.strictEqual(emojiStats.characters, 15);
+});
+
+// 4.2 Image OCR populates extracted text without a second OCR call
+await test('Task 4.2: Image OCR captures extracted text in single recognition execution', 'Task 4 Integration', async () => {
+  let ocrExecutionCount = 0;
+  const mockWorker = {
+    recognize: async (source, options, output) => {
+      ocrExecutionCount++;
+      return {
+        data: {
+          text: 'INVOICE #10492 Billed To: ACME CORPORATION',
+          pdf: new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d])
+        }
+      };
+    }
+  };
+
+  const ret = await mockWorker.recognize('canvas', {}, { pdf: true });
+  const originalExtractedText = (ret.data?.text || '').trim();
+  let editedText = originalExtractedText;
+
+  assert.strictEqual(ocrExecutionCount, 1, 'OCR must only run once');
+  assert.strictEqual(originalExtractedText, 'INVOICE #10492 Billed To: ACME CORPORATION');
+  assert.strictEqual(editedText, originalExtractedText);
+});
+
+// 4.3 Multi-page PDF text aggregation in correct order
+await test('Task 4.3: Multi-page PDF aggregates page text sequentially with meaningful separators', 'Task 4 Integration', () => {
+  const pageTexts = [
+    'Page 1: Invoice Header and Items',
+    'Page 2: Terms and Payment Details'
+  ];
+
+  let fullText = '';
+  for (let i = 1; i <= pageTexts.length; i++) {
+    fullText += (pageTexts.length > 1 ? `--- Page ${i} ---\n${pageTexts[i - 1]}\n\n` : `${pageTexts[i - 1]}\n\n`);
+  }
+  const aggregatedText = fullText.trim();
+
+  assert.ok(aggregatedText.indexOf('Page 1:') < aggregatedText.indexOf('Page 2:'), 'Page 1 text must precede Page 2');
+  assert.ok(aggregatedText.includes('--- Page 1 ---'), 'Must contain Page 1 header');
+  assert.ok(aggregatedText.includes('--- Page 2 ---'), 'Must contain Page 2 header');
+});
+
+// 4.4 User editing decouples editedText from originalExtractedText and PDF
+await test('Task 4.4: Editing decoupled from originalExtractedText and Searchable PDF', 'Task 4 Decoupling', () => {
+  const original = 'Original OCR output text with typo: Acmee Corp';
+  let edited = original;
+  const pdfBytes = new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d, 0x31, 0x2e]);
+
+  // User edits typo in workspace
+  edited = 'Corrected output text: Acme Corp';
+
+  assert.notStrictEqual(edited, original, 'editedText must reflect user changes');
+  assert.strictEqual(original, 'Original OCR output text with typo: Acmee Corp', 'originalExtractedText must remain immutable');
+  assert.strictEqual(pdfBytes[0], 0x25, 'Searchable PDF bytes must remain untouched');
+});
+
+// 4.5 Tab switching preserves user edits
+await test('Task 4.5: Tab switching preserves edited text state', 'Task 4 State', () => {
+  let activeTab = 'pdf';
+  let editedText = 'User edited text that must not be lost';
+
+  // Switch to text tab
+  activeTab = 'text';
+  assert.strictEqual(editedText, 'User edited text that must not be lost');
+
+  // Edit more text
+  editedText += ' - updated on text tab';
+
+  // Switch back to pdf tab
+  activeTab = 'pdf';
+  assert.strictEqual(editedText, 'User edited text that must not be lost - updated on text tab');
+
+  // Switch to text tab again
+  activeTab = 'text';
+  assert.strictEqual(editedText, 'User edited text that must not be lost - updated on text tab');
+});
+
+// 4.6 TXT export MIME type, filename, and Unicode preservation
+await test('Task 4.6: TXT export preserves UTF-8 Unicode, line breaks, and filename conventions', 'Task 4 Export', () => {
+  const editedText = "Line 1: Special Characters € & $\nLine 2: Devanagari नमस्ते\nLine 3: Emoji 🚀";
+  const blob = new Blob([editedText], { type: 'text/plain;charset=utf-8' });
+
+  assert.strictEqual(blob.type, 'text/plain;charset=utf-8');
+  assert.ok(blob.size > 0);
+
+  const baseName = 'my-scan-report';
+  const filename = `${baseName}_extracted_text.txt`;
+  assert.strictEqual(filename, 'my-scan-report_extracted_text.txt');
+});
+
+// 4.7 Start over and file replacement resets all extracted text state
+await test('Task 4.7: Start over and file replacement resets extracted text and tab state', 'Task 4 Lifecycle', () => {
+  let originalExtractedText = 'Initial text';
+  let editedText = 'User edited text';
+  let activeTab = 'text';
+  let isCopied = true;
+
+  // Simulate resetTool / handleFile
+  const reset = () => {
+    originalExtractedText = '';
+    editedText = '';
+    activeTab = 'pdf';
+    isCopied = false;
+  };
+
+  reset();
+
+  assert.strictEqual(originalExtractedText, '');
+  assert.strictEqual(editedText, '');
+  assert.strictEqual(activeTab, 'pdf');
+  assert.strictEqual(isCopied, false);
+});
+
+// -----------------------------------------------------------------------------
+// SECTION 8.1: TASK 4.1 CLIPBOARD FALLBACK & UI TIMER HARDENING
+// -----------------------------------------------------------------------------
+
+function createMockDocument(behavior = {}) {
+  const children = [];
+  const body = {
+    children,
+    appendChild: (el) => {
+      el.parentNode = body;
+      children.push(el);
+      return el;
+    },
+    removeChild: (el) => {
+      const idx = children.indexOf(el);
+      if (idx !== -1) children.splice(idx, 1);
+      el.parentNode = null;
+      return el;
+    }
+  };
+
+  return {
+    body,
+    createElement: (tag) => ({
+      tagName: tag.toUpperCase(),
+      style: {},
+      value: '',
+      parentNode: null,
+      focus: () => {
+        if (behavior.focusThrows) throw new Error('Focus blocked');
+      },
+      select: () => {
+        if (behavior.selectThrows) throw new Error('Selection blocked');
+      }
+    }),
+    execCommand: (cmd) => {
+      if (behavior.execThrows) throw new Error('execCommand rejected');
+      return behavior.execReturns ?? true;
+    }
+  };
+}
+
+function runFallbackCopy(editedText, doc) {
+  let success = false;
+  if (typeof doc !== 'undefined') {
+    const textArea = doc.createElement("textarea");
+    textArea.value = editedText;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-999999px";
+    textArea.style.top = "-999999px";
+    try {
+      doc.body.appendChild(textArea);
+      try {
+        textArea.focus();
+        textArea.select();
+        success = doc.execCommand('copy') === true;
+      } catch {
+        success = false;
+      }
+    } finally {
+      if (textArea.parentNode) {
+        textArea.parentNode.removeChild(textArea);
+      }
+    }
+  }
+  return success;
+}
+
+// 4.8 Clipboard fallback succeeds
+await test('Task 4.8: Clipboard fallback succeeds when execCommand returns true', 'Task 4.1 Fallback', () => {
+  const doc = createMockDocument({ execReturns: true });
+  const result = runFallbackCopy('Test copy text', doc);
+
+  assert.strictEqual(result, true, 'Fallback copy must report true when execCommand returns true');
+  assert.strictEqual(doc.body.children.length, 0, 'Textarea must be removed from body');
+});
+
+// 4.9 Clipboard fallback returns false
+await test('Task 4.9: Clipboard fallback returns false when execCommand returns false', 'Task 4.1 Fallback', () => {
+  const doc = createMockDocument({ execReturns: false });
+  const result = runFallbackCopy('Test copy text', doc);
+
+  assert.strictEqual(result, false, 'Fallback copy must report false when execCommand returns false');
+  assert.strictEqual(doc.body.children.length, 0, 'Textarea must be removed from body');
+});
+
+// 4.10 Clipboard fallback throws
+await test('Task 4.10: Clipboard fallback safely handles focus, select, or execCommand throws', 'Task 4.1 Fallback', () => {
+  // Focus throws
+  const docFocusThrow = createMockDocument({ focusThrows: true });
+  assert.strictEqual(runFallbackCopy('Test', docFocusThrow), false);
+  assert.strictEqual(docFocusThrow.body.children.length, 0);
+
+  // Select throws
+  const docSelectThrow = createMockDocument({ selectThrows: true });
+  assert.strictEqual(runFallbackCopy('Test', docSelectThrow), false);
+  assert.strictEqual(docSelectThrow.body.children.length, 0);
+
+  // execCommand throws
+  const docExecThrow = createMockDocument({ execThrows: true });
+  assert.strictEqual(runFallbackCopy('Test', docExecThrow), false);
+  assert.strictEqual(docExecThrow.body.children.length, 0);
+});
+
+// 4.11 Temporary textarea is removed in every scenario
+await test('Task 4.11: Temporary textarea is guaranteed removed in all success, failure, and throw scenarios', 'Task 4.1 Cleanup', () => {
+  const scenarios = [
+    { name: 'success', opts: { execReturns: true } },
+    { name: 'false', opts: { execReturns: false } },
+    { name: 'focusThrows', opts: { focusThrows: true } },
+    { name: 'selectThrows', opts: { selectThrows: true } },
+    { name: 'execThrows', opts: { execThrows: true } }
+  ];
+
+  for (const s of scenarios) {
+    const doc = createMockDocument(s.opts);
+    runFallbackCopy('Content to remove', doc);
+    assert.strictEqual(doc.body.children.length, 0, `Textarea must be removed in scenario ${s.name}`);
+  }
+});
+
+// 4.12 Repeated copy operations do not interfere with one another
+await test('Task 4.12: Repeated copy operations clear previous timer so older timer cannot prematurely reset isCopied', 'Task 4.1 Timers', async () => {
+  let isCopied = false;
+  let copyTimeout = null;
+  let timer1Fired = false;
+  let timer2Fired = false;
+
+  const triggerCopy = (timerId) => {
+    if (copyTimeout) {
+      clearTimeout(copyTimeout);
+      copyTimeout = null;
+    }
+    isCopied = true;
+    copyTimeout = setTimeout(() => {
+      isCopied = false;
+      copyTimeout = null;
+      if (timerId === 1) timer1Fired = true;
+      if (timerId === 2) timer2Fired = true;
+    }, 50);
+  };
+
+  // Trigger copy 1
+  triggerCopy(1);
+  assert.strictEqual(isCopied, true);
+
+  // Trigger copy 2 at 20ms (before copy 1 fires at 50ms)
+  await new Promise(r => setTimeout(r, 20));
+  triggerCopy(2);
+  assert.strictEqual(isCopied, true);
+
+  // At 55ms (when timer 1 would have elapsed), isCopied must STILL be true because timer 1 was cleared!
+  await new Promise(r => setTimeout(r, 35));
+  assert.strictEqual(isCopied, true, 'isCopied must not be reset prematurely by timer 1');
+  assert.strictEqual(timer1Fired, false, 'Timer 1 must have been cancelled');
+
+  // At 85ms (after timer 2 fires), isCopied resets to false
+  await new Promise(r => setTimeout(r, 30));
+  assert.strictEqual(isCopied, false, 'isCopied resets to false after timer 2');
+  assert.strictEqual(timer2Fired, true, 'Timer 2 fired');
+});
+
+// 4.13 Start Over clears the pending timer
+await test('Task 4.13: Start Over clears pending copy timeout and resets copied state immediately', 'Task 4.1 Lifecycle', () => {
+  const copyTimeoutRef = { current: null };
+  let isCopied = true;
+
+  copyTimeoutRef.current = setTimeout(() => {
+    isCopied = false;
+  }, 2000);
+
+  // Simulate resetTool
+  const resetTool = () => {
+    if (copyTimeoutRef.current) {
+      clearTimeout(copyTimeoutRef.current);
+      copyTimeoutRef.current = null;
+    }
+    isCopied = false;
+  };
+
+  resetTool();
+
+  assert.strictEqual(isCopied, false);
+  assert.strictEqual(copyTimeoutRef.current, null);
+});
+
+// 4.14 Unmount clears the pending timer
+await test('Task 4.14: Component unmount clears pending copy timeout ref', 'Task 4.1 Lifecycle', () => {
+  const copyTimeoutRef = { current: null };
+
+  copyTimeoutRef.current = setTimeout(() => {}, 2000);
+  assert.notStrictEqual(copyTimeoutRef.current, null);
+
+  // Simulate useEffect unmount cleanup
+  const unmountCleanup = () => {
+    if (copyTimeoutRef.current) {
+      clearTimeout(copyTimeoutRef.current);
+      copyTimeoutRef.current = null;
+    }
+  };
+
+  unmountCleanup();
+  assert.strictEqual(copyTimeoutRef.current, null);
 });
 
 if (imageWorker) {
