@@ -81,6 +81,7 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
               ref={searchInputRef}
               id="dashboard-search"
               type="text"
+              aria-label="Search tools"
               className="block w-full pl-12 pr-4 py-4 bg-white border border-gray-200 rounded-2xl text-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm"
               placeholder="Search for PDF tools, image converters, formatters..."
               value={localSearch}
@@ -171,6 +172,7 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
                 <input
                   ref={heroSearchRef}
                   type="text"
+                  aria-label="Search tools"
                   placeholder="Search tools (e.g. Merge, OCR...)"
                   value={localSearch}
                   onChange={(e) => setLocalSearch(e.target.value)}
@@ -545,28 +547,40 @@ export default function Dashboard({ onSelectTool, searchQuery: globalQuery, defa
         </div>
 
         {/* Domain Tabs */}
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
-          {DOMAINS.map(domain => (
-            <button
-              key={domain.title}
-              onClick={() => setActiveTab(domain.title)}
-              className={`px-6 py-3 rounded-xl font-bold text-base transition-all cursor-pointer ${
-                activeTab === domain.title 
-                  ? `${domain.bg} ${domain.color} ${domain.border} border-2 shadow-sm scale-105` 
-                  : `bg-white text-gray-500 border-2 border-gray-200 hover:bg-gray-50 hover:text-gray-800`
-              }`}
-            >
-              {domain.title}
-            </button>
-          ))}
+        <div role="tablist" aria-label="Tool Categories" className="flex flex-wrap justify-center gap-4 mb-12">
+          {DOMAINS.map(domain => {
+            const isTabActive = activeTab === domain.title;
+            const panelId = `tabpanel-${domain.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+            return (
+              <button
+                key={domain.title}
+                role="tab"
+                id={`tab-${domain.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+                aria-selected={isTabActive}
+                aria-controls={panelId}
+                onClick={() => setActiveTab(domain.title)}
+                className={`px-6 py-3 rounded-xl font-bold text-base transition-all cursor-pointer ${
+                  isTabActive 
+                    ? `${domain.bg} ${domain.color} ${domain.border} border-2 shadow-sm scale-105` 
+                    : `bg-white text-gray-500 border-2 border-gray-200 hover:bg-gray-50 hover:text-gray-800`
+                }`}
+              >
+                {domain.title}
+              </button>
+            );
+          })}
         </div>
 
         {/* Categorized columns rendered for all domains (display toggled for active tab) so crawlers discover all tools */}
         {DOMAINS.map(domain => {
           const isActive = activeTab === domain.title;
+          const panelId = `tabpanel-${domain.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
           return (
             <div
               key={domain.title}
+              role="tabpanel"
+              id={panelId}
+              aria-labelledby={`tab-${domain.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
               style={{ display: isActive ? 'block' : 'none' }}
               className="bg-white border border-gray-200 rounded-2xl p-6 md:p-10 shadow-sm"
             >

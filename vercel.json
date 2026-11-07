@@ -76,11 +76,6 @@
       "source": "/blog/convert-json-to-csv-excel",
       "destination": "/data-converter",
       "permanent": true
-    },
-    {
-      "source": "/blog/top-5-free-apps-scan-documents-india",
-      "destination": "/blog/convert-multiple-jpg-images-to-one-pdf-online-free",
-      "permanent": true
     }
   ],
   "headers": [
@@ -114,10 +109,6 @@
           "value": "max-age=63072000; includeSubDomains; preload"
         },
         {
-          "key": "X-XSS-Protection",
-          "value": "1; mode=block"
-        },
-        {
           "key": "X-Frame-Options",
           "value": "SAMEORIGIN"
         },
@@ -128,6 +119,10 @@
         {
           "key": "Referrer-Policy",
           "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), browsing-topics=()"
         }
       ]
     }

@@ -75,6 +75,9 @@ export default function CommandMenu({ onSelectTool }) {
       onClick={() => setOpen(false)}
     >
       <div 
+        role="dialog"
+        aria-modal="true"
+        aria-label="Search tools"
         className="bg-white border border-gray-200 rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[80vh] animate-in zoom-in-[0.98] duration-200"
         onClick={e => e.stopPropagation()}
         onKeyDown={handleKeyDown}
@@ -85,6 +88,11 @@ export default function CommandMenu({ onSelectTool }) {
           <input 
             ref={inputRef}
             type="text"
+            role="combobox"
+            aria-expanded="true"
+            aria-autocomplete="list"
+            aria-controls="search-results-list"
+            aria-label="Search tools"
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
@@ -97,6 +105,7 @@ export default function CommandMenu({ onSelectTool }) {
             <button 
               onClick={() => { setQuery(''); setSelectedIndex(0); inputRef.current?.focus(); }}
               className="p-1.5 text-gray-400 hover:text-gray-600 rounded-lg mr-2"
+              aria-label="Clear search query"
             >
               <X className="w-4 h-4" />
             </button>
@@ -126,7 +135,7 @@ export default function CommandMenu({ onSelectTool }) {
           )}
 
           {results.length > 0 ? (
-            <div className="space-y-1">
+            <div id="search-results-list" role="listbox" aria-label="Matching tools" className="space-y-1">
               <div className="px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-gray-400">
                 {query ? `Matching Tools (${results.length})` : 'Popular & All Tools'}
               </div>
@@ -137,6 +146,8 @@ export default function CommandMenu({ onSelectTool }) {
                 return (
                   <div
                     key={tool.id}
+                    role="option"
+                    aria-selected={isSelected}
                     onClick={() => {
                       trackEvent('search_executed', {
                         search_term: query,

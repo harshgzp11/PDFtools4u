@@ -13,10 +13,24 @@ export default function PdfConverterHub() {
   const [thumbnailUrl, setThumbnailUrl] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(true); // Open by default when file is uploaded
   const [isGeneratingThumbnail, setIsGeneratingThumbnail] = useState(false);
+  const activeThumbnailUrlRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (activeThumbnailUrlRef.current && activeThumbnailUrlRef.current.startsWith('blob:')) {
+        URL.revokeObjectURL(activeThumbnailUrlRef.current);
+        activeThumbnailUrlRef.current = null;
+      }
+    };
+  }, []);
 
   const handleFile = async (newFile) => {
     if (!newFile) return;
     setFile(newFile);
+    if (activeThumbnailUrlRef.current && activeThumbnailUrlRef.current.startsWith('blob:')) {
+      URL.revokeObjectURL(activeThumbnailUrlRef.current);
+      activeThumbnailUrlRef.current = null;
+    }
     setThumbnailUrl(null);
     setIsMenuOpen(true);
     
@@ -29,7 +43,9 @@ export default function PdfConverterHub() {
       generatePdfThumbnail(newFile);
     } else if (type.startsWith('image/') || ['jpg', 'jpeg', 'png', 'webp', 'gif', 'bmp', 'svg'].includes(ext)) {
       setFileType('image');
-      setThumbnailUrl(URL.createObjectURL(newFile));
+      const blobUrl = URL.createObjectURL(newFile);
+      activeThumbnailUrlRef.current = blobUrl;
+      setThumbnailUrl(blobUrl);
     } else if (['docx', 'doc'].includes(ext) || type.includes('word')) {
       setFileType('word');
     } else if (['xlsx', 'xls', 'csv'].includes(ext) || type.includes('sheet') || type.includes('excel')) {

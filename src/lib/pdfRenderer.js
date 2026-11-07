@@ -118,6 +118,10 @@ export async function getPdfThumbnails(file, scale = 1.0) {
           
           const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
           
+          // Free canvas backing store texture memory immediately
+          canvas.width = 0;
+          canvas.height = 0;
+          
           thumbnails.push({
             id: `page-${pageNum - 1}`, // 0-indexed ID for React keys and sorting
             originalIndex: pageNum - 1,
@@ -132,7 +136,7 @@ export async function getPdfThumbnails(file, scale = 1.0) {
       }
     };
     
-    reader.onerror = (e) => reject(new Error("File reading error"));
+    reader.onerror = () => reject(new Error("File reading error"));
     reader.readAsArrayBuffer(file);
   });
 }
@@ -179,6 +183,10 @@ export async function renderPdfForCompression(file, scale = 1.0, quality = 0.6, 
           
           const dataUrl = canvas.toDataURL('image/jpeg', quality);
           
+          // Free canvas backing store texture memory immediately
+          canvas.width = 0;
+          canvas.height = 0;
+          
           pagesData.push({
             dataUrl,
             width: originalViewport.width,
@@ -195,7 +203,7 @@ export async function renderPdfForCompression(file, scale = 1.0, quality = 0.6, 
       }
     };
     
-    reader.onerror = (e) => reject(new Error("File reading error"));
+    reader.onerror = () => reject(new Error("File reading error"));
     reader.readAsArrayBuffer(file);
   });
 }
@@ -255,7 +263,7 @@ export async function getPdfCanvases(file, scale = 2.0, onProgress = () => {}) {
       }
     };
     
-    reader.onerror = (e) => reject(new Error("File reading error"));
+    reader.onerror = () => reject(new Error("File reading error"));
     reader.readAsArrayBuffer(file);
   });
 }

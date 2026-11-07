@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { SEO_HEAD, HOMEPAGE_SEO } from '../lib/seoHead';
 import { SEO_CONTENT, CATEGORY_FALLBACKS } from '../lib/seoContent';
@@ -11,6 +11,24 @@ const OG_IMAGE = `${BASE_URL}/images/og-card.png`;
 const SITE_NAME = 'PDFTools4U';
 const SITE_LOGO = `${BASE_URL}/favicon.png`;
 const CONTACT_EMAIL = 'pdftools4u.official@gmail.com';
+
+// Alias-to-canonical mappings to ensure alias routes never advertise self-canonical URLs
+const URL_REDIRECTS = {
+  'pdf-editor': 'edit-pdf',
+  'pdf-extractor': 'pdf-to-text',
+  'image-converter': 'convert-image',
+  'merge-pdf': 'pdf-merge',
+  'split-pdf': 'pdf-split',
+  'pdf-protect': 'protect-pdf',
+  'pdf-unlock': 'unlock-pdf',
+  'pdf-compress': 'compress-pdf',
+  'ocr-pdf': 'pdf-ocr',
+  'remove-pages': 'delete-pdf-pages',
+  'privacy': 'privacy-policy',
+  'terms': 'terms-of-service',
+  'cookies': 'cookie-policy',
+  'cookie': 'cookie-policy',
+};
 
 // Publisher object reused across BlogPosting and Article schemas
 const PUBLISHER = {
@@ -69,8 +87,17 @@ export default function SEOHead({ activeTool, title: overrideTitle, description:
       }
     };
 
-    /** Inject a JSON-LD <script> into <head> */
+    /** Inject a JSON-LD <script> into <head> with duplicate prevention */
     const addJsonLd = (data) => {
+      const targetType = data['@type'] || (data['@graph'] && data['@graph'][0]?.['@type']);
+      if (targetType) {
+        const existingScripts = document.querySelectorAll('script[type="application/ld+json"]');
+        for (const s of existingScripts) {
+          if (s.textContent.includes(`"${targetType}"`)) {
+            return;
+          }
+        }
+      }
       const script = document.createElement('script');
       script.type = 'application/ld+json';
       script.text = JSON.stringify(data);
@@ -130,7 +157,9 @@ export default function SEOHead({ activeTool, title: overrideTitle, description:
       const seoData = SEO_HEAD[activeTool] || HOMEPAGE_SEO;
       title = overrideTitle || seoData.title;
       description = overrideDescription || seoData.description;
-      canonicalUrl = overrideCanonical || `${BASE_URL}/${activeTool.toLowerCase()}`;
+      const rawSlug = activeTool.toLowerCase();
+      const canonicalSlug = URL_REDIRECTS[rawSlug] || rawSlug;
+      canonicalUrl = overrideCanonical || `${BASE_URL}/${canonicalSlug}`;
       ogImage = OG_IMAGE;
       ogType = 'website';
       noindex = seoData.noindex || false;
@@ -239,14 +268,12 @@ export default function SEOHead({ activeTool, title: overrideTitle, description:
 
       // Find tool info from DOMAINS config
       let toolInfo = null;
-      let toolCategory = null;
       let toolDomain = null;
       for (const domain of DOMAINS) {
         for (const cat of domain.categories) {
           const t = cat.tools.find(t => t.id === activeTool);
           if (t) {
             toolInfo = t;
-            toolCategory = cat.name;
             toolDomain = domain.title;
             break;
           }
@@ -654,7 +681,9 @@ export default function SEOHead({ activeTool, title: overrideTitle, description:
       const seoData = SEO_HEAD[activeTool] || HOMEPAGE_SEO;
       if (!computedTitle) computedTitle = seoData.title;
       if (!computedDesc) computedDesc = seoData.description;
-      if (!computedCanonical) computedCanonical = `${BASE_URL}/${activeTool.toLowerCase()}`;
+      const rawSlug = activeTool.toLowerCase();
+      const canonicalSlug = URL_REDIRECTS[rawSlug] || rawSlug;
+      if (!computedCanonical) computedCanonical = `${BASE_URL}/${canonicalSlug}`;
     } else {
       if (!computedTitle) computedTitle = HOMEPAGE_SEO.title;
       if (!computedDesc) computedDesc = HOMEPAGE_SEO.description;

@@ -20,13 +20,13 @@ export const SEO_HEAD = {
     keywords: ['merge pdf files online free', 'combine pdf files', 'merge marksheets into one pdf', 'pdf merger free no watermark', 'combine multiple pdfs into one document'],
   },
   'pdf-split': {
-    title: 'Split PDF Pages Online Free — Separate & Extract PDF Pages | PDFtools4u',
+    title: 'Split PDF Pages Online Free — Separate PDF | PDFtools4u',
     description: 'Split PDF files into individual pages or extract custom page ranges online for free. Separate large documents, statements, and chapters directly in your browser.',
     h1: 'Split PDF Pages — Separate Documents or Extract Page Ranges',
     keywords: ['split pdf pages online free', 'extract pages from pdf', 'separate pdf pages', 'pdf splitter free', 'split pdf into single pages online'],
   },
   'delete-pdf-pages': {
-    title: 'Delete Pages from PDF Online Free — Remove Unwanted Sheets | PDFtools4u',
+    title: 'Delete Pages from PDF Online Free | PDFtools4u',
     description: 'Delete unwanted pages from PDF files online for free. Selectively remove blank sheets, duplicate pages, or extra covers directly in your browser with zero uploads.',
     h1: 'Delete Pages from PDF — Remove Unwanted Sheets Online',
     keywords: ['delete pages from pdf', 'remove pdf pages online free', 'delete blank pages pdf', 'remove unwanted pages from pdf file'],
@@ -38,7 +38,7 @@ export const SEO_HEAD = {
     keywords: ['extract pages from pdf', 'extract single page from pdf', 'pdf page extractor free', 'pull pages from pdf online'],
   },
   'organize-pdf': {
-    title: 'Organize PDF Pages Online Free — Sort, Reorder & Rearrange | PDFtools4u',
+    title: 'Organize PDF Pages Online Free — Sort & Reorder | PDFtools4u',
     description: 'Reorder, sort, and organize PDF pages visually online for free. Drag and drop pages to rearrange document sequence directly in your browser with zero uploads.',
     h1: 'Organize PDF Pages — Reorder, Sort & Rearrange Pages Online',
     keywords: ['organize pdf pages', 'reorder pdf pages online', 'rearrange pdf pages free', 'sort pdf pages visually', 'organize pdf online free'],
@@ -60,7 +60,7 @@ export const SEO_HEAD = {
     keywords: ['flatten pdf online free', 'flatten pdf forms', 'make pdf non-editable', 'lock pdf form fields', 'flatten annotations in pdf'],
   },
   'pdf-ocr': {
-    title: 'OCR PDF Online Free — Make Scanned PDFs Searchable & Copyable | PDFtools4u',
+    title: 'OCR PDF Online Free — Searchable PDF Converter | PDFtools4u',
     description: 'Convert scanned PDF documents into searchable, copyable text using client-side OCR. Recognize text in degree certificates, marksheets, and scans with zero uploads.',
     h1: 'OCR PDF — Convert Scanned Documents to Searchable Text Online',
     keywords: ['ocr pdf online free', 'scanned pdf to text', 'optical character recognition pdf', 'convert scanned pdf to searchable', 'make scanned pdf searchable free', 'extract text from scanned pdf'],
@@ -70,13 +70,13 @@ export const SEO_HEAD = {
   // CONVERT TO PDF
   // ═══════════════════════════════════════════
   'html-to-pdf': {
-    title: 'Convert HTML to PDF Online Free — HTML Code & Files to PDF | PDFtools4u',
+    title: 'Convert HTML to PDF Online Free — HTML to PDF | PDFtools4u',
     description: 'Convert raw HTML code, styled templates, invoices, and .html files into clean multi-page PDF documents in your browser. Configure page size, margins, and CSS.',
     h1: 'Convert HTML Code & Files to PDF — Keep Styles & Layout',
     keywords: ['convert html to pdf online', 'html code to pdf', 'convert html file to pdf', 'html to pdf converter free', 'save html as pdf', 'html to pdf with css', 'html to pdf page breaks', 'client side html to pdf'],
   },
   'jpg-to-pdf': {
-    title: 'JPG to PDF Converter Online Free — Multiple JPG to One PDF | PDFtools4u',
+    title: 'JPG to PDF Converter Online Free — Image to PDF | PDFtools4u',
     description: 'Convert JPG, JPEG, and PNG images into a clean PDF document online for free. Combine multiple photos and select custom page sizes and margins in your browser.',
     h1: 'Convert JPG Images to PDF — Fast, Free & Private',
     keywords: ['jpg to pdf converter free', 'convert image to pdf', 'multiple jpg to pdf', 'photo to pdf converter', 'combine photos into pdf', 'jpg to pdf online free'],
@@ -106,7 +106,7 @@ export const SEO_HEAD = {
     keywords: ['excel to pdf converter free', 'xlsx to pdf online', 'convert spreadsheet to pdf', 'convert to pdf to excel', 'excel sheet to pdf online'],
   },
   'txt-to-pdf': {
-    title: 'TXT to PDF Converter Online Free — Convert Text File to PDF | PDFtools4u',
+    title: 'TXT to PDF Converter Online Free — Text to PDF | PDFtools4u',
     description: 'Convert plain text files (.txt) into clean, formatted PDF documents online for free. Custom margins and font formatting in your browser with zero server uploads.',
     h1: 'TXT to PDF Converter — Convert Plain Text Files to PDF',
     keywords: ['txt to pdf converter free', 'text file to pdf', 'convert txt to pdf online', 'free txt to pdf no signup', 'text file to pdf converter', 'convert text document to pdf'],
@@ -134,7 +134,7 @@ export const SEO_HEAD = {
     keywords: ['pdf to jpg converter free', 'convert pdf to image', 'pdf to jpg high resolution', 'pdf to jpg online', 'marksheet pdf to jpg', 'pdf to jpg in 300 kb', 'pdf to jpg converter 10kb'],
   },
   'pdf-to-png': {
-    title: 'PDF to PNG Converter Online Free — High Quality PNG Images | PDFtools4u',
+    title: 'PDF to PNG Converter Online Free — High-Res PNG | PDFtools4u',
     description: 'Convert PDF pages into crisp, lossless PNG images online for free. Preserve sharp text, transparent backgrounds, and diagrams directly in your browser.',
     h1: 'Convert PDF to PNG Images — Lossless High Resolution Online',
     keywords: ['pdf to png converter free', 'convert pdf to png transparent', 'pdf to png high quality', 'pdf page to png image', 'extract png from pdf'],
@@ -146,7 +146,7 @@ export const SEO_HEAD = {
     keywords: ['pdf to word converter free', 'convert pdf to docx online', 'extract editable text from pdf', 'convert word to editable word', 'pdf to editable docx converter'],
   },
   'pdf-to-excel': {
-    title: 'PDF to Excel Converter Online Free — Extract Tables to XLSX | PDFtools4u',
+    title: 'PDF to Excel Converter Free — Extract Tables | PDFtools4u',
     description: 'Extract tabular data from PDF bank statements, invoices, and reports into Excel spreadsheets (.xlsx) online for free directly in your browser.',
     h1: 'Convert PDF to Excel — Extract Tables Into Spreadsheets Online',
     keywords: ['pdf to excel converter free', 'extract table from pdf', 'bank statement pdf to excel', 'pdf to xlsx', 'online pdf to excel converter', 'convert bank statement to spreadsheet'],
@@ -164,7 +164,7 @@ export const SEO_HEAD = {
     keywords: ['pdf to text converter free', 'convert pdf to text online', 'pdf to plain text', 'extract text from pdf', 'copy text from pdf online', 'pdf text extractor online free'],
   },
   'pdf-converter': {
-    title: 'Universal PDF Converter Online Free — Convert Any Document | PDFtools4u',
+    title: 'Universal PDF Converter Online Free | PDFtools4u',
     description: 'Convert documents and images to and from PDF online for free. Universal document conversion hub for Word, Excel, PowerPoint, JPG, and PNG in your browser.',
     h1: 'Universal PDF Converter — Convert Documents & Images Online',
     keywords: ['pdf converter free', 'document converter online', 'convert any file to pdf', 'universal document converter', 'all in one pdf converter online'],
@@ -180,7 +180,7 @@ export const SEO_HEAD = {
     keywords: ['edit pdf online free', 'pdf editor free no watermark', 'add text to pdf', 'modify pdf online', 'online pdf editor free', 'edit pdf in browser'],
   },
   'rotate-pdf': {
-    title: 'Rotate PDF Pages Online Free — Fix Orientation Permanently | PDFtools4u',
+    title: 'Rotate PDF Pages Online Free — Fix Orientation | PDFtools4u',
     description: 'Rotate individual or all PDF pages 90°, 180°, or 270° online for free. Permanently correct upside-down scans and sideways pages in your browser.',
     h1: 'Rotate PDF Pages — Fix Upside-Down & Sideways Pages Online',
     keywords: ['rotate pdf pages online free', 'rotate pdf 90 degrees', 'fix upside down pdf', 'rotate pdf permanently', 'change pdf orientation online free'],
@@ -220,7 +220,7 @@ export const SEO_HEAD = {
     keywords: ['unlock pdf online free', 'remove pdf password', 'unlock encrypted pdf', 'how to remove password from salary slip', 'how to remove bank statement pdf password', 'bank statement password remove', 'unlock bank statement pdf'],
   },
   'protect-pdf': {
-    title: 'Password Protect PDF Online Free — Encrypt PDF with Password | PDFtools4u',
+    title: 'Password Protect PDF Online Free — Encrypt PDF | PDFtools4u',
     description: 'Password protect PDF files online for free. Add standard password encryption to secure confidential documents and salary slips in your browser with zero uploads.',
     h1: 'Password Protect PDF — Add Password Encryption to PDF Files',
     keywords: ['password protect pdf', 'password protect a pdf', 'add password to pdf', 'protect pdf', 'encrypt pdf', 'pdf password set', 'pdf password protect', 'protect pdf with password free', 'password protect pdf free', 'make pdf password protected'],
@@ -232,14 +232,14 @@ export const SEO_HEAD = {
     keywords: ['sign pdf online free', 'add signature to pdf', 'e-sign pdf free', 'electronic signature pdf', 'sign document online without printing', 'free digital signature on pdf'],
   },
   'pdf-watermark': {
-    title: 'Add Watermark to PDF Online Free — Text & Stamp Watermarks | PDFtools4u',
+    title: 'Add Watermark to PDF Online Free — Text & Stamp | PDFtools4u',
     description: 'Add custom text or image watermarks to PDF pages online for free. Stamp Confidential, Draft, or company logos with adjustable opacity in your browser.',
     h1: 'Add Watermark to PDF — Text & Image Stamps Online Free',
     keywords: ['add watermark to pdf free', 'pdf watermark online', 'stamp pdf with text', 'add confidential watermark pdf', 'watermark pdf pages online'],
   },
   'redact-pdf': {
-    title: 'Redact PDF Online Free — Permanently Black Out Text & Data | PDFtools4u',
-    description: 'Select and black out sensitive text, account numbers, and private details in PDF files. Irreversible canvas rasterization strips underlying text streams and annotations locally in your browser.',
+    title: 'Redact PDF Online Free — Black Out Text & Data | PDFtools4u',
+    description: 'Select and black out sensitive text, account numbers, and data in PDFs. Irreversible canvas rasterization strips underlying text streams locally in your browser.',
     h1: 'Redact PDF Online — Permanently Black Out Sensitive Information',
     keywords: ['redact pdf online free', 'remove sensitive info from pdf', 'black out text in pdf', 'permanently redact pdf', 'black out pdf online', 'mask pdf', 'redact pdf free', 'redact information in pdf'],
   },
@@ -254,25 +254,25 @@ export const SEO_HEAD = {
     keywords: ['compress image online free', 'reduce image size', 'compress jpg png', 'image compressor free', 'reduce picture file size online free', 'decrease picture file size', 'compressed photo size'],
   },
   'resize-image': {
-    title: 'Resize Image Online Free — Change Dimensions in Exact Pixels | PDFtools4u',
+    title: 'Resize Image Online Free — Change Pixel Dimensions | PDFtools4u',
     description: 'Resize image dimensions to exact pixel width and height online for free. Maintain aspect ratio or adjust dimensions for web, documents, and form uploads.',
     h1: 'Resize Image Online — Change Dimensions in Exact Pixels',
     keywords: ['resize image online free', 'resize image in pixels', 'change image dimensions', 'resize photo width height', 'scale image pixels', 'image pixel resizer', 'document resize online'],
   },
   'convert-image': {
-    title: 'Image Converter Online Free — Convert HEIC, PNG, JPG, WebP | PDFtools4u',
+    title: 'Image Converter Online Free — JPG, PNG & WebP | PDFtools4u',
     description: 'Convert image formats online for free. Convert iPhone HEIC photos to JPG, PNG to WebP, and batch-convert graphic files directly in your browser with zero uploads.',
     h1: 'Convert Images Online — Convert HEIC, PNG, JPG, WebP & GIF',
     keywords: ['image converter free', 'convert heic to jpg', 'png to jpg converter', 'webp to png', 'image to png converter', 'convert iphone photo to jpg', 'save heic as jpg iphone', 'heic to jpg iphone'],
   },
   'bg-remover': {
-    title: 'Remove Background from Image Free — Transparent Background Maker | PDFtools4u',
+    title: 'Remove Background from Image Free — AI Cutout | PDFtools4u',
     description: 'Remove background from photos, signatures, and document images for free. Create transparent PNG graphics for PDF forms and official applications locally in your browser.',
     h1: 'Remove Image Background — Transparent Background Maker Free',
     keywords: ['remove background from image free', 'background remover', 'transparent background maker', 'remove signature background', 'remove background from pdf image', 'background remover pdf', 'pdf background remover', 'remove bg from pdf', 'pdf transparent background online free'],
   },
   'image-crop': {
-    title: 'Crop & Rotate Image Online Free — Crop Photos & Signatures | PDFtools4u',
+    title: 'Crop & Rotate Image Online Free — Photo Cropper | PDFtools4u',
     description: 'Crop and rotate images online for free. Trim photo borders, rotate orientations, and prepare signatures for online forms directly in your browser.',
     h1: 'Crop & Rotate Images — Visual Photo & Document Cropper',
     keywords: ['crop image online free', 'rotate image online', 'image cropper free', 'online photo crop and rotate', 'crop and rotate image', 'rotate and crop image'],
@@ -284,7 +284,7 @@ export const SEO_HEAD = {
     keywords: ['photo editor online free', 'edit photos free', 'image filter tool online', 'online photo size editor free', 'photo size online editor'],
   },
   'html-to-image': {
-    title: 'Convert HTML to Image Online Free — Render HTML & CSS to PNG | PDFtools4u',
+    title: 'Convert HTML to Image Online Free — HTML to PNG | PDFtools4u',
     description: 'Render custom HTML and CSS code snippets into crisp PNG images directly in your browser. Client-side rendering with zero server uploads.',
     h1: 'Convert HTML to Image — Render HTML & CSS to PNG Online',
     keywords: ['html to image converter', 'html to png', 'render html as image', 'code to image', 'convert html to image', 'convert html to png', 'html code to image', 'html to img converter', 'download html as png', 'render html to png'],
@@ -294,7 +294,7 @@ export const SEO_HEAD = {
   // DOCUMENT TOOLS
   // ═══════════════════════════════════════════
   'docx-to-text': {
-    title: 'DOCX to Text Converter Online Free — Extract Text from Word | PDFtools4u',
+    title: 'DOCX to Text Converter Online Free — Word to Text | PDFtools4u',
     description: 'Extract clean, unformatted plain text from Word documents (.docx, .doc) online for free. Strip styling and download readable text directly in your browser.',
     h1: 'DOCX to Text Converter — Extract Raw Text from Word Documents',
     keywords: ['docx to text converter', 'extract text from word document', 'word to plain text', 'word text extractor', 'extract text from doc', 'ms word to text converter'],
@@ -328,7 +328,7 @@ export const SEO_HEAD = {
     keywords: ['json to csv', 'convert json to csv', 'json format to csv', 'json csv', 'convert a json file to csv', 'json convert to csv', 'json to csv excel', 'csv to json converter', 'base64 encoder decoder'],
   },
   'dev-tools': {
-    title: 'Developer Text Tools — JSON Formatter, Beautifier & Utilities | PDFtools4u',
+    title: 'Developer Text Tools — JSON Formatter & Utilities | PDFtools4u',
     description: 'Free online developer text tools. Pretty-print, format, and validate JSON payloads, minify code, count words, and compare text directly in your browser.',
     h1: 'Developer Text Tools — JSON Formatter, Minifier & Diff Viewer',
     keywords: ['json minifier', 'json beautifier', 'word counter online', 'developer text tools', 'pretty print json', 'how to pretty print json', 'pretty print json vscode', 'json pretty printer online'],
@@ -350,7 +350,7 @@ export const SEO_HEAD = {
     keywords: ['extract text from pdf', 'pdf text extractor', 'copy text from pdf online', 'pdf to text converter free'],
   },
   'image-converter': {
-    title: 'Image Converter Online Free — Convert HEIC, PNG, JPG, WebP | PDFtools4u',
+    title: 'Image Converter Online Free — JPG, PNG & WebP | PDFtools4u',
     description: 'Convert image formats online for free. Convert iPhone HEIC photos to JPG, PNG to WebP, and batch-convert graphic files directly in your browser with zero uploads.',
     h1: 'Convert Images Online — Convert HEIC, PNG, JPG, WebP & GIF',
     keywords: ['image format converter', 'convert image formats', 'batch image converter free', 'image converter free'],

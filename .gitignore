@@ -119,7 +119,6 @@ target-*.pdf
 .claude/
 
 
-BLOG_SEO_AUDIT.md
 repo.txt
 repomix-output.xml
 audit2.txt
@@ -133,3 +132,35 @@ scratch/bench/doc_5mb.pdf
 scratch/bench/doc_22mb.pdf
 scratch/bench/doc_25mb.pdf
 scratch/bench/doc_100kb.pdf
+
+# ─── Local-only Markdown documentation ─────────────────────────
+
+*.md
+!/README.md
+
+# ─── Local-only review directories and archives ────────────────
+
+/Audits_and_Readiness/
+/PDFTOOLS4U_OWNER_REVIEW/
+/PDFTOOLS4U_OWNER_REVIEW_BUNDLE.zip
+
+# Office and OneDrive temporary lock files
+~$*
+.~*
+
+# Vite temporary configuration files
+vite.config.*.timestamp-*
+
+# Repository analysis exports
+repomix-output.*
+
+# Extended OS artifacts
+ehthumbs*.db
+$RECYCLE.BIN/
+.Spotlight-V100/
+.Trashes/
+
+# Test coverage output
+.nyc_output/
+
+

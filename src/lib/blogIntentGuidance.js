@@ -104,4 +104,20 @@ export const BLOG_INTENT_GUIDANCE = {
       { id: 'server-side-vs-client-side-processing', label: 'Why client-side processing keeps your API data safe' }
     ]
   },
+  'how-to-make-scanned-pdf-searchable-online-free': {
+    heading: 'Choose the right OCR workflow',
+    text: 'Use this guide when you have a scanned PDF document and need to make its text selectable, searchable, and copyable without altering the document layout. If you have standalone image files, screenshots, or receipts and want to extract their text, use our image-to-text extraction workflow.',
+    related: [
+      { id: 'extract-text-from-image-online', label: 'Extract and copy text from images, photos, and screenshots' },
+      { id: 'pdf-to-word', label: 'Convert scanned PDF into an editable Word document' }
+    ]
+  },
+  'extract-text-from-image-online': {
+    heading: 'Choose the right text extraction workflow',
+    text: 'Use this guide to copy text from standalone images (PNG, JPG, WebP), receipts, and screenshots using local browser OCR. If you have a multi-page scanned PDF and want to make it searchable while preserving its original page layout, use our scanned PDF searchable guide.',
+    related: [
+      { id: 'how-to-make-scanned-pdf-searchable-online-free', label: 'Make scanned PDF documents searchable online free' },
+      { id: 'convert-image', label: 'Convert image formats between HEIC, PNG, JPG, and WebP' }
+    ]
+  },
 };

@@ -76,18 +76,18 @@ export default function Footer({ onSelectTool }) {
         </div>
 
         {/* Bottom Legal Section */}
-        <div className="border-t border-zinc-800/80 pt-8 flex flex-col lg:flex-row justify-between items-center gap-4 text-xs text-gray-500">
+        <div className="border-t border-zinc-800/80 pt-8 flex flex-col lg:flex-row justify-between items-center gap-4 text-xs text-gray-400">
           <p>&copy; {new Date().getFullYear()} PDFtools4u &mdash; Made with ❤️ for local-first users.</p>
           
           <div className="flex flex-wrap items-center justify-center gap-6">
-            <a href="/privacy-policy" onClick={(e) => handleLinkClick(e, 'privacy-policy')} className="hover:text-white transition-colors cursor-pointer">Privacy Policy</a>
-            <a href="/terms-of-service" onClick={(e) => handleLinkClick(e, 'terms-of-service')} className="hover:text-white transition-colors cursor-pointer">Terms of Service</a>
-            <a href="/cookie-policy" onClick={(e) => handleLinkClick(e, 'cookie-policy')} className="hover:text-white transition-colors cursor-pointer">Cookie Policy</a>
-            <a href="/about" onClick={(e) => handleLinkClick(e, 'about')} className="hover:text-white transition-colors cursor-pointer">About Us</a>
-            <a href="/contact" onClick={(e) => handleLinkClick(e, 'contact')} className="hover:text-white transition-colors cursor-pointer">Contact Us</a>
-            <a href="/blog" onClick={(e) => handleLinkClick(e, 'blog')} className="hover:text-white transition-colors cursor-pointer">Blog</a>
+            <a href="/privacy-policy" onClick={(e) => handleLinkClick(e, 'privacy-policy')} className="text-gray-400 hover:text-white transition-colors cursor-pointer">Privacy Policy</a>
+            <a href="/terms-of-service" onClick={(e) => handleLinkClick(e, 'terms-of-service')} className="text-gray-400 hover:text-white transition-colors cursor-pointer">Terms of Service</a>
+            <a href="/cookie-policy" onClick={(e) => handleLinkClick(e, 'cookie-policy')} className="text-gray-400 hover:text-white transition-colors cursor-pointer">Cookie Policy</a>
+            <a href="/about" onClick={(e) => handleLinkClick(e, 'about')} className="text-gray-400 hover:text-white transition-colors cursor-pointer">About Us</a>
+            <a href="/contact" onClick={(e) => handleLinkClick(e, 'contact')} className="text-gray-400 hover:text-white transition-colors cursor-pointer">Contact Us</a>
+            <a href="/blog" onClick={(e) => handleLinkClick(e, 'blog')} className="text-gray-400 hover:text-white transition-colors cursor-pointer">Blog</a>
             <a href="/security" onClick={(e) => handleLinkClick(e, 'security')} className="hover:text-white transition-colors cursor-pointer text-emerald-400">Security & Architecture</a>
-            <a href="mailto:support@pdftools4u.in" className="hover:text-white transition-colors cursor-pointer font-medium text-gray-400">support@pdftools4u.in</a>
+            <a href="mailto:support@pdftools4u.in" className="hover:text-white transition-colors cursor-pointer font-medium text-gray-300">support@pdftools4u.in</a>
             <div className="flex items-center gap-1.5 ml-4">
               <Globe className="w-4 h-4" aria-hidden="true" />
               <span>English</span>

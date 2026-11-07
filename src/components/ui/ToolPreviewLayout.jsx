@@ -44,6 +44,27 @@ export default function ToolPreviewLayout({
   const canvasContainerRef = useRef(null);
   const pdfConverterDownloadRef = useRef(false);
 
+  // Dedicated ref to track the currently owned image preview Object URL (avoids stale closures)
+  const previewObjectUrlRef = useRef(null);
+
+  const revokePreviewObjectUrl = () => {
+    if (previewObjectUrlRef.current) {
+      try {
+        URL.revokeObjectURL(previewObjectUrlRef.current);
+      } catch {
+        // Safe fallback if URL is invalid or already revoked
+      }
+      previewObjectUrlRef.current = null;
+    }
+  };
+
+  // Guaranteed unmount teardown for preview Object URL
+  useEffect(() => {
+    return () => {
+      revokePreviewObjectUrl();
+    };
+  }, []);
+
   // Track tool_start
   useEffect(() => {
     if (file) {
@@ -104,7 +125,10 @@ export default function ToolPreviewLayout({
   }, [successData, title, file]); // Removed processingStartTime from deps to avoid re-triggering if it clears
 
   useEffect(() => {
+    let isCancelled = false;
+
     if (!file) {
+      revokePreviewObjectUrl();
       setPreviewImage(null);
       setThumbnails([]);
       return;
@@ -118,35 +142,53 @@ export default function ToolPreviewLayout({
       pageRefs.current = [];
       try {
         if (file.type === 'application/pdf' || /\.pdf$/i.test(file.name || '')) {
+          revokePreviewObjectUrl();
           if (gridMode) {
             const thumbs = await getPdfThumbnails(file, gridQuality);
+            if (isCancelled) return;
             setThumbnails(thumbs);
             if (thumbs.length > 0) setPreviewImage(thumbs[0].dataUrl); // Still set previewImage just in case
           } else {
             const thumbs = await getPdfThumbnails(file, 1.5);
+            if (isCancelled) return;
             setThumbnails(thumbs);
             if (thumbs.length > 0) {
               setPreviewImage(thumbs[0].dataUrl);
             }
           }
-        } else if (file.type && file.type.startsWith('image/')) {
-          setPreviewImage(URL.createObjectURL(file));
+        } else if ((file.type && file.type.startsWith('image/')) || /\.(jpe?g|png|webp|gif|bmp|svg)$/i.test(file.name || '')) {
+          // Revoke any previously owned preview URL before allocating a new one
+          revokePreviewObjectUrl();
+
+          if (isCancelled) return;
+
+          const objectUrl = URL.createObjectURL(file);
+          if (isCancelled) {
+            try { URL.revokeObjectURL(objectUrl); } catch {}
+            return;
+          }
+
+          previewObjectUrlRef.current = objectUrl;
+          setPreviewImage(objectUrl);
           setThumbnails([]);
         }
       } catch (error) {
-        console.error("Error loading preview:", error);
-        setPreviewError(error);
+        if (!isCancelled) {
+          console.error("Error loading preview:", error);
+          setPreviewError(error);
+        }
       } finally {
-        setIsLoadingPreview(false);
+        if (!isCancelled) {
+          setIsLoadingPreview(false);
+        }
       }
     };
 
     loadPreview();
 
     return () => {
-      if (file && file.type.startsWith('image/') && previewImage) {
-        URL.revokeObjectURL(previewImage);
-      }
+      isCancelled = true;
+      revokePreviewObjectUrl();
     };
   }, [file, gridMode, gridQuality]);
 

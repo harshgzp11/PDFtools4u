@@ -1,8 +1,7 @@
 import { 
   Type, FileJson, Code, FileText, Image as ImageIcon, Layers, Scissors, Stamp, ImagePlus, Eraser, Code2, Crop, SlidersHorizontal,
-  Minimize, ScanText, RotateCw, Trash2, FileUp, Files, BookOpen, PenTool, Hash, EyeOff, FileSignature, Share2, 
-  FileCode2, FileSpreadsheet, Presentation, Lock, Unlock, Layers3, ArrowLeftRight, ChevronRight, Shield, Zap, MousePointerClick,
-  Maximize, Settings2, FileOutput, ArrowRight, Search
+  Minimize, ScanText, RotateCw, Trash2, FileUp, Files, BookOpen, PenTool, Hash, EyeOff, FileSignature, 
+  FileCode2, FileSpreadsheet, Presentation, Lock, Unlock, Layers3, ArrowLeftRight, Maximize
 } from 'lucide-react';
 
 export const DOMAINS = [
@@ -117,7 +116,7 @@ export const DOMAINS = [
           { id: 'docx-to-html', name: 'DOCX to HTML', description: 'Convert Word documents to clean HTML code.', icon: Code, color: 'text-green-500', bg: 'bg-green-50' },
           { id: 'text-to-docx', name: 'Text to DOCX', description: 'Generate a Word document from text.', icon: FileCode2, color: 'text-indigo-500', bg: 'bg-indigo-50' },
           { id: 'txt-to-pdf', name: 'TXT to PDF', description: 'Convert plain text files (.txt) into formatted PDF.', icon: FileText, color: 'text-purple-500', bg: 'bg-purple-50' },
-          { id: 'rtf-to-pdf', name: 'RTF to PDF', description: 'Convert Rich Text Format (.rtf) to PDF.', icon: FileText, color: 'text-pink-500', bg: 'bg-pink-50', comingSoon: true },
+          { id: 'rtf-to-pdf', name: 'RTF to PDF', description: 'Convert Rich Text Format (.rtf) to PDF.', icon: FileText, color: 'text-pink-500', bg: 'bg-pink-50' },
         ]
       },
       {

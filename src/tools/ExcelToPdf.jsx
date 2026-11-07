@@ -3,6 +3,7 @@ import { FileSpreadsheet, FileOutput, Columns, LayoutList, TableProperties, File
 import { toast } from 'sonner';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import { trackEvent, trackError } from '../lib/analytics';
+import { parseExcelInWorker } from '../utils/excelWorkerBridge';
 
 export default function ExcelToPdf() {
   const [file, setFile] = useState(null);
@@ -10,7 +11,6 @@ export default function ExcelToPdf() {
   const [isParsing, setIsParsing] = useState(false);
   const [successData, setSuccessData] = useState(null);
 
-  const [workbook, setWorkbook] = useState(null);
   const [sheetNames, setSheetNames] = useState([]);
   const [activeSheet, setActiveSheet] = useState('');
   
@@ -20,18 +20,24 @@ export default function ExcelToPdf() {
   const [pageSize, setPageSize] = useState('a4'); // 'a4' | 'letter'
   const [wideTableMode, setWideTableMode] = useState('paginate'); // 'paginate' | 'fit'
 
-  // Resource lifecycle & parsed data cache
-  const parsedSheetsCacheRef = useRef(new Map());
+  // Resource lifecycle, cancellation & parsed worker data reference
+  const parsedSheetsRef = useRef(null);
+  const abortControllerRef = useRef(null);
   const objectUrlRef = useRef(null);
 
   useEffect(() => {
     const objUrlRef = objectUrlRef;
-    const cacheRef = parsedSheetsCacheRef;
+    const abortCtrlRef = abortControllerRef;
+    const sheetsRef = parsedSheetsRef;
     return () => {
+      if (abortCtrlRef.current) {
+        abortCtrlRef.current.abort();
+        abortCtrlRef.current = null;
+      }
       if (objUrlRef.current) {
         URL.revokeObjectURL(objUrlRef.current);
       }
-      cacheRef.current.clear();
+      sheetsRef.current = null;
     };
   }, []);
 
@@ -66,7 +72,11 @@ export default function ExcelToPdf() {
         URL.revokeObjectURL(objectUrlRef.current);
         objectUrlRef.current = null;
       }
-      parsedSheetsCacheRef.current.clear();
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+        abortControllerRef.current = null;
+      }
+      parsedSheetsRef.current = null;
       setFile(newFile);
       setSuccessData(null);
       setIsParsing(true);
@@ -80,134 +90,69 @@ export default function ExcelToPdf() {
 
   const parseExcelFile = async (currentFile) => {
     try {
-      parsedSheetsCacheRef.current.clear();
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      const abortCtrl = new AbortController();
+      abortControllerRef.current = abortCtrl;
+
       const arrayBuffer = await currentFile.arrayBuffer();
-      const XLSX = await import('xlsx');
-      const wb = XLSX.read(arrayBuffer, { type: 'array', cellDates: true });
+      // Execute untrusted spreadsheet parsing off the main UI thread in a dedicated Web Worker
+      const { sheetNames: names, sheets } = await parseExcelInWorker(arrayBuffer, {
+        signal: abortCtrl.signal,
+        timeoutMs: 30000
+      });
       
-      if (!wb.SheetNames || wb.SheetNames.length === 0) {
+      if (!names || names.length === 0) {
         toast.error("This file contains no sheets.");
         resetTool();
         return;
       }
       
-      setWorkbook(wb);
-      setSheetNames(wb.SheetNames);
+      parsedSheetsRef.current = sheets;
+      setSheetNames(names);
       
       // Default to "All Sheets" if workbook has multiple sheets, otherwise first sheet
-      const defaultSheet = wb.SheetNames.length > 1 ? '__ALL_SHEETS__' : wb.SheetNames[0];
+      const defaultSheet = names.length > 1 ? '__ALL_SHEETS__' : names[0];
       setActiveSheet(defaultSheet);
-      loadSheetData(wb, defaultSheet);
+      loadSheetData(sheets, defaultSheet, names);
     } catch (err) {
+      if (err.name === 'AbortError') return;
       trackError('Excel To Pdf', 'processing_error');
-      console.error(err);
-      toast.error("Failed to parse this file. It may be corrupted or unsupported.");
+      console.error("Excel parse error:", err);
+      toast.error(err.message || "Failed to parse this file. It may be corrupted or unsupported.");
       resetTool();
     } finally {
       setIsParsing(false);
     }
   };
 
-  // Parses raw sheet data into clean formatted strings, caching by sheetName to avoid redundant JSON transformations
-  const extractFormattedSheetData = (ws, XLSX, sheetName = null) => {
-    if (!ws) return { title: null, head: [], body: [], maxCols: 0, rawRows: [] };
-
-    if (sheetName && parsedSheetsCacheRef.current.has(sheetName)) {
-      return parsedSheetsCacheRef.current.get(sheetName);
-    }
-
-    const rawData = XLSX.utils.sheet_to_json(ws, { 
-      header: 1, 
-      raw: false, 
-      dateNF: 'yyyy-mm-dd',
-      defval: '' 
-    });
-
-    if (!rawData || rawData.length === 0) {
-      const emptyResult = { title: null, head: [], body: [], maxCols: 0, rawRows: [] };
-      if (sheetName) parsedSheetsCacheRef.current.set(sheetName, emptyResult);
-      return emptyResult;
-    }
-
-    // Find maximum column count across all rows in the sheet
-    const maxCols = Math.max(...rawData.map(r => (Array.isArray(r) ? r.length : 0)), 0);
-    if (maxCols === 0) {
-      const emptyResult = { title: null, head: [], body: [], maxCols: 0, rawRows: [] };
-      if (sheetName) parsedSheetsCacheRef.current.set(sheetName, emptyResult);
-      return emptyResult;
-    }
-
-    // Normalize rows to uniform length with clean strings
-    const normalizedData = rawData.map(row => {
-      const cleanRow = [];
-      for (let i = 0; i < maxCols; i++) {
-        const cell = Array.isArray(row) ? row[i] : '';
-        cleanRow.push(cell !== undefined && cell !== null ? String(cell) : '');
-      }
-      return cleanRow;
-    });
-
-    // Detect leading Title / Subtitle / Banner rows preceding the table headers
-    const titles = [];
-    let headerRowIdx = 0;
-
-    for (let r = 0; r < normalizedData.length; r++) {
-      const populated = normalizedData[r].filter(c => c.trim().length > 0);
-      if (populated.length === 0) continue;
-      // If only 1 cell is populated while sheet has 3+ columns, it's a title/subtitle banner
-      if (populated.length === 1 && maxCols >= 3) {
-        titles.push(populated[0].trim());
-      } else {
-        headerRowIdx = r;
-        break;
-      }
-    }
-
-    const head = normalizedData[headerRowIdx] ? [normalizedData[headerRowIdx]] : [];
-    const body = normalizedData.slice(headerRowIdx + 1).filter(r => r.some(c => c.trim().length > 0));
-    const title = titles.length > 0 ? titles.join(' — ') : null;
-
-    const result = {
-      title,
-      head,
-      body,
-      maxCols,
-      rawRows: normalizedData
-    };
-
-    if (sheetName) {
-      parsedSheetsCacheRef.current.set(sheetName, result);
-    }
-    return result;
-  };
-
-  const loadSheetData = async (wb, targetSheet) => {
+  const loadSheetData = (sheetsMap, targetSheet, namesList = sheetNames) => {
     setActiveSheet(targetSheet);
-    const sheetToPreview = targetSheet === '__ALL_SHEETS__' ? wb.SheetNames[0] : targetSheet;
-    const ws = wb.Sheets[sheetToPreview];
+    const sheetToPreview = targetSheet === '__ALL_SHEETS__' ? namesList[0] : targetSheet;
+    const sheetData = sheetsMap ? sheetsMap[sheetToPreview] : null;
     
-    if (!ws) {
+    if (!sheetData || !sheetData.rawRows) {
       setPreviewSheetData([]);
       setTotalRowCount(0);
       return;
     }
 
-    const XLSX = await import('xlsx');
-    const { rawRows } = extractFormattedSheetData(ws, XLSX, sheetToPreview);
     // Keep preview state lightweight by holding only first 25 rows
-    setPreviewSheetData(rawRows.slice(0, 25));
-    setTotalRowCount(rawRows.length);
+    setPreviewSheetData(sheetData.rawRows.slice(0, 25));
+    setTotalRowCount(sheetData.rawRows.length);
   };
 
   const handleSheetChange = (e) => {
     const newSheet = e.target.value;
-    if (workbook) {
-      loadSheetData(workbook, newSheet);
+    if (parsedSheetsRef.current) {
+      loadSheetData(parsedSheetsRef.current, newSheet);
     }
   };
 
   const convertToPdf = async () => {
-    if (!workbook) {
+    const sheetsMap = parsedSheetsRef.current;
+    if (!sheetsMap || sheetNames.length === 0) {
       toast.error("No spreadsheet loaded.");
       return;
     }
@@ -221,20 +166,19 @@ export default function ExcelToPdf() {
     setIsProcessing(true);
     
     try {
-      const XLSX = await import('xlsx');
       const { default: jsPDF } = await import('jspdf');
       const { default: autoTable } = await import('jspdf-autotable');
 
       const sheetsToProcess = activeSheet === '__ALL_SHEETS__'
-        ? workbook.SheetNames
+        ? sheetNames
         : [activeSheet];
 
       // Determine initial orientation from the first sheet to be processed
       let firstSheetCols = 0;
       for (const name of sheetsToProcess) {
-        const ws = workbook.Sheets[name];
-        if (ws) {
-          const { maxCols, head, body } = extractFormattedSheetData(ws, XLSX, name);
+        const sheetData = sheetsMap[name];
+        if (sheetData) {
+          const { maxCols, head, body } = sheetData;
           if (head.length > 0 || body.length > 0) {
             firstSheetCols = maxCols;
             break;
@@ -256,10 +200,10 @@ export default function ExcelToPdf() {
 
       for (let sIdx = 0; sIdx < sheetsToProcess.length; sIdx++) {
         const sheetName = sheetsToProcess[sIdx];
-        const ws = workbook.Sheets[sheetName];
-        if (!ws) continue;
+        const sheetData = sheetsMap[sheetName];
+        if (!sheetData) continue;
 
-        const { title, head, body, maxCols } = extractFormattedSheetData(ws, XLSX, sheetName);
+        const { title, head, body, maxCols } = sheetData;
         if (head.length === 0 && body.length === 0) continue;
 
         const currentOrientation = orientation === 'auto'
@@ -445,10 +389,13 @@ export default function ExcelToPdf() {
       URL.revokeObjectURL(objectUrlRef.current);
       objectUrlRef.current = null;
     }
-    parsedSheetsCacheRef.current.clear();
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    parsedSheetsRef.current = null;
     setFile(null);
     setSuccessData(null);
-    setWorkbook(null);
     setSheetNames([]);
     setActiveSheet('');
     setPreviewSheetData([]);

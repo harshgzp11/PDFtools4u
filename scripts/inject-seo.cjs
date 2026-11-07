@@ -78,6 +78,24 @@ function extractSeoData() {
   return { seoData, defaultTitle, defaultDesc, toolMetadata };
 }
 
+// Alias redirects to guarantee canonical uniformity and prevent self-canonicalization on aliases
+const URL_REDIRECTS = {
+  '/pdf-editor': '/edit-pdf',
+  '/pdf-extractor': '/pdf-to-text',
+  '/image-converter': '/convert-image',
+  '/merge-pdf': '/pdf-merge',
+  '/split-pdf': '/pdf-split',
+  '/pdf-protect': '/protect-pdf',
+  '/pdf-unlock': '/unlock-pdf',
+  '/pdf-compress': '/compress-pdf',
+  '/ocr-pdf': '/pdf-ocr',
+  '/remove-pages': '/delete-pdf-pages',
+  '/privacy': '/privacy-policy',
+  '/terms': '/terms-of-service',
+  '/cookies': '/cookie-policy',
+  '/cookie': '/cookie-policy',
+};
+
 function generateStaticRoutes() {
   if (!fs.existsSync(INDEX_PATH)) {
     console.error('index.html not found in dist/. Run build first.');
@@ -134,14 +152,18 @@ function generateStaticRoutes() {
       `<meta property="og:description" content="${description}" />`
     );
 
+    // Determine canonical route: map aliases to primary canonical target
+    const canonicalRoute = URL_REDIRECTS[route] || route;
+    const canonicalUrl = `${BASE_URL}${canonicalRoute}`;
+
     // Replace OG URL (default is homepage) or inject it
     if (html.includes('property="og:url"')) {
       html = html.replace(
         /<meta\s+property=["']og:url["']\s+content=["'][^>]+["']\s*\/?>/,
-        `<meta property="og:url" content="${BASE_URL}${route}" />`
+        `<meta property="og:url" content="${canonicalUrl}" />`
       );
     } else {
-      html = html.replace('</head>', `  <meta property="og:url" content="${BASE_URL}${route}" />\n  </head>`);
+      html = html.replace('</head>', `  <meta property="og:url" content="${canonicalUrl}" />\n  </head>`);
     }
 
     // Replace Twitter Title
@@ -156,25 +178,25 @@ function generateStaticRoutes() {
       `<meta name="twitter:description" content="${description}" />`
     );
 
-    // Replace Canonical URL or inject it
+    // Replace Canonical URL or inject it (ensures aliases point to authoritative target)
     if (html.includes('<link rel="canonical"')) {
       html = html.replace(
         /<link\s+rel=["']canonical["']\s+href=["'][^>]+["']\s*\/?>/g,
-        `<link rel="canonical" href="${BASE_URL}${route}" />`
+        `<link rel="canonical" href="${canonicalUrl}" />`
       );
     } else {
-      const canonicalTag = `<link rel="canonical" href="${BASE_URL}${route}" />`;
+      const canonicalTag = `<link rel="canonical" href="${canonicalUrl}" />`;
       html = html.replace('</head>', `  ${canonicalTag}\n  </head>`);
     }
 
-    const tool = toolMetadata[route];
+    const tool = toolMetadata[canonicalRoute] || toolMetadata[route];
     if (tool) {
       const toolSchema = {
         '@context': 'https://schema.org',
         '@type': 'WebApplication',
-        '@id': `${BASE_URL}${route}#webapp`,
+        '@id': `${BASE_URL}${canonicalRoute}#webapp`,
         'name': `PDFTools4U - ${tool.name}`,
-        'url': `${BASE_URL}${route}`,
+        'url': `${BASE_URL}${canonicalRoute}`,
         'operatingSystem': 'All',
         'applicationCategory': 'UtilitiesApplication',
         'browserRequirements': 'Requires JavaScript. Requires HTML5.',

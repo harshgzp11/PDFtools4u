@@ -98,5 +98,22 @@
   margin-bottom: 6pt;
 }
 
+/* ─── Accessibility & WCAG 2.2 AA Enhancements ───────────────────────────── */
 
+/* Global Focus Indicator (WCAG SC 2.4.7 & SC 2.4.11) */
+:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
 
+/* Reduced Motion Override (WCAG SC 2.3.3) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

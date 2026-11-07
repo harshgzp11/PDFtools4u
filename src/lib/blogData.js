@@ -593,6 +593,16 @@ When you are ready to make your documents searchable and copyable, try our free 
     coverImage: "/images/blog/photo-1611162616305-c69b3fa7fbe0.jpg",
     targetToolUrl: "pdf-to-word",
     published: true,
+    sources: [
+          {
+                "label": "ECMA-376: Office Open XML File Formats (WordprocessingML)",
+                "url": "https://www.ecma-international.org/publications-and-standards/standards/ecma-376/"
+          },
+          {
+                "label": "ISO 32000-1 Section 9.3 (Text State & Font Selection)",
+                "url": "https://www.iso.org/standard/51502.html"
+          }
+    ],
     customSchema: {
       "@context": "https://schema.org",
       "@graph": [
@@ -764,6 +774,16 @@ Yes, but you must remove the encryption password first. If your PDF is locked (s
     coverImage: "/images/blog/photo-1555066931-4365d14bab8c.jpg",
     targetToolUrl: "text-reformatter",
     published: true,
+    sources: [
+          {
+                "label": "Unicode Standard Annex #44: Character Database Properties",
+                "url": "https://www.unicode.org/reports/tr44/"
+          },
+          {
+                "label": "W3C Internationalization Best Practices",
+                "url": "https://www.w3.org/International/"
+          }
+    ],
     customSchema: {
       "@context": "https://schema.org",
       "@type": "FAQPage",
@@ -1553,6 +1573,16 @@ If the PDF contains a cryptographic signature, treat the compressed file as a ne
     coverImage: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "pdf-to-jpg",
     published: true,
+    sources: [
+          {
+                "label": "ISO 32000-1 Section 8.9 (Image XObjects)",
+                "url": "https://www.iso.org/standard/51502.html"
+          },
+          {
+                "label": "W3C File API & Blob Resource Specification",
+                "url": "https://www.w3.org/TR/FileAPI/"
+          }
+    ],
     customSchema: {
       "@context": "https://schema.org",
       "@graph": [
@@ -1697,7 +1727,7 @@ Yes. The tool processes multi-page documents simultaneously and lets you downloa
   {
     id: "compress-pdf-to-100kb-200kb",
     title: "How to Reduce PDF File Size for Application Portals (100KB / 200KB Examples)",
-    metaTitle: 'How to Reduce PDF File Size for Application Portals (100KB / 200KB Examples) | PDFtools4u',
+    metaTitle: 'Reduce PDF File Size for Portals (100KB / 200KB) | PDFtools4u',
     metaDescription: 'Learn how to reduce PDF file size for application and exam portals. Guidance on common 100KB and 200KB limits, document readability, and portal rules.',
     cluster: "Govt Exams & Academics",
     excerpt: "Learn how to compress documents to meet specific portal requirements, check official guidelines, and balance file size with document readability.",
@@ -1712,6 +1742,92 @@ Yes. The tool processes multi-page documents simultaneously and lets you downloa
     coverImage: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "compress-pdf",
     published: true,
+    customSchema: {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Article",
+          "@id": "https://www.pdftools4u.in/blog/compress-pdf-to-100kb-200kb#article",
+          "headline": "How to Reduce PDF File Size for Application Portals (100KB / 200KB Examples)",
+          "description": "Learn how to reduce PDF file size for application and exam portals. Guidance on common 100KB and 200KB limits, document readability, and portal rules.",
+          "author": {
+            "@type": "Organization",
+            "name": "PDFTools4U"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "PDFTools4U",
+            "url": "https://www.pdftools4u.in"
+          },
+          "datePublished": "2026-08-13",
+          "dateModified": "2026-11-06"
+        },
+        {
+          "@type": "HowTo",
+          "name": "How to Compress a PDF for Portal Uploads",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Open the PDF Compressor",
+              "text": "Navigate to the Compress PDF tool on PDFTools4U."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Upload Document",
+              "text": "Select or drag and drop your PDF file into the browser workspace."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Select Compression Preset",
+              "text": "Choose standard or maximum compression depending on your target file size ceiling."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Review and Download",
+              "text": "Download the compressed PDF and verify document readability at 150-200% zoom before portal submission."
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://www.pdftools4u.in/blog/compress-pdf-to-100kb-200kb#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Does PDFTools4U guarantee my PDF will be under 100KB or 200KB?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. Compression results depend on the source file's image content, resolution, font definitions, and page count. PDFTools4U provides multiple compression presets to reduce file size as much as feasible while preserving document usability, but no tool can promise an arbitrary file-size ceiling for all documents."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Are 100KB and 200KB official requirements for all exams?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. Every recruitment board, university, and government portal sets its own independent criteria. While 100KB and 200KB are widely searched historical examples, current rules vary widely. Always consult the official notification for your specific application."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why is my PDF still larger than the portal limit after compression?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "If a PDF remains above your portal's limit after strong compression, the file may contain multiple high-resolution color pages, uncompressed vector illustrations, or embedded fonts that cannot be downsampled further. Re-scanning at a moderate DPI (150 DPI), converting color scans to grayscale, or cropping empty page borders before converting to PDF will yield significantly smaller files."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Is my sensitive application document safe when using PDFTools4U?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. PDFTools4U processes your document locally inside your browser using client-side WebAssembly. Your sensitive certificates, ID cards, and personal records are not uploaded to our servers or stored in the cloud."
+              }
+            }
+          ]
+        }
+      ]
+    },
     content: `
 When applying for competitive exams, university admissions, recruitment drives, or official portals, candidate instructions frequently specify maximum file size limits. Common search queries often ask for targets like "under 100KB" or "under 200KB" because several prominent application systems historically used these thresholds for single-page documents.
 
@@ -1849,7 +1965,7 @@ Recruitment portals have strict upload limits — often just 1-2 file upload slo
 | Application Category | Typical Submission Format | Preparation Strategy |
 |---|---|---|
 | **Recruitment & Exam Portals** | Consolidated single PDF | Merge all semester marksheets in chronological order and compress the combined file to fit within the portal's upload limit. |
-| **University Admissions & Counseling** | Single PDF or individual semester uploads | Check whether the portal requests a single combined dossier or separate semester files. Use [Merge PDF](/pdf-merge) to combine or [Split PDF](/split-pdf) to extract individual pages. |
+| **University Admissions & Counseling** | Single PDF or individual semester uploads | Check whether the portal requests a single combined dossier or separate semester files. Use [Merge PDF](/pdf-merge) to combine or [Split PDF](/pdf-split) to extract individual pages. |
 | **Employment Background Verification** | Consolidated PDF with provisional degree | Place the degree certificate as the first page followed by semester transcripts in reverse-chronological or chronological order as requested by the employer. |
 
 ### Tips for a Clean Combined Document
@@ -2590,6 +2706,16 @@ After converting the PDF to JPG, adjust the quality setting or use the Compress 
     coverImage: "https://images.unsplash.com/photo-1586953208448-b95a79798f07?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "pdf-split",
     published: true,
+    sources: [
+          {
+                "label": "ISO 32000-1: Document Page Tree Decomposition",
+                "url": "https://www.iso.org/standard/51502.html"
+          },
+          {
+                "label": "RFC 1951: DEFLATE Compressed Data Format Specification",
+                "url": "https://datatracker.ietf.org/doc/html/rfc1951"
+          }
+    ],
     customSchema: {
       "@context": "https://schema.org",
       "@graph": [
@@ -2741,6 +2867,16 @@ You must unlock the document first using the [Unlock PDF](/unlock-pdf) tool by p
     coverImage: "https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "pdf-merge",
     published: true,
+    sources: [
+          {
+                "label": "ISO 32000-1: PDF Document Catalog & Page Tree Architecture",
+                "url": "https://www.iso.org/standard/51502.html"
+          },
+          {
+                "label": "PDF Association — PDF Merging and Document Assembly",
+                "url": "https://pdfa.org/"
+          }
+    ],
     customSchema: {
       "@context": "https://schema.org",
       "@graph": [
@@ -2889,6 +3025,16 @@ No. Client-side merging connects the raw document streams without re-compressing
     coverImage: "https://images.unsplash.com/photo-1542626991-cbc4e32524cc?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "rotate-pdf",
     published: true,
+    sources: [
+          {
+                "label": "ISO 32000-1: PDF Viewing Attributes & Page Rotation",
+                "url": "https://www.iso.org/standard/51502.html"
+          },
+          {
+                "label": "W3C HTML Canvas 2D Context Specification",
+                "url": "https://www.w3.org/TR/2dcontext/"
+          }
+    ],
     customSchema: {
       "@context": "https://schema.org",
       "@graph": [
@@ -3050,6 +3196,89 @@ Do not let upside-down pages slow down your workflow. Open the [Rotate PDF tool]
     coverImage: "https://images.unsplash.com/photo-1512054502232-10a0a035d672?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "convert-image",
     published: true,
+    customSchema: {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Article",
+          "@id": "https://www.pdftools4u.in/blog/iphone-heic-to-pdf-jpg-converter#article",
+          "headline": "How to Convert iPhone HEIC Photos to JPG or PDF Free",
+          "description": "Resolve compatibility issues by converting Apple's proprietary HEIC image format into universally accepted PDF or JPG files.",
+          "author": {
+            "@type": "Organization",
+            "name": "PDFTools4U"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "PDFTools4U",
+            "url": "https://www.pdftools4u.in"
+          },
+          "datePublished": "2026-08-23",
+          "dateModified": "2026-11-06"
+        },
+        {
+          "@type": "HowTo",
+          "name": "How to Convert iPhone HEIC Images to JPG or PDF",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Select HEIC Image",
+              "text": "Upload or drag your iPhone .heic file into the Image Converter."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Choose Output Format",
+              "text": "Select JPG for standard photo sharing or PDF for document submission."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Convert & Download",
+              "text": "Process locally and download your converted JPG or PDF instantly."
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://www.pdftools4u.in/blog/iphone-heic-to-pdf-jpg-converter#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Why can't older Windows computers open HEIC files natively?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Windows does not include the HEIF/HEVC codec by default on older installations, requiring a paid extension from the Microsoft Store. Converting to standard JPG or PDF solves this compatibility issue."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Does converting HEIC to JPG reduce image quality?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "HEIC uses higher-efficiency compression than JPEG at similar file sizes. Converting a HEIC image to high-quality JPG preserves near-lossless visual quality for virtually all document and photo display needs."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I convert Apple Live Photos with this tool?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, but the converter extracts and converts only the primary still image from the container. It does not export the embedded video component of the Live Photo."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    sources: [
+          {
+                "label": "ISO/IEC 23008-12: High Efficiency Image File Format (HEIF)",
+                "url": "https://www.iso.org/standard/66067.html"
+          },
+          {
+                "label": "W3C WebAssembly Core Specification",
+                "url": "https://www.w3.org/TR/wasm-core-1/"
+          }
+    ],
     content: `
 If you take photos on a modern iPhone, you might have noticed they are saved as **.HEIC** files instead of standard JPGs. Apple introduced the High Efficiency Image Container (HEIC) to save storage space while maintaining high image quality.
 
@@ -4340,6 +4569,16 @@ The official JSON specification (RFC 8259) explicitly requires double quotation 
     coverImage: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "excel-to-pdf",
     published: true,
+    sources: [
+          {
+                "label": "ECMA-376: Office Open XML (SpreadsheetML Standard)",
+                "url": "https://www.ecma-international.org/publications-and-standards/standards/ecma-376/"
+          },
+          {
+                "label": "ISO 32000-1 Section 14.8 (Tagged PDF & Table Elements)",
+                "url": "https://www.iso.org/standard/51502.html"
+          }
+    ],
     customSchema: {
       "@context": "https://schema.org",
       "@graph": [
@@ -5205,6 +5444,16 @@ Pages containing redactions are rendered at high resolution (2x render scale) an
     coverImage: "/images/blog/photo-1455390582262-044cdead277a.jpg",
     targetToolUrl: "pdf-annotator",
     published: true,
+    sources: [
+          {
+                "label": "ISO 32000-1 Section 12.5 (Annotations & Markup)",
+                "url": "https://www.iso.org/standard/51502.html"
+          },
+          {
+                "label": "W3C Pointer Events Level 2 Specification",
+                "url": "https://www.w3.org/TR/pointerevents2/"
+          }
+    ],
     customSchema: {
       "@context": "https://schema.org",
       "@graph": [
@@ -5352,6 +5601,16 @@ The temporary in-browser document state is lost when the tab closes. Download yo
     coverImage: "https://images.unsplash.com/photo-1618044733300-9472054094ee?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "compress-pdf",
     published: true,
+    sources: [
+          {
+                "label": "ISO 32000-1 Section 7.4 (Stream Filters & Flate Compression)",
+                "url": "https://www.iso.org/standard/51502.html"
+          },
+          {
+                "label": "W3C Web Workers API Specification",
+                "url": "https://www.w3.org/TR/workers/"
+          }
+    ],
     customSchema: {
       "@context": "https://schema.org",
       "@graph": [
@@ -5497,6 +5756,16 @@ Yes. Our client-side WebAssembly framework is completely responsive and function
     coverImage: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "pdf-converter",
     published: true,
+    sources: [
+          {
+                "label": "ISO 32000-1:2008 Document Management — PDF Format",
+                "url": "https://www.iso.org/standard/51502.html"
+          },
+          {
+                "label": "PDF Association Technical Guidelines",
+                "url": "https://pdfa.org/"
+          }
+    ],
     customSchema: {
       "@context": "https://schema.org",
       "@graph": [
@@ -5701,6 +5970,16 @@ Yes. Once the initial tool layout loads in your active browser window, the core 
       coverImage: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&q=80&w=1000",
       targetToolUrl: "ppt-to-pdf",
       published: true,
+    sources: [
+          {
+                "label": "ECMA-376: Office Open XML File Formats (PresentationML)",
+                "url": "https://www.ecma-international.org/publications-and-standards/standards/ecma-376/"
+          },
+          {
+                "label": "ISO 32000-1: Portable Document Format Architecture",
+                "url": "https://www.iso.org/standard/51502.html"
+          }
+    ],
       customSchema: {
         "@context": "https://schema.org",
         "@graph": [
@@ -5862,6 +6141,16 @@ Use native PDF export in PowerPoint or Google Slides, then review the PDF agains
     coverImage: "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&q=80&w=1000",
     targetToolUrl: "organize-pdf",
     published: true,
+    sources: [
+          {
+                "label": "ISO 32000-1 Section 7.7.3.3 (Page Tree Traversal)",
+                "url": "https://www.iso.org/standard/51502.html"
+          },
+          {
+                "label": "HTML5 Drag and Drop Specification (W3C)",
+                "url": "https://www.w3.org/TR/html52/editing.html#dnd"
+          }
+    ],
     customSchema: {
       "@context": "https://schema.org",
       "@graph": [
@@ -6016,7 +6305,7 @@ Yes. Add more than one PDF to the [Organize PDF workspace](/organize-pdf). Pages
 
 ### Can I rotate or remove a page while reordering?
 
-Yes. Use the controls on the thumbnail to rotate it, remove it, or insert a blank page after it. You can also use [Rotate PDF](/rotate-pdf) or [Remove pages](/remove-pages) for a workflow focused on just one of those tasks.
+Yes. Use the controls on the thumbnail to rotate it, remove it, or insert a blank page after it. You can also use [Rotate PDF](/rotate-pdf) or [Remove pages](/delete-pdf-pages) for a workflow focused on just one of those tasks.
 
 ### Can I reorder password-protected PDFs?
 
@@ -6056,6 +6345,16 @@ Ready to arrange your document? Open the [Organize PDF tool](/organize-pdf), arr
     coverImage: "/images/blog/photo-1563986768609-322da13575f3.jpg",
     targetToolUrl: "pdf-watermark",
     published: true,
+    sources: [
+          {
+                "label": "ISO 32000-1: ExtGState Graphics State & Transparency",
+                "url": "https://www.iso.org/standard/51502.html"
+          },
+          {
+                "label": "PDF Association: Guidelines for Document Marking & Watermarks",
+                "url": "https://pdfa.org/"
+          }
+    ],
     customSchema: {
       "@context": "https://schema.org",
       "@graph": [
@@ -6235,6 +6534,16 @@ Ready to label a document? Open the [Watermark PDF tool](/pdf-watermark), apply 
     author: "PDFTools4U Team",
     targetToolUrl: "jpg-to-pdf",
     published: true,
+    sources: [
+          {
+                "label": "ISO 32000-1 Section 8.9.5 (DCTDecode Filter for JPEG)",
+                "url": "https://www.iso.org/standard/51502.html"
+          },
+          {
+                "label": "W3C File API Specification",
+                "url": "https://www.w3.org/TR/FileAPI/"
+          }
+    ],
     customSchema: {
       "@context": "https://schema.org",
       "@graph": [
@@ -6418,6 +6727,16 @@ Ready to combine your photos? Open [JPG to PDF](/jpg-to-pdf), select the images 
     coverImage: "/images/blog/photo-1589829085413-56de8ae18c73.jpg",
     targetToolUrl: "flatten-pdf",
     published: true,
+    sources: [
+          {
+                "label": "ISO 32000-1 Section 12.7 (Interactive Forms & Field Dictionaries)",
+                "url": "https://www.iso.org/standard/51502.html"
+          },
+          {
+                "label": "ISO 32000-1 Section 8.11 (Transparency Group Rendering)",
+                "url": "https://www.iso.org/standard/51502.html"
+          }
+    ],
     customSchema: {
       "@context": "https://schema.org",
       "@graph": [
@@ -7117,7 +7436,7 @@ The standard Tesseract language models utilized in this tool are trained specifi
 ### 6. Process Large Documents in Batches (15–20 Page Guideline)
 Because PDFTools4U processes documents locally at high resolution (\`4.4x\` scale canvas rendering, generating ~9.7 megapixels per page), OCR requires substantial browser memory. Documents exceeding 15 to 20 pages may cause memory pressure or slow performance on devices with limited RAM.
 
-If you have a 50-page document, use our [Split PDF tool](/split-pdf) to divide it into smaller batches, run OCR on each batch, and recombine them with our [Merge PDF tool](/merge-pdf).
+If you have a 50-page document, use our [Split PDF tool](/pdf-split) to divide it into smaller batches, run OCR on each batch, and recombine them with our [Merge PDF tool](/pdf-merge).
 
 ### 7. Manually Verify Confusable Characters
 OCR engines occasionally confuse visually similar glyphs. Always double-check these common substitutions when dealing with financial figures or identification numbers:
@@ -7966,7 +8285,7 @@ Converting your bank statement PDF into an Excel spreadsheet turns static, cumbe
 * Ready to extract your financial tables? **[Launch the Free PDF to Excel Converter](/pdf-to-excel)**.
 * Need to password-protect your financial spreadsheet or report? Try the **[Protect PDF Tool](/protect-pdf)**.
 * Need to remove a password from a protected statement first? See **[how to remove passwords from salary slips and bank statements](/blog/remove-password-from-salary-slip-bank-statement)**.
-* Splitting out specific months from a full year statement? Use our **[Split PDF Pages Tool](/split-pdf)** or read **[how to split PDF pages online](/blog/split-pdf-pages-online-free)**.
+* Splitting out specific months from a full year statement? Use our **[Split PDF Pages Tool](/pdf-split)** or read **[how to split PDF pages online](/blog/split-pdf-pages-online-free)**.
 `
   },
   {

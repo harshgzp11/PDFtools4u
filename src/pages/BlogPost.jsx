@@ -4,10 +4,11 @@ import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import { 
   ArrowLeft, Calendar, User, Clock, ArrowRight, Folder, ShieldCheck, 
-  Share2, ChevronDown, Wrench, BookOpen 
+  Share2, ChevronDown, Wrench, BookOpen, Compass 
 } from 'lucide-react';
 import { BLOG_POSTS } from '../lib/blogData';
 import { DOMAINS, POPULAR_TOOL_IDS } from '../lib/toolConfig';
+import { BLOG_INTENT_GUIDANCE } from '../lib/blogIntentGuidance';
 import { trackEvent } from '../lib/analytics';
 
 export default function BlogPost({ id, onNavigate }) {
@@ -167,13 +168,54 @@ export default function BlogPost({ id, onNavigate }) {
         <img src={post.coverImage} alt={post.title} className="w-full h-auto object-cover" />
       </div>
 
+      {/* Semantic Intent & Disambiguation Guidance */}
+      {BLOG_INTENT_GUIDANCE[post.id] && (() => {
+        const guidance = BLOG_INTENT_GUIDANCE[post.id];
+        return (
+          <aside aria-label="Workflow guidance" className="my-8 max-w-3xl mx-auto p-5 bg-gradient-to-r from-blue-50/80 to-indigo-50/80 border border-blue-200/80 rounded-2xl shadow-xs">
+            <div className="flex items-center gap-2 text-blue-900 font-bold text-sm mb-2">
+              <Compass className="w-4 h-4 text-blue-600 shrink-0" />
+              <span>{guidance.heading}</span>
+            </div>
+            <p className="text-sm text-blue-950/85 mb-3.5 leading-relaxed">
+              {guidance.text}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {guidance.related.map(item => {
+                const isBlog = BLOG_POSTS.some(p => p.id === item.id);
+                const href = isBlog ? `/blog/${item.id}` : `/${item.id}`;
+                return (
+                  <a
+                    key={item.id}
+                    href={href}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onNavigate(isBlog ? `blog/${item.id}` : item.id);
+                    }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-blue-100/70 text-blue-700 hover:text-blue-900 border border-blue-200 rounded-lg text-xs font-semibold transition-colors cursor-pointer shadow-2xs"
+                  >
+                    <span>{item.label}</span>
+                    <ArrowRight className="w-3 h-3 text-blue-500" />
+                  </a>
+                );
+              })}
+            </div>
+          </aside>
+        );
+      })()}
+
       <article className="prose prose-slate lg:prose-lg mx-auto max-w-3xl prose-headings:font-bold prose-a:text-blue-600 hover:prose-a:text-blue-800 prose-img:rounded-xl">
         <ReactMarkdown 
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[rehypeRaw]}
           components={{
-            details: ({node, ...props}) => <details className="group border-b border-gray-200 overflow-hidden transition-all hover:border-gray-300 [&_summary::-webkit-details-marker]:hidden my-6" {...props} />,
-            summary: ({node, children, ...props}) => (
+            table: ({ _node, ...props }) => (
+              <div className="overflow-x-auto my-6 max-w-full rounded-xl border border-gray-200 shadow-xs">
+                <table className="min-w-full divide-y divide-gray-200 text-left" {...props} />
+              </div>
+            ),
+            details: ({ _node, ...props }) => <details className="group border-b border-gray-200 overflow-hidden transition-all hover:border-gray-300 [&_summary::-webkit-details-marker]:hidden my-6" {...props} />,
+            summary: ({ _node, children, ...props }) => (
               <summary className="w-full flex items-center justify-between py-5 text-left focus:outline-none cursor-pointer bg-transparent" {...props}>
                 <span className="font-bold text-gray-900 pr-4 text-[inherit]">{children}</span>
                 <ChevronDown className="w-5 h-5 text-gray-400 transition-transform duration-300 flex-shrink-0 group-open:rotate-180" />

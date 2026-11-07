@@ -24,6 +24,18 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
     return () => { document.body.style.overflow = ''; };
   }, [isMobileMenuOpen]);
 
+  // Close mobile drawer on Escape key (WCAG SC 2.1.2)
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') {
+        setIsMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [isMobileMenuOpen]);
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
@@ -52,6 +64,14 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
 
   return (
     <div className={`bg-white text-gray-900 flex flex-col font-sans selection:bg-blue-100 min-h-screen overflow-y-auto custom-scrollbar`}>
+      {/* Skip to Main Content Link (WCAG SC 2.4.1) */}
+      <a 
+        href="#main-content" 
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[9999] focus:px-4 focus:py-2.5 focus:bg-blue-600 focus:text-white focus:rounded-xl focus:shadow-2xl focus:font-bold focus:outline-none focus:ring-2 focus:ring-white"
+      >
+        Skip to main content
+      </a>
+
       {/* Navbar */}
       <nav className={`flex-shrink-0 sticky top-0 z-[100] transition-all duration-300 bg-white/80 backdrop-blur-2xl border-b border-gray-200/80 ${
         scrolled ? 'shadow-sm' : ''
@@ -59,13 +79,26 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
-            <div className="flex items-center cursor-pointer group" role="button" aria-label="Home" tabIndex={0} onClick={() => { onNavigateToDomain(null); setIsMobileMenuOpen(false); }}>
+            <div 
+              className="flex items-center cursor-pointer group" 
+              role="button" 
+              aria-label="Home" 
+              tabIndex={0} 
+              onClick={() => { onNavigateToDomain(null); setIsMobileMenuOpen(false); }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onNavigateToDomain(null);
+                  setIsMobileMenuOpen(false);
+                }
+              }}
+            >
               <img 
                 src="/images/pdftool4u-logo.webp" 
                 alt="PDFtools4u Logo" 
                 width="266"
                 height="70"
-                className="h-10 md:h-12 w-auto max-w-[220px] object-contain group-hover:scale-105 transition-transform duration-200"
+                className="h-10 md:h-12 w-auto max-w-[170px] sm:max-w-[220px] object-contain group-hover:scale-105 transition-transform duration-200"
                 onError={(e) => {
                   e.target.style.display = 'none';
                   if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
@@ -198,7 +231,13 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
               <button onClick={openSearch} className="p-2 text-gray-600 hover:text-blue-600" aria-label="Search tools">
                 <Search className="w-5 h-5" aria-hidden="true" />
               </button>
-              <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 text-gray-900 z-50 relative" aria-label="Open mobile menu">
+              <button 
+                onClick={() => setIsMobileMenuOpen(true)} 
+                className="p-2 text-gray-900 z-50 relative" 
+                aria-label="Open mobile navigation menu"
+                aria-expanded={isMobileMenuOpen}
+                aria-controls="mobile-navigation-drawer"
+              >
                 <Menu className="w-5 h-5" aria-hidden="true" />
               </button>
             </div>
@@ -208,7 +247,13 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
 
       {/* Mobile Menu Drawer */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-[200] lg:hidden flex">
+        <div 
+          id="mobile-navigation-drawer"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Mobile Navigation"
+          className="fixed inset-0 z-[200] lg:hidden flex"
+        >
           {/* Backdrop Overlay */}
           <div 
             className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm animate-in fade-in duration-200"
@@ -226,7 +271,8 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
               </button>
               <button 
                 onClick={() => setIsMobileMenuOpen(false)} 
-                className="p-1 text-gray-500 hover:text-gray-900 transition-colors flex-shrink-0"
+                className="p-2.5 text-gray-500 hover:text-gray-900 transition-colors flex-shrink-0 rounded-lg hover:bg-gray-100"
+                aria-label="Close navigation menu"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -300,7 +346,7 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
       <div className={`flex-1 flex w-full max-w-[1920px] mx-auto px-2 sm:px-4 py-4 gap-4 xl:gap-6 justify-center items-start`}>
         
 
-        <main className={`flex-1 w-full min-w-0 flex flex-col`}>
+        <main id="main-content" tabIndex={-1} className={`flex-1 w-full min-w-0 flex flex-col focus:outline-none`}>
           <div className={`flex-1 w-full rounded-2xl flex flex-col`}>
             {children}
           </div>

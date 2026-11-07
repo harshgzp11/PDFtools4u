@@ -4,6 +4,7 @@ import { FileText, Printer } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import * as docx from 'docx-preview';
 import mammoth from 'mammoth';
+import DOMPurify from 'dompurify';
 import { convertDocxToPdf } from '../utils/wordConversion';
 import { trackError } from '../lib/analytics';
 
@@ -121,7 +122,8 @@ export default function WordToPdf() {
           const result = await mammoth.convertToHtml({
             arrayBuffer,
           });
-          container.innerHTML = wrapWithWordTheme(result.value);
+          const cleanHtml = DOMPurify.sanitize(result.value || '');
+          container.innerHTML = wrapWithWordTheme(cleanHtml);
         }
       } catch (err) {
         trackError('Word To Pdf', 'processing_error');

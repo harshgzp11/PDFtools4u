@@ -103,11 +103,12 @@ export default function ExportActions({ pdfBytes, fileName, onReset }) {
           
           {/* Watermark Section */}
           <div className="space-y-3 bg-gray-50 p-4 rounded-xl border border-gray-100">
-            <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+            <label htmlFor="watermark-input" className="flex items-center gap-2 text-sm font-semibold text-gray-700">
               <Type className="w-4 h-4 text-blue-500" /> Add Watermark
             </label>
             <div className="flex gap-2">
               <input 
+                id="watermark-input"
                 type="text" 
                 placeholder="e.g. CONFIDENTIAL"
                 value={watermarkText}
@@ -123,7 +124,7 @@ export default function ExportActions({ pdfBytes, fileName, onReset }) {
                 {isApplyingWatermark ? <RefreshCw className="w-4 h-4 animate-spin" /> : 'Apply'}
               </button>
             </div>
-            {watermarkApplied && <p className="text-xs text-green-600 font-medium">Watermark applied successfully!</p>}
+            {watermarkApplied && <p role="status" aria-live="polite" className="text-xs text-green-600 font-medium">Watermark applied successfully!</p>}
           </div>
 
           {/* Password Protection Section */}

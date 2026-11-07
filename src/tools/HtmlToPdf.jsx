@@ -6,6 +6,7 @@ import {
 import { toast } from 'sonner';
 import { jsPDF } from 'jspdf';
 import { safeHtml2Canvas } from '../utils/canvasUtils';
+import DOMPurify from 'dompurify';
 
 // Starter templates for quick testing & real-world utility
 const TEMPLATES = {
@@ -455,13 +456,13 @@ export default function HtmlToPdf() {
     let bodyHtml = rawHtml || '';
 
     // Extract any <style> tags inside the HTML
-    const styleMatches = rawHtml.match(/<style[^>]*>([\s\S]*?)<\/style>/gi);
+    const styleMatches = rawHtml ? rawHtml.match(/<style[^>]*>([\s\S]*?)<\/style>/gi) : null;
     if (styleMatches) {
       styles += '\n' + styleMatches.map(s => s.replace(/<\/?style[^>]*>/gi, '')).join('\n');
     }
 
     // If a full HTML skeleton was pasted, extract the body inner HTML
-    const bodyMatch = rawHtml.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+    const bodyMatch = rawHtml ? rawHtml.match(/<body[^>]*>([\s\S]*?)<\/body>/i) : null;
     if (bodyMatch && bodyMatch[1]) {
       bodyHtml = bodyMatch[1];
     } else {
@@ -474,7 +475,16 @@ export default function HtmlToPdf() {
         .replace(/<\/?body[^>]*>/gi, '');
     }
 
-    return { bodyHtml, styles };
+    // Neutralize </style> tag breakout in user-controlled CSS
+    const safeStyles = styles.replace(/<\/style/gi, '<\\/style');
+
+    // Sanitize body HTML to block scripts, event-handler attributes, dangerous protocols, and unsafe embeds
+    // while strictly preserving formatting, layout, inline CSS, tables, and SVGs
+    const cleanBodyHtml = DOMPurify.sanitize(bodyHtml || '', {
+      USE_PROFILES: { html: true, svg: true },
+    });
+
+    return { bodyHtml: cleanBodyHtml, styles: safeStyles };
   };
 
   // Update preview when content changes or preview tab opens

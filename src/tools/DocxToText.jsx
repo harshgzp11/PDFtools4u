@@ -1,10 +1,10 @@
-import { trackEvent } from '../lib/analytics';
 import React, { useState, useEffect } from 'react';
 import mammoth from 'mammoth';
 import { FileText, CheckCircle, Download, RefreshCw, Loader2, Copy } from 'lucide-react';
+import { toast } from 'sonner';
 import DragDropZone from '../components/ui/DragDropZone';
 import DownloadPageExtras from '../components/ui/DownloadPageExtras';
-import { trackError } from '../lib/analytics';
+import { trackError, trackEvent } from '../lib/analytics';
 
 export default function DocxToText() {
   const [file, setFile] = useState(null);
@@ -25,7 +25,7 @@ export default function DocxToText() {
     if (newFile && (newFile.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || newFile.name.endsWith('.docx'))) {
       setFile(newFile);
       trackEvent('tool_executed', { tool_name: 'DOCX to Text' });
-    setIsProcessing(true);
+      setIsProcessing(true);
       
       try {
         const arrayBuffer = await newFile.arrayBuffer();
@@ -33,15 +33,15 @@ export default function DocxToText() {
         setExtractedText(result.value);
         setSuccess(true);
       } catch (err) {
-      trackError('Docx To Text', 'processing_error');
+        trackError('Docx To Text', 'processing_error');
         console.error(err);
-        alert("Failed to extract text from DOCX.");
+        toast.error("Failed to extract text from DOCX.");
         setFile(null);
       } finally {
         setIsProcessing(false);
       }
     } else {
-      alert("Please upload a valid .docx file.");
+      toast.error("Please upload a valid .docx file.");
     }
   };
 
@@ -66,7 +66,7 @@ export default function DocxToText() {
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(extractedText);
-    alert("Copied to clipboard!");
+    toast.success("Copied to clipboard!");
   };
 
   if (!file) {

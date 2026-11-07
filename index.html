@@ -29,6 +29,45 @@
     <meta name="twitter:description" content="Free browser-based PDF, image and document tools. Supported file operations are designed to run locally on your device." />
     <meta name="twitter:image" content="https://www.pdftools4u.in/images/og-card.png" />
     <meta name="google-site-verification" content="E1bZLNmMZdaOzfd59xEzPCmHoaLDnShXvdNJGVRlDbU" />
+    <link rel="canonical" href="https://www.pdftools4u.in" />
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://www.pdftools4u.in/#website",
+          "name": "PDFTools4U",
+          "url": "https://www.pdftools4u.in",
+          "description": "Free browser-based PDF, image and document tools. Supported file operations are designed to run locally on your device.",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://www.pdftools4u.in/?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://www.pdftools4u.in/#organization",
+          "name": "PDFTools4U",
+          "alternateName": ["PDF Tools 4 U", "PDF Tools For You", "PDFtools4u"],
+          "url": "https://www.pdftools4u.in",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://www.pdftools4u.in/favicon.png"
+          },
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "email": "pdftools4u.official@gmail.com",
+            "contactType": "customer support",
+            "availableLanguage": ["English", "Hindi"]
+          }
+        }
+      ]
+    }
+    </script>
     
 
   </head>
@@ -61,9 +100,19 @@
         })(window, document, "clarity", "script", "y12xfabti3");
       };
       
-      // Load analytics strictly on first user interaction
+      // Schedule analytics on first user interaction, yielding the main thread
+      // so the user's initial tap/click visual response paints with 0ms INP delay.
+      const triggerAnalytics = () => {
+        if (window.analyticsLoaded) return;
+        if ('requestIdleCallback' in window) {
+          window.requestIdleCallback(loadAnalytics, { timeout: 2000 });
+        } else {
+          setTimeout(loadAnalytics, 1);
+        }
+      };
+
       ['touchstart', 'pointerdown', 'scroll', 'click', 'keydown', 'drop'].forEach(e =>
-        window.addEventListener(e, loadAnalytics, { once: true, passive: true, capture: true })
+        window.addEventListener(e, triggerAnalytics, { once: true, passive: true, capture: true })
       );
     </script>
   </body>

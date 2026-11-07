@@ -37,7 +37,7 @@ export function getExifOrientation(buffer) {
 
     // Check for APP1 marker (0xFFE1)
     if (marker === 0xFFE1) {
-      const app1Length = view.getUint16(offset, false);
+      const _app1Length = view.getUint16(offset, false);
       offset += 2;
 
       // Check for 'Exif\0\0' header: 0x45786966 0x0000
@@ -95,75 +95,163 @@ export function getExifOrientation(buffer) {
  * Corrects EXIF orientation via browser decoding, applies manual user rotation, and composites with a clean background.
  * Preserves lossless PNG encoding for PNG inputs, and uses high-quality JPEG for other formats.
  *
+ * Supports both legacy Base64 dataUrl return and direct zero-copy HTMLCanvasElement output:
+ * - When options.returnCanvas is true, returns { canvas, width, height, mimeType, dispose() }
+ *   without executing toDataURL() or auto-zeroing the canvas, granting caller full ownership.
+ * - When options.returnCanvas is falsy (default), preserves the legacy { dataUrl, width, height, mimeType }
+ *   return value with internal canvas cleanup.
+ *
  * @param {File|Blob} file
- * @param {number} [userRotation=0] - Clockwise rotation angle in degrees (0, 90, 180, 270)
- * @returns {Promise<{ dataUrl: string, width: number, height: number, mimeType: string }>}
+ * @param {number|Object} [userRotationOrOptions=0] - Clockwise rotation angle in degrees or options object
+ * @param {Object} [maybeOptions={}] - Configuration options if userRotation is passed as number
+ * @param {boolean} [maybeOptions.returnCanvas=false] - Return canvas directly for zero-copy processing (e.g. OCR)
+ * @param {number} [maybeOptions.maxDimension] - Optional maximum pixel dimension clamp
+ * @param {number} [maybeOptions.maxPixelArea] - Optional maximum pixel area clamp
+ * @returns {Promise<{ dataUrl?: string, canvas?: HTMLCanvasElement, width: number, height: number, mimeType: string, dispose?: () => void }>}
  */
-export async function normalizeImage(file, userRotation = 0) {
+export async function normalizeImage(file, userRotationOrOptions = 0, maybeOptions = {}) {
   if (!file) throw new Error("No image file provided.");
 
-  // Read image as Data URL
-  const sourceDataUrl = await new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (e) => resolve(e.target.result);
-    reader.onerror = () => reject(new Error(`Failed to read file ${file.name || 'image'}`));
-    reader.readAsDataURL(file);
-  });
+  let userRotation = 0;
+  let options = {};
 
-  // Decode image in browser (modern browsers automatically orient image according to EXIF)
-  const img = new Image();
-  img.src = sourceDataUrl;
-  await img.decode();
-
-  const baseWidth = img.naturalWidth || img.width;
-  const baseHeight = img.naturalHeight || img.height;
-
-  // Calculate final dimensions after user rotation
-  const normUserRotation = ((userRotation % 360) + 360) % 360;
-  const userSwaps = normUserRotation === 90 || normUserRotation === 270;
-  const finalWidth = userSwaps ? baseHeight : baseWidth;
-  const finalHeight = userSwaps ? baseWidth : baseHeight;
-
-  // Draw transformed image onto offscreen canvas
-  const canvas = document.createElement('canvas');
-  canvas.width = finalWidth;
-  canvas.height = finalHeight;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) throw new Error("Could not initialize 2D canvas context.");
-
-  // Solid white backing to prevent black background artifacts on transparent PNGs/WebPs
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(0, 0, finalWidth, finalHeight);
-
-  ctx.save();
-
-  // Apply user rotation around canvas center
-  if (normUserRotation) {
-    ctx.translate(finalWidth / 2, finalHeight / 2);
-    ctx.rotate((normUserRotation * Math.PI) / 180);
-    ctx.translate(-baseWidth / 2, -baseHeight / 2);
+  if (typeof userRotationOrOptions === 'object' && userRotationOrOptions !== null) {
+    options = userRotationOrOptions;
+    userRotation = typeof options.userRotation === 'number' ? options.userRotation : 0;
+  } else {
+    userRotation = typeof userRotationOrOptions === 'number' ? userRotationOrOptions : 0;
+    options = typeof maybeOptions === 'object' && maybeOptions !== null ? maybeOptions : {};
   }
 
-  ctx.drawImage(img, 0, 0);
-  ctx.restore();
+  let objectUrl = null;
+  let sourceUrl = null;
 
-  // Export as lossless PNG for PNG inputs, or high-quality JPEG for others
-  const isPng = file.type === 'image/png' || /\.png$/i.test(file.name || '');
-  const mimeType = isPng ? 'image/png' : 'image/jpeg';
-  const normalizedDataUrl = isPng 
-    ? canvas.toDataURL('image/png') 
-    : canvas.toDataURL('image/jpeg', 0.95);
+  // Prefer zero-copy Object URL when available in browser environment
+  if (typeof URL !== 'undefined' && typeof URL.createObjectURL === 'function' && file instanceof Blob) {
+    try {
+      objectUrl = URL.createObjectURL(file);
+      sourceUrl = objectUrl;
+    } catch {
+      // Fallback to FileReader if createObjectURL fails
+    }
+  }
 
-  // Explicit Canvas Memory Disposal
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  canvas.width = 0;
-  canvas.height = 0;
+  if (!sourceUrl) {
+    sourceUrl = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target.result);
+      reader.onerror = () => reject(new Error(`Failed to read file ${file.name || 'image'}`));
+      reader.readAsDataURL(file);
+    });
+  }
 
-  return {
-    dataUrl: normalizedDataUrl,
-    width: finalWidth,
-    height: finalHeight,
-    mimeType
-  };
+  try {
+    // Decode image in browser (modern browsers automatically orient image according to EXIF)
+    const img = new Image();
+    img.src = sourceUrl;
+    await img.decode();
+
+    const baseWidth = img.naturalWidth || img.width;
+    const baseHeight = img.naturalHeight || img.height;
+
+    // Optional adaptive downscaling for oversized images (OCR memory protection)
+    let drawWidth = baseWidth;
+    let drawHeight = baseHeight;
+
+    if (options.maxDimension || options.maxPixelArea) {
+      const maxDim = options.maxDimension || 2400;
+      const maxArea = options.maxPixelArea || 6000000;
+      let scale = 1.0;
+      if (Math.max(drawWidth, drawHeight) > maxDim) {
+        scale = maxDim / Math.max(drawWidth, drawHeight);
+      }
+      if ((drawWidth * scale) * (drawHeight * scale) > maxArea) {
+        scale = Math.sqrt(maxArea / (drawWidth * drawHeight));
+      }
+      if (scale < 1.0) {
+        drawWidth = Math.round(drawWidth * scale);
+        drawHeight = Math.round(drawHeight * scale);
+      }
+    }
+
+    // Calculate final dimensions after user rotation
+    const normUserRotation = ((userRotation % 360) + 360) % 360;
+    const userSwaps = normUserRotation === 90 || normUserRotation === 270;
+    const finalWidth = userSwaps ? drawHeight : drawWidth;
+    const finalHeight = userSwaps ? drawWidth : drawHeight;
+
+    // Draw transformed image onto offscreen canvas
+    const canvas = document.createElement('canvas');
+    canvas.width = finalWidth;
+    canvas.height = finalHeight;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error("Could not initialize 2D canvas context.");
+
+    // Solid white backing to prevent black background artifacts on transparent PNGs/WebPs
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, finalWidth, finalHeight);
+
+    ctx.save();
+
+    // Apply user rotation around canvas center
+    if (normUserRotation) {
+      ctx.translate(finalWidth / 2, finalHeight / 2);
+      ctx.rotate((normUserRotation * Math.PI) / 180);
+      ctx.translate(-drawWidth / 2, -drawHeight / 2);
+    }
+
+    ctx.drawImage(img, 0, 0, drawWidth, drawHeight);
+    ctx.restore();
+
+    const isPng = file.type === 'image/png' || /\.png$/i.test(file.name || '');
+    const mimeType = isPng ? 'image/png' : 'image/jpeg';
+
+    // Direct Canvas output branch (Zero-copy for OCR)
+    if (options.returnCanvas) {
+      let isDisposed = false;
+      const disposeFn = () => {
+        if (isDisposed) return;
+        isDisposed = true;
+        try {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        } catch {}
+        canvas.width = 0;
+        canvas.height = 0;
+      };
+
+      return {
+        canvas,
+        width: finalWidth,
+        height: finalHeight,
+        mimeType,
+        dispose: disposeFn,
+        get dataUrl() {
+          if (isDisposed || canvas.width === 0 || canvas.height === 0) return null;
+          return isPng ? canvas.toDataURL('image/png') : canvas.toDataURL('image/jpeg', 0.95);
+        }
+      };
+    }
+
+    // Legacy Data URL output branch (for JpgToPdf and general converters)
+    const normalizedDataUrl = isPng 
+      ? canvas.toDataURL('image/png') 
+      : canvas.toDataURL('image/jpeg', 0.95);
+
+    // Explicit Canvas Memory Disposal
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    canvas.width = 0;
+    canvas.height = 0;
+
+    return {
+      dataUrl: normalizedDataUrl,
+      width: finalWidth,
+      height: finalHeight,
+      mimeType
+    };
+  } finally {
+    if (objectUrl && typeof URL !== 'undefined' && typeof URL.revokeObjectURL === 'function') {
+      URL.revokeObjectURL(objectUrl);
+    }
+  }
 }
 
