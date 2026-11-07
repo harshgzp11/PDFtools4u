@@ -40,11 +40,11 @@ export const BLOG_INTENT_GUIDANCE = {
     ]
   },
   'marksheet-pdf-to-jpg-converter': {
-    heading: 'Academic-record conversion workflow',
-    text: 'This guide focuses on 10th, 12th, and college marksheets for admissions, scholarships, and recruitment. Identity-card and driving-licence uploads use different privacy and verification requirements.',
+    heading: 'Academic document workflows',
+    text: 'This guide covers converting marksheet PDFs into JPG images for application forms. If your portal requires combining all semester grade sheets into one file or compressing a PDF directly, use our dedicated academic guides below.',
     related: [
-      { id: 'convert-aadhaar-pan-card-pdf-to-jpg', label: 'Convert Aadhaar or PAN PDF for KYC' },
-      { id: 'driving-license-pdf-to-high-quality-jpg', label: 'Convert a driving licence PDF for KYC' }
+      { id: 'combine-multiple-marksheets-into-one-pdf', label: 'Combine Multiple Marksheets into One PDF' },
+      { id: 'compress-marksheet-certificate-pdf-100kb', label: 'Compress Marksheet and Certificate PDFs' }
     ]
   },
   'html-to-pdf-with-css': {
