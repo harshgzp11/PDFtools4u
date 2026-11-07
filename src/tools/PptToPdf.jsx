@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Presentation, CheckCircle2 } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
+import { toast } from 'sonner';
 import { trackEvent, trackError } from '../lib/analytics';
 import { parsePptxSlides, convertPptToPdf } from '../utils/pptConversion';
 
@@ -32,14 +33,14 @@ export default function PptToPdf() {
 
     // Check for legacy binary .ppt
     if (lowerName.endsWith('.ppt') && !lowerName.endsWith('.pptx')) {
-      alert(
+      toast.error(
         'Legacy binary PowerPoint (.ppt) format is not supported in the browser. Please open the presentation in PowerPoint, Google Slides, or LibreOffice and save it as modern .pptx before converting.'
       );
       return;
     }
 
     if (!lowerName.endsWith('.pptx') && !newFile.type?.includes('presentation')) {
-      alert('Please upload a valid PowerPoint (.pptx) file.');
+      toast.error('Please upload a valid PowerPoint (.pptx) file.');
       return;
     }
 
@@ -55,7 +56,7 @@ export default function PptToPdf() {
     } catch (err) {
       trackError('Ppt To Pdf', 'processing_error');
       console.error('PPTX Analysis Failed:', err);
-      alert(err.message || 'Could not parse PPTX file. Please ensure it is a valid .pptx presentation.');
+      toast.error(err.message || 'Could not parse PPTX file. Please ensure it is a valid .pptx presentation.');
       setFile(null);
       setParsedData(null);
     } finally {
@@ -88,7 +89,7 @@ export default function PptToPdf() {
     } catch (err) {
       trackError('Ppt To Pdf', 'processing_error');
       console.error('PPT to PDF Conversion Error:', err);
-      alert(`Failed to convert PowerPoint to PDF: ${err.message || err}`);
+      toast.error(`Failed to convert PowerPoint to PDF: ${err.message || err}`);
     } finally {
       setIsProcessing(false);
     }

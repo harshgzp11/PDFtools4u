@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
-  RefreshCw, CheckCircle, Download, ArrowLeft, Share2, ShieldCheck,
+  RefreshCw, ShieldCheck,
   ZoomIn, ZoomOut, RotateCcw,
   PanelLeft, PanelLeftClose, ChevronUp, ChevronDown, Layers,
   Lock, FileText
 } from 'lucide-react';
 import { toast } from 'sonner';
 import DragDropZone from './DragDropZone';
-import DownloadPageExtras from './DownloadPageExtras';
+import ResultSuccessWorkspace from './ResultSuccessWorkspace';
 import { getPdfThumbnails } from '../../lib/pdfRenderer';
 import { getDynamicGridClass } from '../../lib/utils';
 import { trackEvent } from '../../lib/analytics';
@@ -557,14 +557,14 @@ export default function ToolPreviewLayout({
       )}
 
       {file && !successData && !isLoadingPreview && (
-        <div className="flex flex-col lg:flex-row gap-4 w-full" style={{minHeight: '620px', maxHeight: '880px', height: 'min(880px, calc(100vh - 180px))'}}>
+        <div className="flex flex-col lg:flex-row gap-4 w-full lg:h-[calc(100vh-140px)] lg:min-h-[600px] lg:max-h-[920px]">
           {/* Interactive Preview Canvas with Sidebar */}
-          <div className="w-full lg:w-2/3 bg-white rounded-2xl border border-gray-200 h-full min-h-0 overflow-hidden flex flex-col shadow-sm">
+          <div className="w-full lg:w-2/3 bg-white rounded-2xl border border-gray-200 min-h-[360px] h-[52vh] sm:h-[58vh] lg:h-full lg:min-h-0 overflow-hidden flex flex-col shadow-sm">
             {renderPreviewContent()}
           </div>
 
           {/* Configuration Panel */}
-          <div className="w-full lg:w-1/3 bg-white border border-gray-200 rounded-2xl p-5 shadow-sm flex flex-col h-full min-h-0 overflow-hidden">
+          <div className="w-full lg:w-1/3 bg-white border border-gray-200 rounded-2xl p-5 shadow-sm flex flex-col h-auto lg:h-full lg:min-h-0 overflow-visible lg:overflow-hidden shrink-0">
             <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100 flex-shrink-0">
               <div className="p-2 bg-blue-50 text-blue-600 rounded-lg flex-shrink-0">
                 <Icon className="w-5 h-5" />
@@ -575,7 +575,7 @@ export default function ToolPreviewLayout({
               </div>
             </div>
 
-            <div className="space-y-4 flex-1 overflow-y-auto custom-scrollbar pr-2">
+            <div className="space-y-4 flex-1 lg:overflow-y-auto custom-scrollbar pr-0 lg:pr-2">
               {children}
             </div>
 
@@ -606,45 +606,23 @@ export default function ToolPreviewLayout({
             ? customSuccessNode({ successData, onReset, handleDownload, handleShare })
             : customSuccessNode
         ) : (
-          <div className="flex flex-col items-center justify-center min-h-[60vh] bg-white border border-gray-200 rounded-2xl p-8 shadow-sm text-center animate-in zoom-in-95 duration-300">
-            <div className={`mx-auto w-16 h-16 ${successData.iconBgClass || 'bg-green-100'} rounded-full flex items-center justify-center mb-4`}>
-              {successData.icon ? (
-                <successData.icon className={`w-8 h-8 ${successData.iconColorClass || 'text-green-600'}`} />
-              ) : (
-                <CheckCircle className="w-8 h-8 text-green-600" />
-              )}
-            </div>
-            <h3 className="text-2xl font-extrabold text-gray-900 mb-2">{successData.title || 'Success!'}</h3>
-            <p className="text-gray-500 mb-8 text-sm">{successData.subtitle || 'Your file is ready.'}</p>
-
-            {successData.statsComponent && (
-              <div className="mb-8 flex justify-center">
-                {successData.statsComponent}
-              </div>
-            )}
-
-            {successData.url && (
-              <button
-                onClick={handleDownload}
-                className="mx-auto flex items-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-xl font-bold text-lg hover:bg-blue-700 transition-all shadow-md hover:shadow-lg mb-8"
-              >
-                <Download className="w-5 h-5" />
-                {successData.downloadText || 'Download File'}
-              </button>
-            )}
-
-            <DownloadPageExtras />
-
-            <div className="mt-8 pt-6 border-t border-gray-100 w-full flex items-center justify-center gap-4">
-              <button onClick={onReset} className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-900 font-medium py-1.5 px-3 rounded-md hover:bg-gray-100 transition-colors">
-                <ArrowLeft className="w-3.5 h-3.5" /> Start over
-              </button>
-              <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
-              <button onClick={handleShare} className="flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-800 font-medium py-1.5 px-3 rounded-md hover:bg-blue-50 transition-colors">
-                <Share2 className="w-3.5 h-3.5" /> {successData ? 'Share File' : 'Share Tool'}
-              </button>
-            </div>
-          </div>
+          <ResultSuccessWorkspace
+            title={successData.title || 'Success!'}
+            subtitle={successData.subtitle || 'Your file is ready.'}
+            filename={successData.filename || (file?.name ? `converted_${file.name}` : 'download')}
+            outputUrl={successData.url}
+            originalSize={successData.originalSize || file?.size}
+            outputSize={successData.outputSize}
+            statsComponent={successData.statsComponent}
+            textContent={successData.textContent}
+            downloadText={successData.downloadText}
+            icon={successData.icon}
+            iconBgClass={successData.iconBgClass}
+            iconColorClass={successData.iconColorClass}
+            toolTitle={title}
+            toolDescription={description}
+            onReset={onReset}
+          />
         )
       )}
     </div>

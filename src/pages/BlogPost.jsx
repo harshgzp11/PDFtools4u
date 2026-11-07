@@ -10,6 +10,7 @@ import { BLOG_POSTS } from '../lib/blogData';
 import { DOMAINS, POPULAR_TOOL_IDS } from '../lib/toolConfig';
 import { BLOG_INTENT_GUIDANCE } from '../lib/blogIntentGuidance';
 import { trackEvent } from '../lib/analytics';
+import { toast } from 'sonner';
 
 export default function BlogPost({ id, onNavigate }) {
   const post = BLOG_POSTS.find(p => p.id === id);
@@ -109,12 +110,12 @@ export default function BlogPost({ id, onNavigate }) {
       } catch (err) {
         if (err.name !== 'AbortError') {
           navigator.clipboard.writeText(url);
-          alert('Link copied to clipboard!');
+          toast.success('Link copied to clipboard!');
         }
       }
     } else {
       navigator.clipboard.writeText(url);
-      alert('Link copied to clipboard!');
+      toast.success('Link copied to clipboard!');
     }
   };
 

@@ -2,6 +2,7 @@ import { trackEvent } from '../lib/analytics';
 import React, { useState } from 'react';
 import { FileCode2, Download, RefreshCw, Loader2, FileText, CheckCircle } from 'lucide-react';
 import DownloadPageExtras from '../components/ui/DownloadPageExtras';
+import { toast } from 'sonner';
 import { trackError } from '../lib/analytics';
 
 export default function TextToDocx() {
@@ -14,7 +15,7 @@ export default function TextToDocx() {
   const generateDocx = async () => {
     if (isProcessing) return;
     if (!text.trim()) {
-      alert("Please enter some text first.");
+      toast.error("Please enter some text first.");
       return;
     }
     
@@ -59,7 +60,7 @@ export default function TextToDocx() {
     } catch (err) {
       trackError('Text To Docx', 'processing_error');
       console.error(err);
-      alert("Failed to generate DOCX document.");
+      toast.error("Failed to generate DOCX document.");
     } finally {
       setIsProcessing(false);
     }

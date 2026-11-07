@@ -2,6 +2,7 @@ import { trackEvent } from '../lib/analytics';
 import React, { useState } from 'react';
 
 import { Layers3 } from 'lucide-react';
+import { toast } from 'sonner';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
 import { trackError } from '../lib/analytics';
 
@@ -15,7 +16,7 @@ export default function FlattenPdf() {
       setFile(newFile);
       setSuccessData(null);
     } else {
-      alert("Please upload a valid PDF file.");
+      toast.error("Please upload a valid PDF file.");
     }
   };
 
@@ -55,7 +56,7 @@ export default function FlattenPdf() {
     } catch (err) {
       trackError('Flatten Pdf', 'processing_error');
       console.error(err);
-      alert("Failed to flatten PDF. The file might be encrypted or corrupted.");
+      toast.error("Failed to flatten PDF. The file might be encrypted or corrupted.");
     } finally {
       setLoading(false);
     }

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Hash, Download, Settings, RefreshCw, FileText, Loader2, ListOrdered, Scissors } from 'lucide-react';
 
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
+import { toast } from 'sonner';
 import { trackError } from '../lib/analytics';
 
 export default function NumberPages() {
@@ -92,7 +93,7 @@ export default function NumberPages() {
     } catch (error) {
       trackError('Number Pages', 'processing_error');
       console.error('Error adding page numbers:', error);
-      alert('Failed to process the PDF. It might be encrypted or corrupted.');
+      toast.error('Failed to process the PDF. It might be encrypted or corrupted.');
     } finally {
       setIsProcessing(false);
     }

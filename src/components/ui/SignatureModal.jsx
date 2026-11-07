@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import SignatureCanvas from 'react-signature-canvas';
 import { X, Eraser, Image as ImageIcon, Type as TypeIcon, PenTool } from 'lucide-react';
 import DragDropZone from './DragDropZone';
+import { toast } from 'sonner';
 
 // Dynamically inject a cursive font for the Type tab
 const loadFont = () => {
@@ -168,7 +169,7 @@ export default function SignatureModal({ isOpen, onClose, onSave }) {
       onSave(dataUrl);
       onClose();
     } else {
-      alert("Please provide a signature before saving.");
+      toast.error("Please provide a signature before saving.");
     }
   };
 

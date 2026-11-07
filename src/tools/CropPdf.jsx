@@ -5,6 +5,7 @@ import { Crop, FileText, RefreshCw, CheckCircle, Download, Maximize2, Share2, Ar
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import DragDropZone from '../components/ui/DragDropZone';
+import { toast } from 'sonner';
 import DownloadPageExtras from '../components/ui/DownloadPageExtras';
 import { getPdfThumbnails } from '../lib/pdfRenderer';
 import { trackError } from '../lib/analytics';
@@ -43,7 +44,7 @@ export default function CropPdf() {
     } catch (error) {
       trackError('Crop Pdf', 'processing_error');
       console.error("Error loading PDF preview:", error);
-      alert("Could not render PDF preview. It might be corrupted or encrypted.");
+      toast.error("Could not render PDF preview. It might be corrupted or encrypted.");
       setFile(null);
     } finally {
       setIsLoadingPreview(false);
@@ -94,7 +95,7 @@ export default function CropPdf() {
     } catch (error) {
       trackError('Crop Pdf', 'processing_error');
       console.error('Error cropping PDF:', error);
-      alert('Failed to crop the PDF. It might be encrypted or corrupted.');
+      toast.error('Failed to crop the PDF. It might be encrypted or corrupted.');
     } finally {
       setIsProcessing(false);
     }

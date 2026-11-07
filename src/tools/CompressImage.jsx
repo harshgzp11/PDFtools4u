@@ -1,12 +1,15 @@
 import { trackEvent } from '../lib/analytics';
-import React, { useState } from 'react';
-import { Minimize, CheckCircle, Download, RefreshCw, Image as ImageIcon, Loader2 } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Minimize, CheckCircle, Download, RefreshCw, Image as ImageIcon, Loader2, Sparkles } from 'lucide-react';
 import DragDropZone from '../components/ui/DragDropZone';
+import { toast } from 'sonner';
 import DownloadPageExtras from '../components/ui/DownloadPageExtras';
 import { trackError } from '../lib/analytics';
 
 export default function CompressImage() {
   const [file, setFile] = useState(null);
+  const [originalUrl, setOriginalUrl] = useState(null);
+  const [dimensions, setDimensions] = useState(null);
   
   // Settings State - Target file size in bytes
   const [targetSizeBytes, setTargetSizeBytes] = useState(0);
@@ -17,6 +20,27 @@ export default function CompressImage() {
   const [success, setSuccess] = useState(false);
   const [outputUrl, setOutputUrl] = useState(null);
   const [stats, setStats] = useState({ original: 0, compressed: 0 });
+
+  // Dedicated refs to track Object URLs and prevent memory leaks
+  const originalObjectUrlRef = useRef(null);
+  const outputObjectUrlRef = useRef(null);
+
+  const revokeUrls = () => {
+    if (originalObjectUrlRef.current) {
+      URL.revokeObjectURL(originalObjectUrlRef.current);
+      originalObjectUrlRef.current = null;
+    }
+    if (outputObjectUrlRef.current) {
+      URL.revokeObjectURL(outputObjectUrlRef.current);
+      outputObjectUrlRef.current = null;
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      revokeUrls();
+    };
+  }, []);
 
   const formatBytes = (bytes, decimals = 2) => {
     if (!+bytes) return '0 Bytes';
@@ -29,9 +53,20 @@ export default function CompressImage() {
 
   const handleFile = (newFile) => {
     if (newFile && newFile.type.startsWith('image/')) {
+      revokeUrls();
+      const origUrl = URL.createObjectURL(newFile);
+      originalObjectUrlRef.current = origUrl;
+      setOriginalUrl(origUrl);
       setFile(newFile);
       setSuccess(false);
       setOutputUrl(null);
+
+      // Extract image dimensions for display
+      const img = new Image();
+      img.src = origUrl;
+      img.onload = () => {
+        setDimensions({ width: img.naturalWidth, height: img.naturalHeight });
+      };
 
       // Default target size: 50% of original file size
       const defaultTarget = Math.max(1024, Math.round(newFile.size * 0.5));
@@ -41,7 +76,10 @@ export default function CompressImage() {
   };
 
   const resetTool = () => {
+    revokeUrls();
     setFile(null);
+    setOriginalUrl(null);
+    setDimensions(null);
     setSuccess(false);
     setOutputUrl(null);
     setIsProcessing(false);
@@ -55,11 +93,14 @@ export default function CompressImage() {
     setIsProcessing(true);
     
     try {
-      const url = URL.createObjectURL(file);
+      const url = originalUrl || URL.createObjectURL(file);
       const img = new Image();
       img.src = url;
       
-      await new Promise(resolve => img.onload = resolve);
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = () => reject(new Error('Failed to load image for compression.'));
+      });
       
       const canvas = document.createElement('canvas');
       canvas.width = img.width;
@@ -102,12 +143,17 @@ export default function CompressImage() {
         compressed: bestBlob.size
       });
       
-      setOutputUrl(URL.createObjectURL(bestBlob));
+      if (outputObjectUrlRef.current) {
+        URL.revokeObjectURL(outputObjectUrlRef.current);
+      }
+      const outUrl = URL.createObjectURL(bestBlob);
+      outputObjectUrlRef.current = outUrl;
+      setOutputUrl(outUrl);
       setSuccess(true);
     } catch (err) {
       trackError('Compress Image', 'processing_error');
       console.error(err);
-      alert("Failed to compress image.");
+      toast.error("Failed to compress image.");
     } finally {
       setIsProcessing(false);
     }
@@ -144,22 +190,58 @@ export default function CompressImage() {
     const savedPct = stats.original > 0 ? ((savedBytes / stats.original) * 100).toFixed(0) : 0;
     
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] animate-in fade-in zoom-in-95 duration-500">
-        <CheckCircle className="w-24 h-24 text-emerald-500 mb-8" />
-        <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-4">Image Compressed Successfully!</h2>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] py-8 animate-in fade-in zoom-in-95 duration-500">
+        <CheckCircle className="w-16 h-16 text-emerald-500 mb-4" />
+        <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight mb-2 text-center">Image Compressed Successfully!</h2>
+        <p className="text-gray-500 text-sm mb-6 text-center">Review the before and after comparison below before downloading.</p>
+
+        {/* Before / After Preview Comparison Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl mx-auto mb-8">
+          {/* Before Card */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-4 shadow-sm flex flex-col items-center">
+            <div className="w-full flex justify-between items-center mb-2 px-1">
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">Original</span>
+              <span className="text-xs font-bold text-gray-700 bg-gray-100 px-2 py-0.5 rounded-md">{formatBytes(stats.original)}</span>
+            </div>
+            <div className="w-full h-52 bg-slate-50 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-gray-100">
+              <img src={originalUrl} alt="Original preview" className="max-w-full max-h-full object-contain pointer-events-none" />
+            </div>
+            {dimensions && (
+              <p className="text-xs text-gray-400 mt-2 font-mono">{dimensions.width} × {dimensions.height}px</p>
+            )}
+          </div>
+
+          {/* After Card */}
+          <div className="bg-white rounded-2xl border border-emerald-200 p-4 shadow-sm flex flex-col items-center">
+            <div className="w-full flex justify-between items-center mb-2 px-1">
+              <span className="text-xs font-bold text-emerald-700 uppercase tracking-wide flex items-center gap-1">
+                <Sparkles className="w-3.5 h-3.5 text-emerald-600" /> Compressed
+              </span>
+              <span className="text-xs font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md">{formatBytes(stats.compressed)}</span>
+            </div>
+            <div className="w-full h-52 bg-emerald-50/30 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-emerald-100">
+              <img src={outputUrl} alt="Compressed preview" className="max-w-full max-h-full object-contain pointer-events-none" />
+            </div>
+            <div className="flex items-center gap-2 mt-2">
+              <span className="text-xs text-emerald-700 font-bold bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                Reduced {savedPct}% ({formatBytes(savedBytes)})
+              </span>
+            </div>
+          </div>
+        </div>
         
-        <div className="flex gap-8 mb-10 text-center">
-          <div className="bg-gray-50 px-6 py-4 rounded-xl border border-gray-200 shadow-sm">
-            <p className="text-sm font-bold text-gray-500 uppercase tracking-wide">Original Size</p>
-            <p className="text-2xl font-bold text-gray-800">{formatBytes(stats.original)}</p>
+        <div className="flex gap-4 sm:gap-6 mb-8 text-center">
+          <div className="bg-gray-50 px-5 py-3 rounded-xl border border-gray-200 shadow-sm">
+            <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Original Size</p>
+            <p className="text-xl font-bold text-gray-800">{formatBytes(stats.original)}</p>
           </div>
-          <div className="bg-emerald-50 px-6 py-4 rounded-xl border border-emerald-200 shadow-sm">
-            <p className="text-sm font-bold text-emerald-600 uppercase tracking-wide">Compressed Size</p>
-            <p className="text-2xl font-bold text-emerald-800">{formatBytes(stats.compressed)}</p>
+          <div className="bg-emerald-50 px-5 py-3 rounded-xl border border-emerald-200 shadow-sm">
+            <p className="text-xs font-bold text-emerald-600 uppercase tracking-wide">Compressed Size</p>
+            <p className="text-xl font-bold text-emerald-800">{formatBytes(stats.compressed)}</p>
           </div>
-          <div className="bg-indigo-50 px-6 py-4 rounded-xl border border-indigo-200 shadow-sm">
-            <p className="text-sm font-bold text-indigo-600 uppercase tracking-wide">Saved</p>
-            <p className="text-2xl font-bold text-indigo-800">{savedPct}%</p>
+          <div className="bg-indigo-50 px-5 py-3 rounded-xl border border-indigo-200 shadow-sm">
+            <p className="text-xs font-bold text-indigo-600 uppercase tracking-wide">Saved</p>
+            <p className="text-xl font-bold text-indigo-800">{savedPct}%</p>
           </div>
         </div>
         
@@ -167,15 +249,15 @@ export default function CompressImage() {
           <a 
             href={outputUrl} 
             download={`compressed_${file.name}`}
-            className="px-10 py-5 bg-emerald-600 text-white rounded-xl font-bold text-xl hover:bg-emerald-700 shadow-lg hover:shadow-xl transition-all flex items-center gap-3"
+            className="px-8 py-4 bg-emerald-600 text-white rounded-xl font-bold text-lg hover:bg-emerald-700 shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
           >
-            <Download className="w-8 h-8" /> Download Image
+            <Download className="w-6 h-6" /> Download Compressed Image
           </a>
           <button 
             onClick={resetTool}
-            className="px-8 py-5 bg-white border-2 border-gray-200 text-gray-700 rounded-xl font-bold text-lg hover:bg-gray-50 hover:border-gray-300 transition-all flex items-center gap-2"
+            className="px-6 py-4 bg-white border-2 border-gray-200 text-gray-700 rounded-xl font-bold text-base hover:bg-gray-50 hover:border-gray-300 transition-all flex items-center gap-2"
           >
-            <RefreshCw className="w-6 h-6" /> Compress another
+            <RefreshCw className="w-5 h-5" /> Compress another
           </button>
         </div>
         <DownloadPageExtras toolId="compress-image" />
@@ -212,6 +294,22 @@ export default function CompressImage() {
         </div>
         
         <div className="p-6 sm:p-10">
+          {/* Selected Image Visual Preview */}
+          <div className="mb-8 p-4 bg-gray-50/80 rounded-2xl border border-gray-200 flex flex-col sm:flex-row gap-5 items-center">
+            <div className="w-full sm:w-44 h-40 bg-white rounded-xl border border-gray-200 overflow-hidden flex items-center justify-center p-2 shadow-xs shrink-0">
+              <img src={originalUrl} alt={file.name} className="max-w-full max-h-full object-contain pointer-events-none" />
+            </div>
+            <div className="flex-1 space-y-1 text-center sm:text-left overflow-hidden">
+              <h3 className="font-bold text-gray-900 text-base sm:text-lg truncate" data-clarity-mask="true">{file.name}</h3>
+              <p className="text-xs text-gray-500 font-mono">
+                {dimensions ? `${dimensions.width} × ${dimensions.height} px • ` : ''}{formatBytes(file.size)}
+              </p>
+              <p className="text-xs text-gray-600 pt-1 leading-relaxed">
+                Adjust desired target size below. The compression engine will iteratively binary-search the optimal JPEG/WebP quality setting to hit your target.
+              </p>
+            </div>
+          </div>
+
           <p className="font-bold text-gray-800 mb-4 text-lg sm:text-xl">Target File Size</p>
           
           <div className="mb-10 p-6 sm:p-8 bg-gray-50/80 border border-gray-200/80 rounded-3xl shadow-sm">

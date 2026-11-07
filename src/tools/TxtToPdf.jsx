@@ -4,6 +4,7 @@ import { FileText, Download, RefreshCw, Settings } from 'lucide-react';
 
 import DragDropZone from '../components/ui/DragDropZone';
 import ExportActions from '../components/ui/ExportActions';
+import { toast } from 'sonner';
 import { trackError } from '../lib/analytics';
 
 export default function TxtToPdf() {
@@ -102,7 +103,7 @@ export default function TxtToPdf() {
     } catch (error) {
       trackError('Txt To Pdf', 'processing_error');
       console.error('Error generating PDF:', error);
-      alert('Failed to generate PDF. Make sure it is a valid text file.');
+      toast.error('Failed to generate PDF. Make sure it is a valid text file.');
     } finally {
       setIsProcessing(false);
     }

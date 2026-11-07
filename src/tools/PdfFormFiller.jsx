@@ -2,6 +2,7 @@ import { trackEvent } from '../lib/analytics';
 import React, { useState, useEffect } from 'react';
 import { FileSignature, FileText, Eraser, Loader2, AlertCircle } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
+import { toast } from 'sonner';
 import { trackError } from '../lib/analytics';
 
 export default function PdfFormFiller() {
@@ -25,7 +26,7 @@ export default function PdfFormFiller() {
       
       scanForm(newFile);
     } else {
-      alert("Please upload a valid PDF file.");
+      toast.error("Please upload a valid PDF file.");
     }
   };
 

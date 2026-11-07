@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Presentation, CheckCircle2 } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
+import { toast } from 'sonner';
 import { trackEvent, trackError } from '../lib/analytics';
 import { convertPdfToPpt } from '../utils/pdfConversion';
 
@@ -25,7 +26,7 @@ export default function PdfToPpt() {
       setSuccessData(null);
       setProgress(0);
     } else {
-      alert("Please upload a valid PDF file.");
+      toast.error("Please upload a valid PDF file.");
     }
   };
 
@@ -51,7 +52,7 @@ export default function PdfToPpt() {
     } catch (err) {
       trackError('Pdf To Ppt', 'processing_error');
       console.error('PDF to PPT conversion error:', err);
-      alert(`Failed to convert PDF to PowerPoint: ${err.message || err}`);
+      toast.error(`Failed to convert PDF to PowerPoint: ${err.message || err}`);
     } finally {
       setIsProcessing(false);
     }

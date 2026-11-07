@@ -3,6 +3,7 @@ import jsPDF from 'jspdf';
 import { Download, PlusCircle, Trash2, Image as ImageIcon, CheckCircle, ArrowLeft, ImagePlus, FileUp, GripVertical, RotateCw, LayoutTemplate } from 'lucide-react';
 import DragDropZone from '../components/ui/DragDropZone';
 import DownloadPageExtras from '../components/ui/DownloadPageExtras';
+import { toast } from 'sonner';
 import { trackEvent, trackError } from '../lib/analytics';
 import { normalizeImage } from '../utils/imageNormalization';
 
@@ -51,7 +52,7 @@ export default function JpgToPdf() {
     const imgFiles = Array.isArray(newFiles) ? newFiles : [newFiles];
     const valid = imgFiles.filter(isImageFile);
     if (valid.length === 0) {
-      alert('Please upload valid image files (JPG, PNG, WebP, GIF, BMP).');
+      toast.error('Please upload valid image files (JPG, PNG, WebP, GIF, BMP).');
       return;
     }
 
@@ -74,7 +75,7 @@ export default function JpgToPdf() {
     }).catch(err => {
       trackError('Jpg To Pdf', 'file_read_error');
       console.error(err);
-      alert('Could not read one or more selected images.');
+      toast.error('Could not read one or more selected images.');
     });
   };
 
@@ -219,7 +220,7 @@ export default function JpgToPdf() {
     } catch (err) {
       trackError('Jpg To Pdf', 'processing_error');
       console.error("PDF generation error:", err);
-      alert("Failed to create PDF. Please ensure all uploaded files are valid images.");
+      toast.error("Failed to create PDF. Please ensure all uploaded files are valid images.");
     } finally {
       setLoading(false);
     }

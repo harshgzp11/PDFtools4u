@@ -2,6 +2,7 @@ import { trackEvent } from '../lib/analytics';
 import React, { useState, useRef } from 'react';
 import { safeHtml2Canvas } from '../utils/canvasUtils';
 import { Download, Play } from 'lucide-react';
+import { toast } from 'sonner';
 import { trackError } from '../lib/analytics';
 import DOMPurify from 'dompurify';
 
@@ -26,7 +27,7 @@ export default function HtmlToImage() {
     } catch (err) {
       trackError('Html To Image', 'processing_error');
       console.error(err);
-      alert("Failed to render HTML to image.");
+      toast.error("Failed to render HTML to image.");
     } finally {
       setLoading(false);
     }

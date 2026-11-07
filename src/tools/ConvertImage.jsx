@@ -2,6 +2,7 @@ import { trackEvent } from '../lib/analytics';
 import React, { useState, useEffect } from 'react';
 import { ArrowLeftRight, CheckCircle, Download, RefreshCw, Image as ImageIcon, Loader2 } from 'lucide-react';
 import DragDropZone from '../components/ui/DragDropZone';
+import { toast } from 'sonner';
 import DownloadPageExtras from '../components/ui/DownloadPageExtras';
 import { trackError } from '../lib/analytics';
 
@@ -85,7 +86,7 @@ export default function ConvertImage() {
     } catch (err) {
       trackError('Convert Image', 'processing_error');
       console.error(err);
-      alert("Failed to convert image.");
+      toast.error("Failed to convert image.");
     } finally {
       setIsProcessing(false);
     }

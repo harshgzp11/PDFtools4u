@@ -63,14 +63,17 @@ export default function DragDropZone({
     }
   };
 
+  const hasCustomPadding = className && /\b(p|py|px)-\d+/.test(className);
+  const hasCustomMaxWidth = className && /\bmax-w-/.test(className);
+
   return (
     <div 
       role="button"
       tabIndex={0}
       aria-label={label}
-      className={`border-2 border-dashed rounded-2xl flex flex-col items-center justify-center cursor-pointer transition-all duration-300 w-full max-w-4xl mx-auto p-12 py-20 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-400 ${
+      className={`border-2 border-dashed rounded-2xl flex flex-col items-center justify-center cursor-pointer transition-all duration-300 w-full ${hasCustomMaxWidth ? '' : 'max-w-4xl mx-auto'} ${hasCustomPadding ? '' : 'p-12 py-20'} focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-400 ${
         isDragging ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-inner' : 'border-blue-300 hover:border-blue-400 hover:bg-blue-50/50 hover:shadow-lg bg-blue-50/30'
-      } ${(className || '').replace(/p-\\d+|py-\\d+|px-\\d+|max-w-\\[\\w\\]+|w-full|mx-auto/g, '')}`}
+      } ${className || ''}`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}

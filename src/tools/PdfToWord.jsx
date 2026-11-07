@@ -2,6 +2,7 @@ import { trackEvent } from '../lib/analytics';
 import React, { useState, useEffect } from 'react';
 import { FileCode2 } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
+import { toast } from 'sonner';
 import { trackError } from '../lib/analytics';
 
 
@@ -117,7 +118,7 @@ export default function PdfToWord() {
       setProgress(0);
       setPreviewText("");
     } else {
-      alert("Please upload a valid PDF file.");
+      toast.error("Please upload a valid PDF file.");
     }
   };
 
@@ -166,7 +167,7 @@ export default function PdfToWord() {
          errorType = 'corrupted_file';
       }
       trackError('PDF to Word', errorType);
-      alert(`Conversion error: ${err.message || 'Failed to process document'}`);
+      toast.error(`Conversion error: ${err.message || 'Failed to process document'}`);
     } finally {
       setIsProcessing(false);
     }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ArrowLeftRight, FileText, Image as ImageIcon, FileCode2, ChevronDown, ChevronUp, ChevronRight, ScanText, FileSpreadsheet, Presentation, Code } from 'lucide-react';
 import DragDropZone from '../components/ui/DragDropZone';
+import { toast } from 'sonner';
 
 
 import { trackError } from '../lib/analytics';
@@ -52,7 +53,7 @@ export default function PdfConverterHub() {
       setFileType('excel');
     } else if (['pptx', 'ppt'].includes(ext) || type.includes('presentation') || type.includes('powerpoint')) {
       if (ext === 'ppt') {
-        alert("Legacy binary PowerPoint (.ppt) format is not supported in the browser. Please open the presentation in PowerPoint, Google Slides, or LibreOffice and save it as modern .pptx before converting.");
+        toast.error("Legacy binary PowerPoint (.ppt) format is not supported in the browser. Please open the presentation in PowerPoint, Google Slides, or LibreOffice and save it as modern .pptx before converting.");
         return;
       }
       setFileType('ppt');

@@ -12,6 +12,8 @@ import {
   Layers
 } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
+import CompressionSlider from '../components/ui/CompressionSlider';
+import { interpolateCompression } from '../utils/compressionMath';
 import {
   compressPdfDocument,
   preflightInspectPdf,
@@ -34,6 +36,8 @@ export default function CompressPdf() {
 
   // Settings & Preflight State
   const [selectedPresetId, setSelectedPresetId] = useState('balanced');
+  const [sliderValue, setSliderValue] = useState(66);
+  const [compressionParams, setCompressionParams] = useState(() => interpolateCompression(66));
   const [preflight, setPreflight] = useState(null);
   const [isInspecting, setIsInspecting] = useState(false);
   const [signatureConfirmed, setSignatureConfirmed] = useState(false);
@@ -88,6 +92,8 @@ export default function CompressPdf() {
     setStatusMessage('');
     setSuccessData(null);
     setSelectedPresetId('balanced');
+    setSliderValue(66);
+    setCompressionParams(interpolateCompression(66));
   };
 
   const handleFile = async (newFile) => {
@@ -183,6 +189,9 @@ export default function CompressPdf() {
         file,
         {
           preset: presetObj,
+          quality: compressionParams.quality,
+          maxDimension: compressionParams.maxDimension,
+          minSavings: compressionParams.minSavings,
           signal: controller.signal,
           allowSignedPdf: signatureConfirmed,
           onStatus: (msg) => setStatusMessage(msg)
@@ -378,50 +387,16 @@ export default function CompressPdf() {
       processButton={processButton}
     >
       <div className="space-y-4">
-        {/* Preset Selector */}
-        <div>
-          <label className="text-xs font-bold text-gray-500 uppercase tracking-wide block mb-2">
-            Compression Level
-          </label>
-          <div className="grid grid-cols-1 gap-2.5">
-            {Object.values(COMPRESSION_PRESETS).map((p) => {
-              const isSelected = selectedPresetId === p.id;
-              return (
-                <div
-                  key={p.id}
-                  onClick={() => !isProcessing && setSelectedPresetId(p.id)}
-                  className={`p-3 rounded-xl border transition-all cursor-pointer select-none text-left flex flex-col justify-between gap-1.5 ${
-                    isSelected
-                      ? 'border-green-600 bg-green-50/50 shadow-sm ring-1 ring-green-600'
-                      : 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50/50'
-                  } ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div
-                        className={`w-4 h-4 rounded-full border flex items-center justify-center ${
-                          isSelected ? 'border-green-600 bg-green-600' : 'border-gray-300'
-                        }`}
-                      >
-                        {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
-                      </div>
-                      <span className="font-bold text-sm text-gray-900">{p.label}</span>
-                    </div>
-                    {p.isRecommended && (
-                      <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-green-100 text-green-700 tracking-wide">
-                        Recommended
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-xs text-gray-600 pl-6 leading-relaxed">{p.description}</p>
-                  <div className="pl-6 pt-0.5 text-[11px] font-mono text-gray-400">
-                    Max {p.maxDimension}px • {Math.round(p.quality * 100)}% JPEG
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+        {/* Continuous Piecewise Compression Slider */}
+        <CompressionSlider
+          value={sliderValue}
+          onChange={(params) => {
+            setSliderValue(params.sliderValue);
+            setCompressionParams(params);
+            setSelectedPresetId(params.activePresetId);
+          }}
+          disabled={isProcessing}
+        />
 
         {/* Encrypted PDF Warning */}
         {preflight?.isEncrypted && (

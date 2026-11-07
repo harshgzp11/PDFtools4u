@@ -2,6 +2,7 @@ import { trackEvent } from '../lib/analytics';
 import React, { useState, useEffect, useRef } from 'react';
 import { FileText, Printer } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
+import { toast } from 'sonner';
 import * as docx from 'docx-preview';
 import mammoth from 'mammoth';
 import DOMPurify from 'dompurify';
@@ -85,7 +86,7 @@ export default function WordToPdf() {
 
   const handleFile = async (newFile) => {
     if (!isDocxFile(newFile)) {
-      alert("Please upload a Microsoft Word document (.docx). Only modern .docx files are supported.");
+      toast.error("Please upload a Microsoft Word document (.docx). Only modern .docx files are supported.");
       return;
     }
 
@@ -167,7 +168,7 @@ export default function WordToPdf() {
     } catch (err) {
       trackError('Word To Pdf', 'processing_error');
       console.error('Word to PDF Error:', err);
-      alert(`Conversion error: ${err.message || 'Failed to process document'}`);
+      toast.error(`Conversion error: ${err.message || 'Failed to process document'}`);
     } finally {
       setIsProcessing(false);
     }

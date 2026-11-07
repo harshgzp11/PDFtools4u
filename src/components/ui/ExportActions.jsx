@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Download, Share2, Lock, Type, RefreshCw, CheckCircle2, AlertCircle } from 'lucide-react';
 import { PDFDocument, rgb, degrees } from 'pdf-lib';
+import { toast } from 'sonner';
 
 export default function ExportActions({ pdfBytes, fileName, onReset }) {
   const [processedBytes, setProcessedBytes] = useState(pdfBytes);
@@ -53,7 +54,7 @@ export default function ExportActions({ pdfBytes, fileName, onReset }) {
       setWatermarkText('');
     } catch (err) {
       console.error('Failed to apply watermark:', err);
-      alert('Failed to apply watermark.');
+      toast.error('Failed to apply watermark.');
     } finally {
       setIsApplyingWatermark(false);
     }
@@ -65,7 +66,7 @@ export default function ExportActions({ pdfBytes, fileName, onReset }) {
     const file = new File([processedBytes], fileName, { type: 'application/pdf' });
     
     if (!navigator.canShare || !navigator.canShare({ files: [file] })) {
-      alert("Your browser doesn't support native sharing for this file.");
+      toast.error("Your browser doesn't support native sharing for this file.");
       return;
     }
 

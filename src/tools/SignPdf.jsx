@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Download, PenTool, FileText, CheckCircle, ArrowLeft, RefreshCw, Loader2, Plus, Check, X } from 'lucide-react';
 import DragDropZone from '../components/ui/DragDropZone';
 import DownloadPageExtras from '../components/ui/DownloadPageExtras';
+import { toast } from 'sonner';
 import SignatureModal from '../components/ui/SignatureModal';
 import DraggableOverlay from '../components/ui/DraggableOverlay';
 import { getPdfThumbnails } from '../lib/pdfRenderer';
@@ -45,9 +46,9 @@ export default function SignPdf() {
         setThumbnails(thumbs);
       } catch (e) {
       trackError('Sign Pdf', 'processing_error');
-        console.error(e);
-        alert(`Failed to load PDF: ${e.message}`);
-        setFile(null);
+      console.error(e);
+      toast.error(`Failed to load PDF: ${e.message}`);
+      setFile(null);
       } finally {
         setExtractingThumbs(false);
       }
@@ -162,7 +163,7 @@ export default function SignPdf() {
     } catch (err) {
       trackError('Sign Pdf', 'processing_error');
       console.error(err);
-      alert("Failed to export document. It might be encrypted or corrupted.");
+      toast.error("Failed to export document. It might be encrypted or corrupted.");
     } finally {
       setLoading(false);
     }

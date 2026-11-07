@@ -1,10 +1,11 @@
 import { trackEvent } from '../lib/analytics';
 import React, { useState } from 'react';
-
-import { Download, RotateCw, RotateCcw, FileText, CheckCircle, ArrowLeft, Loader2, ListOrdered, Scissors, RefreshCw } from 'lucide-react';
+import { RotateCw, RotateCcw, Loader2, ListOrdered, Scissors, RefreshCw } from 'lucide-react';
+import { toast } from 'sonner';
 import { getPdfThumbnails } from '../lib/pdfRenderer';
 import { getDynamicGridClass } from '../lib/utils';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
+import PageSelectionCard from '../components/ui/PageSelectionCard';
 import { trackError } from '../lib/analytics';
 
 export default function RotatePdf() {
@@ -29,9 +30,9 @@ export default function RotatePdf() {
         const thumbs = await getPdfThumbnails(newFile, 0.5);
         setThumbnails(thumbs);
       } catch (e) {
-      trackError('Rotate Pdf', 'processing_error');
+        trackError('Rotate Pdf', 'processing_error');
         console.error(e);
-        alert(`Failed to load PDF: ${e.message}`);
+        toast.error(`Failed to load PDF: ${e.message}`);
         setFile(null);
       } finally {
         setExtractingThumbs(false);
@@ -128,7 +129,7 @@ export default function RotatePdf() {
     } catch (err) {
       trackError('Rotate Pdf', 'processing_error');
       console.error(err);
-      alert("Failed to rotate PDF. The file might be encrypted or corrupted.");
+      toast.error("Failed to rotate PDF. The file might be encrypted or corrupted.");
     } finally {
       setLoading(false);
     }
@@ -165,38 +166,16 @@ export default function RotatePdf() {
             const totalRotation = globalRotation + pageRotation;
             
             return (
-              <div 
-                key={thumb.id} 
-                className="group relative aspect-[1/1.4] rounded-xl shadow-md border-4 border-transparent bg-white overflow-hidden flex items-center justify-center p-2 hover:border-blue-300 transition-colors"
-              >
-                <img 
-                  src={thumb.dataUrl} 
-                  alt={`Page ${idx + 1}`} 
-                  className="w-full h-full object-contain transition-transform duration-500 pointer-events-none"
-                  style={{ transform: `rotate(${totalRotation}deg)` }}
-                />
-                
-                <div className="absolute top-2 right-2 p-1.5 rounded-full border text-xs font-bold w-8 h-8 flex items-center justify-center bg-white/90 border-gray-300 text-gray-700 shadow-sm z-10">
-                  {idx + 1}
-                </div>
-
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4 z-20">
-                  <button 
-                    onClick={() => rotateSinglePage(thumb.id, -90)}
-                    className="p-3 bg-white text-gray-700 rounded-full shadow-lg hover:bg-blue-50 hover:text-blue-600 transition-all hover:scale-110"
-                    title="Rotate Left"
-                  >
-                    <RotateCcw className="w-5 h-5" />
-                  </button>
-                  <button 
-                    onClick={() => rotateSinglePage(thumb.id, 90)}
-                    className="p-3 bg-white text-gray-700 rounded-full shadow-lg hover:bg-blue-50 hover:text-blue-600 transition-all hover:scale-110"
-                    title="Rotate Right"
-                  >
-                    <RotateCw className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
+              <PageSelectionCard
+                key={thumb.id}
+                id={thumb.id}
+                index={idx}
+                dataUrl={thumb.dataUrl}
+                selectable={false}
+                rotation={totalRotation}
+                onRotateCcw={() => rotateSinglePage(thumb.id, -90)}
+                onRotateCw={() => rotateSinglePage(thumb.id, 90)}
+              />
             );
           })}
         </div>

@@ -2,6 +2,7 @@ import { trackEvent } from '../lib/analytics';
 import React, { useState, useRef, useCallback } from 'react';
 import { Download, Loader2, Sparkles, Zap, Gem, RotateCcw, Eye, Grid3X3, SlidersHorizontal } from 'lucide-react';
 import DragDropZone from '../components/ui/DragDropZone';
+import { toast } from 'sonner';
 import { trackError } from '../lib/analytics';
 import {
   blobToImageData,
@@ -191,7 +192,7 @@ export default function BackgroundRemover() {
          errorType = 'file_too_large';
       }
       trackError('Background Remover', errorType);
-      alert(`Failed to remove background: ${err.message || 'Unknown error'}. Try a different image or mode.`);
+      toast.error(`Failed to remove background: ${err.message || 'Unknown error'}. Try a different image or mode.`);
     } finally {
       setLoading(false);
     }

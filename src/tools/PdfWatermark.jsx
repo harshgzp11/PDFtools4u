@@ -2,6 +2,7 @@ import { trackEvent } from '../lib/analytics';
 import React, { useState } from 'react';
 import { Stamp, Type } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
+import { toast } from 'sonner';
 import { trackError } from '../lib/analytics';
 
 export default function PdfWatermark() {
@@ -20,7 +21,7 @@ export default function PdfWatermark() {
       setFile(newFile);
       setSuccessData(null);
     } else {
-      alert("Please upload a valid PDF file.");
+      toast.error("Please upload a valid PDF file.");
     }
   };
 
@@ -86,7 +87,7 @@ export default function PdfWatermark() {
     } catch (err) {
       trackError('Pdf Watermark', 'processing_error');
       console.error(err);
-      alert("Failed to add watermark. The file might be encrypted or corrupted.");
+      toast.error("Failed to add watermark. The file might be encrypted or corrupted.");
     } finally {
       setLoading(false);
     }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Image as ImageIcon, Lock, ShieldAlert, Sparkles, Layers } from 'lucide-react';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
+import { toast } from 'sonner';
 import { trackEvent, trackError } from '../lib/analytics';
 import { convertPdfToImages, isPdfEncrypted } from '../utils/pdfConversion';
 
@@ -60,7 +61,7 @@ export default function PdfToImage() {
       const encrypted = await isPdfEncrypted(newFile);
       setPasswordRequired(encrypted);
     } else {
-      alert("Please upload a valid PDF document (.pdf).");
+      toast.error("Please upload a valid PDF document (.pdf).");
     }
   };
 

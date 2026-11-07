@@ -1,8 +1,9 @@
 import { trackEvent } from '../lib/analytics';
 import React, { useState } from 'react';
-
 import { Download, FileUp, CheckCircle } from 'lucide-react';
+import { toast } from 'sonner';
 import ToolPreviewLayout from '../components/ui/ToolPreviewLayout';
+import PageSelectionCard from '../components/ui/PageSelectionCard';
 import { trackError } from '../lib/analytics';
 
 export default function ExtractPdfPages() {
@@ -85,40 +86,24 @@ export default function ExtractPdfPages() {
     } catch (err) {
       trackError('Extract Pdf Pages', 'processing_error');
       console.error(err);
-      alert("Failed to extract pages. The file might be encrypted or corrupted.");
+      toast.error("Failed to extract pages. The file might be encrypted or corrupted.");
     } finally {
       setLoading(false);
     }
   };
 
   const renderGridItem = (thumb, idx) => {
-    const isSelected = selectedPages.has(idx);
     return (
-      <div 
-        key={thumb.id} 
-        onClick={() => togglePage(idx)}
-        className={`group relative aspect-[1/1.4] rounded-xl shadow-md border-4 overflow-hidden flex flex-col hover:shadow-xl transition-all cursor-pointer ${
-          isSelected ? 'border-purple-500 bg-purple-50' : 'border-transparent hover:-translate-y-1 bg-white'
-        }`}
-      >
-        <img 
-          src={thumb.dataUrl} 
-          alt={`Page ${idx + 1}`} 
-          className="w-full h-full object-cover transition-opacity duration-300 opacity-100 group-hover:opacity-90 pointer-events-none"
-        />
-        
-        {isSelected && (
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none bg-purple-500/10">
-            <CheckCircle className="w-16 h-16 text-purple-500 drop-shadow-md" />
-          </div>
-        )}
-        
-        <div className={`absolute top-2 right-2 p-1.5 rounded-full border text-xs font-bold w-8 h-8 flex items-center justify-center transition-colors shadow-sm ${
-          isSelected ? 'bg-purple-500 border-purple-600 text-white' : 'bg-white/90 border-gray-300 text-gray-700'
-        }`}>
-          {idx + 1}
-        </div>
-      </div>
+      <PageSelectionCard
+        key={thumb.id}
+        id={thumb.id}
+        index={idx}
+        dataUrl={thumb.dataUrl}
+        isSelected={selectedPages.has(idx)}
+        onToggle={togglePage}
+        variant="extract"
+        selectedIcon={CheckCircle}
+      />
     );
   };
 

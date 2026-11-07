@@ -425,18 +425,33 @@ export default function PdfMerger() {
               <div 
                 key={item.id} 
                 draggable="true"
+                tabIndex={0}
                 onDragStart={(e) => handleDragStart(e, index)}
                 onDragOver={(e) => handleDragOver(e, index)}
                 onDrop={(e) => handleDrop(e, index)}
                 onDragEnd={handleDragEnd}
-                className={`relative group w-48 h-64 bg-white rounded-xl shadow-md border flex flex-col items-center justify-center overflow-hidden transition-all cursor-grab active:cursor-grabbing ${
+                onKeyDown={(e) => {
+                  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    if (index > 0) moveUp(index);
+                  } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    if (index < files.length - 1) moveDown(index);
+                  } else if (e.key === 'Delete' || e.key === 'Backspace') {
+                    e.preventDefault();
+                    removeFile(item.id);
+                  }
+                }}
+                role="listitem"
+                aria-label={`PDF ${index + 1} of ${files.length}: ${item.file.name}. Press Left or Right arrow keys to reorder, Delete to remove.`}
+                className={`relative group w-48 h-64 bg-white rounded-xl shadow-md border flex flex-col items-center justify-center overflow-hidden transition-all cursor-grab active:cursor-grabbing focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-500 ${
                   isDragging 
                     ? 'opacity-40 scale-95 ring-2 ring-blue-500 border-blue-500' 
                     : isDragOver 
                       ? 'border-blue-600 ring-2 ring-blue-400 scale-105 shadow-xl' 
                       : 'border-gray-200 hover:shadow-lg'
                 }`}
-                title={`Drag to reorder: ${item.file.name}`}
+                title={`Drag to reorder or use arrow keys: ${item.file.name}`}
               >
                 {item.thumbDataUrl ? (
                   <img src={item.thumbDataUrl} alt={`Page 1 of ${item.file.name}`} className="w-full h-full object-cover p-2 pointer-events-none" />
@@ -453,12 +468,12 @@ export default function PdfMerger() {
                 </div>
 
                 {/* Card Action Controls */}
-                <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 backdrop-blur-sm p-1 rounded-lg shadow-sm border border-gray-100">
+                <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity bg-white/95 backdrop-blur-sm p-1 rounded-lg shadow-sm border border-gray-100 z-10">
                   <button 
                     onClick={(e) => { e.stopPropagation(); moveUp(index); }}
                     disabled={index === 0}
-                    className="p-1 hover:bg-gray-100 text-gray-600 disabled:opacity-30 disabled:hover:bg-transparent rounded"
-                    title="Move earlier in sequence"
+                    className="p-1 hover:bg-gray-100 text-gray-600 disabled:opacity-30 disabled:hover:bg-transparent rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 cursor-pointer"
+                    title="Move earlier in sequence (Left Arrow)"
                     aria-label={`Move ${item.file.name} earlier`}
                   >
                     <ChevronUp className="w-4 h-4" />
@@ -466,16 +481,16 @@ export default function PdfMerger() {
                   <button 
                     onClick={(e) => { e.stopPropagation(); moveDown(index); }}
                     disabled={index === files.length - 1}
-                    className="p-1 hover:bg-gray-100 text-gray-600 disabled:opacity-30 disabled:hover:bg-transparent rounded"
-                    title="Move later in sequence"
+                    className="p-1 hover:bg-gray-100 text-gray-600 disabled:opacity-30 disabled:hover:bg-transparent rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 cursor-pointer"
+                    title="Move later in sequence (Right Arrow)"
                     aria-label={`Move ${item.file.name} later`}
                   >
                     <ChevronDown className="w-4 h-4" />
                   </button>
                   <button 
                     onClick={(e) => { e.stopPropagation(); removeFile(item.id); }}
-                    className="p-1 hover:bg-red-50 text-gray-500 hover:text-red-500 rounded"
-                    title="Remove file"
+                    className="p-1 hover:bg-red-50 text-gray-500 hover:text-red-500 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 cursor-pointer"
+                    title="Remove file (Delete key)"
                     aria-label={`Remove ${item.file.name}`}
                   >
                     <Trash2 className="w-4 h-4" />
