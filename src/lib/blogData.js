@@ -5545,7 +5545,7 @@ Pages containing redactions are rendered at high resolution (2x render scale) an
     id: "how-to-annotate-pdf-online-free",
     title: "How to Annotate a PDF Online Free Without Uploading Files",
     metaTitle: 'How to Annotate a PDF Online Free Without Uploads | PDFtools4u',
-    metaDescription: 'Annotate PDF documents online for free without uploading files. Highlight text, draw arrows, add comments, and markup study notes directly in your web browser.',
+    metaDescription: 'Annotate PDF documents online for free without uploading files. Draw freehand, use the translucent markup brush, and add typed notes directly in your web browser.',
     cluster: "Productivity",
     excerpt: "Learn how to safely markup and annotate pdf documents online. Draw, add text, and highlight sensitive contracts with client-side browser processing.",
     date: "September 13, 2026",
@@ -5590,7 +5590,7 @@ Pages containing redactions are rendered at high resolution (2x render scale) an
           "step": [
             { "@type": "HowToStep", "name": "Open the Local PDF Annotator", "text": "Navigate to the PDF Annotator tool on PDFTools4U and select your target document to pull it safely into local browser memory." },
             { "@type": "HowToStep", "name": "Apply Your Custom Annotations", "text": "Use the PDF markup tool panels to type text notes, highlight core text streams, or draw freehand lines." },
-            { "@type": "HowToStep", "name": "Burn and Download Your PDF", "text": "Click Save Annotations to flatten the new markup maps directly into the document layout and download the file with zero server interaction." }
+            { "@type": "HowToStep", "name": "Compile and Download Your PDF", "text": "Click Export to compile the new markup layers directly into the document layout and download the file with zero server interaction." }
           ]
         },
         {
@@ -5606,7 +5606,7 @@ Pages containing redactions are rendered at high resolution (2x render scale) an
       ]
     },
     content: `
-Whether you are grading student assignments, reviewing corporate contracts, or marking up architectural blueprints, knowing **how to annotate a pdf online free** is a useful digital workflow. You may need to draw shapes, add text notes, or highlight critical lines without installing desktop software.
+Whether you are grading student assignments, reviewing corporate contracts, or marking up architectural blueprints, knowing **how to annotate a pdf online free** is a useful digital workflow. You may need to sketch freehand notes, add typed text callouts, or apply translucent markups without installing desktop software.
 
 Many web utilities require you to upload documents to cloud servers before you can use their markup features. For confidential business data, legal records, or personal identification, that creates an unnecessary exposure point.
 
@@ -5639,13 +5639,13 @@ Open the [free PDF Annotator Tool](/pdf-annotator). Drag and drop your document 
 
 Use the toolbar to modify your document:
 
-- **Add text notes and comments:** Place feedback, dates, labels, or short instructions over the page.
-- **Highlight and underline:** Emphasize important clauses, financial terms, or action items.
-- **Draw shapes and freehand marks:** Use pens, arrows, boxes, and callouts to explain a diagram or mark a revision.
+- **Add typed text notes:** Place feedback, dates, labels, or short instructions over the page in clean Helvetica font.
+- **Highlight with translucent color:** Use the wide translucent brush to emphasize important clauses, financial figures, or action items.
+- **Draw freehand marks:** Use the pen tool to circle figures, sketch corrections, add checkmarks, or write handwritten notes.
 
 ### Step 3: Save Your Markups
 
-Click **Save Annotations** when your review is complete. The tool combines the annotation layers with the document for export.
+Click **Export** when your review is complete. The tool combines the annotation layers with the original document for download.
 
 ### Step 4: Download the Modified PDF
 
@@ -5655,7 +5655,7 @@ Download the finished PDF directly to your computer or phone. Review the saved f
 
 - **Education and e-learning:** Annotate essays and assignments without exposing student documents to a third party.
 - **Legal teams and compliance:** Underline case law, mark evidence, and add private review notes before submission.
-- **Product design and engineering:** Add revision boxes, design comments, and freehand feedback to schematic layouts.
+- **Product design and engineering:** Circle revision areas, add typed labels, and provide freehand feedback on schematic layouts.
 
 ## Local Architecture vs. Traditional Cloud Portals
 

@@ -1049,55 +1049,90 @@ export const SEO_CONTENT = {
     ]
   },
   "pdf-annotator": {
-    "title": "Free Online PDF Annotator — Draw, Write & Highlight on PDFs (No Signup)",
-    "description": "Annotate any PDF document for free directly in your web browser. Draw freehand with the pen tool, highlight text, and add typed notes securely with client-side execution and zero file uploads.",
-    "howToTitle": "How to use our free online PDF annotator",
-    "howTo": [
-      "Drop or Select Your PDF: Upload any PDF document from your phone, tablet, or desktop. There are no registration screens, email submissions, or waitlists.",
-      "Choose Your Annotation Mode: Switch between the precision Pen tool for freehand notes and sketches, the Highlighter tool for glowing translucent markups, or the Text tool to type digital commentary.",
-      "Customize Colors & Stroke Width: Select from curated color palettes (Red, Blue, Green, Yellow, Black) to color-code grading notes, edits, approval stamps, or feedback.",
-      "Mark Up Multi-Page Documents: Effortlessly flip between pages using page navigation controls. Your annotations and drawings are preserved across every page.",
-      "Export & Save Instantly: Click 'Export' to compile your annotations into a crisp, standardized PDF file downloaded straight to your device."
+    "title": "Free Online PDF Annotator — Draw, Mark & Add Notes to PDFs",
+    "description": "Annotate PDF documents online for free directly in your web browser. Draw freehand with the pen tool, apply translucent brush markups, and add typed text callouts locally without file uploads.",
+    "specs": [
+      {
+        "key": "Annotation Engine",
+        "value": "Client-side HTML5 Canvas & SignaturePad"
+      },
+      {
+        "key": "PDF Rendering",
+        "value": "Mozilla PDF.js (v4+)"
+      },
+      {
+        "key": "PDF Compilation",
+        "value": "pdf-lib stream assembly"
+      },
+      {
+        "key": "Supported Markups",
+        "value": "Freehand drawing pen, translucent freehand highlighter brush, typed text callouts"
+      },
+      {
+        "key": "Processing Environment",
+        "value": "In-Browser execution via client-side JavaScript (no server uploads)"
+      },
+      {
+        "key": "Multi-Page Handling",
+        "value": "Per-page annotation state retention across document navigation"
+      },
+      {
+        "key": "Content Preservation",
+        "value": "Retains original vector text and layouts; markups overlaid as transparent layers"
+      },
+      {
+        "key": "Palette Presets",
+        "value": "5 curated colors (Black, Red, Blue, Green, Yellow)"
+      }
     ],
-    "whyTitle": "Why Choose Our Free Online PDF Annotator?",
-    "why": "Reviewing research papers, legal agreements, student assignments, corporate proposals, and design blueprints shouldn't require downloading paid enterprise software or submitting personal data to invasive signup forms.\n\n### How to use our free online PDF annotator\nGetting started with our browser-based annotator requires zero installation:\n1. **Drop your document**: Simply drag your PDF into the upload zone above. The document initializes entirely within your local browser memory.\n2. **Mark up with precision**: Pick the **Pen Tool** to circle numbers, sketch arrows, or draw diagrams; use the **Highlighter** to accent critical paragraphs with transparent ink; or use the **Text Tool** to add typed notes anywhere on the page.\n3. **Export and share**: Hit Export to generate a clean, universal PDF file compatible with Adobe Acrobat, Apple Preview, and mobile PDF readers.\n\n### Is my data safe when annotating PDFs online?\n**Yes, absolutely.** Unlike traditional cloud-based PDF conversion platforms that transmit your files to remote third-party servers, PDFtools4u operates on a **client-side execution model**. Your documents, sensitive contracts, academic records, and financial statements are rendered and marked up locally on your device using JavaScript and Canvas APIs. Your document contents are not uploaded to our servers.\n\n### Complete Browser-Based Execution (No Signup Required)\n- **No Signup or Paywalls**: Enjoy immediate access to every annotation tool without creating an account or providing credit card information.\n- **Lightning-Fast Performance**: Because your files never upload over slow networks to remote servers, page rendering and annotation saves are instantaneous.\n- **Universal Device Support**: Annotate effortlessly on Google Chrome, Safari, Firefox, Edge across Windows, macOS, Linux, iPad, and Android.\n- **Permanent Vector Export**: Annotations and markups are burned into the standard PDF document architecture, ensuring recipients see your edits exactly as intended.\n\n### Explore Related PDF Management Tools\nSeamlessly integrate your annotation workflow with our suite of free, client-side document utilities:\n- Have an encrypted or locked file? Use our **[Unlock PDF Tool](/unlock-pdf)** to remove password restrictions before annotating.\n- Need to extract text or transcripts from your document? Convert it with our **[PDF to Text Converter](/pdf-to-text)** or **[TXT to PDF Converter](/txt-to-pdf)**.\n- Need to finalize agreements? Add signatures with our **[Sign PDF Tool](/sign-pdf)**, reduce file sizes with **[Compress PDF Tool](/compress-pdf)**, or make full structural edits using our **[Edit PDF Tool](/edit-pdf)**.",
+    "howToTitle": "How to Annotate a PDF in Your Browser",
+    "howTo": [
+      "Open or Drop Your PDF: Select or drag and drop your PDF document into the browser workspace. The file loads directly into local browser memory without uploading to a server.",
+      "Choose an Annotation Tool: Select the Pen tool for freehand notes and sketches, the Highlighter tool for a translucent color brush, or the Text tool to place typed notes.",
+      "Select Your Color: Choose from five curated colors (Black, Red, Blue, Green, Yellow) to organize feedback, grading marks, or review notes.",
+      "Navigate Document Pages: Use page navigation buttons to move between pages. Your drawings and text callouts are preserved across every page.",
+      "Export the Annotated PDF: Click 'Export' to compile your annotations with the original document and save the updated PDF straight to your device."
+    ],
+    "whyTitle": "Why Annotate PDFs with PDFtools4u?",
+    "why": "## In-Browser PDF Markup Without Server Uploads\n\nReviewing contracts, grading assignments, marking proof drafts, and adding quick notes shouldn't require installing bulky desktop software or uploading sensitive files to cloud servers. PDFtools4u provides a lightweight, browser-based environment where you can open a document, make manual additions, and export the annotated result in seconds.\n\n### Available Annotation Tools & Markup Modes\n- **Freehand Pen Tool:** Draw smooth handwritten notes, circle key data, sketch review marks, or check off checklist items using a responsive 3px drawing stroke.\n- **Translucent Highlighting Brush:** Apply a 15px wide semi-transparent color wash over document regions to accent paragraphs or call out figures. Note: This operates as a freehand brush rather than an automatic text-selection snap highlighter.\n- **Typed Text Callouts:** Click anywhere on the page to position a single-line text note in standard Helvetica font, ideal for adding dates, labels, or short editorial instructions.\n- **Five-Color Palette:** Quickly switch between Black, Red, Blue, Green, and Yellow to visually organize your review notes and edits.\n- **Multi-Page Retention:** Move forward and backward through multi-page PDFs using the page navigation controls. All drawings and text notes are cached in session memory until you export.\n\n### Document Content Preservation During Export\nWhen you click **Export**, the browser-side compiler (`pdf-lib`) preserves the original PDF document structure:\n- **Vector Text and Graphics Untouched:** The underlying document pages are not rasterized into low-resolution images. Text streams, fonts, tables, and vector lines remain sharp.\n- **Transparent Annotation Overlays:** Freehand drawings and highlights are compiled as high-resolution transparent overlay streams placed directly over the corresponding pages.\n- **Native Text Insertion:** Text annotations are inserted as standard PDF text elements, ensuring crisp readability across Adobe Acrobat, Apple Preview, web browsers, and mobile readers.\n\n### How Your PDF Is Processed in Your Browser\nAll document rendering, drawing interactions, and PDF compilation take place locally within your device's web browser using JavaScript and HTML5 Canvas APIs:\n- **Zero Document Uploads:** Selected PDF files and annotations are not uploaded to PDFtools4u servers or stored on remote cloud infrastructure.\n- **Session Privacy:** Your document remains in local browser memory for the duration of your editing session and is cleared when you close or reload the browser tab.\n- **Website Transparency:** The website loads standard scripts, stylesheets, and privacy-preserving analytics over secure connections as described in our [Privacy Policy](/privacy-policy). Document contents remain strictly inside your local browser session.\n\n### Explore Related PDF Utilities\n- Have an encrypted or locked file? Use our [Unlock PDF Tool](/unlock-pdf) to remove password restrictions before annotating.\n- Need to fill interactive AcroForm fields? Use our [PDF Form Filler](/pdf-form-filler).\n- Need to make structural edits or add watermarks? Explore our [Edit PDF Tool](/edit-pdf) and [Sign PDF Tool](/sign-pdf).\n- Want to reduce the exported file size? Optimize it with our [Compress PDF Tool](/compress-pdf).",
     "relatedToolsTitle": "Related PDF Management Tools",
     "features": [
-      "Local Browser Processing: Files are processed directly inside your browser memory without server uploads, keeping your document data confidential.",
-      "No Signup Required: Start annotating immediately without creating an account or paying subscription fees.",
-      "Versatile Annotation Suite: Smooth freehand drawing pen, translucent text highlighter, and responsive text note inputs.",
-      "Multi-Page Navigation: Freely navigate and annotate any page with individual page state retention.",
-      "High-Resolution Output: Export crisp, vector-standard PDF documents compatible with all standard PDF viewers.",
-      "Zero Installation: Operates seamlessly in any modern web browser on desktop, tablet, and mobile devices."
+      "Local Browser Execution: Files are loaded and marked up in your browser memory without server-side file uploads.",
+      "No Account Required: Start annotating immediately without creating an account or paying subscription fees.",
+      "Freehand Drawing Pen: Draw smooth freehand strokes with a 3px precision pen for circling, sketching, and grading.",
+      "Translucent Highlighter Brush: Overlay 15px semi-transparent color marks to draw attention to critical document sections.",
+      "Typed Text Notes: Click anywhere on the page to insert clean single-line text callouts in Helvetica.",
+      "Multi-Page Navigation: Freely browse and annotate any page with individual page state retention.",
+      "Vector Document Preservation: Retains underlying vector text and graphics while compiling markups into standard PDF output."
     ],
     "faq": [
       {
-        "q": "How to use our free online PDF annotator?",
-        "a": "Simply drop your PDF into the upload box on this page, select the Pen, Highlighter, or Text tool from the toolbar, mark up your document pages, and click 'Export' to download the annotated PDF directly to your device. No signup, email, or payment is required."
+        "q": "How do I draw and write notes on my PDF?",
+        "a": "Select or drop your PDF into the upload box on this page, choose the Pen, Highlighter, or Text tool from the toolbar, mark up your document pages, and click 'Export' to download the updated PDF directly to your device. No registration or payment is required."
       },
       {
-        "q": "Is my data safe when annotating PDFs online?",
-        "a": "Yes. PDFtools4u processes your files directly within your local browser sandbox using client-side JavaScript and WebAssembly. Your document contents are not uploaded to, transmitted through, or stored on our servers."
+        "q": "Is my document safe when annotating PDFs here?",
+        "a": "Yes. PDFtools4u processes your files directly within your local browser session using client-side JavaScript, PDF.js, and HTML5 Canvas. Your document contents are not uploaded to or stored on our servers."
       },
       {
         "q": "Is this online PDF annotator completely free with no signup?",
-        "a": "Yes. Our PDF Annotator is completely free to use with no signup, account creation, watermarks, or hidden paywalls. You can annotate as many documents as you need."
+        "a": "Yes. The PDF Annotator is completely free to use with no account creation, subscriptions, watermarks, or daily file limits."
       },
       {
-        "q": "Can I highlight text and draw freehand on the same PDF?",
-        "a": "Yes. You can switch between freehand drawing for sketches or signatures, translucent highlighting for illuminating text, and typed notes for clear annotations on every page."
+        "q": "How does the highlighter tool work on this page?",
+        "a": "The highlighter tool acts as a 15px wide translucent freehand brush that you draw manually over lines or sections. It does not snap automatically to text characters, but allows you to freely wash translucent color over any text, diagram, or table."
       },
       {
         "q": "Will recipients be able to view my annotations in standard PDF readers?",
-        "a": "Yes. When you click Export, your drawings, highlights, and text callouts are burned into standard PDF elements that are fully visible in Adobe Acrobat, Apple Preview, Google Chrome, and mobile PDF apps."
+        "a": "Yes. When you click Export, your drawings, highlights, and text callouts are compiled into standard PDF elements that are fully visible in Adobe Acrobat, Apple Preview, Google Chrome, and mobile PDF viewers."
       },
       {
         "q": "Can I annotate a password-protected PDF file?",
-        "a": "If your file is protected by a password, you can first unlock it using our free Unlock PDF Tool (https://www.pdftools4u.in/unlock-pdf), and then upload it here to annotate freely."
+        "a": "If your document is protected with a password, you can first unlock it using our free Unlock PDF Tool (https://www.pdftools4u.in/unlock-pdf), and then load the unlocked file here to annotate."
       },
       {
-        "q": "Can I extract text or convert my annotated PDF afterwards?",
-        "a": "Yes. You can use our free PDF to Text Converter (https://www.pdftools4u.in/pdf-to-text) to extract raw text, or convert other text notes with our TXT to PDF Converter (https://www.pdftools4u.in/txt-to-pdf)."
+        "q": "What should I do if I need to erase an annotation?",
+        "a": "Clicking the Clear button on the toolbar erases all drawings and text callouts on the current page. We recommend reviewing each page before navigating or exporting. If you make a mistake while typing a text note, you can click directly into the text box to edit or retype its content."
       }
     ]
   },
