@@ -287,9 +287,9 @@ export default function JpgToPdf() {
 
   // State 2: Workspace View
   return (
-    <div className="flex flex-col lg:flex-row flex-1 min-h-[70vh] gap-6 animate-in slide-in-from-right-8 duration-500 -mx-6 sm:-mx-8 lg:-mx-8">
+    <div className="flex flex-col lg:flex-row flex-1 min-h-[70vh] gap-6 animate-in slide-in-from-right-8 duration-500 w-full">
       {/* Main Workspace Area (Left) */}
-      <div className="flex-1 bg-gray-100 rounded-xl lg:rounded-l-none lg:rounded-r-2xl border-y border-r border-gray-200 p-8 relative shadow-inner overflow-y-auto">
+      <div className="flex-1 bg-gray-100 rounded-2xl border border-gray-200 p-4 sm:p-6 lg:p-8 relative shadow-inner overflow-y-auto">
         <button 
           onClick={resetTool} 
           className="absolute top-6 left-6 p-2 bg-white rounded-lg shadow-sm text-gray-500 hover:text-gray-900 border border-gray-200"
@@ -323,14 +323,15 @@ export default function JpgToPdf() {
                   ? { transform: `translate(-50%, -50%) rotate(${img.rotation}deg)` }
                   : undefined}
               />
-              <button 
-                onClick={() => removeImage(i)} 
+              <button
+                onClick={(e) => { e.stopPropagation(); removeImage(i); }}
                 aria-label={`Remove ${img.file.name}`}
-                className="absolute top-2 right-2 p-1.5 bg-white/90 text-red-500 rounded-md opacity-0 group-hover:opacity-100 transition-opacity shadow-sm hover:bg-red-50 cursor-pointer"
+                title={`Remove ${img.file.name}`}
+                className="absolute top-2 right-2 p-1.5 bg-white/95 backdrop-blur-xs text-red-500 rounded-lg opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-focus-within:opacity-100 [@media(hover:hover)]:focus-within:opacity-100 [@media(hover:hover)]:focus:opacity-100 group-focus-within:opacity-100 focus-within:opacity-100 focus:opacity-100 transition-opacity shadow-sm border border-gray-100 hover:bg-red-50 cursor-pointer min-w-[28px] min-h-[28px] flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 z-10"
               >
                 <Trash2 className="w-4 h-4"/>
               </button>
-              <div className="absolute top-2 left-2 flex gap-1">
+              <div className="absolute top-2 left-2 flex gap-1 z-10">
                 <button
                   type="button"
                   draggable
@@ -347,15 +348,16 @@ export default function JpgToPdf() {
                   }}
                   aria-label={`Drag to reorder ${img.file.name}; use up and down arrow keys to move`}
                   title="Drag to reorder (or use up/down arrow keys)"
-                  className="p-1.5 bg-white/90 text-gray-700 rounded-md shadow-sm hover:bg-white cursor-grab active:cursor-grabbing"
+                  className="p-1.5 bg-white/95 backdrop-blur-xs text-gray-700 rounded-lg border border-gray-100 shadow-sm hover:bg-white cursor-grab active:cursor-grabbing min-w-[28px] min-h-[28px] flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                 >
                   <GripVertical className="w-4 h-4" />
                 </button>
                 <button
                   type="button"
-                  onClick={() => rotateImage(i)}
+                  onClick={(e) => { e.stopPropagation(); rotateImage(i); }}
                   aria-label={`Rotate ${img.file.name} 90 degrees clockwise`}
-                  className="p-1.5 bg-white/90 text-gray-700 rounded-md shadow-sm hover:bg-white cursor-pointer"
+                  title="Rotate 90 degrees clockwise"
+                  className="p-1.5 bg-white/95 backdrop-blur-xs text-gray-700 rounded-lg border border-gray-100 shadow-sm hover:bg-white cursor-pointer min-w-[28px] min-h-[28px] flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                 >
                   <RotateCw className="w-4 h-4" />
                 </button>
@@ -375,7 +377,7 @@ export default function JpgToPdf() {
       </div>
 
       {/* Settings Panel (Right Sidebar) */}
-      <div className="w-full lg:w-80 shrink-0 flex flex-col bg-white border-l border-gray-200 pb-8 px-6 lg:px-0">
+      <div className="w-full lg:w-80 shrink-0 flex flex-col bg-white border border-gray-200 rounded-2xl pb-8 px-6 lg:px-6 shadow-sm">
         <div className="p-6 lg:p-8 space-y-6 flex-1">
           <div>
             <h3 className="text-2xl font-extrabold text-gray-900 mb-1">{isPngRoute ? 'PNG to PDF' : 'Image to PDF'}</h3>

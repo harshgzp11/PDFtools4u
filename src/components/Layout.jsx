@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from 'react';
 
-import { Search, Shield, Zap, Menu, X, FileText, Image as ImageIcon, Code, ChevronDown, BookOpen } from 'lucide-react';
+import { Search, Shield, Zap, Menu, X, FileText, Image as ImageIcon, Code, ChevronDown, BookOpen, FileSpreadsheet } from 'lucide-react';
 import { DOMAINS } from '../lib/toolConfig';
 import Footer from './Footer';
 import SiteDirectory from './SiteDirectory';
 
-const NAV_DOMAINS = DOMAINS.filter((domain) =>
-  ['PDF Tools', 'Image Tools', 'Text & Developer Tools'].includes(domain.title)
-);
+const NAV_DOMAINS = DOMAINS;
 
 export default function Layout({ children, onNavigateToDomain, onSearch, onSelectTool, isToolView = false }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [expandedMobileDomain, setExpandedMobileDomain] = useState(null);
+  const [expandedMobileCategory, setExpandedMobileCategory] = useState(null);
 
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -113,7 +112,7 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
             </div>
             
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center gap-2 relative mega-dropdown-container h-full">
+            <div className="hidden lg:flex items-center gap-1 xl:gap-2 relative mega-dropdown-container h-full">
               {NAV_DOMAINS.map((domain) => (
                 <div 
                   key={domain.title} 
@@ -126,7 +125,7 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
                       onNavigateToDomain(domain.title);
                       setActiveDropdown(null);
                     }}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
+                    className={`px-2.5 xl:px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
                       activeDropdown === domain.title ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                     }`}
                   >
@@ -134,8 +133,10 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
                        ? <FileText className="w-4 h-4" aria-hidden="true" />
                        : domain.title === 'Image Tools'
                          ? <ImageIcon className="w-4 h-4" aria-hidden="true" />
-                         : <Code className="w-4 h-4" aria-hidden="true" />}
-                     {domain.title}
+                         : domain.title.startsWith('Document Tools')
+                           ? <FileSpreadsheet className="w-4 h-4" aria-hidden="true" />
+                           : <Code className="w-4 h-4" aria-hidden="true" />}
+                     {domain.title.startsWith('Document Tools') ? 'Document Tools' : domain.title}
                      <ChevronDown className={`w-3.5 h-3.5 transition-transform ${activeDropdown === domain.title ? 'rotate-180' : ''}`} aria-hidden="true" />
                   </button>
 
@@ -191,7 +192,7 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
                             }}
                             className={`text-xs font-bold flex items-center gap-1 ${domain.color} hover:opacity-80`}
                           >
-                            View all {domain.title} &rarr;
+                            View all {domain.title.startsWith('Document Tools') ? 'Document Tools' : domain.title} &rarr;
                           </button>
                         </div>
                       </div>
@@ -202,17 +203,17 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
               
               <button 
                 onClick={() => onSelectTool('blog')}
-                className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors flex items-center gap-1.5 ml-2"
+                className="px-2.5 xl:px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors flex items-center gap-1.5 ml-1 xl:ml-2"
               >
                  <BookOpen className="w-4 h-4" aria-hidden="true" />
                  Blog
               </button>
 
               {/* Search Button */}
-              <div className="ml-3 pl-3 border-l border-gray-200/80">
+              <div className="ml-1.5 xl:ml-3 pl-1.5 xl:pl-3 border-l border-gray-200/80">
                 <button 
                   onClick={openSearch}
-                  className="flex items-center justify-between w-64 px-3 py-1.5 border border-gray-200 rounded-lg bg-gray-50 hover:bg-white hover:border-blue-400 hover:shadow-md hover:shadow-blue-500/10 transition-all text-gray-600 group"
+                  className="flex items-center justify-between w-40 xl:w-64 px-3 py-1.5 border border-gray-200 rounded-lg bg-gray-50 hover:bg-white hover:border-blue-400 hover:shadow-md hover:shadow-blue-500/10 transition-all text-gray-600 group"
                 >
                   <div className="flex items-center gap-2">
                     <Search className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors" aria-hidden="true" />
@@ -285,43 +286,79 @@ export default function Layout({ children, onNavigateToDomain, onSearch, onSelec
                 {/* Mobile Accordions */}
                 {NAV_DOMAINS.map((domain) => (
                   <div key={domain.title} className="flex flex-col gap-1">
-                    <button 
-                      onClick={() => setExpandedMobileDomain(expandedMobileDomain === domain.title ? null : domain.title)} 
+                    <button
+                      onClick={() => {
+                        setExpandedMobileDomain(expandedMobileDomain === domain.title ? null : domain.title);
+                        setExpandedMobileCategory(null);
+                      }}
                       className="flex items-center justify-between text-base font-bold text-gray-800 hover:text-blue-600 py-3 w-full text-left rounded-lg transition-colors"
+                      aria-expanded={expandedMobileDomain === domain.title}
                     >
                       <div className="flex items-center gap-3">
                         {domain.title === 'PDF Tools'
                           ? <FileText className="w-5 h-5 text-blue-500" />
                           : domain.title === 'Image Tools'
                             ? <ImageIcon className="w-5 h-5 text-emerald-500" />
-                            : <Code className="w-5 h-5 text-purple-500" />}
-                        {domain.title}
+                            : domain.title.startsWith('Document Tools')
+                              ? <FileSpreadsheet className="w-5 h-5 text-indigo-500" />
+                              : <Code className="w-5 h-5 text-purple-500" />}
+                        {domain.title.startsWith('Document Tools') ? 'Document Tools' : domain.title}
                       </div>
                       <ChevronDown className={`w-5 h-5 transition-transform ${expandedMobileDomain === domain.title ? 'rotate-180 text-blue-600' : 'text-gray-400'}`} />
                     </button>
-                    
+
                     {expandedMobileDomain === domain.title && (
-                      <div className="flex flex-col gap-1.5 pl-8 py-2 border-l-2 border-blue-100 ml-2 animate-in slide-in-from-top-2">
-                        <button 
+                      <div className="flex flex-col gap-2 pl-3 py-2 border-l-2 border-blue-100 ml-2 animate-in slide-in-from-top-2">
+                        <button
                           onClick={() => { onNavigateToDomain(domain.title); setIsMobileMenuOpen(false); }}
-                          className="text-left text-blue-600 font-bold py-2 mb-1 text-sm flex items-center gap-1 hover:underline"
+                          className="text-left text-blue-600 font-bold py-1 px-2 mb-1 text-sm flex items-center gap-1 hover:underline"
                         >
-                          View All {domain.title} &rarr;
+                          View All {domain.title.startsWith('Document Tools') ? 'Document Tools' : domain.title} &rarr;
                         </button>
-                        {domain.categories.flatMap(c => c.tools).slice(0, 6).map(tool => (
-                          <button 
-                            key={tool.id}
-                            onClick={() => { 
-                              if (tool.comingSoon) return;
-                              onSelectTool(tool.id); 
-                              setIsMobileMenuOpen(false); 
-                            }}
-                            className={`text-left py-2 text-sm flex items-center gap-3 font-bold ${tool.comingSoon ? 'text-gray-400 cursor-default' : 'text-gray-600 hover:text-gray-900 hover:translate-x-1 transition-transform'}`}
-                          >
-                            {tool.name}
-                            {tool.comingSoon && <span className="text-[10px] font-bold uppercase bg-gray-100 text-gray-400 px-1.5 py-0.5 rounded">Soon</span>}
-                          </button>
-                        ))}
+
+                        {domain.categories.map((category) => {
+                          const isCatExpanded = expandedMobileCategory === category.name;
+                          return (
+                            <div key={category.name} className="flex flex-col rounded-lg bg-gray-50/70 border border-gray-100 overflow-hidden">
+                              <button
+                                type="button"
+                                onClick={() => setExpandedMobileCategory(isCatExpanded ? null : category.name)}
+                                className="flex items-center justify-between px-3 py-2 text-xs font-bold text-gray-700 hover:text-blue-600 transition-colors uppercase tracking-wider text-left"
+                                aria-expanded={isCatExpanded}
+                              >
+                                <span>{category.name}</span>
+                                <ChevronDown className={`w-3.5 h-3.5 text-gray-400 transition-transform ${isCatExpanded ? 'rotate-180 text-blue-600' : ''}`} />
+                              </button>
+
+                              {isCatExpanded && (
+                                <div className="flex flex-col gap-1 p-2 pt-0 border-t border-gray-100/80 bg-white">
+                                  {category.tools.map(tool => {
+                                    const Icon = tool.icon;
+                                    return (
+                                      <button
+                                        key={tool.id}
+                                        onClick={() => {
+                                          if (tool.comingSoon) return;
+                                          onSelectTool(tool.id);
+                                          setIsMobileMenuOpen(false);
+                                        }}
+                                        className={`text-left py-2 px-2.5 rounded-lg text-sm flex items-center justify-between font-medium transition-colors ${
+                                          tool.comingSoon ? 'text-gray-400 cursor-default' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
+                                        }`}
+                                      >
+                                        <div className="flex items-center gap-2.5 min-w-0">
+                                          <Icon className={`w-4 h-4 shrink-0 ${tool.color}`} aria-hidden="true" />
+                                          <span className="truncate">{tool.name}</span>
+                                        </div>
+                                        {tool.comingSoon && <span className="text-[9px] font-bold uppercase bg-gray-100 text-gray-400 px-1.5 py-0.5 rounded shrink-0">Soon</span>}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
                       </div>
                     )}
                   </div>

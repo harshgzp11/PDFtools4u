@@ -135,6 +135,8 @@ export default function DeletePdfPages() {
       processButton={processButton}
       gridMode={true}
       renderGridItem={renderGridItem}
+      compactOnMobile={true}
+      mobileDefaultTab="preview"
     >
       <div className="space-y-4">
         <h3 className="text-xl font-extrabold text-gray-900 mb-2">Delete Pages</h3>

@@ -366,9 +366,9 @@ export default function PdfMerger() {
 
   // State 2: Workspace View (Active Reordering & Merging Canvas)
   return (
-    <div className="flex flex-col lg:flex-row flex-1 min-h-[70vh] gap-6 animate-in slide-in-from-right-8 duration-500 -mx-6 sm:-mx-8 lg:-mx-8">
+    <div className="flex flex-col lg:flex-row flex-1 min-h-[70vh] gap-6 animate-in slide-in-from-right-8 duration-500 w-full">
       {/* Main Workspace Area (Left) */}
-      <div className="flex-1 bg-gray-100 rounded-xl lg:rounded-l-none lg:rounded-r-2xl border-y border-r border-gray-200 p-8 relative shadow-inner overflow-y-auto">
+      <div className="flex-1 bg-gray-100 rounded-2xl border border-gray-200 p-4 sm:p-6 lg:p-8 relative shadow-inner overflow-y-auto">
         <div className="flex items-center justify-between mb-8">
           <button 
             onClick={resetTool} 
@@ -468,11 +468,11 @@ export default function PdfMerger() {
                 </div>
 
                 {/* Card Action Controls */}
-                <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity bg-white/95 backdrop-blur-sm p-1 rounded-lg shadow-sm border border-gray-100 z-10">
+                <div className="absolute top-2 right-2 flex items-center gap-1 opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-focus-within:opacity-100 [@media(hover:hover)]:focus-within:opacity-100 group-focus-within:opacity-100 focus-within:opacity-100 transition-opacity bg-white/95 backdrop-blur-sm p-1 rounded-lg shadow-sm border border-gray-100 z-10">
                   <button 
                     onClick={(e) => { e.stopPropagation(); moveUp(index); }}
                     disabled={index === 0}
-                    className="p-1 hover:bg-gray-100 text-gray-600 disabled:opacity-30 disabled:hover:bg-transparent rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 cursor-pointer"
+                    className="p-1.5 hover:bg-gray-100 text-gray-600 disabled:opacity-30 disabled:hover:bg-transparent rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 cursor-pointer min-w-[28px] min-h-[28px] flex items-center justify-center"
                     title="Move earlier in sequence (Left Arrow)"
                     aria-label={`Move ${item.file.name} earlier`}
                   >
@@ -481,7 +481,7 @@ export default function PdfMerger() {
                   <button 
                     onClick={(e) => { e.stopPropagation(); moveDown(index); }}
                     disabled={index === files.length - 1}
-                    className="p-1 hover:bg-gray-100 text-gray-600 disabled:opacity-30 disabled:hover:bg-transparent rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 cursor-pointer"
+                    className="p-1.5 hover:bg-gray-100 text-gray-600 disabled:opacity-30 disabled:hover:bg-transparent rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 cursor-pointer min-w-[28px] min-h-[28px] flex items-center justify-center"
                     title="Move later in sequence (Right Arrow)"
                     aria-label={`Move ${item.file.name} later`}
                   >
@@ -489,7 +489,7 @@ export default function PdfMerger() {
                   </button>
                   <button 
                     onClick={(e) => { e.stopPropagation(); removeFile(item.id); }}
-                    className="p-1 hover:bg-red-50 text-gray-500 hover:text-red-500 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 cursor-pointer"
+                    className="p-1.5 hover:bg-red-50 text-gray-500 hover:text-red-500 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 cursor-pointer min-w-[28px] min-h-[28px] flex items-center justify-center"
                     title="Remove file (Delete key)"
                     aria-label={`Remove ${item.file.name}`}
                   >
@@ -527,7 +527,7 @@ export default function PdfMerger() {
       </div>
 
       {/* Settings Panel (Right Sidebar) */}
-      <div className="w-full lg:w-80 shrink-0 flex flex-col bg-white border-l border-gray-200 pb-8 px-6 lg:px-0">
+      <div className="w-full lg:w-80 shrink-0 flex flex-col bg-white border border-gray-200 rounded-2xl pb-8 px-6 lg:px-6 shadow-sm">
         <div className="p-6 lg:p-8 space-y-6 flex-1">
           <div>
             <h3 className="text-2xl font-extrabold text-gray-900 mb-1">Merge PDF</h3>

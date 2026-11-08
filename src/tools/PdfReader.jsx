@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FileText, ZoomIn, ZoomOut, Maximize, ChevronLeft, ChevronRight, X, LayoutTemplate, ShieldCheck } from 'lucide-react';
+import { FileText, ZoomIn, ZoomOut, Maximize, Minimize, ChevronLeft, ChevronRight, X, LayoutTemplate, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import DragDropZone from '../components/ui/DragDropZone';
 
@@ -21,7 +21,7 @@ const Thumbnail = ({ pdfDocument, pageNum, isActive, onClick }) => {
         observer.disconnect();
       }
     }, { rootMargin: '100px' });
-    
+
     if (containerRef.current) observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, []);
@@ -36,12 +36,12 @@ const Thumbnail = ({ pdfDocument, pageNum, isActive, onClick }) => {
           const unscaledViewport = page.getViewport({ scale: 1 });
           const scale = 140 / unscaledViewport.width;
           const viewport = page.getViewport({ scale });
-          
+
           const canvas = canvasRef.current;
           if (!canvas) return;
           canvas.width = viewport.width;
           canvas.height = viewport.height;
-          
+
           renderTask = page.render({ canvasContext: canvas.getContext('2d'), viewport });
           await renderTask.promise;
         } catch (e) {
@@ -59,8 +59,8 @@ const Thumbnail = ({ pdfDocument, pageNum, isActive, onClick }) => {
   }, [isVisible, pdfDocument, pageNum]);
 
   return (
-    <div 
-      ref={containerRef} 
+    <div
+      ref={containerRef}
       onClick={() => onClick(pageNum)}
       className={`cursor-pointer p-1 rounded-xl transition-all min-h-[180px] w-full flex flex-col items-center justify-center gap-2 group ${
         isActive ? 'bg-blue-100/50 shadow-sm border border-blue-200' : 'hover:bg-gray-100 border border-transparent'
@@ -83,7 +83,7 @@ export default function PdfReader() {
   const [isLoading, setIsLoading] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [pageInputValue, setPageInputValue] = useState('1');
-  
+
   const mainCanvasRef = useRef(null);
   const containerRef = useRef(null);
 
@@ -100,20 +100,20 @@ export default function PdfReader() {
       toast.error("Please upload a valid PDF file.");
       return;
     }
-    
+
     setFile(newFile);
     setIsLoading(true);
-    
+
     try {
       const buffer = await newFile.arrayBuffer();
       const typedArray = new Uint8Array(buffer);
 
       const pdfjsLib = await import('pdfjs-dist');
       pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mjs', import.meta.url).href;
-    
+
       const loadingTask = pdfjsLib.getDocument({ data: typedArray });
       const pdf = await loadingTask.promise;
-      
+
       setPdfDocument(pdf);
       setNumPages(pdf.numPages);
       setCurrentPage(1);
@@ -132,21 +132,21 @@ export default function PdfReader() {
   useEffect(() => {
     if (pdfDocument && mainCanvasRef.current) {
       let renderTask = null;
-      
+
       const renderPage = async () => {
         try {
           const page = await pdfDocument.getPage(currentPage);
           const viewport = page.getViewport({ scale: zoom });
           const canvas = mainCanvasRef.current;
-          
+
           canvas.width = viewport.width;
           canvas.height = viewport.height;
-          
+
           const renderContext = {
             canvasContext: canvas.getContext('2d'),
             viewport: viewport,
           };
-          
+
           renderTask = page.render(renderContext);
           await renderTask.promise;
         } catch(e) {
@@ -156,9 +156,9 @@ export default function PdfReader() {
           }
         }
       };
-      
+
       renderPage();
-      
+
       return () => {
         if (renderTask) renderTask.cancel();
       }
@@ -169,7 +169,7 @@ export default function PdfReader() {
     if (num >= 1 && num <= numPages) {
       setCurrentPage(num);
       setPageInputValue(num.toString());
-      
+
       // Scroll to top of viewer when page changes
       if (containerRef.current) {
          containerRef.current.scrollTop = 0;
@@ -180,7 +180,7 @@ export default function PdfReader() {
   const handlePageInput = (e) => {
     setPageInputValue(e.target.value);
   };
-  
+
   const handlePageSubmit = (e) => {
     if (e.key === 'Enter' || e.type === 'blur') {
       const num = parseInt(pageInputValue);
@@ -200,16 +200,34 @@ export default function PdfReader() {
   };
 
   const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(e => {
-        console.error("Error attempting to enable fullscreen:", e);
-      });
-      setIsFullscreen(true);
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
+    try {
+      if (!document.fullscreenElement) {
+        const docEl = document.documentElement;
+        const requestFs = docEl.requestFullscreen || docEl.webkitRequestFullscreen;
+        if (requestFs) {
+          const promise = requestFs.call(docEl);
+          if (promise && promise.catch) {
+            promise.catch(e => {
+              console.warn("Fullscreen request declined or unsupported:", e);
+              toast.error("Fullscreen mode could not be activated.");
+            });
+          }
+        } else {
+          toast.error("Fullscreen is not supported by your browser.");
+        }
+      } else {
+        const exitFs = document.exitFullscreen || document.webkitExitFullscreen;
+        if (exitFs) {
+          const promise = exitFs.call(document);
+          if (promise && promise.catch) {
+            promise.catch(e => {
+              console.warn("Error exiting fullscreen:", e);
+            });
+          }
+        }
       }
-      setIsFullscreen(false);
+    } catch (err) {
+      console.warn("Fullscreen toggle error:", err);
     }
   };
 
@@ -218,7 +236,11 @@ export default function PdfReader() {
       setIsFullscreen(!!document.fullscreenElement);
     };
     document.addEventListener('fullscreenchange', handleFullscreenChange);
-    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+    };
   }, []);
 
   if (!file || !pdfDocument) {
@@ -243,13 +265,13 @@ export default function PdfReader() {
                <p>Opening Document...</p>
              </div>
           ) : (
-             <DragDropZone 
+             <DragDropZone
               onFileSelect={handleFile}
               accept=".pdf,application/pdf"
               label="Drop your PDF here to read, or click to browse"
              />
           )}
-          
+
           <div className="mt-8 pt-6 border-t border-gray-100 flex items-center justify-center gap-2 text-sm text-gray-500">
             <ShieldCheck className="w-5 h-5 text-green-500" />
             <span>Strictly client-side. Document files are rendered in your browser memory without server uploads.</span>
@@ -260,64 +282,158 @@ export default function PdfReader() {
   }
 
   return (
-    <div className={`flex flex-col bg-gray-50 border border-gray-200 shadow-xl overflow-hidden transition-all ${isFullscreen ? 'fixed inset-0 z-[100] rounded-none' : 'h-[calc(100vh-140px)] w-full max-w-7xl mx-auto rounded-3xl'}`}>
-      
-      {/* Toolbar */}
-      <div className="h-16 bg-white border-b border-gray-200 px-4 flex items-center justify-between flex-shrink-0 shadow-sm z-20">
-        
+    <div className={`flex flex-col bg-gray-50 border border-gray-200 shadow-xl overflow-hidden transition-all ${isFullscreen ? 'fixed inset-0 z-[100] rounded-none' : 'h-[calc(100vh-140px)] w-full max-w-7xl mx-auto rounded-2xl md:rounded-3xl'}`}>
+
+      {/* Desktop Toolbar (>= md) */}
+      <div className="hidden md:flex h-16 bg-white border-b border-gray-200 px-4 items-center justify-between flex-shrink-0 shadow-sm z-20">
         <div className="flex items-center gap-4 w-1/3">
            <button onClick={resetReader} className="p-2 hover:bg-gray-100 rounded-full text-gray-500 transition-colors" title="Close Document">
              <X className="w-5 h-5" />
            </button>
-           <div className="hidden md:flex flex-col">
+           <div className="flex flex-col">
              <span className="font-bold text-gray-800 truncate max-w-[200px] text-sm">{file.name}</span>
              <span className="text-xs text-gray-400">{numPages} pages</span>
            </div>
         </div>
 
         <div className="flex items-center gap-2 md:gap-4 justify-center w-1/3">
-           <button 
-             onClick={() => goToPage(currentPage - 1)} 
+           <button
+             onClick={() => goToPage(currentPage - 1)}
              disabled={currentPage <= 1}
-             className="p-1.5 md:p-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg disabled:opacity-50 transition-colors"
+             className="p-1.5 md:p-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg disabled:opacity-50 transition-colors cursor-pointer"
+             aria-label="Previous Page"
            >
              <ChevronLeft className="w-5 h-5" />
            </button>
-           
+
            <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-2 py-1">
-             <input 
-               type="text" 
+             <input
+               type="text"
                value={pageInputValue}
                onChange={handlePageInput}
                onKeyDown={handlePageSubmit}
                onBlur={handlePageSubmit}
+               aria-label="Current Page Number"
                className="w-10 text-center bg-transparent outline-none font-medium text-gray-700"
              />
              <span className="text-gray-400 font-medium">/ {numPages}</span>
            </div>
-           
-           <button 
-             onClick={() => goToPage(currentPage + 1)} 
+
+           <button
+             onClick={() => goToPage(currentPage + 1)}
              disabled={currentPage >= numPages}
-             className="p-1.5 md:p-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg disabled:opacity-50 transition-colors"
+             className="p-1.5 md:p-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg disabled:opacity-50 transition-colors cursor-pointer"
+             aria-label="Next Page"
            >
              <ChevronRight className="w-5 h-5" />
            </button>
         </div>
 
         <div className="flex items-center justify-end gap-2 md:gap-4 w-1/3">
-           <div className="hidden sm:flex items-center bg-gray-100 rounded-lg p-1">
-             <button onClick={() => setZoom(z => Math.max(0.5, z - 0.2))} className="p-1.5 hover:bg-white hover:shadow-sm rounded text-gray-600 transition-all">
+           <div className="flex items-center bg-gray-100 rounded-lg p-1">
+             <button onClick={() => setZoom(z => Math.max(0.5, +(z - 0.2).toFixed(1)))} className="p-1.5 hover:bg-white hover:shadow-sm rounded text-gray-600 transition-all cursor-pointer" aria-label="Zoom Out">
                <ZoomOut className="w-4 h-4" />
              </button>
-             <span className="px-2 text-xs font-bold text-gray-500 w-12 text-center">{Math.round(zoom * 100)}%</span>
-             <button onClick={() => setZoom(z => Math.min(3.0, z + 0.2))} className="p-1.5 hover:bg-white hover:shadow-sm rounded text-gray-600 transition-all">
+             <span className="px-2 text-xs font-bold text-gray-500 w-12 text-center select-none">{Math.round(zoom * 100)}%</span>
+             <button onClick={() => setZoom(z => Math.min(3.0, +(z + 0.2).toFixed(1)))} className="p-1.5 hover:bg-white hover:shadow-sm rounded text-gray-600 transition-all cursor-pointer" aria-label="Zoom In">
                <ZoomIn className="w-4 h-4" />
              </button>
            </div>
-           <button onClick={toggleFullscreen} className="p-2 hover:bg-gray-100 rounded-lg text-gray-600 transition-colors hidden md:block" title="Toggle Fullscreen">
-             <Maximize className="w-5 h-5" />
+           <button
+             onClick={toggleFullscreen}
+             className="p-2 hover:bg-gray-100 rounded-lg text-gray-600 transition-colors cursor-pointer"
+             title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+             aria-label={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+             aria-pressed={isFullscreen}
+           >
+             {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
            </button>
+        </div>
+      </div>
+
+      {/* Mobile Toolbar (< md): 2-Tier responsive bar with full 44px touch targets and zero overflow at 320px */}
+      <div className="md:hidden flex flex-col flex-shrink-0 z-20">
+        {/* Mobile Header Row */}
+        <div className="h-14 bg-white border-b border-gray-200 px-2 sm:px-3 flex items-center justify-between shadow-xs">
+          <button
+            onClick={resetReader}
+            className="min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-gray-100 rounded-full text-gray-500 transition-colors active:bg-gray-200"
+            title="Close Document"
+            aria-label="Close Document"
+          >
+            <X className="w-5 h-5" />
+          </button>
+
+          <div className="flex flex-col items-center max-w-[170px] sm:max-w-[240px] px-1 overflow-hidden">
+            <span className="font-bold text-gray-800 text-xs sm:text-sm truncate w-full text-center">{file.name}</span>
+            <span className="text-[11px] text-gray-400">Page {currentPage} of {numPages}</span>
+          </div>
+
+          <button
+            onClick={toggleFullscreen}
+            className="min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-gray-100 rounded-xl text-gray-600 transition-colors active:bg-gray-200 cursor-pointer"
+            title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+            aria-label={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+            aria-pressed={isFullscreen}
+          >
+            {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
+          </button>
+        </div>
+
+        {/* Mobile Reading Controls Bar: Page Nav + Zoom with 44px touch targets */}
+        <div className="py-1.5 px-2 bg-gray-50 border-b border-gray-200 flex items-center justify-between shadow-xs gap-1">
+          {/* Page Navigation */}
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => goToPage(currentPage - 1)}
+              disabled={currentPage <= 1}
+              className="min-w-[44px] min-h-[44px] bg-white border border-gray-200 rounded-xl text-gray-700 disabled:opacity-35 shadow-xs flex items-center justify-center active:bg-gray-100 cursor-pointer"
+              aria-label="Previous Page"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-1 bg-white border border-gray-200 rounded-xl px-1.5 sm:px-2 min-h-[44px] shadow-xs">
+              <input
+                type="text"
+                value={pageInputValue}
+                onChange={handlePageInput}
+                onKeyDown={handlePageSubmit}
+                onBlur={handlePageSubmit}
+                aria-label="Current Page Number"
+                className="w-7 sm:w-8 text-center bg-transparent outline-none font-bold text-xs text-gray-800"
+              />
+              <span className="text-gray-400 font-medium text-xs select-none">/ {numPages}</span>
+            </div>
+
+            <button
+              onClick={() => goToPage(currentPage + 1)}
+              disabled={currentPage >= numPages}
+              className="min-w-[44px] min-h-[44px] bg-white border border-gray-200 rounded-xl text-gray-700 disabled:opacity-35 shadow-xs flex items-center justify-center active:bg-gray-100 cursor-pointer"
+              aria-label="Next Page"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Zoom Controls */}
+          <div className="flex items-center bg-white border border-gray-200 rounded-xl p-0.5 shadow-xs">
+            <button
+              onClick={() => setZoom(z => Math.max(0.5, +(z - 0.2).toFixed(1)))}
+              className="min-w-[44px] min-h-[44px] hover:bg-gray-100 rounded-lg text-gray-600 flex items-center justify-center transition-colors active:bg-gray-200 cursor-pointer"
+              aria-label="Zoom Out"
+            >
+              <ZoomOut className="w-4 h-4" />
+            </button>
+            <span className="px-0.5 text-xs font-bold text-gray-700 min-w-[34px] text-center select-none">{Math.round(zoom * 100)}%</span>
+            <button
+              onClick={() => setZoom(z => Math.min(3.0, +(z + 0.2).toFixed(1)))}
+              className="min-w-[44px] min-h-[44px] hover:bg-gray-100 rounded-lg text-gray-600 flex items-center justify-center transition-colors active:bg-gray-200 cursor-pointer"
+              aria-label="Zoom In"
+            >
+              <ZoomIn className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -325,7 +441,7 @@ export default function PdfReader() {
         {/* Sidebar Thumbnails */}
         <div className="w-48 bg-white border-r border-gray-200 overflow-y-auto hidden lg:flex flex-col p-4 gap-2 shadow-[2px_0_10px_rgba(0,0,0,0.02)] z-10 custom-scrollbar">
           {Array.from({ length: numPages }, (_, i) => i + 1).map(pageNum => (
-             <Thumbnail 
+             <Thumbnail
                key={pageNum}
                pdfDocument={pdfDocument}
                pageNum={pageNum}
@@ -338,8 +454,8 @@ export default function PdfReader() {
         {/* Main Viewer Area */}
         <div ref={containerRef} className="flex-1 overflow-auto bg-gray-100/80 relative custom-scrollbar p-4 md:p-8 flex justify-center">
            <div className="min-w-fit min-h-fit pb-12 flex justify-center items-start">
-             <canvas 
-               ref={mainCanvasRef} 
+             <canvas
+               ref={mainCanvasRef}
                className="bg-white shadow-[0_10px_30px_rgba(0,0,0,0.1)] rounded-sm max-w-none transition-transform duration-200 origin-top"
              />
            </div>

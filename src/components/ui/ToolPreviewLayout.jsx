@@ -3,7 +3,7 @@ import {
   RefreshCw, ShieldCheck,
   ZoomIn, ZoomOut, RotateCcw,
   PanelLeft, PanelLeftClose, ChevronUp, ChevronDown, Layers,
-  Lock, FileText
+  Lock, FileText, Eye, SlidersHorizontal
 } from 'lucide-react';
 import { toast } from 'sonner';
 import DragDropZone from './DragDropZone';
@@ -30,6 +30,8 @@ export default function ToolPreviewLayout({
   renderGridItem, // function(thumbnail, index) to render individual items in gridMode
   gridQuality = 0.5, // Resolution multiplier for grid thumbnails
   customSuccessNode = null, // Optional: function({ successData, onReset, handleDownload, handleShare }) to customize result workspace
+  mobileDefaultTab = 'preview', // Optional: 'preview' | 'settings' for mobile workspace switcher
+  compactOnMobile = false, // Optional: boolean, when true constrains initial preview height to compact ~220px on mobile with accessible expand/collapse
 }) {
   const [previewImage, setPreviewImage] = useState(null);
   const [thumbnails, setThumbnails] = useState([]);
@@ -41,6 +43,36 @@ export default function ToolPreviewLayout({
   const [activePage, setActivePage] = useState(1);
   const [zoom, setZoom] = useState(1.0);
   const [showSidebar, setShowSidebar] = useState(true);
+
+  // Mobile workspace switcher state ('preview' | 'settings')
+  const [activeTab, setActiveTab] = useState(mobileDefaultTab || 'preview');
+
+  // Mobile compact preview expansion state (opt-in via compactOnMobile)
+  const [isExpandedMobile, setIsExpandedMobile] = useState(false);
+
+  // Sync activeTab when mobileDefaultTab changes or when a new file is loaded
+  useEffect(() => {
+    setActiveTab(mobileDefaultTab || 'preview');
+    setIsExpandedMobile(false);
+  }, [mobileDefaultTab, file]);
+
+  const handleTabKeyDown = (e) => {
+    const isPreview = e.currentTarget.id === 'tab-preview';
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft' || e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const nextTab = isPreview ? 'settings' : 'preview';
+      setActiveTab(nextTab);
+      document.getElementById(`tab-${nextTab}`)?.focus();
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      setActiveTab('preview');
+      document.getElementById('tab-preview')?.focus();
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      setActiveTab('settings');
+      document.getElementById('tab-settings')?.focus();
+    }
+  };
   const pageRefs = useRef([]);
   const canvasContainerRef = useRef(null);
   const pdfConverterDownloadRef = useRef(false);
@@ -388,7 +420,7 @@ export default function ToolPreviewLayout({
                   type="button"
                   onClick={() => scrollToPage(Math.max(1, activePage - 1))}
                   disabled={activePage <= 1}
-                  className="p-1 text-gray-600 hover:text-gray-900 disabled:opacity-30 disabled:hover:text-gray-600 rounded transition-colors"
+                  className="p-1.5 min-w-[28px] min-h-[28px] flex items-center justify-center text-gray-600 hover:text-gray-900 disabled:opacity-30 disabled:hover:text-gray-600 rounded transition-colors"
                   title="Previous page"
                 >
                   <ChevronUp className="w-4 h-4" />
@@ -397,7 +429,7 @@ export default function ToolPreviewLayout({
                   type="button"
                   onClick={() => scrollToPage(Math.min(totalPages, activePage + 1))}
                   disabled={activePage >= totalPages}
-                  className="p-1 text-gray-600 hover:text-gray-900 disabled:opacity-30 disabled:hover:text-gray-600 rounded transition-colors"
+                  className="p-1.5 min-w-[28px] min-h-[28px] flex items-center justify-center text-gray-600 hover:text-gray-900 disabled:opacity-30 disabled:hover:text-gray-600 rounded transition-colors"
                   title="Next page"
                 >
                   <ChevronDown className="w-4 h-4" />
@@ -411,7 +443,7 @@ export default function ToolPreviewLayout({
                 type="button"
                 onClick={() => setZoom(z => Math.max(0.5, +(z - 0.2).toFixed(1)))}
                 disabled={zoom <= 0.5}
-                className="p-1 hover:bg-white text-gray-600 hover:text-gray-900 rounded disabled:opacity-30 transition-all shadow-none hover:shadow-sm"
+                className="p-1.5 min-w-[28px] min-h-[28px] flex items-center justify-center hover:bg-white text-gray-600 hover:text-gray-900 rounded disabled:opacity-30 transition-all shadow-none hover:shadow-sm"
                 title="Zoom out"
               >
                 <ZoomOut className="w-4 h-4" />
@@ -423,7 +455,7 @@ export default function ToolPreviewLayout({
                 type="button"
                 onClick={() => setZoom(z => Math.min(2.5, +(z + 0.2).toFixed(1)))}
                 disabled={zoom >= 2.5}
-                className="p-1 hover:bg-white text-gray-600 hover:text-gray-900 rounded disabled:opacity-30 transition-all shadow-none hover:shadow-sm"
+                className="p-1.5 min-w-[28px] min-h-[28px] flex items-center justify-center hover:bg-white text-gray-600 hover:text-gray-900 rounded disabled:opacity-30 transition-all shadow-none hover:shadow-sm"
                 title="Zoom in"
               >
                 <ZoomIn className="w-4 h-4" />
@@ -431,10 +463,10 @@ export default function ToolPreviewLayout({
               <button
                 type="button"
                 onClick={() => setZoom(1.0)}
-                className="p-1 hover:bg-white text-gray-500 hover:text-gray-900 rounded transition-all ml-0.5"
+                className="p-1.5 min-w-[28px] min-h-[28px] flex items-center justify-center hover:bg-white text-gray-500 hover:text-gray-900 rounded transition-all ml-0.5"
                 title="Reset zoom to 100%"
               >
-                <RotateCcw className="w-3.5 h-3.5" />
+                <RotateCcw className="w-4 h-4" />
               </button>
             </div>
           </div>
@@ -528,12 +560,26 @@ export default function ToolPreviewLayout({
     );
   };
 
+  const previewHeightClass = compactOnMobile
+    ? isExpandedMobile
+      ? 'h-[65vh] min-h-[360px] md:h-[58vh] md:min-h-[360px] md:max-h-none lg:h-full lg:min-h-0'
+      : 'h-[220px] max-h-[220px] md:h-[58vh] md:min-h-[360px] md:max-h-none lg:h-full lg:min-h-0'
+    : 'min-h-[360px] h-[52vh] sm:h-[58vh] lg:h-full lg:min-h-0';
+
   return (
     <div className="w-full mx-auto animate-in fade-in flex flex-col">
-      <div className="text-center space-y-1.5 flex-shrink-0 mb-4">
-        <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">{title}</h2>
-        <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">{description}</p>
-      </div>
+      {/* Tool Header: Full marketing introduction on empty state, compact responsive header on loaded state */}
+      {!file ? (
+        <div className="text-center space-y-1.5 flex-shrink-0 mb-4">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">{title}</h2>
+          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">{description}</p>
+        </div>
+      ) : (
+        <div className="text-center space-y-1 flex-shrink-0 mb-3 sm:mb-4">
+          <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight">{title}</h2>
+          <p className="text-xs sm:text-sm md:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto line-clamp-2 md:line-clamp-none px-2">{description}</p>
+        </div>
+      )}
 
       {!file && (
         <div className="flex flex-col items-center justify-center min-h-[60vh]">
@@ -557,46 +603,150 @@ export default function ToolPreviewLayout({
       )}
 
       {file && !successData && !isLoadingPreview && (
-        <div className="flex flex-col lg:flex-row gap-4 w-full lg:h-[calc(100vh-140px)] lg:min-h-[600px] lg:max-h-[920px]">
-          {/* Interactive Preview Canvas with Sidebar */}
-          <div className="w-full lg:w-2/3 bg-white rounded-2xl border border-gray-200 min-h-[360px] h-[52vh] sm:h-[58vh] lg:h-full lg:min-h-0 overflow-hidden flex flex-col shadow-sm">
-            {renderPreviewContent()}
+        <>
+          {/* Mobile Workspace Switcher (< md) */}
+          <div
+            className="md:hidden flex items-center p-1 bg-gray-100 rounded-xl mb-3 border border-gray-200/80 shadow-inner select-none"
+            role="tablist"
+            aria-label="Workspace view"
+          >
+            <button
+              type="button"
+              id="tab-preview"
+              role="tab"
+              aria-selected={activeTab === 'preview'}
+              aria-controls="panel-preview"
+              tabIndex={activeTab === 'preview' ? 0 : -1}
+              onClick={() => setActiveTab('preview')}
+              onKeyDown={handleTabKeyDown}
+              className={`flex-1 py-2 px-3 text-xs sm:text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 min-h-[44px] focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                activeTab === 'preview'
+                  ? 'bg-white text-blue-600 shadow-sm border border-gray-200/60'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200/50'
+              }`}
+            >
+              <Eye className="w-4 h-4 shrink-0 text-blue-500" />
+              <span>Preview</span>
+            </button>
+
+            <button
+              type="button"
+              id="tab-settings"
+              role="tab"
+              aria-selected={activeTab === 'settings'}
+              aria-controls="panel-settings"
+              tabIndex={activeTab === 'settings' ? 0 : -1}
+              onClick={() => setActiveTab('settings')}
+              onKeyDown={handleTabKeyDown}
+              className={`flex-1 py-2 px-3 text-xs sm:text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 min-h-[44px] focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                activeTab === 'settings'
+                  ? 'bg-white text-blue-600 shadow-sm border border-gray-200/60'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200/50'
+              }`}
+            >
+              <SlidersHorizontal className="w-4 h-4 shrink-0 text-gray-500" />
+              <span>Settings &amp; Action</span>
+            </button>
           </div>
 
-          {/* Configuration Panel */}
-          <div className="w-full lg:w-1/3 bg-white border border-gray-200 rounded-2xl p-5 shadow-sm flex flex-col h-auto lg:h-full lg:min-h-0 overflow-visible lg:overflow-hidden shrink-0">
-            <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100 flex-shrink-0">
-              <div className="p-2 bg-blue-50 text-blue-600 rounded-lg flex-shrink-0">
-                <Icon className="w-5 h-5" />
-              </div>
-              <div className="overflow-hidden" data-clarity-mask="true">
-                <h3 className="text-sm font-bold text-gray-900 truncate">{file.name}</h3>
-                <p className="text-xs text-gray-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
-              </div>
+          <div className="flex flex-col lg:flex-row gap-4 w-full lg:h-[calc(100vh-140px)] lg:min-h-[600px] lg:max-h-[920px]">
+            {/* Interactive Preview Canvas with Sidebar */}
+            <div
+              id="panel-preview"
+              role="tabpanel"
+              aria-labelledby="tab-preview"
+              className={`w-full lg:w-2/3 bg-white rounded-2xl border border-gray-200 overflow-hidden flex flex-col shadow-sm ${previewHeightClass} ${
+                activeTab === 'preview' ? 'flex' : 'hidden md:flex'
+              }`}
+            >
+              {compactOnMobile ? (
+                <>
+                  <div className={`flex-1 min-h-0 ${isExpandedMobile ? 'overflow-y-auto' : 'overflow-hidden'} relative flex flex-col`}>
+                    {renderPreviewContent()}
+                  </div>
+                  <div className="md:hidden border-t border-gray-200 bg-gray-50/95 px-3 py-1.5 flex items-center justify-between shrink-0 min-h-[44px]">
+                    <div className="flex items-center gap-1.5 text-xs text-gray-600 truncate pr-2">
+                      {gridMode && thumbnails.length > 0 ? (
+                        <span className="font-medium text-gray-700 truncate">
+                          {thumbnails.length} page{thumbnails.length > 1 ? 's' : ''} {!isExpandedMobile ? '• Expand to view & select all' : ''}
+                        </span>
+                      ) : totalPages > 0 ? (
+                        <span className="font-medium text-gray-700 truncate">
+                          Page {activePage} of {totalPages} {!isExpandedMobile ? '• Expand for full view' : ''}
+                        </span>
+                      ) : (
+                        <span className="font-medium text-gray-500 truncate">Preview</span>
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setIsExpandedMobile(prev => !prev)}
+                      aria-expanded={isExpandedMobile}
+                      aria-controls="panel-preview"
+                      aria-label={isExpandedMobile ? "Collapse preview" : "Expand preview"}
+                      className="min-h-[44px] px-3.5 py-2 text-xs font-bold text-blue-600 hover:text-blue-700 active:bg-blue-100/70 bg-white hover:bg-blue-50 border border-blue-200 rounded-lg shadow-sm flex items-center gap-1.5 transition-all shrink-0 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      {isExpandedMobile ? (
+                        <>
+                          <ChevronUp className="w-4 h-4 text-blue-600 shrink-0" />
+                          <span>Collapse</span>
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="w-4 h-4 text-blue-600 shrink-0" />
+                          <span>Expand Preview</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </>
+              ) : (
+                renderPreviewContent()
+              )}
             </div>
 
-            <div className="space-y-4 flex-1 lg:overflow-y-auto custom-scrollbar pr-0 lg:pr-2">
-              {children}
-            </div>
+            {/* Configuration Panel */}
+            <div
+              id="panel-settings"
+              role="tabpanel"
+              aria-labelledby="tab-settings"
+              className={`w-full lg:w-1/3 bg-white border border-gray-200 rounded-2xl p-5 shadow-sm flex flex-col h-auto lg:h-full lg:min-h-0 overflow-visible lg:overflow-hidden shrink-0 ${
+                activeTab === 'settings' ? 'flex' : 'hidden md:flex'
+              }`}
+            >
+              <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100 flex-shrink-0">
+                <div className="p-2 bg-blue-50 text-blue-600 rounded-lg flex-shrink-0">
+                  <Icon className="w-5 h-5" />
+                </div>
+                <div className="overflow-hidden" data-clarity-mask="true">
+                  <h3 className="text-sm font-bold text-gray-900 truncate">{file.name}</h3>
+                  <p className="text-xs text-gray-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                </div>
+              </div>
 
-            <div className="mt-4 pt-4 border-t border-gray-100 space-y-3 flex-shrink-0">
-              {processButton}
+              <div className="space-y-4 flex-1 lg:overflow-y-auto custom-scrollbar pr-0 lg:pr-2">
+                {children}
+              </div>
+
+              <div className="mt-4 pt-4 border-t border-gray-100 space-y-3 flex-shrink-0">
+                {processButton}
+
+                <button
+                  onClick={onReset}
+                  disabled={isProcessing}
+                  className="w-full py-2 text-sm text-gray-500 hover:text-gray-900 font-medium transition-colors"
+                >
+                  Choose a different file
+                </button>
+              </div>
               
-              <button
-                onClick={onReset}
-                disabled={isProcessing}
-                className="w-full py-2 text-sm text-gray-500 hover:text-gray-900 font-medium transition-colors"
-              >
-                Choose a different file
-              </button>
-            </div>
-            
-            <div className="mt-3 pt-3 border-t border-gray-100 flex items-start gap-2 text-[12px] leading-tight text-green-800 bg-green-50 p-3 rounded-xl border border-green-200 flex-shrink-0 shadow-sm">
-              <ShieldCheck className="w-5 h-5 flex-shrink-0 text-green-600 mt-0.5" />
-              <span><strong>Data Privacy:</strong> Your files are processed 100% locally in your browser memory. Documents are never uploaded to or stored on our servers.</span>
+              <div className="mt-3 pt-3 border-t border-gray-100 flex items-start gap-2 text-[12px] leading-tight text-green-800 bg-green-50 p-3 rounded-xl border border-green-200 flex-shrink-0 shadow-sm">
+                <ShieldCheck className="w-5 h-5 flex-shrink-0 text-green-600 mt-0.5" />
+                <span><strong>Data Privacy:</strong> Your files are processed 100% locally in your browser memory. Documents are never uploaded to or stored on our servers.</span>
+              </div>
             </div>
           </div>
-        </div>
+        </>
       )}
 
       {/* Success State Overlay */}

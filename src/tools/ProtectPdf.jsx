@@ -277,6 +277,7 @@ export default function ProtectPdf() {
       successData={successData}
       processButton={processButton}
       customPreviewNode={customPreview}
+      mobileDefaultTab="settings"
     >
       <div className="space-y-6">
         <div>

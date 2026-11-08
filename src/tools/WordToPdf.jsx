@@ -263,6 +263,8 @@ export default function WordToPdf() {
       successData={successData}
       processButton={processButton}
       customPreviewNode={previewNode}
+      compactOnMobile={true}
+      mobileDefaultTab="settings"
     >
       <div className="space-y-4">
         <div className="bg-blue-50 border border-blue-200 p-4 rounded-xl">

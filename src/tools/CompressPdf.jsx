@@ -385,6 +385,8 @@ export default function CompressPdf() {
       isProcessing={isProcessing}
       successData={successData}
       processButton={processButton}
+      compactOnMobile={true}
+      mobileDefaultTab="settings"
     >
       <div className="space-y-4">
         {/* Continuous Piecewise Compression Slider */}
