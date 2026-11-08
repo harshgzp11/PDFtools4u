@@ -14,11 +14,20 @@ function readExistingLastModMap() {
     if (!fs.existsSync(SITEMAP_PATH)) return {};
     const xml = fs.readFileSync(SITEMAP_PATH, 'utf-8');
     const entries = {};
-    const regex = /<loc>https?:\/\/[^<]+([^<]*)<\/loc>\s*<lastmod>([^<]+)<\/lastmod>/g;
+    const regex = /<loc>([^<]+)<\/loc>\s*<lastmod>([^<]+)<\/lastmod>/g;
     let match;
     while ((match = regex.exec(xml)) !== null) {
-      const route = match[1];
-      entries[route] = match[2];
+      try {
+        const parsedUrl = new URL(match[1]);
+        const route = parsedUrl.pathname === '/' ? '' : parsedUrl.pathname;
+        entries[route] = match[2].trim();
+      } catch (e) {
+        const routeMatch = match[1].match(/https?:\/\/[^\/]+(.*)/);
+        if (routeMatch) {
+          const route = routeMatch[1] === '/' ? '' : routeMatch[1];
+          entries[route] = match[2].trim();
+        }
+      }
     }
     return entries;
   } catch (error) {

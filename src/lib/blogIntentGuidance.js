@@ -97,6 +97,14 @@ export const BLOG_INTENT_GUIDANCE = {
       { id: 'convert-pdf-to-editable-word-without-losing-formatting', label: 'General guide for converting PDFs to editable Word documents' }
     ]
   },
+  'remove-password-from-salary-slip-bank-statement': {
+    heading: 'Financial document preparation workflow',
+    text: 'Use this guide to remove password encryption from salary slips or bank statements before uploading them to HR or loan portals. If you need to compress large files, combine multiple monthly statements, or prepare tax records, explore our related document workflows.',
+    related: [
+      { id: 'compress-form-16-pdf-under-500kb', label: 'How to compress Form 16 PDF under 500KB for ITR filing' },
+      { id: 'convert-salary-slip-pdf-to-editable-word', label: 'Convert salary slip PDF into editable Word or Excel format' }
+    ]
+  },
   'pretty-print-clean-json-online': {
     heading: 'Developer data formatting workflow',
     text: 'Use this guide to clean, format, and validate messy JSON payloads. To convert JSON datasets into CSV tables for Excel, use our dedicated converter tool; for architectural privacy details, read our client-side processing guide.',
