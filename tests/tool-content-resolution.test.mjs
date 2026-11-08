@@ -230,8 +230,8 @@ console.log(`  - Tools displaying Custom Specs: ${toolsWithCustomSpecs} / 49`);
 console.log(`  - Tools displaying Fallback Specs: ${toolsWithFallbackSpecs} / 49`);
 
 assert.strictEqual(toolsWithCustomFaqs, 49, 'All 49 tools in SEO_CONTENT have authored custom FAQs and must now display them!');
-assert.strictEqual(toolsWithCustomSpecs, 4, 'Exactly 4 tools have custom specs and must display them');
-assert.strictEqual(toolsWithFallbackSpecs, 45, 'Exactly 45 tools safely fall back to category specs');
+assert.strictEqual(toolsWithCustomSpecs, 5, 'Exactly 5 tools have custom specs and must display them');
+assert.strictEqual(toolsWithFallbackSpecs, 44, 'Exactly 44 tools safely fall back to category specs');
 
 console.log('✅ [PASS] Section 3: All 49 production tools resolve correctly');
 
