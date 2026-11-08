@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { SEO_HEAD, HOMEPAGE_SEO } from '../lib/seoHead';
 import { SEO_CONTENT, CATEGORY_FALLBACKS } from '../lib/seoContent';
+import { resolveFaqs } from '../lib/seoContentResolution';
 import { DOMAINS, POPULAR_TOOL_IDS } from '../lib/toolConfig';
 import { BLOG_POSTS } from '../lib/blogData';
 import { getBlogCluster } from '../lib/blogClusters';
@@ -290,12 +291,17 @@ export default function SEOHead({ activeTool, title: overrideTitle, description:
           title: `${toolInfo.name} Online Free`,
           description: toolInfo.description,
           howTo: fallback.getHowTo(toolInfo.name),
-          faq: fallback.faq
+          faq: resolveFaqs(null, fallback.faq)
         };
       } else if (finalToolContent && fallback) {
         finalToolContent = {
           ...finalToolContent,
-          faq: finalToolContent.faq?.length >= 7 ? finalToolContent.faq : fallback.faq
+          faq: resolveFaqs(finalToolContent.faq, fallback.faq)
+        };
+      } else if (finalToolContent) {
+        finalToolContent = {
+          ...finalToolContent,
+          faq: resolveFaqs(finalToolContent.faq, null)
         };
       }
 

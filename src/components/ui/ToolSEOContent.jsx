@@ -7,6 +7,7 @@ import { SEO_HEAD } from '../../lib/seoHead';
 import { DOMAINS } from '../../lib/toolConfig';
 import { BLOG_POSTS } from '../../lib/blogData';
 import { trackEvent } from '../../lib/analytics';
+import { resolveFaqs, resolveSpecs } from '../../lib/seoContentResolution';
 
 // Find tool info and domain from DOMAINS config
 function findToolInfo(toolId) {
@@ -50,20 +51,20 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
       description: toolInfo.description,
       why: fallback.getOverview(toolInfo.name),
       howTo: fallback.getHowTo(toolInfo.name),
-      specs: fallback.specs,
+      specs: resolveSpecs(null, fallback.specs),
       features: fallback.features || [
         "Browser-based processing: Supported operations are designed to process selected files locally.",
         "Network transparency: The page also loads assets and analytics as described in the Privacy Policy.",
         "Review results: Output quality depends on the input file, selected options, browser, and tool.",
         "Free to use: Current availability and features may change over time."
       ],
-      faq: fallback.faq
+      faq: resolveFaqs(null, fallback.faq)
     };
   } else if (content && fallback) {
     // Merge missing fields (like specs, features) into existing content
     content = {
       ...content,
-      specs: content.specs || fallback.specs,
+      specs: resolveSpecs(content.specs, fallback.specs),
       features: content.features?.length ? content.features : (fallback.features || [
         "Browser-based processing: Supported operations are designed to process selected files locally.",
         "Network transparency: The page also loads assets and analytics as described in the Privacy Policy.",
@@ -71,7 +72,13 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
         "Free to use: Current availability and features may change over time."
       ]),
       why: content.why || fallback.getOverview(toolInfo?.name || "Tool"),
-      faq: content.faq?.length >= 7 ? content.faq : fallback.faq
+      faq: resolveFaqs(content.faq, fallback.faq)
+    };
+  } else if (content) {
+    content = {
+      ...content,
+      specs: resolveSpecs(content.specs, null),
+      faq: resolveFaqs(content.faq, null)
     };
   }
 
@@ -211,20 +218,22 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
       </div>
 
       {/* FAQ Section */}
-      <div className="pt-8 max-w-4xl mx-auto">
-        <div className="flex items-center gap-3 mb-8 justify-center">
-          <div className="p-2.5 bg-purple-50 text-purple-600 rounded-xl">
-            <HelpCircle className="w-6 h-6" />
+      {content.faq && content.faq.length > 0 && (
+        <div className="pt-8 max-w-4xl mx-auto">
+          <div className="flex items-center gap-3 mb-8 justify-center">
+            <div className="p-2.5 bg-purple-50 text-purple-600 rounded-xl">
+              <HelpCircle className="w-6 h-6" />
+            </div>
+            <h3 className="text-3xl font-extrabold text-gray-900 text-center">Frequently Asked Questions</h3>
           </div>
-          <h3 className="text-3xl font-extrabold text-gray-900 text-center">Frequently Asked Questions</h3>
+          
+          <div className="space-y-2 w-full mx-auto">
+            {content.faq.map((item, idx) => (
+              <FAQItem key={idx} question={item.q} answer={item.a} />
+            ))}
+          </div>
         </div>
-        
-        <div className="space-y-2 w-full mx-auto">
-          {content.faq.map((item, idx) => (
-            <FAQItem key={idx} question={item.q} answer={item.a} />
-          ))}
-        </div>
-      </div>
+      )}
       
       {/* Related Guides / Blogs Section */}
       {relatedBlogs.length > 0 && (
@@ -355,6 +364,7 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
 }
 
 function FAQItem({ question, answer }) {
+  if (!question && !answer) return null;
   return (
     <details className="group border-b border-gray-200 overflow-hidden transition-all hover:border-gray-300">
       <summary className="flex w-full cursor-pointer list-none items-center justify-between p-5 text-left focus:outline-none [&::-webkit-details-marker]:hidden">
