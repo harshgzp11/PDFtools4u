@@ -1049,8 +1049,16 @@ export const SEO_CONTENT = {
     ]
   },
   "pdf-annotator": {
-    "title": "Free Online PDF Annotator — Draw, Mark & Add Notes to PDFs",
-    "description": "Annotate PDF documents online for free directly in your web browser. Draw freehand with the pen tool, apply translucent brush markups, and add typed text callouts locally without file uploads.",
+    "title": "Annotate PDF Online — Free In-Browser PDF Markup & Freehand Drawing",
+    "description": "Draw on PDFs, use a translucent freehand highlighter, and add short text notes online. Process documents in your browser without uploading files or creating an account.",
+    "useSemanticH2": true,
+    "promoCard": {
+      "title": "Need more advanced PDF editing?",
+      "description": "Use our full-featured PDF Editor for additional editing controls, geometric shapes (rectangles, circles), image insertion, undo/redo history, and canvas zoom controls.",
+      "buttonText": "Open PDF Editor",
+      "url": "/edit-pdf",
+      "toolSlug": "edit-pdf"
+    },
     "specs": [
       {
         "key": "Annotation Engine",
@@ -1066,7 +1074,7 @@ export const SEO_CONTENT = {
       },
       {
         "key": "Supported Markups",
-        "value": "Freehand drawing pen, translucent freehand highlighter brush, typed text callouts"
+        "value": "3px freehand drawing pen, 15px translucent freehand color brush, typed single-line text callouts"
       },
       {
         "key": "Processing Environment",
@@ -1078,7 +1086,7 @@ export const SEO_CONTENT = {
       },
       {
         "key": "Content Preservation",
-        "value": "Retains original vector text and layouts; markups overlaid as transparent layers"
+        "value": "Retains original vector text and layouts; markups overlaid as transparent layers (existing text immutable)"
       },
       {
         "key": "Palette Presets",
@@ -1088,13 +1096,13 @@ export const SEO_CONTENT = {
     "howToTitle": "How to Annotate a PDF in Your Browser",
     "howTo": [
       "Open or Drop Your PDF: Select or drag and drop your PDF document into the browser workspace. The file loads directly into local browser memory without uploading to a server.",
-      "Choose an Annotation Tool: Select the Pen tool for freehand notes and sketches, the Highlighter tool for a translucent color brush, or the Text tool to place typed notes.",
+      "Choose an Annotation Tool: Select the Pen tool for freehand notes and sketches, the Highlighter tool for a translucent color brush, or the Text tool to place typed single-line notes.",
       "Select Your Color: Choose from five curated colors (Black, Red, Blue, Green, Yellow) to organize feedback, grading marks, or review notes.",
       "Navigate Document Pages: Use page navigation buttons to move between pages. Your drawings and text callouts are preserved across every page.",
-      "Export the Annotated PDF: Click 'Export' to compile your annotations with the original document and save the updated PDF straight to your device."
+      "Export the Annotated PDF: Click 'Export' to compile your visual annotations with the original document and save the updated PDF straight to your device."
     ],
     "whyTitle": "Why Annotate PDFs with PDFtools4u?",
-    "why": "## In-Browser PDF Markup Without Server Uploads\n\nReviewing contracts, grading assignments, marking proof drafts, and adding quick notes shouldn't require installing bulky desktop software or uploading sensitive files to cloud servers. PDFtools4u provides a lightweight, browser-based environment where you can open a document, make manual additions, and export the annotated result in seconds.\n\n### Available Annotation Tools & Markup Modes\n- **Freehand Pen Tool:** Draw smooth handwritten notes, circle key data, sketch review marks, or check off checklist items using a responsive 3px drawing stroke.\n- **Translucent Highlighting Brush:** Apply a 15px wide semi-transparent color wash over document regions to accent paragraphs or call out figures. Note: This operates as a freehand brush rather than an automatic text-selection snap highlighter.\n- **Typed Text Callouts:** Click anywhere on the page to position a single-line text note in standard Helvetica font, ideal for adding dates, labels, or short editorial instructions.\n- **Five-Color Palette:** Quickly switch between Black, Red, Blue, Green, and Yellow to visually organize your review notes and edits.\n- **Multi-Page Retention:** Move forward and backward through multi-page PDFs using the page navigation controls. All drawings and text notes are cached in session memory until you export.\n\n### Document Content Preservation During Export\nWhen you click **Export**, the browser-side compiler (`pdf-lib`) preserves the original PDF document structure:\n- **Vector Text and Graphics Untouched:** The underlying document pages are not rasterized into low-resolution images. Text streams, fonts, tables, and vector lines remain sharp.\n- **Transparent Annotation Overlays:** Freehand drawings and highlights are compiled as high-resolution transparent overlay streams placed directly over the corresponding pages.\n- **Native Text Insertion:** Text annotations are inserted as standard PDF text elements, ensuring crisp readability across Adobe Acrobat, Apple Preview, web browsers, and mobile readers.\n\n### How Your PDF Is Processed in Your Browser\nAll document rendering, drawing interactions, and PDF compilation take place locally within your device's web browser using JavaScript and HTML5 Canvas APIs:\n- **Zero Document Uploads:** Selected PDF files and annotations are not uploaded to PDFtools4u servers or stored on remote cloud infrastructure.\n- **Session Privacy:** Your document remains in local browser memory for the duration of your editing session and is cleared when you close or reload the browser tab.\n- **Website Transparency:** The website loads standard scripts, stylesheets, and privacy-preserving analytics over secure connections as described in our [Privacy Policy](/privacy-policy). Document contents remain strictly inside your local browser session.\n\n### Explore Related PDF Utilities\n- Have an encrypted or locked file? Use our [Unlock PDF Tool](/unlock-pdf) to remove password restrictions before annotating.\n- Need to fill interactive AcroForm fields? Use our [PDF Form Filler](/pdf-form-filler).\n- Need to make structural edits or add watermarks? Explore our [Edit PDF Tool](/edit-pdf) and [Sign PDF Tool](/sign-pdf).\n- Want to reduce the exported file size? Optimize it with our [Compress PDF Tool](/compress-pdf).",
+    "why": "Reviewing contracts, grading assignments, marking proof drafts, and adding quick notes shouldn't require installing bulky desktop software or uploading sensitive files to cloud servers. PDFtools4u provides a lightweight, browser-based environment where you can open a document, make manual visual additions, and export the annotated result in seconds.\n\n### Available Annotation Tools & Markup Modes\n- **Freehand Pen Tool:** Draw smooth handwritten notes, circle key data, sketch review marks, or check off checklist items using a responsive 3px drawing stroke.\n- **Translucent Highlighting Brush:** Apply a 15px wide semi-transparent color wash over document regions to accent paragraphs or call out figures. Note: This operates as a manual freehand brush rather than an automatic text-selection snap highlighter.\n- **Typed Text Callouts:** Click anywhere on the page to position a single-line text note in standard Helvetica font, ideal for adding dates, labels, or short editorial instructions.\n- **Five-Color Palette:** Quickly switch between Black, Red, Blue, Green, and Yellow to visually organize your review notes and edits.\n- **Multi-Page Retention:** Move forward and backward through multi-page PDFs using the page navigation controls. All drawings and text notes are cached in session memory until you export.\n\n### Document Content Preservation & Overlay Architecture\nWhen you click **Export**, the browser-side compiler (`pdf-lib`) preserves the original PDF document structure while applying your additions:\n- **Vector Text and Graphics Untouched:** The underlying document pages are not rasterized into low-resolution images. Original text streams, fonts, tables, and vector lines remain sharp.\n- **Visual Overlay Layers:** Freehand drawings and highlights are compiled as high-resolution transparent overlay streams placed directly over corresponding pages. Existing PDF text, fonts, and layouts cannot be edited, deleted, or reflowed.\n- **Crisp Text Placement:** Text callouts are inserted as standard PDF text elements, ensuring crisp readability across Adobe Acrobat, Apple Preview, web browsers, and mobile readers.\n\n### Client-Side Privacy & In-Browser Processing\nAll document rendering, drawing interactions, and PDF compilation take place locally within your device's web browser using JavaScript and HTML5 Canvas APIs:\n- **Zero Document Uploads:** Selected PDF files and annotations are not uploaded to PDFtools4u servers or stored on remote cloud infrastructure.\n- **Session Privacy:** Your document remains in local browser memory for the duration of your editing session and is cleared when you close or reload the browser tab.\n- **Website Transparency:** The website loads standard scripts, stylesheets, and privacy-preserving analytics over secure connections as described in our [Privacy Policy](/privacy-policy). Document contents remain strictly inside your local browser session.\n\n### Explore Related PDF Utilities\n- Have an encrypted or locked file? Use our [Unlock PDF Tool](/unlock-pdf) to remove password restrictions before annotating.\n- Need to fill interactive AcroForm fields? Use our [PDF Form Filler](/pdf-form-filler).\n- Need shapes, images, or undo/redo? Explore our [Edit PDF Tool](/edit-pdf).\n- Want to reduce the exported file size? Optimize it with our [Compress PDF Tool](/compress-pdf).",
     "relatedToolsTitle": "Related PDF Management Tools",
     "features": [
       "Local Browser Execution: Files are loaded and marked up in your browser memory without server-side file uploads.",
@@ -1103,12 +1111,16 @@ export const SEO_CONTENT = {
       "Translucent Highlighter Brush: Overlay 15px semi-transparent color marks to draw attention to critical document sections.",
       "Typed Text Notes: Click anywhere on the page to insert clean single-line text callouts in Helvetica.",
       "Multi-Page Navigation: Freely browse and annotate any page with individual page state retention.",
-      "Vector Document Preservation: Retains underlying vector text and graphics while compiling markups into standard PDF output."
+      "Vector Document Preservation: Retains underlying vector text and graphics while compiling visual markups into standard PDF output."
     ],
     "faq": [
       {
         "q": "How do I draw and write notes on my PDF?",
         "a": "Select or drop your PDF into the upload box on this page, choose the Pen, Highlighter, or Text tool from the toolbar, mark up your document pages, and click 'Export' to download the updated PDF directly to your device. No registration or payment is required."
+      },
+      {
+        "q": "Can I edit existing text in my PDF with this tool?",
+        "a": "No. The PDF Annotator is designed for visual markups and annotations. It places drawings, highlights, and text callouts on top of your existing document as transparent overlay layers. It cannot modify, delete, or reflow existing PDF text."
       },
       {
         "q": "Is my document safe when annotating PDFs here?",

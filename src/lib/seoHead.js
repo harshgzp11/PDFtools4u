@@ -186,8 +186,8 @@ export const SEO_HEAD = {
     keywords: ['rotate pdf pages online free', 'rotate pdf 90 degrees', 'fix upside down pdf', 'rotate pdf permanently', 'change pdf orientation online free'],
   },
   'pdf-annotator': {
-    title: 'Free PDF Annotator Online — Draw & Mark PDFs | PDFtools4u',
-    description: 'Annotate PDF documents online for free. Draw freehand, use the translucent markup brush, and add typed notes directly in your browser with zero file uploads.',
+    title: 'Free PDF Annotator Online — Draw, Highlight & Write | PDFtools4u',
+    description: 'Draw on PDFs, use a translucent freehand highlighter, and add short text notes online. Process documents in your browser without uploading files or creating an account.',
     h1: 'Annotate PDF Online — Free In-Browser PDF Markup & Freehand Drawing',
     keywords: ['annotate pdf', 'pdf annotator free', 'mark pdf', 'pdf annotation', 'online pdf annotator', 'pdf annotator online', 'pdf markup tool', 'pdf markup', 'pdf marker', 'freehand pdf drawing', 'highlight pdf online free'],
   },

@@ -84,6 +84,8 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
 
   if (!content) return null;
 
+  const SectionHeading = content.useSemanticH2 ? 'h2' : 'h3';
+
   // Prefer guides that explicitly recommend this tool as their next step.
   const relatedBlogs = BLOG_POSTS.filter(post => 
     post.published && post.targetToolUrl === toolId
@@ -112,7 +114,7 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
             <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl">
               <FileText className="w-6 h-6" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900">{content.howToTitle || "How to use this tool"}</h3>
+            <SectionHeading className="text-xl font-bold text-gray-900">{content.howToTitle || "How to use this tool"}</SectionHeading>
           </div>
           <ol className="space-y-4">
             {content.howTo.map((step, idx) => (
@@ -132,7 +134,7 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
             <div className="p-2.5 bg-slate-50 text-slate-600 rounded-xl">
               <Server className="w-6 h-6" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900">Technical Specifications</h3>
+            <SectionHeading className="text-xl font-bold text-gray-900">Technical Specifications</SectionHeading>
           </div>
           <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
             <table className="w-full text-sm text-left text-gray-600">
@@ -156,7 +158,7 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
             <div className="p-2.5 bg-emerald-50 text-emerald-600 rounded-xl">
               <CheckCircle2 className="w-6 h-6" />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 text-center">Key Features & Selling Points</h3>
+            <SectionHeading className="text-2xl font-bold text-gray-900 text-center">Key Features & Selling Points</SectionHeading>
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
             {content.features.map((feature, idx) => {
@@ -185,7 +187,7 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
 
       {/* Overview & Why Section */}
       <div className="py-8 md:py-10 max-w-4xl mx-auto">
-        <h3 className="text-2xl font-bold text-gray-900 mb-4 text-center">{content.whyTitle || ("Why use our " + content.title.split(' ')[0] + " tool?")}</h3>
+        <SectionHeading className="text-2xl font-bold text-gray-900 mb-4 text-center">{content.whyTitle || ("Why use our " + content.title.split(' ')[0] + " tool?")}</SectionHeading>
         <div className="text-gray-700 leading-relaxed text-lg text-justify whitespace-pre-wrap">
           <ReactMarkdown
             components={{
@@ -200,6 +202,30 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
         </div>
       </div>
 
+      {/* Contextual Promotional / Cross-Link Card (Optional per tool config) */}
+      {content.promoCard && (
+        <div className="my-8 md:my-10 max-w-4xl mx-auto p-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
+          <div className="space-y-1 text-center sm:text-left flex-1">
+            <h3 className="text-base font-bold text-gray-900">{content.promoCard.title}</h3>
+            <p className="text-sm text-gray-600 leading-relaxed">{content.promoCard.description}</p>
+          </div>
+          <a
+            href={content.promoCard.url}
+            onClick={(e) => {
+              if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+              if (onSelectTool) {
+                e.preventDefault();
+                onSelectTool(content.promoCard.toolSlug);
+              }
+            }}
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-sm font-semibold rounded-xl shadow-xs transition-colors flex-shrink-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            <span>{content.promoCard.buttonText}</span>
+            <ArrowRight className="w-4 h-4" />
+          </a>
+        </div>
+      )}
+
       {/* Global Privacy Trust Banner for all tools */}
       <div className="my-8 md:my-12 max-w-4xl mx-auto bg-gradient-to-br from-indigo-900 via-indigo-800 to-blue-900 rounded-[2rem] p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl relative overflow-hidden border border-indigo-700/50">
         <div className="absolute top-0 right-0 -mr-20 -mt-20 w-72 h-72 bg-indigo-500 rounded-full mix-blend-overlay filter blur-[64px] opacity-60 animate-pulse"></div>
@@ -208,9 +234,9 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
           <div className="inline-flex items-center justify-center md:justify-start gap-2 text-indigo-200 text-sm mb-1">
             <ShieldCheck className="w-5 h-5 text-emerald-400" /> Browser-Based Processing
           </div>
-          <h3 className="text-2xl md:text-3xl font-semibold text-white leading-tight">
+          <SectionHeading className="text-2xl md:text-3xl font-semibold text-white leading-tight">
             How Supported Tools Process Files
-          </h3>
+          </SectionHeading>
           <p className="text-indigo-100/90 text-lg max-w-xl leading-relaxed">
             Supported operations are designed to process selected files locally instead of uploading them to PDFtools4u servers. The page also makes requests for assets and analytics; see the Privacy Policy for details.
           </p>
@@ -224,7 +250,7 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
             <div className="p-2.5 bg-purple-50 text-purple-600 rounded-xl">
               <HelpCircle className="w-6 h-6" />
             </div>
-            <h3 className="text-3xl font-extrabold text-gray-900 text-center">Frequently Asked Questions</h3>
+            <SectionHeading className="text-3xl font-extrabold text-gray-900 text-center">Frequently Asked Questions</SectionHeading>
           </div>
           
           <div className="space-y-2 w-full mx-auto">
@@ -242,7 +268,7 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
             <div className="p-2.5 bg-rose-50 text-rose-600 rounded-xl">
               <BookOpen className="w-6 h-6" />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 text-center">Related Guides & Tutorials</h3>
+            <SectionHeading className="text-2xl font-bold text-gray-900 text-center">Related Guides & Tutorials</SectionHeading>
           </div>
           <div className={`grid grid-cols-1 gap-6 ${
             relatedBlogs.length === 1
@@ -279,7 +305,7 @@ export default function ToolSEOContent({ toolId, onSelectTool }) {
       {/* Related Tools Section */}
       {relatedToolIds.length > 0 && (
         <div className="pt-12 border-t border-gray-100">
-          <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">{content.relatedToolsTitle || (domainTitle?.includes("PDF") || toolId.includes("pdf") ? "Related PDF Management Tools" : "Related Tools You May Need")}</h3>
+          <SectionHeading className="text-2xl font-bold text-gray-900 mb-8 text-center">{content.relatedToolsTitle || (domainTitle?.includes("PDF") || toolId.includes("pdf") ? "Related PDF Management Tools" : "Related Tools You May Need")}</SectionHeading>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {relatedToolIds.slice(0, 4).map(relatedId => {
               const { tool: toolInfo } = findToolInfo(relatedId);
