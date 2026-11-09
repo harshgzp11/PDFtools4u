@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { Toaster } from 'sonner';
 import CommandMenu from './components/CommandMenu';
 import Layout from './components/Layout';
@@ -7,6 +7,7 @@ import ToolSkeleton from './components/ui/ToolSkeleton';
 import PlaceholderTool from './tools/PlaceholderTool';
 import ToolSEOContent from './components/ui/ToolSEOContent';
 import SEOHead from './components/SEOHead';
+import { trackPageView } from './lib/analytics';
 
 
 // Custom lazy function to handle Vite chunk loading errors
@@ -250,6 +251,19 @@ function App() {
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
+
+  const isInitialMount = useRef(true);
+
+  // Track SPA virtual pageviews on genuine client-side route transitions
+  // Initial page load is handled automatically by the GA4 config call in index.html
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+    const canonicalPath = activeTool ? `/${activeTool}` : '/';
+    trackPageView(canonicalPath, document.title);
+  }, [activeTool]);
 
   const navigateTo = (toolId) => {
     if (toolId) {

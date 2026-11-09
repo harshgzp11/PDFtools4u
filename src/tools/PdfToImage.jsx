@@ -68,7 +68,11 @@ export default function PdfToImage() {
   const handleConvert = async () => {
     if (!file) return;
     const toolName = isPngRoute ? 'PDF to PNG' : 'PDF to JPG';
-    trackEvent('tool_executed', { tool_name: toolName });
+    const toolId = isPngRoute ? 'pdf-to-png' : 'pdf-to-jpg';
+    trackEvent('tool_executed', {
+      tool_id: toolId,
+      tool_name: toolName,
+    });
     setIsProcessing(true);
     setProgress(0);
     setErrorMessage('');

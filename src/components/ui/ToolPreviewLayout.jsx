@@ -104,8 +104,11 @@ export default function ToolPreviewLayout({
       const fileArray = Array.isArray(file) ? file : [file];
       if (fileArray.length > 0) {
         const totalSize = fileArray.reduce((acc, f) => acc + (f.size || 0), 0);
+        const toolDisplayName = title || 'unknown_tool';
+        const toolSlug = (title || 'unknown_tool').toLowerCase().replace(/\s+/g, '-');
         trackEvent('tool_start', {
-          tool_name: title || 'unknown_tool',
+          tool_id: toolSlug,
+          tool_name: toolDisplayName,
           file_type: fileArray[0].type || fileArray[0].name?.split('.').pop() || 'unknown',
           file_size_kb: Math.round(totalSize / 1024),
           file_count: fileArray.length,
@@ -127,9 +130,12 @@ export default function ToolPreviewLayout({
   useEffect(() => {
     if (successData) {
       const processingTime = processingStartTime ? Date.now() - processingStartTime : 0;
+      const toolDisplayName = title || 'unknown_tool';
+      const toolSlug = (title || 'unknown_tool').toLowerCase().replace(/\s+/g, '-');
       
       const eventParams = {
-        tool_name: title || 'unknown_tool',
+        tool_id: toolSlug,
+        tool_name: toolDisplayName,
         processing_time_ms: processingTime,
       };
 
@@ -146,7 +152,8 @@ export default function ToolPreviewLayout({
       delete window.__conversionSource;
       if (!pdfConverterDownloadRef.current) {
         trackEvent('file_conversion_success', {
-          tool_name: (title || 'unknown_tool').toLowerCase().replace(/\s+/g, '-'),
+          tool_id: toolSlug,
+          tool_name: toolDisplayName,
           file_type: sourceFile?.name?.split('.').pop()?.toLowerCase() || 'unknown',
         });
       }

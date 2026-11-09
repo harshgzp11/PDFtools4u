@@ -12,6 +12,14 @@ import { BLOG_INTENT_GUIDANCE } from '../lib/blogIntentGuidance';
 import { trackEvent } from '../lib/analytics';
 import { toast } from 'sonner';
 
+const getNodeText = (node) => {
+  if (!node) return '';
+  if (typeof node === 'string' || typeof node === 'number') return String(node);
+  if (Array.isArray(node)) return node.map(getNodeText).join('');
+  if (node.props && node.props.children) return getNodeText(node.props.children);
+  return '';
+};
+
 export default function BlogPost({ id, onNavigate }) {
   const post = BLOG_POSTS.find(p => p.id === id);
 
@@ -228,6 +236,18 @@ export default function BlogPost({ id, onNavigate }) {
                   <a
                     href={href}
                     onClick={(e) => {
+                      const linkText = getNodeText(children).trim();
+                      trackEvent('blog_inline_link_click', {
+                        blog_slug: id,
+                        target_path: href,
+                        link_text: linkText,
+                      });
+
+                      // Preserve standard browser behavior for modifier clicks (new tab / window)
+                      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || (e.button && e.button !== 0)) {
+                        return;
+                      }
+
                       e.preventDefault();
                       const path = href.replace(/^\//, '');
                       onNavigate(path || null);

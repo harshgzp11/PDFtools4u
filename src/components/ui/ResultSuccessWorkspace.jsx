@@ -50,8 +50,11 @@ export default function ResultSuccessWorkspace({
 
   const handleDownload = () => {
     if (!outputUrl) return;
+    const toolDisplayName = toolTitle || 'unknown_tool';
+    const toolSlug = (toolTitle || 'unknown_tool').toLowerCase().replace(/\s+/g, '-');
     trackEvent('file_downloaded', {
-      tool_name: toolTitle || 'unknown_tool',
+      tool_id: toolSlug,
+      tool_name: toolDisplayName,
       file_name: filename,
       file_size_kb: outputSize ? Math.round(outputSize / 1024) : undefined,
     });
