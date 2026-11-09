@@ -123,7 +123,6 @@ const URL_REDIRECTS = {
   'cookies': 'cookie-policy',
   // Legacy blog URLs receiving search console impressions but returning 404
   'blog/convert-json-to-csv-excel': 'data-converter',
-  'blog/top-5-free-apps-scan-documents-india': 'blog/convert-multiple-jpg-images-to-one-pdf-online-free',
 };
 
 const LEGAL_PAGE_SLUGS = ['privacy-policy', 'terms-of-service', 'cookie-policy', 'about', 'contact', 'security'];

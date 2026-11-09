@@ -4226,7 +4226,7 @@ Most KYC verification failures occur when image resolution is too low (
 
 <details>
 <summary>Can I convert only the front card portion of my e-Aadhaar?</summary>
-Yes. Convert the PDF to JPG first, then open [Crop Image](/crop-image) to snip the exact front or back card section.
+Yes. Convert the PDF to JPG first, then open [Crop Image](/image-crop) to snip the exact front or back card section.
 </details>
 
 ### Identity-Document Safety Checklist

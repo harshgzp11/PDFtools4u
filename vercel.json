@@ -53,6 +53,11 @@
       "permanent": true
     },
     {
+      "source": "/crop-image",
+      "destination": "/image-crop",
+      "permanent": true
+    },
+    {
       "source": "/privacy",
       "destination": "/privacy-policy",
       "permanent": true
